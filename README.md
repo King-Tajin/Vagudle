@@ -6,7 +6,7 @@ A word-guessing game built on top of [Hardle](https://hardle.org), with extra to
 
 Type a word and press **Enter** to submit a guess. You have 9–11 tries (depending on difficulty) to find the hidden word.
 
-Unlike Hardle, cells do not color automatically. After each guess, select a brush from the toolbar and click or drag across cells to mark what the game told you:
+Unlike Wordle, cells do not color automatically. After each guess, select a brush from the toolbar and click or drag across cells to mark what you can figure out with counts and guesses you made:
 
 - 🟩 **Green brush** — right letter, right spot
 - 🟨 **Yellow brush** — right letter, wrong spot
