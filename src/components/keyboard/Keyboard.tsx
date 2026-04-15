@@ -36,12 +36,12 @@ export const Keyboard = ({
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       const active = document.activeElement;
-      const isFocusable =
-        active instanceof HTMLButtonElement ||
+      const isTyping =
         active instanceof HTMLInputElement ||
-        active instanceof HTMLAnchorElement;
+        active instanceof HTMLTextAreaElement ||
+        active instanceof HTMLSelectElement;
 
-      if (isFocusable && e.code === "Enter") return;
+      if (isTyping) return;
 
       if (e.code === "Enter") {
         onEnter();
@@ -50,7 +50,6 @@ export const Keyboard = ({
       } else {
         const key = localeAwareUpperCase(e.key);
         if (key.length === 1 && key >= "A" && key <= "Z") {
-          if (isFocusable) (active as HTMLElement).blur();
           onChar(key);
         }
       }
