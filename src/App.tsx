@@ -27,7 +27,11 @@ import {
   unicodeLength,
   getRandomWord,
 } from "./lib/words";
-import { CharStatus, getStatusesFromCellColors, getGuessStatuses } from "./lib/statuses";
+import {
+  CharStatus,
+  getStatusesFromCellColors,
+  getGuessStatuses,
+} from "./lib/statuses";
 import { addStatsForCompletedGame, loadStats } from "./lib/stats";
 import {
   loadGameStateFromLocalStorage,
@@ -162,7 +166,10 @@ function App() {
       guesses.forEach((guess, r) => {
         guess.split("").forEach((ch, c) => {
           const key = `${r}-${c}`;
-          if (fullyGrayLetters.has(ch.toUpperCase()) && next[key] !== "auto-absent") {
+          if (
+            fullyGrayLetters.has(ch.toUpperCase()) &&
+            next[key] !== "auto-absent"
+          ) {
             next[key] = "auto-absent";
             changed = true;
           }

@@ -111,7 +111,9 @@ export const Grid = ({
   selectedBrushRef.current = selectedBrush;
 
   useEffect(() => {
-    const stop = () => { isPainting.current = false; };
+    const stop = () => {
+      isPainting.current = false;
+    };
     window.addEventListener("mouseup", stop);
     window.addEventListener("touchend", stop);
     return () => {
@@ -131,14 +133,24 @@ export const Grid = ({
       if (!hit?.closest("[data-row]")) return;
       e.preventDefault();
       isPainting.current = true;
-      paintFromPoint(t.clientX, t.clientY, selectedBrushRef.current, onCellPaint);
+      paintFromPoint(
+        t.clientX,
+        t.clientY,
+        selectedBrushRef.current,
+        onCellPaint
+      );
     };
 
     const onTouchMove = (e: TouchEvent) => {
       if (!isPainting.current || !selectedBrushRef.current) return;
       e.preventDefault();
       const t = e.touches[0];
-      paintFromPoint(t.clientX, t.clientY, selectedBrushRef.current, onCellPaint);
+      paintFromPoint(
+        t.clientX,
+        t.clientY,
+        selectedBrushRef.current,
+        onCellPaint
+      );
     };
 
     el.addEventListener("touchstart", onTouchStart, { passive: false });

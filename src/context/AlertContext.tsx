@@ -4,47 +4,47 @@ import {
   useCallback,
   useContext,
   useState,
-} from 'react'
-import { ALERT_TIME_MS } from '../constants/settings'
+} from "react";
+import { ALERT_TIME_MS } from "../constants/settings";
 
-type AlertStatus = 'success' | 'error' | undefined
+type AlertStatus = "success" | "error" | undefined;
 
 type ShowOptions = {
-  persist?: boolean
-  delayMs?: number
-  durationMs?: number
-  onClose?: () => void
-}
+  persist?: boolean;
+  delayMs?: number;
+  durationMs?: number;
+  onClose?: () => void;
+};
 
 type AlertContextValue = {
-  status: AlertStatus
-  message: string | null
-  isVisible: boolean
-  showSuccess: (message: string, options?: ShowOptions) => void
-  showError: (message: string, options?: ShowOptions) => void
-  dismiss: () => void
-}
+  status: AlertStatus;
+  message: string | null;
+  isVisible: boolean;
+  showSuccess: (message: string, options?: ShowOptions) => void;
+  showError: (message: string, options?: ShowOptions) => void;
+  dismiss: () => void;
+};
 
 export const AlertContext = createContext<AlertContextValue | null>({
-  status: 'success',
+  status: "success",
   message: null,
   isVisible: false,
   showSuccess: () => null,
   showError: () => null,
   dismiss: () => null,
-})
-AlertContext.displayName = 'AlertContext'
+});
+AlertContext.displayName = "AlertContext";
 
-export const useAlert = () => useContext(AlertContext) as AlertContextValue
+export const useAlert = () => useContext(AlertContext) as AlertContextValue;
 
 type Props = {
-  children?: ReactNode
-}
+  children?: ReactNode;
+};
 
 export const AlertProvider = ({ children }: Props) => {
-  const [status, setStatus] = useState<AlertStatus>('success')
-  const [message, setMessage] = useState<string | null>(null)
-  const [isVisible, setIsVisible] = useState(false)
+  const [status, setStatus] = useState<AlertStatus>("success");
+  const [message, setMessage] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   const show = useCallback(
     (showStatus: AlertStatus, newMessage: string, options?: ShowOptions) => {
@@ -53,43 +53,43 @@ export const AlertProvider = ({ children }: Props) => {
         persist,
         onClose,
         durationMs = ALERT_TIME_MS,
-      } = options || {}
+      } = options || {};
 
       setTimeout(() => {
-        setStatus(showStatus)
-        setMessage(newMessage)
-        setIsVisible(true)
+        setStatus(showStatus);
+        setMessage(newMessage);
+        setIsVisible(true);
 
         if (!persist) {
           setTimeout(() => {
-            setIsVisible(false)
+            setIsVisible(false);
             if (onClose) {
-              onClose()
+              onClose();
             }
-          }, durationMs)
+          }, durationMs);
         }
-      }, delayMs)
+      }, delayMs);
     },
     [setStatus, setMessage, setIsVisible]
-  )
+  );
 
   const showError = useCallback(
     (newMessage: string, options?: ShowOptions) => {
-      show('error', newMessage, options)
+      show("error", newMessage, options);
     },
     [show]
-  )
+  );
 
   const showSuccess = useCallback(
     (newMessage: string, options?: ShowOptions) => {
-      show('success', newMessage, options)
+      show("success", newMessage, options);
     },
     [show]
-  )
+  );
 
   const dismiss = useCallback(() => {
-    setIsVisible(false)
-  }, [setIsVisible])
+    setIsVisible(false);
+  }, [setIsVisible]);
 
   return (
     <AlertContext.Provider
@@ -104,5 +104,5 @@ export const AlertProvider = ({ children }: Props) => {
     >
       {children}
     </AlertContext.Provider>
-  )
-}
+  );
+};

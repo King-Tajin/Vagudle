@@ -1,16 +1,21 @@
-import { Cell } from './Cell'
-import { unicodeSplit } from '../../lib/words'
+import { Cell } from "./Cell";
+import { unicodeSplit } from "../../lib/words";
 
 type CurrentRowProps = {
-  guess: string
-  className: string
-  solutionLength: number
-  cellSize?: number
-}
+  guess: string;
+  className: string;
+  solutionLength: number;
+  cellSize?: number;
+};
 
-export const CurrentRow = ({ guess, className, solutionLength, cellSize = 56 }: CurrentRowProps) => {
-  const splitGuess = unicodeSplit(guess)
-  const emptyCells = Array.from(Array(solutionLength - splitGuess.length))
+export const CurrentRow = ({
+  guess,
+  className,
+  solutionLength,
+  cellSize = 56,
+}: CurrentRowProps) => {
+  const splitGuess = unicodeSplit(guess);
+  const emptyCells = Array.from(Array(solutionLength - splitGuess.length));
 
   return (
     <div className={`flex justify-center mb-1 ${className}`}>
@@ -21,16 +26,16 @@ export const CurrentRow = ({ guess, className, solutionLength, cellSize = 56 }: 
         <Cell key={i} cellSize={cellSize} />
       ))}
     </div>
-  )
-}
+  );
+};
 
 type EmptyRowProps = {
-  solutionLength: number
-  cellSize?: number
-}
+  solutionLength: number;
+  cellSize?: number;
+};
 
 export const EmptyRow = ({ solutionLength, cellSize = 56 }: EmptyRowProps) => {
-  const emptyCells = Array.from(Array(solutionLength))
+  const emptyCells = Array.from(Array(solutionLength));
 
   return (
     <div className="flex justify-center mb-1">
@@ -38,5 +43,5 @@ export const EmptyRow = ({ solutionLength, cellSize = 56 }: EmptyRowProps) => {
         <Cell key={i} cellSize={cellSize} />
       ))}
     </div>
-  )
-}
+  );
+};

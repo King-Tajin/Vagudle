@@ -1,6 +1,18 @@
 import { Fragment, useState, type ReactNode, type CSSProperties } from "react";
 import { Transition } from "@headlessui/react";
-import { X, Crown, Gamepad2, Info, Sparkles, Code2, Send, CheckCircle, AlertCircle, ThumbsUp, ThumbsDown } from "lucide-react";
+import {
+  X,
+  Crown,
+  Gamepad2,
+  Info,
+  Sparkles,
+  Code2,
+  Send,
+  CheckCircle,
+  AlertCircle,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
 
 import { Cell } from "../grid/Cell";
 import GreenBrushIcon from "@/assets/icons/green-brush.svg?react";
@@ -17,13 +29,30 @@ type Tab = "howto" | "features" | "about" | "opensource" | "feedback";
 
 const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
   { id: "howto", label: "HOW TO", icon: <Gamepad2 className="w-3.5 h-3.5" /> },
-  { id: "features", label: "FEATURES", icon: <Sparkles className="w-3.5 h-3.5" /> },
+  {
+    id: "features",
+    label: "FEATURES",
+    icon: <Sparkles className="w-3.5 h-3.5" />,
+  },
   { id: "about", label: "ABOUT", icon: <Info className="w-3.5 h-3.5" /> },
-  { id: "opensource", label: "SOURCE", icon: <Code2 className="w-3.5 h-3.5" /> },
+  {
+    id: "opensource",
+    label: "SOURCE",
+    icon: <Code2 className="w-3.5 h-3.5" />,
+  },
   { id: "feedback", label: "FEEDBACK", icon: <Send className="w-3.5 h-3.5" /> },
 ];
 
-const Badge = ({ color, n }: { color: "green" | "yellow" | "gray"; n: number }) => {
+const EMAIL_MAX = 254;
+const MESSAGE_MAX = 10000;
+
+const Badge = ({
+  color,
+  n,
+}: {
+  color: "green" | "yellow" | "gray";
+  n: number;
+}) => {
   const styles: Record<string, CSSProperties> = {
     green: { background: "#22c55e", borderColor: "#22c55e" },
     yellow: { background: "#eab308", borderColor: "#eab308" },
@@ -47,8 +76,14 @@ const FeedbackTab = () => {
     message: "",
     article: "Vagudle",
   });
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const messageRemaining = MESSAGE_MAX - formData.message.length;
+  const messageNearLimit = messageRemaining <= 500;
+  const messageAtLimit = messageRemaining <= 0;
 
   const handleSubmit = async () => {
     if (!formData.sentiment || !formData.category || !formData.message) {
@@ -87,12 +122,22 @@ const FeedbackTab = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12 text-center">
         <CheckCircle className="w-14 h-14 text-tajin-lime mb-4" />
-        <h2 className="font-pixel text-sm text-crown-gold mb-2 tracking-widest">FEEDBACK RECEIVED!</h2>
-        <p className="font-code text-sm text-gray-400">Thanks for helping improve Vagudle.</p>
+        <h2 className="font-pixel text-sm text-crown-gold mb-2 tracking-widest">
+          FEEDBACK RECEIVED!
+        </h2>
+        <p className="font-code text-sm text-gray-400">
+          Thanks for helping improve Vagudle.
+        </p>
         <button
           onClick={() => {
             setStatus("idle");
-            setFormData({ sentiment: "", category: "", email: "", message: "", article: "Vagudle" });
+            setFormData({
+              sentiment: "",
+              category: "",
+              email: "",
+              message: "",
+              article: "Vagudle",
+            });
           }}
           className="mt-6 font-pixel text-xs text-crown-amber underline tracking-widest"
         >
@@ -113,23 +158,63 @@ const FeedbackTab = () => {
             onClick={() => setFormData({ ...formData, sentiment: "positive" })}
             className="p-3 border-2 transition-all flex flex-col items-center gap-1"
             style={{
-              background: formData.sentiment === "positive" ? "rgba(34,197,94,0.15)" : "transparent",
-              borderColor: formData.sentiment === "positive" ? "#22c55e" : "rgba(255,255,255,0.1)",
+              background:
+                formData.sentiment === "positive"
+                  ? "rgba(34,197,94,0.15)"
+                  : "transparent",
+              borderColor:
+                formData.sentiment === "positive"
+                  ? "#22c55e"
+                  : "rgba(255,255,255,0.1)",
             }}
           >
-            <ThumbsUp className="w-6 h-6" style={{ color: formData.sentiment === "positive" ? "#22c55e" : "#6b7280" }} />
-            <span className="font-code text-xs" style={{ color: formData.sentiment === "positive" ? "#22c55e" : "#9ca3af" }}>Positive</span>
+            <ThumbsUp
+              className="w-6 h-6"
+              style={{
+                color:
+                  formData.sentiment === "positive" ? "#22c55e" : "#6b7280",
+              }}
+            />
+            <span
+              className="font-code text-xs"
+              style={{
+                color:
+                  formData.sentiment === "positive" ? "#22c55e" : "#9ca3af",
+              }}
+            >
+              Positive
+            </span>
           </button>
           <button
             onClick={() => setFormData({ ...formData, sentiment: "negative" })}
             className="p-3 border-2 transition-all flex flex-col items-center gap-1"
             style={{
-              background: formData.sentiment === "negative" ? "rgba(220,50,50,0.15)" : "transparent",
-              borderColor: formData.sentiment === "negative" ? "#dc3232" : "rgba(255,255,255,0.1)",
+              background:
+                formData.sentiment === "negative"
+                  ? "rgba(220,50,50,0.15)"
+                  : "transparent",
+              borderColor:
+                formData.sentiment === "negative"
+                  ? "#dc3232"
+                  : "rgba(255,255,255,0.1)",
             }}
           >
-            <ThumbsDown className="w-6 h-6" style={{ color: formData.sentiment === "negative" ? "#f87171" : "#6b7280" }} />
-            <span className="font-code text-xs" style={{ color: formData.sentiment === "negative" ? "#f87171" : "#9ca3af" }}>Negative</span>
+            <ThumbsDown
+              className="w-6 h-6"
+              style={{
+                color:
+                  formData.sentiment === "negative" ? "#f87171" : "#6b7280",
+              }}
+            />
+            <span
+              className="font-code text-xs"
+              style={{
+                color:
+                  formData.sentiment === "negative" ? "#f87171" : "#9ca3af",
+              }}
+            >
+              Negative
+            </span>
           </button>
         </div>
       </div>
@@ -140,11 +225,15 @@ const FeedbackTab = () => {
         </label>
         <select
           value={formData.category}
-          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, category: e.target.value })
+          }
           className="w-full border-2 font-code text-sm p-2 outline-none transition-colors"
           style={{
             background: "#0a0014",
-            borderColor: formData.category ? "#d4af37" : "rgba(255,255,255,0.1)",
+            borderColor: formData.category
+              ? "#d4af37"
+              : "rgba(255,255,255,0.1)",
             color: formData.category ? "#d1d5db" : "#6b7280",
           }}
         >
@@ -165,6 +254,7 @@ const FeedbackTab = () => {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           onKeyDown={(e) => e.stopPropagation()}
           placeholder="your.email@example.com"
+          maxLength={EMAIL_MAX}
           className="w-full border-2 font-code text-sm p-2 outline-none transition-colors"
           style={{
             background: "#0a0014",
@@ -172,19 +262,38 @@ const FeedbackTab = () => {
             color: "#d1d5db",
           }}
         />
-        <p className="font-code text-xs text-gray-600 mt-1">Only if you want a response</p>
+        <p className="font-code text-xs text-gray-600 mt-1">
+          Only if you want a response
+        </p>
       </div>
 
       <div>
-        <label className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest">
-          YOUR FEEDBACK *
-        </label>
+        <div className="flex justify-between items-baseline mb-2">
+          <label className="font-pixel text-xs text-crown-amber tracking-widest">
+            YOUR FEEDBACK *
+          </label>
+          <span
+            className="font-code text-xs tabular-nums"
+            style={{
+              color: messageAtLimit
+                ? "#f87171"
+                : messageNearLimit
+                ? "#fbbf24"
+                : "#4b5563",
+            }}
+          >
+            {(MESSAGE_MAX - formData.message.length).toLocaleString()} left
+          </span>
+        </div>
         <textarea
           value={formData.message}
-          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, message: e.target.value })
+          }
           onKeyDown={(e) => e.stopPropagation()}
           placeholder="Tell us what's on your mind..."
           rows={5}
+          maxLength={MESSAGE_MAX}
           className="w-full border-2 font-code text-sm p-2 outline-none transition-colors resize-none"
           style={{
             background: "#0a0014",
@@ -209,9 +318,13 @@ const FeedbackTab = () => {
         onClick={handleSubmit}
         className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
         style={{
-          background: status === "submitting" ? "rgba(255,215,0,0.05)" : "rgba(255,215,0,0.12)",
+          background:
+            status === "submitting"
+              ? "rgba(255,215,0,0.05)"
+              : "rgba(255,215,0,0.12)",
           border: "2px solid",
-          borderColor: status === "submitting" ? "rgba(255,215,0,0.2)" : "#d4af37",
+          borderColor:
+            status === "submitting" ? "rgba(255,215,0,0.2)" : "#d4af37",
           color: status === "submitting" ? "#6b7280" : "#d4af37",
           cursor: status === "submitting" ? "not-allowed" : "pointer",
         }}
@@ -261,7 +374,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 background: "#0a0014",
                 borderLeft: "4px solid",
                 borderImageSlice: 1,
-                borderImageSource: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
+                borderImageSource:
+                  "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
               }}
             >
               <div
@@ -283,7 +397,10 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 </button>
               </div>
 
-              <div className="flex shrink-0 border-b-2 border-obsidian-700" style={{ background: "rgba(10,0,20,0.97)" }}>
+              <div
+                className="flex shrink-0 border-b-2 border-obsidian-700"
+                style={{ background: "rgba(10,0,20,0.97)" }}
+              >
                 {TABS.map((tab) => {
                   const active = activeTab === tab.id;
                   return (
@@ -293,13 +410,19 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       className="flex-1 flex flex-col items-center gap-1 py-3 px-1 transition-colors"
                       style={{
                         color: active ? "#d4af37" : "#6b7280",
-                        background: active ? "rgba(255,215,0,0.06)" : "transparent",
-                        borderBottom: active ? "2px solid #d4af37" : "2px solid transparent",
+                        background: active
+                          ? "rgba(255,215,0,0.06)"
+                          : "transparent",
+                        borderBottom: active
+                          ? "2px solid #d4af37"
+                          : "2px solid transparent",
                         marginBottom: "-2px",
                       }}
                     >
                       {tab.icon}
-                      <span className="font-pixel text-[9px] tracking-widest">{tab.label}</span>
+                      <span className="font-pixel text-[9px] tracking-widest">
+                        {tab.label}
+                      </span>
                     </button>
                   );
                 })}
@@ -309,41 +432,71 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 {activeTab === "howto" && (
                   <div className="space-y-3">
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
-                      Type a word and press <span className="text-crown-gold">Enter</span> to submit a guess. You have 6 tries to find the hidden word.
+                      Type a word and press{" "}
+                      <span className="text-crown-gold">Enter</span> to submit a
+                      guess. You have 6 tries to find the hidden word.
                     </p>
 
                     <div className="border-t border-obsidian-700" />
 
-                    <p className="font-pixel text-xs text-crown-amber tracking-widest">PAINT THE RESULT</p>
+                    <p className="font-pixel text-xs text-crown-amber tracking-widest">
+                      PAINT THE RESULT
+                    </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
-                      Cells don't color automatically. Select a brush, then click or drag cells to mark what the game told you.
+                      Cells don't color automatically. Select a brush, then
+                      click or drag cells to mark what the game told you.
                     </p>
 
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
                         <GreenBrushIcon className="w-8 h-8 shrink-0" />
-                        <Cell isCompleted={true} value="A" status="correct" cellSize={32} />
-                        <span className="font-code text-xs text-gray-400">Right letter, right spot</span>
+                        <Cell
+                          isCompleted={true}
+                          value="A"
+                          status="correct"
+                          cellSize={32}
+                        />
+                        <span className="font-code text-xs text-gray-400">
+                          Right letter, right spot
+                        </span>
                       </div>
                       <div className="flex items-center gap-3">
                         <YellowBrushIcon className="w-8 h-8 shrink-0" />
-                        <Cell isCompleted={true} value="B" status="present" cellSize={32} />
-                        <span className="font-code text-xs text-gray-400">Right letter, wrong spot</span>
+                        <Cell
+                          isCompleted={true}
+                          value="B"
+                          status="present"
+                          cellSize={32}
+                        />
+                        <span className="font-code text-xs text-gray-400">
+                          Right letter, wrong spot
+                        </span>
                       </div>
                       <div className="flex items-center gap-3">
                         <GrayBrushIcon className="w-8 h-8 shrink-0" />
-                        <Cell isCompleted={true} value="C" status="absent" cellSize={32} />
-                        <span className="font-code text-xs text-gray-400">Letter not in the word</span>
+                        <Cell
+                          isCompleted={true}
+                          value="C"
+                          status="absent"
+                          cellSize={32}
+                        />
+                        <span className="font-code text-xs text-gray-400">
+                          Letter not in the word
+                        </span>
                       </div>
                     </div>
 
                     <div className="border-t border-obsidian-700" />
 
-                    <p className="font-pixel text-xs text-crown-amber tracking-widest">ROW TOOLS</p>
+                    <p className="font-pixel text-xs text-crown-amber tracking-widest">
+                      ROW TOOLS
+                    </p>
 
                     <div className="flex items-center gap-3">
                       <RecycleIcon className="w-8 h-8 shrink-0 text-gray-400" />
-                      <span className="font-code text-xs text-gray-400">Clears that row's painted colors</span>
+                      <span className="font-code text-xs text-gray-400">
+                        Clears that row's painted colors
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -352,14 +505,19 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                         <Badge color="yellow" n={1} />
                         <Badge color="gray" n={2} />
                       </div>
-                      <span className="font-code text-xs text-gray-400">Count of correct, present, and absent letters per row</span>
+                      <span className="font-code text-xs text-gray-400">
+                        Count of correct, present, and absent letters per row
+                      </span>
                     </div>
 
                     <div className="border-t border-obsidian-700" />
 
-                    <p className="font-pixel text-xs text-crown-amber tracking-widest">KEYBOARD</p>
+                    <p className="font-pixel text-xs text-crown-amber tracking-widest">
+                      KEYBOARD
+                    </p>
                     <p className="font-code text-xs text-gray-400">
-                      Key colors update as you paint — confirmed, present, and eliminated letters are always visible at a glance.
+                      Key colors update as you paint — confirmed, present, and
+                      eliminated letters are always visible at a glance.
                     </p>
                   </div>
                 )}
@@ -367,19 +525,41 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 {activeTab === "features" && (
                   <ul className="space-y-4">
                     {[
-                      ["Variable word length", "Play with 5, 6, or 7-letter words via Settings."],
-                      ["Hard mode", "Previously revealed hints must be used in subsequent guesses."],
-                      ["Cell painting", "Select a brush and click or drag across cells to color them."],
-                      ["Auto-Gray", "Automatically grays out letters from fully-gray rows."],
-                      ["Auto-Green", "Locks correct letters across all rows automatically."],
-                      ["Gray count", "Shows how many absent letters are in a row."],
+                      [
+                        "Variable word length",
+                        "Play with 5, 6, or 7-letter words via Settings.",
+                      ],
+                      [
+                        "Hard mode",
+                        "Previously revealed hints must be used in subsequent guesses.",
+                      ],
+                      [
+                        "Cell painting",
+                        "Select a brush and click or drag across cells to color them.",
+                      ],
+                      [
+                        "Auto-Gray",
+                        "Automatically grays out letters from fully-gray rows.",
+                      ],
+                      [
+                        "Auto-Green",
+                        "Locks correct letters across all rows automatically.",
+                      ],
+                      [
+                        "Gray count",
+                        "Shows how many absent letters are in a row.",
+                      ],
                     ].map(([feature, desc]) => (
                       <li
                         key={feature}
                         className="flex flex-col gap-1 pb-4 border-b border-obsidian-700 last:border-0 last:pb-0"
                       >
-                        <span className="font-pixel text-xs text-crown-gold tracking-wide">{feature}</span>
-                        <span className="font-code text-sm text-gray-400">{desc}</span>
+                        <span className="font-pixel text-xs text-crown-gold tracking-wide">
+                          {feature}
+                        </span>
+                        <span className="font-code text-sm text-gray-400">
+                          {desc}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -397,7 +577,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       >
                         Hardle
                       </a>
-                      , with extra tools to help you track and solve the puzzle your way.
+                      , with extra tools to help you track and solve the puzzle
+                      your way.
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Built and maintained by{" "}
@@ -424,8 +605,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         Vagudle
-                      </a>
-                      {" "}is open source and based on{" "}
+                      </a>{" "}
+                      is open source and based on{" "}
                       <a
                         href="https://github.com/markzither/react-wordle"
                         target="_blank"

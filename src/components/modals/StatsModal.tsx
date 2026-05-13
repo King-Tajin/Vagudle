@@ -49,7 +49,9 @@ export const StatsModal = ({
 
   const displayStats = activeTab === "hard" ? hardGameStats : gameStats;
   const tabMaxChallenges =
-    activeTab === "hard" ? HARD_MODE_MAX_CHALLENGES : NORMAL_MODE_MAX_CHALLENGES;
+    activeTab === "hard"
+      ? HARD_MODE_MAX_CHALLENGES
+      : NORMAL_MODE_MAX_CHALLENGES;
   const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
   const hasGames = displayStats.totalGames > 0;
 
@@ -133,7 +135,13 @@ export const StatsModal = ({
             onMouseLeave={(e) => {
               e.currentTarget.style.filter = "brightness(1)";
             }}
-            onClick={() => shareStats(displayStats, activeTab === "hard", handleShareToClipboard)}
+            onClick={() =>
+              shareStats(
+                displayStats,
+                activeTab === "hard",
+                handleShareToClipboard
+              )
+            }
           >
             <Share2 className="w-3 h-3" />
             SHARE STATS
@@ -178,7 +186,14 @@ export const StatsModal = ({
               e.currentTarget.style.filter = "brightness(1)";
             }}
             onClick={() =>
-              shareStatus(solution, guesses, isGameLost, handleShareToClipboard, hardMode, tabMaxChallenges)
+              shareStatus(
+                solution,
+                guesses,
+                isGameLost,
+                handleShareToClipboard,
+                hardMode,
+                tabMaxChallenges
+              )
             }
           >
             <Share2 className="w-3.5 h-3.5" />
@@ -188,4 +203,4 @@ export const StatsModal = ({
       )}
     </BaseModal>
   );
-}; 
+};
