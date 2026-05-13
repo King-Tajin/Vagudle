@@ -44,7 +44,7 @@ const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
 ];
 
 const EMAIL_MAX = 254;
-const MESSAGE_MAX = 10000;
+const MESSAGE_MAX = 15000;
 
 const Badge = ({
   color,
@@ -282,7 +282,7 @@ const FeedbackTab = () => {
                 : "#4b5563",
             }}
           >
-            {(MESSAGE_MAX - formData.message.length).toLocaleString()} left
+            {(MESSAGE_MAX - formData.message.length).toLocaleString()} characters left
           </span>
         </div>
         <textarea

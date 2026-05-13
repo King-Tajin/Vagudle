@@ -7,7 +7,7 @@ const CORS_HEADERS = {
 };
 
 const EMAIL_MAX = 254;
-const MESSAGE_MAX = 10000;
+const MESSAGE_MAX = 15000;
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
