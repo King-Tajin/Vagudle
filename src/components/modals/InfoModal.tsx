@@ -444,7 +444,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Cells don't color automatically. Select a brush, then
-                      click or drag cells to mark what the game told you.
+                      click or drag cells to mark what you can figure out with
+                      the limited clues you have.
                     </p>
 
                     <div className="space-y-2">
@@ -577,8 +578,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       >
                         Hardle
                       </a>
-                      , with extra tools to help you track and solve the puzzle
-                      your way.
+                      , with extra tools to help you solve the puzzle and no pesky
+                      daily limit to get in your way.
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Built and maintained by{" "}
