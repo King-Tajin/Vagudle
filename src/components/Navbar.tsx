@@ -15,6 +15,7 @@ type Props = {
   setIsSettingsModalOpen: (value: boolean) => void;
   handleNewGame: () => void;
   hasActiveGame: boolean;
+  isChallengeMode?: boolean;
 };
 
 export const Navbar = ({
@@ -23,11 +24,12 @@ export const Navbar = ({
   setIsSettingsModalOpen,
   handleNewGame,
   hasActiveGame,
+  isChallengeMode = false,
 }: Props) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onNewGameClick = () => {
-    if (hasActiveGame) {
+    if (hasActiveGame || (isChallengeMode && hasActiveGame)) {
       setShowConfirm(true);
     } else {
       handleNewGame();
@@ -79,12 +81,12 @@ export const Navbar = ({
 
             <div className="right-icons">
               <motion.button
-                title="New Game"
+                title={isChallengeMode ? "Leave Challenge" : "New Game"}
                 onClick={onNewGameClick}
                 className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95, rotate: 180 }}
-                aria-label="New Game"
+                aria-label={isChallengeMode ? "Leave Challenge" : "New Game"}
               >
                 <RefreshIcon className="h-6 w-6 text-crown-gold" />
               </motion.button>
@@ -127,12 +129,26 @@ export const Navbar = ({
               border: "2px solid rgba(255,215,0,0.4)",
             }}
           >
-            <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-              ABANDON GAME?
-            </p>
-            <p className="font-code text-sm text-gray-300 mb-5">
-              This will count as a loss and reset your current streak.
-            </p>
+            {isChallengeMode ? (
+              <>
+                <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+                  LEAVE CHALLENGE?
+                </p>
+                <p className="font-code text-sm text-gray-300 mb-5">
+                  Your progress for this challenge is saved. You can return to
+                  this link any time.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+                  ABANDON GAME?
+                </p>
+                <p className="font-code text-sm text-gray-300 mb-5">
+                  This will count as a loss and reset your current streak.
+                </p>
+              </>
+            )}
             <div className="flex gap-3">
               <button
                 onClick={onConfirm}
@@ -143,7 +159,7 @@ export const Navbar = ({
                   color: "#f87171",
                 }}
               >
-                ABANDON
+                {isChallengeMode ? "LEAVE" : "ABANDON"}
               </button>
               <button
                 onClick={() => setShowConfirm(false)}

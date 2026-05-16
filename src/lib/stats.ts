@@ -8,8 +8,7 @@ import {
 export const addStatsForCompletedGame = (
   gameStats: GameStats,
   count: number,
-  maxChallenges: number,
-  hardMode: boolean
+  maxChallenges: number
 ) => {
   const stats = { ...gameStats };
 
@@ -29,7 +28,6 @@ export const addStatsForCompletedGame = (
 
   stats.successRate = getSuccessRate(stats);
 
-  saveStatsToLocalStorage(stats, hardMode);
   return stats;
 };
 
@@ -66,3 +64,5 @@ const getSuccessRate = (gameStats: GameStats) => {
     (100 * (totalGames - gamesFailed)) / Math.max(totalGames, 1)
   );
 };
+
+export { saveStatsToLocalStorage };

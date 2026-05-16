@@ -5,6 +5,7 @@ type StoredGameState = {
   solution: string;
   cellColors: { [key: string]: string };
   autoGrayLetters?: string[];
+  hardMode?: boolean;
 };
 
 export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {

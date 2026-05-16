@@ -29,10 +29,12 @@ const doShare = async (
       return;
     }
   } catch {
-    // fall through to clipboard
   }
-  await navigator.clipboard.writeText(textToShare);
-  handleShareToClipboard();
+  try {
+    await navigator.clipboard.writeText(textToShare);
+    handleShareToClipboard();
+  } catch {
+  }
 };
 
 export const shareStatus = async (
@@ -41,17 +43,21 @@ export const shareStatus = async (
   lost: boolean,
   handleShareToClipboard: () => void,
   hardMode: boolean,
-  maxChallenges: number
+  maxChallenges: number,
+  challengeMode: boolean = false
 ) => {
   const score = lost ? "X" : guesses.length;
   const modeTag = hardMode ? " [HARD]" : "";
-  const header = `${GAME_TITLE}${modeTag} — ${solution} — ${score}/${maxChallenges} (${solution.length} letters)`;
+  const wordPart = challengeMode ? `${solution.length} letters` : solution;
+  const header = challengeMode
+    ? `${GAME_TITLE} [CHALLENGE] — ${score}/${maxChallenges} (${wordPart})`
+    : `${GAME_TITLE}${modeTag} — ${solution} — ${score}/${maxChallenges} (${solution.length} letters)`;
   const textToShare =
     `${header}\n${window.location.href}\n` +
     generateEmojiGrid(solution, guesses, EMOJI_TILES);
 
   await doShare(
-    { title: `${GAME_TITLE} — ${solution}`, text: textToShare },
+    { title: challengeMode ? `${GAME_TITLE} Challenge` : `${GAME_TITLE} — ${solution}`, text: textToShare },
     textToShare,
     handleShareToClipboard
   );

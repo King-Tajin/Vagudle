@@ -1,4 +1,5 @@
 let SCRABBLE_SET: Set<string> | null = null;
+let SCRABBLE_ARR: string[] = [];
 let NORMAL_WORDS_ARR: string[] = [];
 let HARD_WORDS_ARR: string[] = [];
 let NORMAL_SET: Set<string> | null = null;
@@ -11,6 +12,7 @@ export const initWordLists = async () => {
       import("../constants/normalWords"),
       import("../constants/hardWords"),
     ]);
+  SCRABBLE_ARR = VALID_GUESSES;
   SCRABBLE_SET = new Set(VALID_GUESSES.map((w) => w.toLowerCase()));
   NORMAL_WORDS_ARR = NORMAL_WORDS;
   HARD_WORDS_ARR = HARD_WORDS;
@@ -18,9 +20,17 @@ export const initWordLists = async () => {
   HARD_SET = new Set(HARD_WORDS.map((w) => w.toLowerCase()));
 };
 
-export const isWordInWordList = (word: string, hardMode: boolean) => {
+export const isWordInWordList = (
+  word: string,
+  hardMode: boolean,
+  challengeMode: boolean = false
+) => {
   if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return true;
   const lower = word.toLowerCase();
+  if (challengeMode)
+    return (
+      SCRABBLE_SET.has(lower) || NORMAL_SET.has(lower) || HARD_SET.has(lower)
+    );
   const solutionSet = hardMode ? HARD_SET : NORMAL_SET;
   return SCRABBLE_SET.has(lower) || solutionSet.has(lower);
 };
@@ -48,10 +58,26 @@ export const localeAwareUpperCase = (text: string) => {
 export const getRandomWord = (
   length: number = 5,
   hardMode: boolean = false
-) => {
+): string => {
   const pool = (hardMode ? HARD_WORDS_ARR : NORMAL_WORDS_ARR).filter(
     (w) => w.length === length
   );
-  const index = Math.floor(Math.random() * pool.length);
-  return localeAwareUpperCase(pool[index] ?? "");
+  if (pool.length === 0) {
+    const fallback = hardMode ? HARD_WORDS_ARR : NORMAL_WORDS_ARR;
+    return localeAwareUpperCase(
+      fallback[Math.floor(Math.random() * fallback.length)] ?? ""
+    );
+  }
+  return localeAwareUpperCase(pool[Math.floor(Math.random() * pool.length)]);
+};
+
+export const isWordInDict = (
+  word: string,
+  dict: "normal" | "hard" | "full"
+): boolean => {
+  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return true;
+  const lower = word.toLowerCase();
+  if (dict === "full") return SCRABBLE_SET.has(lower);
+  if (dict === "hard") return HARD_SET.has(lower);
+  return NORMAL_SET.has(lower);
 };
