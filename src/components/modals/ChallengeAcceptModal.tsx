@@ -112,8 +112,7 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
               </div>
 
               <p className="font-code text-xs text-gray-500 leading-snug">
-                Your progress is saved to this link. Revisit any time to see
-                your board.
+                Your progress is saved to this link. Revisit any time to resume.
               </p>
               <p
                 className="font-code text-xs leading-snug"
