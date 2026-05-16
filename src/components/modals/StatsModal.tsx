@@ -165,7 +165,7 @@ export const StatsModal = ({
               onClick={handleReturnToNormal}
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              VAGUDLE
+              LEAVE
             </button>
           )}
 
