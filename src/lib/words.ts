@@ -25,7 +25,7 @@ export const isWordInWordList = (
   hardMode: boolean,
   challengeMode: boolean = false
 ) => {
-  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return true;
+  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return false;
   const lower = word.toLowerCase();
   if (challengeMode)
     return (
@@ -75,7 +75,7 @@ export const isWordInDict = (
   word: string,
   dict: "normal" | "hard" | "full"
 ): boolean => {
-  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return true;
+  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return false;
   const lower = word.toLowerCase();
   if (dict === "full") return SCRABBLE_SET.has(lower);
   if (dict === "hard") return HARD_SET.has(lower);

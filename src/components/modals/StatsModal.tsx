@@ -61,6 +61,9 @@ export const StatsModal = ({
     activeTab === "hard"
       ? HARD_MODE_MAX_CHALLENGES
       : NORMAL_MODE_MAX_CHALLENGES;
+  const gameMaxChallenges = hardMode
+    ? HARD_MODE_MAX_CHALLENGES
+    : NORMAL_MODE_MAX_CHALLENGES;
   const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
   const hasGames = displayStats.totalGames > 0;
 
@@ -327,7 +330,7 @@ export const StatsModal = ({
                 isGameLost,
                 handleShareToClipboard,
                 hardMode,
-                tabMaxChallenges
+                gameMaxChallenges
               )
             }
           >

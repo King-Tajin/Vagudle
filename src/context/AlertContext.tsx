@@ -3,6 +3,7 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useRef,
   useState,
 } from "react";
 import { ALERT_TIME_MS } from "../constants/settings";
@@ -46,6 +47,9 @@ export const AlertProvider = ({ children }: Props) => {
   const [message, setMessage] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const durationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const show = useCallback(
     (showStatus: AlertStatus, newMessage: string, options?: ShowOptions) => {
       const {
@@ -55,13 +59,16 @@ export const AlertProvider = ({ children }: Props) => {
         durationMs = ALERT_TIME_MS,
       } = options || {};
 
-      setTimeout(() => {
+      if (delayTimerRef.current) clearTimeout(delayTimerRef.current);
+      if (durationTimerRef.current) clearTimeout(durationTimerRef.current);
+
+      delayTimerRef.current = setTimeout(() => {
         setStatus(showStatus);
         setMessage(newMessage);
         setIsVisible(true);
 
         if (!persist) {
-          setTimeout(() => {
+          durationTimerRef.current = setTimeout(() => {
             setIsVisible(false);
             if (onClose) {
               onClose();

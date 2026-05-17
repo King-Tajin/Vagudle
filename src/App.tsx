@@ -121,14 +121,15 @@ function App() {
   const [hardStats, setHardStats] = useState(() => loadStats(true));
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const restoredGameRef = useRef(false);
 
   const isChallengeMode = challengeConfig !== null;
 
   const maxChallenges = challengeConfig
     ? challengeConfig.guesses
     : hardMode
-    ? HARD_MODE_MAX_CHALLENGES
-    : NORMAL_MODE_MAX_CHALLENGES;
+      ? HARD_MODE_MAX_CHALLENGES
+      : NORMAL_MODE_MAX_CHALLENGES;
 
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
 
@@ -190,8 +191,8 @@ function App() {
             (g) => g.toUpperCase() === wordUpper
           );
           const lost = !won && savedChallenge.guesses.length >= config.guesses;
-          if (won) setIsGameWon(true);
-          else if (lost) setIsGameLost(true);
+          if (won) { restoredGameRef.current = true; setIsGameWon(true); }
+          else if (lost) { restoredGameRef.current = true; setIsGameLost(true); }
           alreadyFinished = won || lost;
         }
         setIsChallengeModalOpen(!alreadyFinished);
@@ -214,8 +215,10 @@ function App() {
         setSolution(savedState.solution);
         setGuesses(savedState.guesses);
         if (gameWasWon) {
+          restoredGameRef.current = true;
           setIsGameWon(true);
         } else if (savedState.guesses.length >= savedMaxChallenges) {
+          restoredGameRef.current = true;
           setIsGameLost(true);
           showErrorAlert(CORRECT_WORD_MESSAGE(savedState.solution), {
             persist: true,
@@ -236,11 +239,11 @@ function App() {
 
   useEffect(() => {
     DISCOURAGE_INAPP_BROWSERS &&
-      isInAppBrowser() &&
-      showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
-        persist: false,
-        durationMs: 7000,
-      });
+    isInAppBrowser() &&
+    showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
+      persist: false,
+      durationMs: 7000,
+    });
   }, [showErrorAlert]);
 
   useEffect(() => {
@@ -470,6 +473,10 @@ function App() {
 
   useEffect(() => {
     if (isGameWon) {
+      if (restoredGameRef.current) {
+        restoredGameRef.current = false;
+        return;
+      }
       const pool = isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
       const winMessage = pool[Math.floor(Math.random() * pool.length)];
       const delayMs = REVEAL_TIME_MS * solution.length;
@@ -479,12 +486,16 @@ function App() {
       });
     }
     if (isGameLost) {
+      if (restoredGameRef.current) {
+        restoredGameRef.current = false;
+        return;
+      }
       setTimeout(
         () => setIsStatsModalOpen(true),
         (solution.length + 1) * REVEAL_TIME_MS
       );
     }
-  }, [isGameWon, isGameLost, showSuccessAlert]);
+  }, [isGameWon, isGameLost, showSuccessAlert, solution, isChallengeMode]);
 
   const onChar = (value: string) => {
     if (

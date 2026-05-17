@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Copy,
   Check,
@@ -122,6 +122,7 @@ export const ChallengeCreatorTab = () => {
     const next = e.target.value as ChallengeDict;
     setDict(next);
     setGenerated(null);
+    setGenerateStatus("idle");
     setCopied(false);
     setShared(false);
     if (cleanInput.length > 0) validateWord(cleanInput, next);

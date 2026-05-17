@@ -434,7 +434,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Type a word and press{" "}
                       <span className="text-crown-gold">Enter</span> to submit a
-                      guess. You have 6 tries to find the hidden word.
+                      guess. You have 11 tries to find the hidden word.
                     </p>
 
                     <div className="border-t border-obsidian-700" />
@@ -528,7 +528,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                     {[
                       [
                         "Variable word length",
-                        "Play with 5, 6, or 7-letter words via Settings.",
+                        "Play with anywhere between 4 and 7-letter words via Settings.",
                       ],
                       [
                         "Hard mode",

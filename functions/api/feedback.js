@@ -60,6 +60,8 @@ export async function onRequestPost(context) {
       .toString(36)
       .slice(2, 11)}`;
 
+    const submittedAt = new Date().toISOString();
+
     const feedbackRecord = {
       id: feedbackId,
       sentiment: feedbackData.sentiment,
@@ -68,7 +70,7 @@ export async function onRequestPost(context) {
       categoryId: feedbackData.categoryId || "",
       email: feedbackData.email || "",
       message: feedbackData.message,
-      submittedAt: feedbackData.timestamp || new Date().toISOString(),
+      submittedAt,
       userAgent: context.request.headers.get("User-Agent") || "unknown",
       ip: context.request.headers.get("CF-Connecting-IP") || "unknown",
       completed: false,

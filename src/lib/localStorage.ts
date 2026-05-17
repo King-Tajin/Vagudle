@@ -12,9 +12,14 @@ export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
   localStorage.setItem(gameStateKey, JSON.stringify(gameState));
 };
 
-export const loadGameStateFromLocalStorage = () => {
-  const state = localStorage.getItem(gameStateKey);
-  return state ? (JSON.parse(state) as StoredGameState) : null;
+export const loadGameStateFromLocalStorage = (): StoredGameState | null => {
+  try {
+    const state = localStorage.getItem(gameStateKey);
+    return state ? (JSON.parse(state) as StoredGameState) : null;
+  } catch {
+    localStorage.removeItem(gameStateKey);
+    return null;
+  }
 };
 
 const settingsKey = "settings";
@@ -27,21 +32,26 @@ type StoredSettings = {
   autoGreen: boolean;
 };
 
+const defaultSettings: StoredSettings = {
+  wordLength: 5,
+  showGrayCount: false,
+  hardMode: false,
+  autoGray: false,
+  autoGreen: false,
+};
+
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {
   localStorage.setItem(settingsKey, JSON.stringify(settings));
 };
 
 export const loadSettingsFromLocalStorage = (): StoredSettings => {
-  const stored = localStorage.getItem(settingsKey);
-  return stored
-    ? (JSON.parse(stored) as StoredSettings)
-    : {
-        wordLength: 5,
-        showGrayCount: false,
-        hardMode: false,
-        autoGray: false,
-        autoGreen: false,
-      };
+  try {
+    const stored = localStorage.getItem(settingsKey);
+    return stored ? (JSON.parse(stored) as StoredSettings) : defaultSettings;
+  } catch {
+    localStorage.removeItem(settingsKey);
+    return defaultSettings;
+  }
 };
 
 const normalStatKey = "gameStats";
@@ -66,7 +76,14 @@ export const saveStatsToLocalStorage = (
   );
 };
 
-export const loadStatsFromLocalStorage = (hardMode: boolean) => {
-  const stats = localStorage.getItem(hardMode ? hardStatKey : normalStatKey);
-  return stats ? (JSON.parse(stats) as GameStats) : null;
+export const loadStatsFromLocalStorage = (
+  hardMode: boolean
+): GameStats | null => {
+  try {
+    const stats = localStorage.getItem(hardMode ? hardStatKey : normalStatKey);
+    return stats ? (JSON.parse(stats) as GameStats) : null;
+  } catch {
+    localStorage.removeItem(hardMode ? hardStatKey : normalStatKey);
+    return null;
+  }
 };

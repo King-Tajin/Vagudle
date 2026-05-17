@@ -1,4 +1,7 @@
-import { MAX_CHALLENGES } from "../constants/settings";
+import {
+  HARD_MODE_MAX_CHALLENGES,
+  NORMAL_MODE_MAX_CHALLENGES,
+} from "../constants/settings";
 import {
   GameStats,
   loadStatsFromLocalStorage,
@@ -31,27 +34,25 @@ export const addStatsForCompletedGame = (
   return stats;
 };
 
-const defaultStats: GameStats = {
-  winDistribution: Array.from(new Array(MAX_CHALLENGES), () => 0),
-  gamesFailed: 0,
-  currentStreak: 0,
-  bestStreak: 0,
-  totalGames: 0,
-  successRate: 0,
-};
-
 export const loadStats = (hardMode: boolean) => {
+  const maxChallenges = hardMode
+    ? HARD_MODE_MAX_CHALLENGES
+    : NORMAL_MODE_MAX_CHALLENGES;
   const stored = loadStatsFromLocalStorage(hardMode);
   if (!stored) {
     return {
-      ...defaultStats,
-      winDistribution: Array.from(new Array(MAX_CHALLENGES), () => 0),
+      winDistribution: Array.from(new Array(maxChallenges), () => 0),
+      gamesFailed: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      totalGames: 0,
+      successRate: 0,
     };
   }
-  if (stored.winDistribution.length < MAX_CHALLENGES) {
+  if (stored.winDistribution.length < maxChallenges) {
     stored.winDistribution = [
       ...stored.winDistribution,
-      ...Array(MAX_CHALLENGES - stored.winDistribution.length).fill(0),
+      ...Array(maxChallenges - stored.winDistribution.length).fill(0),
     ];
   }
   return stored;

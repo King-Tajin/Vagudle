@@ -29,7 +29,7 @@ export const Navbar = ({
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onNewGameClick = () => {
-    if (hasActiveGame || (isChallengeMode && hasActiveGame)) {
+    if (hasActiveGame) {
       setShowConfirm(true);
     } else {
       handleNewGame();
