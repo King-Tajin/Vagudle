@@ -18,16 +18,17 @@ The keyboard updates as you paint, so confirmed, present, and eliminated letters
 
 ## Features
 
-| Feature | Description |
-|---|---|
-| **Variable word length** | Play with 4, 5, 6, or 7-letter words via Settings |
-| **Hard mode** | Two fewer guesses and words are older or less common English words |
-| **Unlimited games** | No daily limit — play as many games as you want |
-| **Cell painting** | Full manual control over coloring each cell |
-| **Auto-Gray** | Optionally auto-grays letters from fully-gray rows |
-| **Auto-Green** | Optionally locks correct letters across all rows automatically |
-| **Row badges** | Live count of green, yellow, and gray tiles per row |
-| **Game sharing** | Share individual games or your full stats |
+| Feature                  | Description                                                        |
+|--------------------------|--------------------------------------------------------------------|
+| **Variable word length** | Play with 4, 5, 6, or 7-letter words via Settings                  |
+| **Hard mode**            | Two fewer guesses and words are older or less common English words |
+| **Unlimited games**      | No daily limit — play as many games as you want                    |
+| **Cell painting**        | Full manual control over coloring each cell                        |
+| **Auto-Gray**            | Optionally auto-grays letters from fully-gray rows                 |
+| **Auto-Green**           | Optionally locks correct letters across all rows automatically     |
+| **Row badges**           | Live count of green, yellow, and gray tiles per row                |
+| **Game sharing**         | Share individual games or your full stats                          |
+| **Challenges**           | Create a custom word challenge and share a link for others to play |
 
 ## Running Locally
 
@@ -42,6 +43,22 @@ To expose to your local network:
 
 ```bash
 npm run start -- --host
+```
+
+### Challenge Links (optional)
+
+Challenge links run through a Cloudflare Pages Function that requires [Wrangler](https://developers.cloudflare.com/workers/wrangler) to work locally. Without it, the rest of the game works normally but challenge links will fail.
+
+```bash
+npm install -g wrangler
+```
+
+Copy `.dev.vars.example` to `.dev.vars`. It contains a placeholder `CHALLENGE_KEY` that you can replace with any non-empty string of your choosing.
+
+Then instead of `npm run start`, run:
+
+```bash
+npx wrangler pages dev -- npm run start
 ```
 
 ## Built With

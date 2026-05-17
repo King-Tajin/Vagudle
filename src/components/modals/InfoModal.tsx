@@ -12,6 +12,7 @@ import {
   AlertCircle,
   ThumbsUp,
   ThumbsDown,
+  Swords,
 } from "lucide-react";
 
 import { Cell } from "../grid/Cell";
@@ -25,7 +26,7 @@ type Props = {
   handleClose: () => void;
 };
 
-type Tab = "howto" | "features" | "about" | "opensource" | "feedback";
+type Tab = "howto" | "features" | "challenges" | "about" | "opensource" | "feedback";
 
 const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
   { id: "howto", label: "HOW TO", icon: <Gamepad2 className="w-3.5 h-3.5" /> },
@@ -33,6 +34,11 @@ const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
     id: "features",
     label: "FEATURES",
     icon: <Sparkles className="w-3.5 h-3.5" />,
+  },
+  {
+    id: "challenges",
+    label: "CHALLENGES",
+    icon: <Swords className="w-3.5 h-3.5" />,
   },
   { id: "about", label: "ABOUT", icon: <Info className="w-3.5 h-3.5" /> },
   {
@@ -47,9 +53,9 @@ const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
 
 const Badge = ({
-  color,
-  n,
-}: {
+                 color,
+                 n,
+               }: {
   color: "green" | "yellow" | "gray";
   n: number;
 }) => {
@@ -278,8 +284,8 @@ const FeedbackTab = () => {
               color: messageAtLimit
                 ? "#f87171"
                 : messageNearLimit
-                ? "#fbbf24"
-                : "#4b5563",
+                  ? "#fbbf24"
+                  : "#4b5563",
             }}
           >
             {(MESSAGE_MAX - formData.message.length).toLocaleString()} characters left
@@ -566,6 +572,46 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                   </ul>
                 )}
 
+                {activeTab === "challenges" && (
+                  <div className="space-y-4">
+                    <p className="font-pixel text-xs text-crown-amber tracking-widest">
+                      IN THE GAME
+                    </p>
+                    <p className="font-code text-sm text-gray-400 leading-relaxed">
+                      Open <span className="text-crown-gold">Settings</span> and go to the{" "}
+                      <span className="text-crown-gold">Challenge</span> tab. Pick a
+                      dictionary, choose how many guesses to allow, type your secret word,
+                      and hit Generate Link. Share the link — whoever opens it plays your
+                      custom word with exactly the settings you chose.
+                    </p>
+                    <p className="font-code text-sm text-gray-400 leading-relaxed">
+                      Results never count toward the recipient's stats, and their progress
+                      is saved to the link so they can come back to it any time.
+                    </p>
+
+                    <div className="border-t border-obsidian-700" />
+
+                    <p className="font-pixel text-xs text-crown-amber tracking-widest">
+                      VIA DISCORD
+                    </p>
+                    <p className="font-code text-sm text-gray-400 leading-relaxed">
+                      In the{" "}
+                      <a
+                        href="https://discord.gg/sU2XRxK8EB"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-crown-gold underline hover:text-crown-amber transition-colors"
+                      >
+                        King-Tajin Discord server
+                      </a>
+                      , use the{" "}
+                      <span className="text-crown-gold">/vagudle_challenge</span> slash
+                      command to generate a challenge link directly from Discord — no need
+                      to open the game first.
+                    </p>
+                  </div>
+                )}
+
                 {activeTab === "about" && (
                   <div className="space-y-4">
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
@@ -590,6 +636,18 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         King-Tajin
+                      </a>
+                      .
+                    </p>
+                    <p className="font-code text-sm text-gray-400 leading-relaxed">
+                      Join the community on{" "}
+                      <a
+                        href="https://discord.gg/sU2XRxK8EB"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-crown-gold underline hover:text-crown-amber transition-colors"
+                      >
+                        Discord
                       </a>
                       .
                     </p>
