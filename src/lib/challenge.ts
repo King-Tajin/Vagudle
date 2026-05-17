@@ -12,6 +12,46 @@ export type ChallengeGameState = {
   guesses: string[];
   cellColors: { [key: string]: string };
   autoGrayLetters: string[];
+  savedAt?: number;
+};
+
+const TWO_YEARS_MS = 2 * 365 * 24 * 60 * 60 * 1000;
+const MAX_CHALLENGE_ENTRIES = 2750;
+
+export const pruneOldChallengeStates = (): void => {
+  const now = Date.now();
+  const surviving: { key: string; savedAt: number }[] = [];
+
+  const allKeys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith("chal_")) allKeys.push(key);
+  }
+
+  for (const key of allKeys) {
+    try {
+      const stored = localStorage.getItem(key);
+      if (!stored) {
+        localStorage.removeItem(key);
+        continue;
+      }
+      const parsed = JSON.parse(stored) as ChallengeGameState;
+      if (!parsed.savedAt || now - parsed.savedAt > TWO_YEARS_MS) {
+        localStorage.removeItem(key);
+      } else {
+        surviving.push({ key, savedAt: parsed.savedAt });
+      }
+    } catch {
+      localStorage.removeItem(key);
+    }
+  }
+
+  if (surviving.length > MAX_CHALLENGE_ENTRIES) {
+    surviving
+      .sort((a, b) => a.savedAt - b.savedAt)
+      .slice(0, surviving.length - MAX_CHALLENGE_ENTRIES)
+      .forEach(({ key }) => localStorage.removeItem(key));
+  }
 };
 
 export const encodeChallenge = async (
@@ -66,7 +106,10 @@ export const saveChallengeState = (
   state: ChallengeGameState
 ): void => {
   try {
-    localStorage.setItem(challengeStateKey(id), JSON.stringify(state));
+    localStorage.setItem(
+      challengeStateKey(id),
+      JSON.stringify({ ...state, savedAt: Date.now() })
+    );
   } catch {}
 };
 

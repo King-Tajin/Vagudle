@@ -51,6 +51,7 @@ import {
   decodeChallenge,
   loadChallengeState,
   saveChallengeState,
+  pruneOldChallengeStates,
   DICT_LABELS,
   type ChallengeConfig,
 } from "./lib/challenge";
@@ -160,6 +161,7 @@ function App() {
 
   useEffect(() => {
     const run = async () => {
+      pruneOldChallengeStates();
       const loadStart = Date.now();
       const savedSettings = loadSettingsFromLocalStorage();
       const savedState = loadGameStateFromLocalStorage();
