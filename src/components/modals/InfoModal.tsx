@@ -26,7 +26,13 @@ type Props = {
   handleClose: () => void;
 };
 
-type Tab = "howto" | "features" | "challenges" | "about" | "opensource" | "feedback";
+type Tab =
+  | "howto"
+  | "features"
+  | "challenges"
+  | "about"
+  | "opensource"
+  | "feedback";
 
 const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
   { id: "howto", label: "HOW TO", icon: <Gamepad2 className="w-3.5 h-3.5" /> },
@@ -53,9 +59,9 @@ const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
 
 const Badge = ({
-                 color,
-                 n,
-               }: {
+  color,
+  n,
+}: {
   color: "green" | "yellow" | "gray";
   n: number;
 }) => {
@@ -284,11 +290,12 @@ const FeedbackTab = () => {
               color: messageAtLimit
                 ? "#f87171"
                 : messageNearLimit
-                  ? "#fbbf24"
-                  : "#4b5563",
+                ? "#fbbf24"
+                : "#4b5563",
             }}
           >
-            {(MESSAGE_MAX - formData.message.length).toLocaleString()} characters left
+            {(MESSAGE_MAX - formData.message.length).toLocaleString()}{" "}
+            characters left
           </span>
         </div>
         <textarea
@@ -578,15 +585,18 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       IN THE GAME
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
-                      Open <span className="text-crown-gold">Settings</span> and go to the{" "}
-                      <span className="text-crown-gold">Challenge</span> tab. Pick a
-                      dictionary, choose how many guesses to allow, type your secret word,
-                      and hit Generate Link. Share the link — whoever opens it plays your
-                      custom word with exactly the settings you chose.
+                      Open <span className="text-crown-gold">Settings</span> and
+                      go to the{" "}
+                      <span className="text-crown-gold">Challenge</span> tab.
+                      Pick a dictionary, choose how many guesses to allow, type
+                      your secret word, and hit Generate Link. Share the link —
+                      whoever opens it plays your custom word with exactly the
+                      settings you chose.
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
-                      Results never count toward the recipient's stats, and their progress
-                      is saved to the link so they can come back to it any time.
+                      Results never count toward the recipient's stats, and
+                      their progress is saved to the link so they can come back
+                      to it any time.
                     </p>
 
                     <div className="border-t border-obsidian-700" />
@@ -605,9 +615,11 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                         King-Tajin Discord server
                       </a>
                       , use the{" "}
-                      <span className="text-crown-gold">/vagudle_challenge</span> slash
-                      command to generate a challenge link directly from Discord — no need
-                      to open the game first.
+                      <span className="text-crown-gold">
+                        /vagudle_challenge
+                      </span>{" "}
+                      slash command to generate a challenge link directly from
+                      Discord — no need to open the game first.
                     </p>
                   </div>
                 )}
@@ -624,8 +636,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       >
                         Hardle
                       </a>
-                      , with extra tools to help you solve the puzzle and no pesky
-                      daily limit to get in your way.
+                      , with extra tools to help you solve the puzzle and no
+                      pesky daily limit to get in your way.
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Built and maintained by{" "}

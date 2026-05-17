@@ -28,13 +28,11 @@ const doShare = async (
       await navigator.share(shareData);
       return;
     }
-  } catch {
-  }
+  } catch {}
   try {
     await navigator.clipboard.writeText(textToShare);
     handleShareToClipboard();
-  } catch {
-  }
+  } catch {}
 };
 
 export const shareStatus = async (
@@ -57,7 +55,12 @@ export const shareStatus = async (
     generateEmojiGrid(solution, guesses, EMOJI_TILES);
 
   await doShare(
-    { title: challengeMode ? `${GAME_TITLE} Challenge` : `${GAME_TITLE} — ${solution}`, text: textToShare },
+    {
+      title: challengeMode
+        ? `${GAME_TITLE} Challenge`
+        : `${GAME_TITLE} — ${solution}`,
+      text: textToShare,
+    },
     textToShare,
     handleShareToClipboard
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BookOpen, Hash, Target } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
