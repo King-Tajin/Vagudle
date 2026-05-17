@@ -9,7 +9,9 @@ type StoredGameState = {
 };
 
 export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
-  localStorage.setItem(gameStateKey, JSON.stringify(gameState));
+  try {
+    localStorage.setItem(gameStateKey, JSON.stringify(gameState));
+  } catch {}
 };
 
 export const loadGameStateFromLocalStorage = (): StoredGameState | null => {
@@ -41,13 +43,20 @@ const defaultSettings: StoredSettings = {
 };
 
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {
-  localStorage.setItem(settingsKey, JSON.stringify(settings));
+  try {
+    localStorage.setItem(settingsKey, JSON.stringify(settings));
+  } catch {}
 };
 
 export const loadSettingsFromLocalStorage = (): StoredSettings => {
   try {
     const stored = localStorage.getItem(settingsKey);
-    return stored ? (JSON.parse(stored) as StoredSettings) : defaultSettings;
+    return stored
+      ? {
+          ...defaultSettings,
+          ...(JSON.parse(stored) as Partial<StoredSettings>),
+        }
+      : defaultSettings;
   } catch {
     localStorage.removeItem(settingsKey);
     return defaultSettings;
@@ -70,10 +79,12 @@ export const saveStatsToLocalStorage = (
   gameStats: GameStats,
   hardMode: boolean
 ) => {
-  localStorage.setItem(
-    hardMode ? hardStatKey : normalStatKey,
-    JSON.stringify(gameStats)
-  );
+  try {
+    localStorage.setItem(
+      hardMode ? hardStatKey : normalStatKey,
+      JSON.stringify(gameStats)
+    );
+  } catch {}
 };
 
 export const loadStatsFromLocalStorage = (

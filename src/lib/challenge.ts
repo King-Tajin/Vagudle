@@ -64,11 +64,20 @@ const challengeStateKey = (id: string) => `chal_${id}`;
 export const saveChallengeState = (
   id: string,
   state: ChallengeGameState
-): void => localStorage.setItem(challengeStateKey(id), JSON.stringify(state));
+): void => {
+  try {
+    localStorage.setItem(challengeStateKey(id), JSON.stringify(state));
+  } catch {}
+};
 
 export const loadChallengeState = (id: string): ChallengeGameState | null => {
-  const stored = localStorage.getItem(challengeStateKey(id));
-  return stored ? (JSON.parse(stored) as ChallengeGameState) : null;
+  try {
+    const stored = localStorage.getItem(challengeStateKey(id));
+    return stored ? (JSON.parse(stored) as ChallengeGameState) : null;
+  } catch {
+    localStorage.removeItem(challengeStateKey(id));
+    return null;
+  }
 };
 
 export const DICT_LABELS: Record<ChallengeDict, string> = {

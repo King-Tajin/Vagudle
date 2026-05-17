@@ -13,7 +13,10 @@ export const addStatsForCompletedGame = (
   count: number,
   maxChallenges: number
 ) => {
-  const stats = { ...gameStats };
+  const stats = {
+    ...gameStats,
+    winDistribution: [...gameStats.winDistribution],
+  };
 
   stats.totalGames += 1;
 

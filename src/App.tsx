@@ -113,7 +113,9 @@ function App() {
   const [autoGreen, setAutoGreen] = useState(
     () => loadSettingsFromLocalStorage().autoGreen ?? false
   );
-  const [guesses, setGuesses] = useState<string[]>([]);
+  const [guesses, setGuesses] = useState<string[]>(
+    () => loadGameStateFromLocalStorage()?.guesses ?? []
+  );
   const [cellColors, setCellColors] = useState<{ [key: string]: CharStatus }>(
     () => (loadGameStateFromLocalStorage()?.cellColors as any) || {}
   );
@@ -128,8 +130,8 @@ function App() {
   const maxChallenges = challengeConfig
     ? challengeConfig.guesses
     : hardMode
-      ? HARD_MODE_MAX_CHALLENGES
-      : NORMAL_MODE_MAX_CHALLENGES;
+    ? HARD_MODE_MAX_CHALLENGES
+    : NORMAL_MODE_MAX_CHALLENGES;
 
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
 
@@ -191,8 +193,13 @@ function App() {
             (g) => g.toUpperCase() === wordUpper
           );
           const lost = !won && savedChallenge.guesses.length >= config.guesses;
-          if (won) { restoredGameRef.current = true; setIsGameWon(true); }
-          else if (lost) { restoredGameRef.current = true; setIsGameLost(true); }
+          if (won) {
+            restoredGameRef.current = true;
+            setIsGameWon(true);
+          } else if (lost) {
+            restoredGameRef.current = true;
+            setIsGameLost(true);
+          }
           alreadyFinished = won || lost;
         }
         setIsChallengeModalOpen(!alreadyFinished);
@@ -239,11 +246,11 @@ function App() {
 
   useEffect(() => {
     DISCOURAGE_INAPP_BROWSERS &&
-    isInAppBrowser() &&
-    showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
-      persist: false,
-      durationMs: 7000,
-    });
+      isInAppBrowser() &&
+      showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
+        persist: false,
+        durationMs: 7000,
+      });
   }, [showErrorAlert]);
 
   useEffect(() => {
@@ -469,7 +476,15 @@ function App() {
         hardMode,
       });
     }
-  }, [guesses, cellColors, autoGrayLetters]);
+  }, [
+    guesses,
+    cellColors,
+    autoGrayLetters,
+    isChallengeMode,
+    challengeConfig,
+    solution,
+    hardMode,
+  ]);
 
   useEffect(() => {
     if (isGameWon) {
