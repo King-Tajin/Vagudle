@@ -36,6 +36,34 @@ type Props = {
   handleReturnToNormal?: () => void;
 };
 
+const shareChallengeInvite = async (
+  config: ChallengeConfig,
+  handleShareToClipboard: () => void
+) => {
+  const text =
+    `I'm challenging you to a custom Vagudle!\n` +
+    `${config.length} letters · ${DICT_LABELS[config.dict]} dictionary · ${
+      config.guesses
+    } guesses\n` +
+    `(Results won't affect your stats)\n` +
+    window.location.href;
+
+  try {
+    if (
+      typeof navigator.share === "function" &&
+      navigator.canShare?.({ text })
+    ) {
+      await navigator.share({ title: "Vagudle Challenge", text });
+      return;
+    }
+  } catch {}
+
+  try {
+    await navigator.clipboard.writeText(text);
+    handleShareToClipboard();
+  } catch {}
+};
+
 export const StatsModal = ({
   isOpen,
   handleClose,
@@ -144,7 +172,8 @@ export const StatsModal = ({
               CHALLENGE FAILED
             </p>
             <p className="font-code text-sm text-gray-400 mt-1">
-              Ask the sender for the answer!
+              Better luck next time!
+              You can always ask the sender for the answer.
             </p>
           </div>
         )}
@@ -187,15 +216,7 @@ export const StatsModal = ({
               e.currentTarget.style.filter = "brightness(1)";
             }}
             onClick={() =>
-              shareStatus(
-                solution,
-                guesses,
-                isGameLost,
-                handleShareToClipboard,
-                false,
-                maxG,
-                true
-              )
+              shareChallengeInvite(challengeConfig, handleShareToClipboard)
             }
           >
             <Share2 className="w-3.5 h-3.5" />
