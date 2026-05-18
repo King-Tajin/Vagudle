@@ -203,6 +203,10 @@ function App() {
             setIsGameLost(true);
           }
           alreadyFinished = won || lost;
+        } else {
+          setGuesses([]);
+          setCellColors({});
+          setAutoGrayLetters(new Set());
         }
         setIsChallengeModalOpen(!alreadyFinished);
         setIsLoading(false);
@@ -223,6 +227,10 @@ function App() {
           : NORMAL_MODE_MAX_CHALLENGES;
         setSolution(savedState.solution);
         setGuesses(savedState.guesses);
+        setCellColors((savedState.cellColors as any) ?? {});
+        setAutoGrayLetters(
+          new Set((savedState.autoGrayLetters ?? []) as string[])
+        );
         if (gameWasWon) {
           restoredGameRef.current = true;
           setIsGameWon(true);
@@ -239,6 +247,9 @@ function App() {
           savedSettings.hardMode
         );
         setSolution(newSolution);
+        setGuesses([]);
+        setCellColors({});
+        setAutoGrayLetters(new Set());
         setTimeout(() => setIsInfoModalOpen(true), WELCOME_INFO_MODAL_MS);
       }
       setIsLoading(false);

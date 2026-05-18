@@ -109,9 +109,17 @@ export const ChallengeCreatorTab = () => {
 
   const cleanInput = wordInput.toUpperCase().replace(/[^A-Z]/g, "");
 
-  const validateWord = (raw: string, currentDict: ChallengeDict = dict) => {
+  const validateWord = (
+    raw: string,
+    currentDict: ChallengeDict = dict,
+    strict = false
+  ) => {
     const w = raw.toUpperCase().replace(/[^A-Z]/g, "");
-    if (w.length < 4 || w.length > 7) {
+    if (w.length < 4) {
+      setWordStatus(strict ? "invalid-length" : "idle");
+      return;
+    }
+    if (w.length > 7) {
       setWordStatus("invalid-length");
       return;
     }
@@ -131,25 +139,26 @@ export const ChallengeCreatorTab = () => {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^a-zA-Z]/g, "");
     setWordInput(raw);
-    setWordStatus("idle");
     setGenerated(null);
     setGenerateStatus("idle");
     setCopied(false);
     setShared(false);
+    validateWord(raw);
   };
 
   const handleBlur = () => {
-    if (cleanInput.length > 0) validateWord(cleanInput);
+    if (cleanInput.length > 0) validateWord(cleanInput, dict, true);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.stopPropagation();
-    if (e.key === "Enter" && cleanInput.length > 0) validateWord(cleanInput);
+    if (e.key === "Enter" && cleanInput.length > 0)
+      validateWord(cleanInput, dict, true);
   };
 
   const generate = async () => {
     if (wordStatus !== "valid") {
-      validateWord(cleanInput);
+      validateWord(cleanInput, dict, true);
       return;
     }
     setGenerateStatus("loading");
