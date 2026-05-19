@@ -85,8 +85,8 @@ interface StripMeasure {
 }
 
 function TajinRain({
-                     keyboardRef,
-                   }: {
+  keyboardRef,
+}: {
   keyboardRef: React.RefObject<HTMLDivElement>;
 }) {
   const [strips, setStrips] = useState<StripMeasure>({
@@ -145,7 +145,8 @@ function TajinRain({
   }, [keyboardRef]);
 
   useEffect(() => {
-    const SEGMENTS = 10;
+    const COUNT = 45;
+    const EXP = 2.8;
     const next: TajinParticle[] = [];
     let id = 0;
 
@@ -158,16 +159,21 @@ function TajinRain({
     });
 
     if (strips.leftWidth > 2) {
-      const segW = strips.leftWidth / SEGMENTS;
-      for (let i = 0; i < SEGMENTS; i++) {
-        next.push(makeParticle(i * segW + Math.random() * segW));
+      for (let i = 0; i < COUNT; i++) {
+        next.push(
+          makeParticle(Math.pow(Math.random(), EXP) * strips.leftWidth)
+        );
       }
     }
 
     if (strips.rightWidth > 2) {
-      const segW = strips.rightWidth / SEGMENTS;
-      for (let i = 0; i < SEGMENTS; i++) {
-        next.push(makeParticle(strips.rightStart + i * segW + Math.random() * segW));
+      for (let i = 0; i < COUNT; i++) {
+        next.push(
+          makeParticle(
+            strips.rightStart +
+              (1 - Math.pow(Math.random(), EXP)) * strips.rightWidth
+          )
+        );
       }
     }
 
@@ -774,6 +780,7 @@ function App() {
           setIsSettingsModalOpen={() => {}}
           handleNewGame={() => {}}
           hasActiveGame={false}
+          isInfoModalOpen={false}
         />
         <div className="flex flex-col items-center justify-center flex-1 gap-6">
           <motion.p
@@ -823,6 +830,7 @@ function App() {
           setIsSettingsModalOpen={() => {}}
           handleNewGame={() => {}}
           hasActiveGame={false}
+          isInfoModalOpen={false}
         />
         <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
           <motion.p
@@ -877,6 +885,7 @@ function App() {
         handleNewGame={handleNewGameWithFail}
         hasActiveGame={hasActiveGame}
         isChallengeMode={isChallengeMode}
+        isInfoModalOpen={isInfoModalOpen}
       />
       <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
