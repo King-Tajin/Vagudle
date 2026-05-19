@@ -1,6 +1,6 @@
 import { CharStatus } from "../../lib/statuses";
 import { Key } from "./Key";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { ENTER_TEXT, DELETE_TEXT } from "../../constants/strings";
 import { localeAwareUpperCase } from "../../lib/words";
 
@@ -11,6 +11,7 @@ type Props = {
   solution: string;
   userStatuses: { [key: string]: CharStatus };
   isRevealing?: boolean;
+  containerRef?: React.RefObject<HTMLDivElement>;
 };
 
 export const Keyboard = ({
@@ -20,6 +21,7 @@ export const Keyboard = ({
   solution,
   userStatuses,
   isRevealing,
+  containerRef,
 }: Props) => {
   const charStatuses = userStatuses;
 
@@ -61,7 +63,10 @@ export const Keyboard = ({
   }, [onEnter, onDelete, onChar]);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 pb-2 pt-1">
+    <div
+      ref={containerRef}
+      className="fixed bottom-0 left-0 right-0 z-50 pb-2 pt-1"
+    >
       <div className="flex justify-center mb-1">
         {["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"].map((key) => (
           <Key

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Hash, Target } from "lucide-react";
 import { Grid } from "./components/grid/Grid";
@@ -70,6 +70,156 @@ const isRowFullyGray = (solution: string, guess: string): boolean => {
   return statuses.every((s) => s === "absent");
 };
 
+interface TajinParticle {
+  id: number;
+  startX: number;
+  delay: number;
+  duration: number;
+  type: "chili" | "lime" | "salt";
+}
+
+interface StripMeasure {
+  leftWidth: number;
+  rightStart: number;
+  rightWidth: number;
+}
+
+function TajinRain({
+                     keyboardRef,
+                   }: {
+  keyboardRef: React.RefObject<HTMLDivElement>;
+}) {
+  const [strips, setStrips] = useState<StripMeasure>({
+    leftWidth: 0,
+    rightStart: 0,
+    rightWidth: 0,
+  });
+  const [particles, setParticles] = useState<TajinParticle[]>([]);
+
+  useEffect(() => {
+    const measure = () => {
+      const el = keyboardRef.current;
+      if (!el) return;
+      const buttons = el.querySelectorAll("button");
+      if (buttons.length === 0) return;
+
+      let minLeft = Infinity;
+      let maxRight = -Infinity;
+      buttons.forEach((btn) => {
+        const label = btn.getAttribute("aria-label") ?? "";
+        const isSpecial =
+          label.toLowerCase().startsWith("enter") ||
+          label.toLowerCase().startsWith("delete");
+        if (isSpecial) return;
+        const r = btn.getBoundingClientRect();
+        if (r.left < minLeft) minLeft = r.left;
+        if (r.right > maxRight) maxRight = r.right;
+      });
+
+      if (minLeft === Infinity || maxRight === -Infinity) return;
+
+      const vw = window.innerWidth;
+      const leftWidth = Math.max(0, minLeft - 8);
+      const rightStart = maxRight + 8;
+      const rightWidth = Math.max(0, vw - rightStart);
+
+      setStrips((prev) => {
+        if (
+          Math.abs(prev.leftWidth - leftWidth) < 1 &&
+          Math.abs(prev.rightStart - rightStart) < 1 &&
+          Math.abs(prev.rightWidth - rightWidth) < 1
+        )
+          return prev;
+        return { leftWidth, rightStart, rightWidth };
+      });
+    };
+
+    requestAnimationFrame(measure);
+    const ro = new ResizeObserver(measure);
+    ro.observe(document.documentElement);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [keyboardRef]);
+
+  useEffect(() => {
+    const SEGMENTS = 10;
+    const next: TajinParticle[] = [];
+    let id = 0;
+
+    const makeParticle = (x: number): TajinParticle => ({
+      id: id++,
+      startX: x,
+      delay: Math.random() * 6,
+      duration: 3 + Math.random() * 4,
+      type: (["chili", "lime", "salt"] as const)[Math.floor(Math.random() * 3)],
+    });
+
+    if (strips.leftWidth > 2) {
+      const segW = strips.leftWidth / SEGMENTS;
+      for (let i = 0; i < SEGMENTS; i++) {
+        next.push(makeParticle(i * segW + Math.random() * segW));
+      }
+    }
+
+    if (strips.rightWidth > 2) {
+      const segW = strips.rightWidth / SEGMENTS;
+      for (let i = 0; i < SEGMENTS; i++) {
+        next.push(makeParticle(strips.rightStart + i * segW + Math.random() * segW));
+      }
+    }
+
+    setParticles(next);
+  }, [strips]);
+
+  const getColor = (type: string) => {
+    switch (type) {
+      case "chili":
+        return "#C41E3A";
+      case "lime":
+        return "#A4C639";
+      default:
+        return "#FFD700";
+    }
+  };
+
+  if (particles.length === 0) return null;
+
+  return (
+    <div
+      className="fixed inset-0 pointer-events-none overflow-hidden"
+      style={{ zIndex: 1 }}
+    >
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          style={{
+            position: "absolute",
+            left: p.startX,
+            top: -8,
+            width: 8,
+            height: 8,
+            background: getColor(p.type),
+          }}
+          animate={{
+            y: ["0px", "calc(100vh + 20px)"],
+            rotate: [0, 360],
+            opacity: [0.6, 0.3, 0.6],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function App() {
   const {
     showError: showErrorAlert,
@@ -125,14 +275,15 @@ function App() {
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
+  const keyboardRef = useRef<HTMLDivElement>(null);
 
   const isChallengeMode = challengeConfig !== null;
 
   const maxChallenges = challengeConfig
     ? challengeConfig.guesses
     : hardMode
-    ? HARD_MODE_MAX_CHALLENGES
-    : NORMAL_MODE_MAX_CHALLENGES;
+      ? HARD_MODE_MAX_CHALLENGES
+      : NORMAL_MODE_MAX_CHALLENGES;
 
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
 
@@ -259,11 +410,11 @@ function App() {
 
   useEffect(() => {
     DISCOURAGE_INAPP_BROWSERS &&
-      isInAppBrowser() &&
-      showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
-        persist: false,
-        durationMs: 7000,
-      });
+    isInAppBrowser() &&
+    showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
+      persist: false,
+      durationMs: 7000,
+    });
   }, [showErrorAlert]);
 
   useEffect(() => {
@@ -718,6 +869,7 @@ function App() {
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
       {bgGrid}
+      <TajinRain keyboardRef={keyboardRef} />
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
         setIsStatsModalOpen={setIsStatsModalOpen}
@@ -791,6 +943,7 @@ function App() {
           solution={solution}
           userStatuses={userStatuses}
           isRevealing={isRevealing}
+          containerRef={keyboardRef}
         />
         <InfoModal
           isOpen={isInfoModalOpen}
