@@ -6,6 +6,7 @@ import {
   AlertCircle,
   CheckCircle,
   Share2,
+  Info,
 } from "lucide-react";
 import {
   encodeChallenge,
@@ -24,10 +25,10 @@ type ButtonGroupProps<T extends string | number> = {
 };
 
 function ButtonGroup<T extends string | number>({
-  options,
-  value,
-  onChange,
-}: ButtonGroupProps<T>) {
+                                                  options,
+                                                  value,
+                                                  onChange,
+                                                }: ButtonGroupProps<T>) {
   return (
     <div className="flex gap-2">
       {options.map((opt) => {
@@ -60,9 +61,33 @@ const GUESSES_OPTIONS = [
   { value: 11 as const, label: "11" },
 ];
 
+const DICT_ORDER: ChallengeDict[] = ["normal", "hard", "full"];
+
 type WordStatus = "idle" | "valid" | "invalid-word" | "invalid-length";
 type Generated = { word: string; url: string; config: ChallengeConfig };
 type GenerateStatus = "idle" | "loading" | "error";
+
+interface DictHint {
+  foundIn: ChallengeDict | null;
+  easierThan: ChallengeDict | null;
+}
+
+const getDictHints = (word: string, selected: ChallengeDict): DictHint => {
+  const inSelected = isWordInDict(word, selected);
+  const selectedIdx = DICT_ORDER.indexOf(selected);
+
+  if (!inSelected) {
+    const foundIn =
+      DICT_ORDER.find((d) => d !== selected && isWordInDict(word, d)) ?? null;
+    return { foundIn, easierThan: null };
+  }
+
+  const easierThan =
+    DICT_ORDER.slice(0, selectedIdx).find((d) => isWordInDict(word, d)) ??
+    null;
+
+  return { foundIn: null, easierThan };
+};
 
 const shareChallenge = async (generated: Generated, onCopied: () => void) => {
   const { config, url } = generated;
@@ -93,6 +118,10 @@ export const ChallengeCreatorTab = () => {
   const [guesses, setGuesses] = useState<9 | 11>(11);
   const [wordInput, setWordInput] = useState("");
   const [wordStatus, setWordStatus] = useState<WordStatus>("idle");
+  const [dictHints, setDictHints] = useState<DictHint>({
+    foundIn: null,
+    easierThan: null,
+  });
   const [generated, setGenerated] = useState<Generated | null>(null);
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
@@ -117,13 +146,17 @@ export const ChallengeCreatorTab = () => {
     const w = raw.toUpperCase().replace(/[^A-Z]/g, "");
     if (w.length < 4) {
       setWordStatus(strict ? "invalid-length" : "idle");
+      setDictHints({ foundIn: null, easierThan: null });
       return;
     }
     if (w.length > 7) {
       setWordStatus("invalid-length");
+      setDictHints({ foundIn: null, easierThan: null });
       return;
     }
-    setWordStatus(isWordInDict(w, currentDict) ? "valid" : "invalid-word");
+    const inSelected = isWordInDict(w, currentDict);
+    setWordStatus(inSelected ? "valid" : "invalid-word");
+    setDictHints(getDictHints(w, currentDict));
   };
 
   const handleDictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -334,6 +367,21 @@ export const ChallengeCreatorTab = () => {
 
   return (
     <div className="space-y-4">
+      <div
+        className="flex gap-2 p-2.5"
+        style={{
+          background: "rgba(255,215,0,0.04)",
+          border: "1px solid rgba(255,215,0,0.18)",
+        }}
+      >
+        <Info className="w-3.5 h-3.5 text-crown-amber flex-shrink-0 mt-0.5" />
+        <p className="font-code text-xs text-gray-400 leading-relaxed">
+          <span className="text-crown-amber">NOTE:</span> The chosen dictionary
+          has little effect on gameplay. It simply lets the player know the
+          popularity of the word.
+        </p>
+      </div>
+
       <div>
         <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
           DICTIONARY
@@ -387,22 +435,51 @@ export const ChallengeCreatorTab = () => {
             <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-tajin-red" />
           )}
         </div>
+
         {wordStatus === "invalid-length" && (
           <p className="font-code text-xs text-tajin-red mt-1">
             Word must be 4–7 letters.
           </p>
         )}
+
         {wordStatus === "invalid-word" && (
-          <p className="font-code text-xs text-tajin-red mt-1">
-            "{cleanInput}" isn't in the {DICT_LABELS[dict].toLowerCase()}{" "}
-            dictionary.
-          </p>
+          <>
+            <p className="font-code text-xs text-tajin-red mt-1">
+              "{cleanInput}" isn't in the {DICT_LABELS[dict].toLowerCase()}{" "}
+              dictionary.
+            </p>
+            {dictHints.foundIn && (
+              <p
+                className="font-code text-xs mt-1"
+                style={{ color: "#a78bfa" }}
+              >
+                However, it is available in{" "}
+                {DICT_LABELS[dictHints.foundIn].toLowerCase()} dictionary
+                though. Switch dictionaries to use it.
+              </p>
+            )}
+          </>
         )}
+
         {wordStatus === "valid" && (
-          <p className="font-code text-xs text-green-400 mt-1">
-            "{cleanInput}" is valid — {cleanInput.length} letters.
-          </p>
+          <>
+            <p className="font-code text-xs text-green-400 mt-1">
+              "{cleanInput}" is valid — {cleanInput.length} letters.
+            </p>
+            {dictHints.easierThan && (
+              <p
+                className="font-code text-xs mt-1"
+                style={{ color: "#facc15" }}
+              >
+                Heads up: this word also appears in the{" "}
+                {DICT_LABELS[dictHints.easierThan].toLowerCase()} dictionary,
+                switching the dictionary provides the player with more precise
+                information about the word's popularity.
+              </p>
+            )}
+          </>
         )}
+
         {wordStatus === "idle" && (
           <p className="font-code text-xs text-gray-500 mt-1">
             Must be in the {DICT_LABELS[dict].toLowerCase()} dictionary.
