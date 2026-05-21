@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { X, Crown } from "lucide-react";
+import { X } from "lucide-react";
+import CrownIcon from "@/assets/icons/crown.svg?react";
 
 type Props = {
   title: string;
@@ -64,7 +65,7 @@ export const BaseModal = ({ title, children, isOpen, handleClose }: Props) => {
                 style={{ background: "rgba(10,0,20,0.97)" }}
               >
                 <div className="flex items-center gap-3">
-                  <Crown className="w-5 h-5 text-crown-gold" />
+                  <CrownIcon className="w-10 h-10 text-crown-gold" />
                   <Dialog.Title
                     as="h3"
                     className="font-pixel text-sm text-crown-amber tracking-widest"

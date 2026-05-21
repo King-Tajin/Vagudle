@@ -2,7 +2,6 @@ import { Fragment, useState, type ReactNode, type CSSProperties } from "react";
 import { Transition } from "@headlessui/react";
 import {
   X,
-  Crown,
   Gamepad2,
   Info,
   Sparkles,
@@ -14,6 +13,7 @@ import {
   ThumbsDown,
   Swords,
 } from "lucide-react";
+import CrownIcon from "@/assets/icons/crown.svg?react";
 
 import { Cell } from "../grid/Cell";
 import GreenBrushIcon from "@/assets/icons/green-brush.svg?react";
@@ -396,7 +396,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 style={{ background: "rgba(10,0,20,0.97)" }}
               >
                 <div className="flex items-center gap-3">
-                  <Crown className="w-5 h-5 text-crown-gold" />
+                  <CrownIcon className="w-10 h-10 text-crown-gold" />
                   <h3 className="font-pixel text-sm text-crown-amber tracking-widest">
                     INFORMATION
                   </h3>
