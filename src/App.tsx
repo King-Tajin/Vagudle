@@ -700,14 +700,16 @@ function App() {
     if (isGameWon || isGameLost) return;
 
     if (!(unicodeLength(currentGuess) === solution.length)) {
-      setCurrentRowClass("jiggle");
+      setCurrentRowClass("");
+      requestAnimationFrame(() => setCurrentRowClass("jiggle"));
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
         onClose: clearCurrentRowClass,
       });
     }
 
-    if (!isWordInWordList(currentGuess, hardMode, isChallengeMode)) {
-      setCurrentRowClass("jiggle");
+    if (!isWordInWordList(currentGuess)) {
+      setCurrentRowClass("");
+      requestAnimationFrame(() => setCurrentRowClass("jiggle"));
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
         onClose: clearCurrentRowClass,
       });

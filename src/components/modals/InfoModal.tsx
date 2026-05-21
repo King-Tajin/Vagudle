@@ -699,7 +699,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 style={{ background: "rgba(10,0,20,0.97)" }}
               >
                 <p className="font-pixel text-xs text-obsidian-500 tracking-widest text-center">
-                  VAGUDLE · KING-TAJIN.DEV
+                  VAGUDLE · KING TAJIN
                 </p>
               </div>
             </div>

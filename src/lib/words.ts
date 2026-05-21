@@ -1,5 +1,4 @@
 let SCRABBLE_SET: Set<string> | null = null;
-let SCRABBLE_ARR: string[] = [];
 let NORMAL_WORDS_ARR: string[] = [];
 let HARD_WORDS_ARR: string[] = [];
 let NORMAL_SET: Set<string> | null = null;
@@ -12,7 +11,6 @@ export const initWordLists = async () => {
       import("../constants/normalWords"),
       import("../constants/hardWords"),
     ]);
-  SCRABBLE_ARR = VALID_GUESSES;
   SCRABBLE_SET = new Set(VALID_GUESSES.map((w) => w.toLowerCase()));
   NORMAL_WORDS_ARR = NORMAL_WORDS;
   HARD_WORDS_ARR = HARD_WORDS;
@@ -20,19 +18,12 @@ export const initWordLists = async () => {
   HARD_SET = new Set(HARD_WORDS.map((w) => w.toLowerCase()));
 };
 
-export const isWordInWordList = (
-  word: string,
-  hardMode: boolean,
-  challengeMode: boolean = false
-) => {
+export const isWordInWordList = (word: string) => {
   if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return false;
   const lower = word.toLowerCase();
-  if (challengeMode)
-    return (
-      SCRABBLE_SET.has(lower) || NORMAL_SET.has(lower) || HARD_SET.has(lower)
-    );
-  const solutionSet = hardMode ? HARD_SET : NORMAL_SET;
-  return SCRABBLE_SET.has(lower) || solutionSet.has(lower);
+  return (
+    SCRABBLE_SET.has(lower) || NORMAL_SET.has(lower) || HARD_SET.has(lower)
+  );
 };
 
 export const isWinningWord = (word: string, solution: string) => {
