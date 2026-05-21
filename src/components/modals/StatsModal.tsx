@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatBar } from "../stats/StatBar";
 import { Histogram } from "../stats/Histogram";
 import { GameStats } from "../../lib/localStorage";
 import { shareStatus, shareStats } from "../../lib/share";
 import { BaseModal } from "./BaseModal";
-import { Share2, RotateCcw, BookOpen, Hash, Target } from "lucide-react";
+import { ChallengeCreatorTab } from "./ChallengeCreatorTab";
+import {
+  Share2,
+  RotateCcw,
+  BookOpen,
+  Hash,
+  Target,
+  Swords,
+} from "lucide-react";
 import {
   STATISTICS_TITLE,
   GUESS_DISTRIBUTION_TEXT,
@@ -17,6 +25,7 @@ import {
   DICT_LABELS,
   DICT_DESCRIPTIONS,
   type ChallengeConfig,
+  type ChallengeDict,
 } from "../../lib/challenge";
 
 type Props = {
@@ -83,6 +92,11 @@ export const StatsModal = ({
   const [activeTab, setActiveTab] = useState<"normal" | "hard">(
     hardMode ? "hard" : "normal"
   );
+  const [showChallengeCreator, setShowChallengeCreator] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) setShowChallengeCreator(false);
+  }, [isOpen, solution]);
 
   const displayStats = activeTab === "hard" ? hardGameStats : gameStats;
   const tabMaxChallenges =
@@ -94,6 +108,9 @@ export const StatsModal = ({
     : NORMAL_MODE_MAX_CHALLENGES;
   const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
   const hasGames = displayStats.totalGames > 0;
+
+  const presetDict: ChallengeDict = hardMode ? "hard" : "normal";
+  const presetGuesses: 9 | 11 = hardMode ? 9 : 11;
 
   const tabBase =
     "flex-1 py-2 font-pixel text-xs tracking-widest transition-all";
@@ -107,6 +124,23 @@ export const StatsModal = ({
     border: "2px solid rgba(255,255,255,0.1)",
     color: "#6b7280",
   };
+
+  if (showChallengeCreator) {
+    return (
+      <BaseModal
+        title="Create Challenge"
+        isOpen={isOpen}
+        handleClose={handleClose}
+      >
+        <ChallengeCreatorTab
+          autoFilledWord={solution}
+          autoFilledDict={presetDict}
+          autoFilledGuesses={presetGuesses}
+          onBack={() => setShowChallengeCreator(false)}
+        />
+      </BaseModal>
+    );
+  }
 
   if (challengeConfig) {
     const score = isGameLost ? "X" : guesses.length;
@@ -309,56 +343,78 @@ export const StatsModal = ({
       )}
 
       {(isGameLost || isGameWon) && (
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
-            style={{
-              background: "linear-gradient(180deg, #3a7d44 0%, #2d6135 100%)",
-              border: "2px solid #3a7d44",
-              color: "#fff",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.filter = "brightness(1.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.filter = "brightness(1)";
-            }}
-            onClick={handleNewGame}
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            NEW GAME
-          </button>
+        <>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              style={{
+                background: "linear-gradient(180deg, #3a7d44 0%, #2d6135 100%)",
+                border: "2px solid #3a7d44",
+                color: "#fff",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.filter = "brightness(1.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.filter = "brightness(1)";
+              }}
+              onClick={handleNewGame}
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              NEW GAME
+            </button>
+
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              style={{
+                background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
+                border: "2px solid #5000aa",
+                color: "#fff",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.filter = "brightness(1.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.filter = "brightness(1)";
+              }}
+              onClick={() =>
+                shareStatus(
+                  solution,
+                  guesses,
+                  isGameLost,
+                  handleShareToClipboard,
+                  hardMode,
+                  gameMaxChallenges
+                )
+              }
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              SHARE GAME
+            </button>
+          </div>
 
           <button
             type="button"
-            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+            className="mt-3 w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
             style={{
-              background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
-              border: "2px solid #5000aa",
-              color: "#fff",
+              background: "rgba(255,215,0,0.06)",
+              border: "2px solid rgba(255,215,0,0.35)",
+              color: "#d4af37",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.filter = "brightness(1.15)";
+              e.currentTarget.style.filter = "brightness(1.2)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.filter = "brightness(1)";
             }}
-            onClick={() =>
-              shareStatus(
-                solution,
-                guesses,
-                isGameLost,
-                handleShareToClipboard,
-                hardMode,
-                gameMaxChallenges
-              )
-            }
+            onClick={() => setShowChallengeCreator(true)}
           >
-            <Share2 className="w-3.5 h-3.5" />
-            SHARE GAME
+            <Swords className="w-3.5 h-3.5" />
+            CHALLENGE OTHERS WITH THIS WORD
           </button>
-        </div>
+        </>
       )}
     </BaseModal>
   );

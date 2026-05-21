@@ -196,7 +196,7 @@ function TajinRain({
   return (
     <div
       className="fixed inset-0 pointer-events-none overflow-hidden"
-      style={{ zIndex: 1 }}
+      style={{ zIndex: 0 }}
     >
       {particles.map((p) => (
         <motion.div
@@ -288,8 +288,8 @@ function App() {
   const maxChallenges = challengeConfig
     ? challengeConfig.guesses
     : hardMode
-      ? HARD_MODE_MAX_CHALLENGES
-      : NORMAL_MODE_MAX_CHALLENGES;
+    ? HARD_MODE_MAX_CHALLENGES
+    : NORMAL_MODE_MAX_CHALLENGES;
 
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
 
@@ -416,11 +416,11 @@ function App() {
 
   useEffect(() => {
     DISCOURAGE_INAPP_BROWSERS &&
-    isInAppBrowser() &&
-    showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
-      persist: false,
-      durationMs: 7000,
-    });
+      isInAppBrowser() &&
+      showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
+        persist: false,
+        durationMs: 7000,
+      });
   }, [showErrorAlert]);
 
   useEffect(() => {

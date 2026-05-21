@@ -182,7 +182,10 @@ export const Grid = ({
     <>
       {guesses.length > 0 && (
         <>
-          <div className="flex justify-center items-center gap-3 mb-3">
+          <div
+            className="flex justify-center items-center gap-3 mb-3 relative"
+            style={{ zIndex: 1 }}
+          >
             {BRUSHES.map(({ status, Icon, border, bg }) => (
               <button
                 key={status}

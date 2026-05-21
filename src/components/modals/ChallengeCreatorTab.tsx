@@ -7,6 +7,8 @@ import {
   CheckCircle,
   Share2,
   Info,
+  ArrowLeft,
+  Loader2,
 } from "lucide-react";
 import {
   encodeChallenge,
@@ -25,10 +27,10 @@ type ButtonGroupProps<T extends string | number> = {
 };
 
 function ButtonGroup<T extends string | number>({
-                                                  options,
-                                                  value,
-                                                  onChange,
-                                                }: ButtonGroupProps<T>) {
+  options,
+  value,
+  onChange,
+}: ButtonGroupProps<T>) {
   return (
     <div className="flex gap-2">
       {options.map((opt) => {
@@ -83,8 +85,7 @@ const getDictHints = (word: string, selected: ChallengeDict): DictHint => {
   }
 
   const easierThan =
-    DICT_ORDER.slice(0, selectedIdx).find((d) => isWordInDict(word, d)) ??
-    null;
+    DICT_ORDER.slice(0, selectedIdx).find((d) => isWordInDict(word, d)) ?? null;
 
   return { foundIn: null, easierThan };
 };
@@ -113,10 +114,22 @@ const shareChallenge = async (generated: Generated, onCopied: () => void) => {
   onCopied();
 };
 
-export const ChallengeCreatorTab = () => {
-  const [dict, setDict] = useState<ChallengeDict>("normal");
-  const [guesses, setGuesses] = useState<9 | 11>(11);
-  const [wordInput, setWordInput] = useState("");
+type Props = {
+  autoFilledWord?: string;
+  autoFilledDict?: ChallengeDict;
+  autoFilledGuesses?: 9 | 11;
+  onBack?: () => void;
+};
+
+export const ChallengeCreatorTab = ({
+  autoFilledWord,
+  autoFilledDict,
+  autoFilledGuesses,
+  onBack,
+}: Props = {}) => {
+  const [dict, setDict] = useState<ChallengeDict>(autoFilledDict ?? "normal");
+  const [guesses, setGuesses] = useState<9 | 11>(autoFilledGuesses ?? 11);
+  const [wordInput, setWordInput] = useState(autoFilledWord ?? "");
   const [wordStatus, setWordStatus] = useState<WordStatus>("idle");
   const [dictHints, setDictHints] = useState<DictHint>({
     foundIn: null,
@@ -134,6 +147,50 @@ export const ChallengeCreatorTab = () => {
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
       if (sharedTimerRef.current) clearTimeout(sharedTimerRef.current);
     };
+  }, []);
+
+  useEffect(() => {
+    if (!autoFilledWord) return;
+    const w = autoFilledWord.toUpperCase().replace(/[^A-Z]/g, "");
+    const d = autoFilledDict ?? "normal";
+    const g = autoFilledGuesses ?? 11;
+
+    setWordInput(w);
+    setDict(d);
+    setGuesses(g);
+
+    if (w.length < 4 || w.length > 7) {
+      setWordStatus("invalid-length");
+      return;
+    }
+
+    if (isWordInDict(w, d)) {
+      setWordStatus("valid");
+      setDictHints(getDictHints(w, d));
+      const config: Omit<ChallengeConfig, "id"> = {
+        word: w,
+        dict: d,
+        guesses: g,
+        length: w.length,
+      };
+      setGenerateStatus("loading");
+      encodeChallenge(config).then((result) => {
+        if (!result) {
+          setGenerateStatus("error");
+          return;
+        }
+        const fullConfig: ChallengeConfig = { ...config, id: result.id };
+        setGenerated({
+          word: w,
+          url: buildChallengeUrl(result.encoded),
+          config: fullConfig,
+        });
+        setGenerateStatus("idle");
+      });
+    } else {
+      setWordStatus("invalid-word");
+      setDictHints(getDictHints(w, d));
+    }
   }, []);
 
   const cleanInput = wordInput.toUpperCase().replace(/[^A-Z]/g, "");
@@ -249,9 +306,54 @@ export const ChallengeCreatorTab = () => {
     "invalid-length": "#dc3232",
   };
 
+  if (generateStatus === "loading" && autoFilledWord && !generated) {
+    return (
+      <div className="space-y-3">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
+            style={{ color: "#6b7280" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "#9ca3af";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "#6b7280";
+            }}
+          >
+            <ArrowLeft className="w-3 h-3" />
+            BACK TO STATS
+          </button>
+        )}
+        <div className="flex flex-col items-center gap-3 py-8">
+          <Loader2 className="w-6 h-6 text-crown-amber animate-spin" />
+          <p className="font-pixel text-xs text-gray-500 tracking-widest">
+            GENERATING LINK...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (generated) {
     return (
       <div className="space-y-3">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
+            style={{ color: "#6b7280" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "#9ca3af";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "#6b7280";
+            }}
+          >
+            <ArrowLeft className="w-3 h-3" />
+            BACK TO STATS
+          </button>
+        )}
         <div
           className="p-3"
           style={{
@@ -367,6 +469,37 @@ export const ChallengeCreatorTab = () => {
 
   return (
     <div className="space-y-4">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
+          style={{ color: "#6b7280" }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = "#9ca3af";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = "#6b7280";
+          }}
+        >
+          <ArrowLeft className="w-3 h-3" />
+          BACK TO STATS
+        </button>
+      )}
+
+      {generateStatus === "error" && autoFilledWord && (
+        <div
+          className="p-3"
+          style={{
+            background: "rgba(220,50,50,0.08)",
+            border: "1px solid rgba(220,50,50,0.3)",
+          }}
+        >
+          <p className="font-code text-xs text-tajin-red">
+            Could not auto-generate link. Edit the settings below or try again.
+          </p>
+        </div>
+      )}
+
       <div
         className="flex gap-2 p-2.5"
         style={{
@@ -512,11 +645,12 @@ export const ChallengeCreatorTab = () => {
         ⚠ Challenge results do not count toward the recipient's stats. ⚠
       </p>
 
-      {generateStatus === "error" && (
+      {generateStatus === "error" && !autoFilledWord && (
         <p className="font-code text-xs text-tajin-red">
           Failed to generate link. Check your connection and try again.
         </p>
       )}
+
       <button
         onClick={generate}
         disabled={wordStatus !== "valid" || generateStatus === "loading"}
