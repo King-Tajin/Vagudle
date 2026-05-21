@@ -94,6 +94,7 @@ function TajinRain({
     rightStart: 0,
     rightWidth: 0,
   });
+  const [viewportH, setViewportH] = useState(() => window.innerHeight);
   const [particles, setParticles] = useState<TajinParticle[]>([]);
 
   useEffect(() => {
@@ -123,6 +124,7 @@ function TajinRain({
       const rightStart = maxRight + 8;
       const rightWidth = Math.max(0, vw - rightStart);
 
+      setViewportH(window.innerHeight);
       setStrips((prev) => {
         if (
           Math.abs(prev.leftWidth - leftWidth) < 1 &&
@@ -178,7 +180,7 @@ function TajinRain({
     }
 
     setParticles(next);
-  }, [strips]);
+  }, [strips, viewportH]);
 
   const getColor = (type: string) => {
     switch (type) {
@@ -210,7 +212,7 @@ function TajinRain({
             background: getColor(p.type),
           }}
           animate={{
-            y: ["0px", "calc(100vh + 20px)"],
+            y: ["0px", `${viewportH + 20}px`],
             rotate: [0, 360],
             opacity: [0.6, 0.3, 0.6],
           }}
