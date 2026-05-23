@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Hash, Target } from "lucide-react";
 import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
 import { InfoModal } from "./components/modals/InfoModal";
-import { StatsModal } from "./components/modals/StatsModal";
-import { SettingsModal } from "./components/modals/SettingsModal";
-import { ChallengeAcceptModal } from "./components/modals/ChallengeAcceptModal";
+const StatsModal = lazy(() => import("./components/modals/StatsModal").then(m => ({ default: m.StatsModal })));
+const SettingsModal = lazy(() => import("./components/modals/SettingsModal").then(m => ({ default: m.SettingsModal })));
+const ChallengeAcceptModal = lazy(() => import("./components/modals/ChallengeAcceptModal").then(m => ({ default: m.ChallengeAcceptModal })));
+const WinCelebration = lazy(() => import("./components/WinCelebration").then(m => ({ default: m.WinCelebration })));
 import {
   WIN_MESSAGES,
   CHALLENGE_WIN_MESSAGES,
@@ -59,7 +60,6 @@ import { AlertContainer } from "./components/Alert";
 import { useAlert } from "./context/AlertContext";
 import { Navbar } from "./components/Navbar";
 import { isInAppBrowser } from "./lib/browser";
-import { WinCelebration } from "./components/WinCelebration";
 
 const challengeParam = new URLSearchParams(window.location.search).get(
   "challenge"
@@ -86,8 +86,8 @@ interface StripMeasure {
 }
 
 function TajinRain({
-  keyboardRef,
-}: {
+                     keyboardRef,
+                   }: {
   keyboardRef: React.RefObject<HTMLDivElement>;
 }) {
   const [strips, setStrips] = useState<StripMeasure>({
@@ -174,7 +174,7 @@ function TajinRain({
         next.push(
           makeParticle(
             strips.rightStart +
-              (1 - Math.pow(Math.random(), EXP)) * strips.rightWidth
+            (1 - Math.pow(Math.random(), EXP)) * strips.rightWidth
           )
         );
       }
@@ -277,9 +277,7 @@ function App() {
     () => loadSettingsFromLocalStorage().extraEffects ?? true
   );
   const extraEffectsRef = useRef(extraEffects);
-  useEffect(() => {
-    extraEffectsRef.current = extraEffects;
-  }, [extraEffects]);
+  useEffect(() => { extraEffectsRef.current = extraEffects; }, [extraEffects]);
   const [isCelebrating, setIsCelebrating] = useState(false);
   const [guesses, setGuesses] = useState<string[]>(
     () => loadGameStateFromLocalStorage()?.guesses ?? []
@@ -382,7 +380,7 @@ function App() {
       }
 
       const elapsed = Date.now() - loadStart;
-      const remaining = Math.max(0, 500 - elapsed);
+      const remaining = Math.max(0, 1750 - elapsed);
       await new Promise((r) => setTimeout(r, remaining));
 
       if (savedState) {
@@ -639,7 +637,14 @@ function App() {
         extraEffects,
       });
     }
-  }, [wordLength, showGrayCount, hardMode, autoGray, autoGreen, extraEffects]);
+  }, [
+    wordLength,
+    showGrayCount,
+    hardMode,
+    autoGray,
+    autoGreen,
+    extraEffects,
+  ]);
 
   useEffect(() => {
     if (!solution) return;
@@ -676,7 +681,7 @@ function App() {
       }
       const delayMs = REVEAL_TIME_MS * solution.length;
       if (extraEffectsRef.current) {
-        setTimeout(() => setIsCelebrating(true), Math.max(delayMs, 3000));
+        setTimeout(() => setIsCelebrating(true), delayMs + 250);
       } else {
         const pool = isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
         const winMessage = pool[Math.floor(Math.random() * pool.length)];
@@ -696,7 +701,13 @@ function App() {
         (solution.length + 1) * REVEAL_TIME_MS
       );
     }
-  }, [isGameWon, isGameLost, showSuccessAlert, solution, isChallengeMode]);
+  }, [
+    isGameWon,
+    isGameLost,
+    showSuccessAlert,
+    solution,
+    isChallengeMode,
+  ]);
 
   const onChar = (value: string) => {
     if (
@@ -976,65 +987,69 @@ function App() {
           isOpen={isInfoModalOpen}
           handleClose={() => setIsInfoModalOpen(false)}
         />
-        <StatsModal
-          isOpen={isStatsModalOpen}
-          handleClose={() => setIsStatsModalOpen(false)}
-          solution={solution}
-          guesses={guesses}
-          gameStats={stats}
-          hardGameStats={hardStats}
-          isGameLost={isGameLost}
-          isGameWon={isGameWon}
-          handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
-          numberOfGuessesMade={guesses.length}
-          handleNewGame={() => handleNewGame()}
-          hardMode={hardMode}
-          challengeConfig={isChallengeMode ? challengeConfig : null}
-          handleReturnToNormal={
-            isChallengeMode ? handleReturnToNormal : undefined
-          }
-          extraEffects={extraEffects}
-        />
-        <SettingsModal
-          isOpen={isSettingsModalOpen}
-          handleClose={() => setIsSettingsModalOpen(false)}
-          wordLength={wordLength}
-          hasStarted={guesses.length > 0}
-          onWordLengthChange={handleWordLengthChange}
-          showGrayCount={showGrayCount}
-          setShowGrayCount={setShowGrayCount}
-          hardMode={hardMode}
-          setHardMode={(value: boolean) => {
-            setHardMode(value);
-            if (guesses.length === 0) {
-              setSolution(getRandomWord(wordLength, value));
+        <Suspense fallback={null}>
+          <StatsModal
+            isOpen={isStatsModalOpen}
+            handleClose={() => setIsStatsModalOpen(false)}
+            solution={solution}
+            guesses={guesses}
+            gameStats={stats}
+            hardGameStats={hardStats}
+            isGameLost={isGameLost}
+            isGameWon={isGameWon}
+            handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
+            numberOfGuessesMade={guesses.length}
+            handleNewGame={() => handleNewGame()}
+            hardMode={hardMode}
+            challengeConfig={isChallengeMode ? challengeConfig : null}
+            handleReturnToNormal={
+              isChallengeMode ? handleReturnToNormal : undefined
             }
-          }}
-          autoGray={autoGray}
-          setAutoGray={handleSetAutoGray}
-          autoGreen={autoGreen}
-          setAutoGreen={setAutoGreen}
-          extraEffects={extraEffects}
-          setExtraEffects={setExtraEffects}
-          challengeConfig={isChallengeMode ? challengeConfig : null}
-        />
-        {isChallengeMode && challengeConfig && (
-          <ChallengeAcceptModal
-            isOpen={isChallengeModalOpen}
-            onPlay={() => setIsChallengeModalOpen(false)}
-            config={challengeConfig}
+            extraEffects={extraEffects}
           />
-        )}
+          <SettingsModal
+            isOpen={isSettingsModalOpen}
+            handleClose={() => setIsSettingsModalOpen(false)}
+            wordLength={wordLength}
+            hasStarted={guesses.length > 0}
+            onWordLengthChange={handleWordLengthChange}
+            showGrayCount={showGrayCount}
+            setShowGrayCount={setShowGrayCount}
+            hardMode={hardMode}
+            setHardMode={(value: boolean) => {
+              setHardMode(value);
+              if (guesses.length === 0) {
+                setSolution(getRandomWord(wordLength, value));
+              }
+            }}
+            autoGray={autoGray}
+            setAutoGray={handleSetAutoGray}
+            autoGreen={autoGreen}
+            setAutoGreen={setAutoGreen}
+            extraEffects={extraEffects}
+            setExtraEffects={setExtraEffects}
+            challengeConfig={isChallengeMode ? challengeConfig : null}
+          />
+          {isChallengeMode && challengeConfig && (
+            <ChallengeAcceptModal
+              isOpen={isChallengeModalOpen}
+              onPlay={() => setIsChallengeModalOpen(false)}
+              config={challengeConfig}
+            />
+          )}
+        </Suspense>
         <AlertContainer />
       </div>
       {isCelebrating && (
-        <WinCelebration
-          word={solution}
-          onDone={() => {
-            setIsCelebrating(false);
-            setIsStatsModalOpen(true);
-          }}
-        />
+        <Suspense fallback={null}>
+          <WinCelebration
+            word={solution}
+            onDone={() => {
+              setIsCelebrating(false);
+              setIsStatsModalOpen(true);
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );
