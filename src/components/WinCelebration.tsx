@@ -184,8 +184,12 @@ export function WinCelebration({ word, onDone }: Props) {
       <div
         className="absolute inset-0"
         style={{
-          background: "rgba(0, 8, 0, 0.52)",
-          backdropFilter: "blur(6px) grayscale(1)",
+          background: "#0A0A0A",
+          backgroundImage: `
+            linear-gradient(90deg, rgba(255,215,0,0.03) 1px, transparent 1px),
+            linear-gradient(rgba(255,215,0,0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: "16px 16px",
         }}
       />
 
@@ -200,6 +204,7 @@ export function WinCelebration({ word, onDone }: Props) {
             height: p.size,
             background: p.color,
             borderRadius: p.shape === "circle" ? "50%" : 2,
+            willChange: "transform, opacity",
           }}
           initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
           animate={{
@@ -225,44 +230,64 @@ export function WinCelebration({ word, onDone }: Props) {
           left: "50%",
           transform: "translate(-50%, -50%)",
           display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 16,
         }}
       >
-        {letterData.map(({ letter, initialRotate }, i) => (
-          <motion.div
-            key={i}
-            initial={{
-              y: -(window.innerHeight * 0.8),
-              opacity: 0,
-              rotate: initialRotate,
-            }}
-            animate={{ y: 0, opacity: 1, rotate: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 210,
-              damping: 15,
-              delay: 0.1 + i * 0.12,
-            }}
-            style={{
-              width: cellSize,
-              height: cellSize,
-              margin: "0 3px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#22c55e",
-              border: "2px solid #22c55e",
-              borderRadius: 4,
-              boxShadow:
-                "0 0 24px rgba(34,197,94,0.65), 0 0 8px rgba(34,197,94,0.4), 0 6px 16px rgba(0,0,0,0.5)",
-              color: "white",
-              fontWeight: "bold",
-              fontSize,
-              flexShrink: 0,
-            }}
-          >
-            {letter}
-          </motion.div>
-        ))}
+        <motion.p
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+          className="font-pixel tracking-widest"
+          style={{
+            fontSize: 28,
+            color: "#d4af37",
+            textShadow:
+              "0 0 20px rgba(212,175,55,0.7), 0 0 8px rgba(212,175,55,0.4)",
+          }}
+        >
+          YOU WIN!
+        </motion.p>
+        <div style={{ display: "flex" }}>
+          {letterData.map(({ letter, initialRotate }, i) => (
+            <motion.div
+              key={i}
+              initial={{
+                y: -(window.innerHeight * 0.8),
+                opacity: 0,
+                rotate: initialRotate,
+              }}
+              animate={{ y: 0, opacity: 1, rotate: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 210,
+                damping: 15,
+                delay: 0.1 + i * 0.12,
+              }}
+              style={{
+                width: cellSize,
+                height: cellSize,
+                margin: "0 3px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#22c55e",
+                border: "2px solid #22c55e",
+                borderRadius: 4,
+                boxShadow:
+                  "0 0 24px rgba(34,197,94,0.65), 0 0 8px rgba(34,197,94,0.4), 0 6px 16px rgba(0,0,0,0.5)",
+                color: "white",
+                fontWeight: "bold",
+                fontSize,
+                flexShrink: 0,
+                willChange: "transform, opacity",
+              }}
+            >
+              {letter}
+            </motion.div>
+          ))}
+        </div>
       </div>
     </motion.div>
   );
