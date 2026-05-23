@@ -25,6 +25,8 @@ type Props = {
   setAutoGray: (value: boolean) => void;
   autoGreen: boolean;
   setAutoGreen: (value: boolean) => void;
+  winCelebration: boolean;
+  setWinCelebration: (value: boolean) => void;
   challengeConfig?: ChallengeConfig | null;
 };
 
@@ -54,6 +56,8 @@ export const SettingsModal = ({
   setAutoGray,
   autoGreen,
   setAutoGreen,
+  winCelebration,
+  setWinCelebration,
   challengeConfig,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>("settings");
@@ -276,6 +280,13 @@ export const SettingsModal = ({
               flag={autoGreen}
               handleFlag={setAutoGreen}
               description="Painting a cell green auto-greens the same letter in that column. Changing a green cell clears those auto-greens."
+            />
+
+            <SettingsToggle
+              settingName="Win Celebration"
+              flag={winCelebration}
+              handleFlag={setWinCelebration}
+              description="Play a firework celebration with sound and animations when you win."
             />
           </div>
         </>

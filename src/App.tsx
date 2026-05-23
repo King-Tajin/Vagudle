@@ -59,6 +59,7 @@ import { AlertContainer } from "./components/Alert";
 import { useAlert } from "./context/AlertContext";
 import { Navbar } from "./components/Navbar";
 import { isInAppBrowser } from "./lib/browser";
+import { WinCelebration } from "./components/WinCelebration";
 
 const challengeParam = new URLSearchParams(window.location.search).get(
   "challenge"
@@ -272,6 +273,10 @@ function App() {
   const [autoGreen, setAutoGreen] = useState(
     () => loadSettingsFromLocalStorage().autoGreen ?? false
   );
+  const [winCelebration, setWinCelebration] = useState(
+    () => loadSettingsFromLocalStorage().winCelebration ?? true
+  );
+  const [isCelebrating, setIsCelebrating] = useState(false);
   const [guesses, setGuesses] = useState<string[]>(
     () => loadGameStateFromLocalStorage()?.guesses ?? []
   );
@@ -627,9 +632,17 @@ function App() {
         hardMode,
         autoGray,
         autoGreen,
+        winCelebration,
       });
     }
-  }, [wordLength, showGrayCount, hardMode, autoGray, autoGreen]);
+  }, [
+    wordLength,
+    showGrayCount,
+    hardMode,
+    autoGray,
+    autoGreen,
+    winCelebration,
+  ]);
 
   useEffect(() => {
     if (!solution) return;
@@ -664,13 +677,17 @@ function App() {
         restoredGameRef.current = false;
         return;
       }
-      const pool = isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
-      const winMessage = pool[Math.floor(Math.random() * pool.length)];
       const delayMs = REVEAL_TIME_MS * solution.length;
-      showSuccessAlert(winMessage, {
-        delayMs,
-        onClose: () => setIsStatsModalOpen(true),
-      });
+      if (winCelebration) {
+        setTimeout(() => setIsCelebrating(true), Math.max(delayMs, 3000));
+      } else {
+        const pool = isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
+        const winMessage = pool[Math.floor(Math.random() * pool.length)];
+        showSuccessAlert(winMessage, {
+          delayMs,
+          onClose: () => setIsStatsModalOpen(true),
+        });
+      }
     }
     if (isGameLost) {
       if (restoredGameRef.current) {
@@ -682,7 +699,14 @@ function App() {
         (solution.length + 1) * REVEAL_TIME_MS
       );
     }
-  }, [isGameWon, isGameLost, showSuccessAlert, solution, isChallengeMode]);
+  }, [
+    isGameWon,
+    isGameLost,
+    showSuccessAlert,
+    solution,
+    isChallengeMode,
+    winCelebration,
+  ]);
 
   const onChar = (value: string) => {
     if (
@@ -999,6 +1023,8 @@ function App() {
           setAutoGray={handleSetAutoGray}
           autoGreen={autoGreen}
           setAutoGreen={setAutoGreen}
+          winCelebration={winCelebration}
+          setWinCelebration={setWinCelebration}
           challengeConfig={isChallengeMode ? challengeConfig : null}
         />
         {isChallengeMode && challengeConfig && (
@@ -1010,6 +1036,15 @@ function App() {
         )}
         <AlertContainer />
       </div>
+      {isCelebrating && (
+        <WinCelebration
+          word={solution}
+          onDone={() => {
+            setIsCelebrating(false);
+            setIsStatsModalOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 }
