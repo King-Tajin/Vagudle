@@ -25,8 +25,8 @@ type Props = {
   setAutoGray: (value: boolean) => void;
   autoGreen: boolean;
   setAutoGreen: (value: boolean) => void;
-  winCelebration: boolean;
-  setWinCelebration: (value: boolean) => void;
+  extraEffects: boolean;
+  setExtraEffects: (value: boolean) => void;
   challengeConfig?: ChallengeConfig | null;
 };
 
@@ -56,8 +56,8 @@ export const SettingsModal = ({
   setAutoGray,
   autoGreen,
   setAutoGreen,
-  winCelebration,
-  setWinCelebration,
+  extraEffects,
+  setExtraEffects,
   challengeConfig,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>("settings");
@@ -283,10 +283,10 @@ export const SettingsModal = ({
             />
 
             <SettingsToggle
-              settingName="Win Celebration"
-              flag={winCelebration}
-              handleFlag={setWinCelebration}
-              description="Play a firework celebration with sound and animations when you win."
+              settingName="Extra Sounds & Animations"
+              flag={extraEffects}
+              handleFlag={setExtraEffects}
+              description="Play a firework celebration on wins and a sad sound effect on losses."
             />
           </div>
         </>

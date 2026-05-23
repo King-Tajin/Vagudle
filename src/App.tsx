@@ -273,9 +273,13 @@ function App() {
   const [autoGreen, setAutoGreen] = useState(
     () => loadSettingsFromLocalStorage().autoGreen ?? false
   );
-  const [winCelebration, setWinCelebration] = useState(
-    () => loadSettingsFromLocalStorage().winCelebration ?? true
+  const [extraEffects, setExtraEffects] = useState(
+    () => loadSettingsFromLocalStorage().extraEffects ?? true
   );
+  const extraEffectsRef = useRef(extraEffects);
+  useEffect(() => {
+    extraEffectsRef.current = extraEffects;
+  }, [extraEffects]);
   const [isCelebrating, setIsCelebrating] = useState(false);
   const [guesses, setGuesses] = useState<string[]>(
     () => loadGameStateFromLocalStorage()?.guesses ?? []
@@ -632,17 +636,10 @@ function App() {
         hardMode,
         autoGray,
         autoGreen,
-        winCelebration,
+        extraEffects,
       });
     }
-  }, [
-    wordLength,
-    showGrayCount,
-    hardMode,
-    autoGray,
-    autoGreen,
-    winCelebration,
-  ]);
+  }, [wordLength, showGrayCount, hardMode, autoGray, autoGreen, extraEffects]);
 
   useEffect(() => {
     if (!solution) return;
@@ -678,7 +675,7 @@ function App() {
         return;
       }
       const delayMs = REVEAL_TIME_MS * solution.length;
-      if (winCelebration) {
+      if (extraEffectsRef.current) {
         setTimeout(() => setIsCelebrating(true), Math.max(delayMs, 3000));
       } else {
         const pool = isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
@@ -699,14 +696,7 @@ function App() {
         (solution.length + 1) * REVEAL_TIME_MS
       );
     }
-  }, [
-    isGameWon,
-    isGameLost,
-    showSuccessAlert,
-    solution,
-    isChallengeMode,
-    winCelebration,
-  ]);
+  }, [isGameWon, isGameLost, showSuccessAlert, solution, isChallengeMode]);
 
   const onChar = (value: string) => {
     if (
@@ -1003,6 +993,7 @@ function App() {
           handleReturnToNormal={
             isChallengeMode ? handleReturnToNormal : undefined
           }
+          extraEffects={extraEffects}
         />
         <SettingsModal
           isOpen={isSettingsModalOpen}
@@ -1023,8 +1014,8 @@ function App() {
           setAutoGray={handleSetAutoGray}
           autoGreen={autoGreen}
           setAutoGreen={setAutoGreen}
-          winCelebration={winCelebration}
-          setWinCelebration={setWinCelebration}
+          extraEffects={extraEffects}
+          setExtraEffects={setExtraEffects}
           challengeConfig={isChallengeMode ? challengeConfig : null}
         />
         {isChallengeMode && challengeConfig && (

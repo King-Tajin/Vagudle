@@ -32,7 +32,7 @@ type StoredSettings = {
   hardMode: boolean;
   autoGray: boolean;
   autoGreen: boolean;
-  winCelebration: boolean;
+  extraEffects: boolean;
 };
 
 const defaultSettings: StoredSettings = {
@@ -41,7 +41,7 @@ const defaultSettings: StoredSettings = {
   hardMode: false,
   autoGray: false,
   autoGreen: false,
-  winCelebration: true,
+  extraEffects: true,
 };
 
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {
