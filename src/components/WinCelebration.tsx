@@ -1,17 +1,20 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import KingTajinIcon from "@/assets/icons/king-tajin.svg?react";
 
-const GREENS = [
-  "#22c55e",
-  "#4ade80",
-  "#86efac",
-  "#a4c639",
-  "#16a34a",
-  "#bbf7d0",
+const PURPLES = [
+  "#a855f7",
+  "#c084fc",
+  "#d8b4fe",
+  "#7c3aed",
+  "#9333ea",
+  "#e879f9",
+  "#f0abfc",
+  "#6d28d9",
 ];
 
-const FADE_OUT_AT_MS = 3800;
-const CELEBRATION_DURATION_MS = 4500;
+const FADE_OUT_AT_MS = 5000;
+const CELEBRATION_DURATION_MS = 6000;
 
 type Particle = {
   id: string;
@@ -48,7 +51,7 @@ function generateBurst(
       dx,
       dy,
       finalDy: dy + 110 + Math.random() * 70,
-      color: GREENS[Math.floor(Math.random() * GREENS.length)],
+      color: PURPLES[Math.floor(Math.random() * PURPLES.length)],
       size: 10 + Math.random() * 14,
       shape: Math.random() > 0.45 ? "circle" : "square",
       burstDelay: delayMs / 1000,
@@ -136,10 +139,7 @@ export function WinCelebration({ word, onDone }: Props) {
       word
         .toUpperCase()
         .split("")
-        .map((letter) => ({
-          letter,
-          initialRotate: -10 + Math.random() * 20,
-        })),
+        .map((letter) => ({ letter })),
     [word]
   );
 
@@ -236,34 +236,24 @@ export function WinCelebration({ word, onDone }: Props) {
         }}
       >
         <motion.p
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
-          className="font-pixel tracking-widest"
-          style={{
-            fontSize: 28,
-            color: "#d4af37",
-            textShadow:
-              "0 0 20px rgba(212,175,55,0.7), 0 0 8px rgba(212,175,55,0.4)",
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15, duration: 0.5, ease: "easeIn" }}
+          className="font-royal font-bold text-crown-gold crown-glow tracking-wider"
+          style={{ fontSize: "clamp(36px, 9vw, 64px)" }}
         >
           YOU WIN!
         </motion.p>
         <div style={{ display: "flex" }}>
-          {letterData.map(({ letter, initialRotate }, i) => (
+          {letterData.map(({ letter }, i) => (
             <motion.div
               key={i}
-              initial={{
-                y: -(window.innerHeight * 0.8),
-                opacity: 0,
-                rotate: initialRotate,
-              }}
-              animate={{ y: 0, opacity: 1, rotate: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{
-                type: "spring",
-                stiffness: 210,
-                damping: 15,
-                delay: 0.1 + i * 0.12,
+                duration: 0.4,
+                delay: 0.2 + i * 0.1,
+                ease: "easeIn",
               }}
               style={{
                 width: cellSize,
@@ -275,8 +265,7 @@ export function WinCelebration({ word, onDone }: Props) {
                 background: "#22c55e",
                 border: "2px solid #22c55e",
                 borderRadius: 4,
-                boxShadow:
-                  "0 0 24px rgba(34,197,94,0.65), 0 0 8px rgba(34,197,94,0.4), 0 6px 16px rgba(0,0,0,0.5)",
+                boxShadow: "0 4px 0 #15803d, 0 6px 16px rgba(0,0,0,0.6)",
                 color: "white",
                 fontWeight: "bold",
                 fontSize,
@@ -288,6 +277,14 @@ export function WinCelebration({ word, onDone }: Props) {
             </motion.div>
           ))}
         </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.5, ease: "easeIn" }}
+          style={{ width: "clamp(90px, 24vw, 180px)", height: "auto" }}
+        >
+          <KingTajinIcon style={{ width: "100%", height: "100%" }} />
+        </motion.div>
       </div>
     </motion.div>
   );
