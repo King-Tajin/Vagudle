@@ -32,6 +32,7 @@ module.exports = {
         pixel: ["VT323", "monospace"],
         royal: ["Cinzel", "serif"],
         code: ["JetBrains Mono", "monospace"],
+        jakarta: ["'Plus Jakarta Sans'", "sans-serif"],
       },
       boxShadow: {
         pixel: "4px 4px 0px 0px rgba(0,0,0,1)",
