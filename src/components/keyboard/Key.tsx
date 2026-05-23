@@ -46,6 +46,7 @@ export const Key = ({
     transitionDelay: isRevealing ? `${keyDelayMs}ms` : "unset",
     width: `${width}px`,
     height: "58px",
+    fontFamily: "'Trebuchet MS', sans-serif",
     boxShadow:
       isAbsent || isCorrect || isAutoAbsent
         ? "none"

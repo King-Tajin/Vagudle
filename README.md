@@ -19,7 +19,7 @@ The keyboard updates as you paint, so confirmed, present, and eliminated letters
 ## Features
 
 | Feature                  | Description                                                        |
-| ------------------------ | ------------------------------------------------------------------ |
+|--------------------------|--------------------------------------------------------------------|
 | **Variable word length** | Play with 4, 5, 6, or 7-letter words via Settings                  |
 | **Hard mode**            | Two fewer guesses and words are older or less common English words |
 | **Unlimited games**      | No daily limit — play as many games as you want                    |

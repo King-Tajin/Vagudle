@@ -269,6 +269,7 @@ export function WinCelebration({ word, onDone }: Props) {
                 color: "white",
                 fontWeight: "bold",
                 fontSize,
+                fontFamily: "'Trebuchet MS', sans-serif",
                 flexShrink: 0,
                 willChange: "transform, opacity",
               }}

@@ -56,6 +56,7 @@ export const Cell = ({
         height: `${cellSize}px`,
         margin: "0 2px",
         fontSize: `${fontSize}px`,
+        fontFamily: "'Trebuchet MS', sans-serif",
       }}
     >
       <div className="letter-container" style={{ animationDelay }}>
