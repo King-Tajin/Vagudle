@@ -1,2 +1,7 @@
 name = "vagudle"
 compatibility_date = "2026-05-14"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vagudle-duels"
+database_id = "e32fb5db-fd30-498a-a8b9-46c2c0103489"

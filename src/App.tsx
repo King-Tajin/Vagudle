@@ -1,13 +1,34 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Hash, Target } from "lucide-react";
+import { BookOpen, Hash, Target, Swords } from "lucide-react";
 import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
 import { InfoModal } from "./components/modals/InfoModal";
-const StatsModal = lazy(() => import("./components/modals/StatsModal").then(m => ({ default: m.StatsModal })));
-const SettingsModal = lazy(() => import("./components/modals/SettingsModal").then(m => ({ default: m.SettingsModal })));
-const ChallengeAcceptModal = lazy(() => import("./components/modals/ChallengeAcceptModal").then(m => ({ default: m.ChallengeAcceptModal })));
-const WinCelebration = lazy(() => import("./components/WinCelebration").then(m => ({ default: m.WinCelebration })));
+const StatsModal = lazy(() =>
+  import("./components/modals/StatsModal").then((m) => ({
+    default: m.StatsModal,
+  }))
+);
+const SettingsModal = lazy(() =>
+  import("./components/modals/SettingsModal").then((m) => ({
+    default: m.SettingsModal,
+  }))
+);
+const ChallengeAcceptModal = lazy(() =>
+  import("./components/modals/ChallengeAcceptModal").then((m) => ({
+    default: m.ChallengeAcceptModal,
+  }))
+);
+const DuelModal = lazy(() =>
+  import("./components/modals/DuelModal").then((m) => ({
+    default: m.DuelModal,
+  }))
+);
+const WinCelebration = lazy(() =>
+  import("./components/WinCelebration").then((m) => ({
+    default: m.WinCelebration,
+  }))
+);
 import {
   WIN_MESSAGES,
   CHALLENGE_WIN_MESSAGES,
@@ -56,6 +77,15 @@ import {
   DICT_LABELS,
   type ChallengeConfig,
 } from "./lib/challenge";
+import {
+  decodeDuel,
+  loadDuelState,
+  saveDuelState,
+  pruneOldDuelStates,
+  submitDuelResult,
+  type DuelConfig,
+  type DuelSaveStatus,
+} from "./lib/duel";
 import { AlertContainer } from "./components/Alert";
 import { useAlert } from "./context/AlertContext";
 import { Navbar } from "./components/Navbar";
@@ -64,6 +94,7 @@ import { isInAppBrowser } from "./lib/browser";
 const challengeParam = new URLSearchParams(window.location.search).get(
   "challenge"
 );
+const duelParam = new URLSearchParams(window.location.search).get("duel");
 
 const isRowFullyGray = (solution: string, guess: string): boolean => {
   if (!guess) return false;
@@ -86,8 +117,8 @@ interface StripMeasure {
 }
 
 function TajinRain({
-                     keyboardRef,
-                   }: {
+  keyboardRef,
+}: {
   keyboardRef: React.RefObject<HTMLDivElement>;
 }) {
   const [strips, setStrips] = useState<StripMeasure>({
@@ -174,7 +205,7 @@ function TajinRain({
         next.push(
           makeParticle(
             strips.rightStart +
-            (1 - Math.pow(Math.random(), EXP)) * strips.rightWidth
+              (1 - Math.pow(Math.random(), EXP)) * strips.rightWidth
           )
         );
       }
@@ -249,6 +280,12 @@ function App() {
   const [challengeConfig, setChallengeConfig] =
     useState<ChallengeConfig | null>(null);
   const [isMalformedChallenge, setIsMalformedChallenge] = useState(false);
+  const [duelConfig, setDuelConfig] = useState<DuelConfig | null>(null);
+  const [duelToken, setDuelToken] = useState<string | null>(null);
+  const [isMalformedDuel, setIsMalformedDuel] = useState(false);
+  const [isDuelExpired, setIsDuelExpired] = useState(false);
+  const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
+  const [duelSaveStatus, setDuelSaveStatus] = useState<DuelSaveStatus>("idle");
   const [currentGuess, setCurrentGuess] = useState("");
   const [isGameWon, setIsGameWon] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
@@ -277,7 +314,9 @@ function App() {
     () => loadSettingsFromLocalStorage().extraEffects ?? true
   );
   const extraEffectsRef = useRef(extraEffects);
-  useEffect(() => { extraEffectsRef.current = extraEffects; }, [extraEffects]);
+  useEffect(() => {
+    extraEffectsRef.current = extraEffects;
+  }, [extraEffects]);
   const [isCelebrating, setIsCelebrating] = useState(false);
   const [guesses, setGuesses] = useState<string[]>(
     () => loadGameStateFromLocalStorage()?.guesses ?? []
@@ -290,11 +329,15 @@ function App() {
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
+  const duelSubmittedRef = useRef(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
 
   const isChallengeMode = challengeConfig !== null;
+  const isDuelMode = duelConfig !== null;
 
-  const maxChallenges = challengeConfig
+  const maxChallenges = duelConfig
+    ? duelConfig.guesses
+    : challengeConfig
     ? challengeConfig.guesses
     : hardMode
     ? HARD_MODE_MAX_CHALLENGES
@@ -319,15 +362,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.title = isChallengeMode ? "Vagudle - Challenge" : "Vagudle";
+    document.title = isDuelMode
+      ? "Vagudle - Duel"
+      : isChallengeMode
+      ? "Vagudle - Challenge"
+      : "Vagudle";
     return () => {
       document.title = "Vagudle";
     };
-  }, [isChallengeMode]);
+  }, [isChallengeMode, isDuelMode]);
 
   useEffect(() => {
     const run = async () => {
       pruneOldChallengeStates();
+      pruneOldDuelStates();
       const loadStart = Date.now();
       const savedSettings = loadSettingsFromLocalStorage();
       const savedState = loadGameStateFromLocalStorage();
@@ -375,6 +423,61 @@ function App() {
           setAutoGrayLetters(new Set());
         }
         setIsChallengeModalOpen(!alreadyFinished);
+        setIsLoading(false);
+        return;
+      }
+
+      if (duelParam) {
+        const result = await decodeDuel(duelParam);
+        if (!result) {
+          setIsMalformedDuel(true);
+          setIsLoading(false);
+          return;
+        }
+        if (result.expired) {
+          setIsDuelExpired(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const config = result.config;
+        const wordUpper = config.word.toUpperCase();
+        if (!isWordInDict(wordUpper, config.dict)) {
+          setIsMalformedDuel(true);
+          setIsLoading(false);
+          return;
+        }
+
+        setDuelConfig(config);
+        setDuelToken(duelParam);
+        setSolution(wordUpper);
+
+        const savedDuel = loadDuelState(config.id, config.discordId);
+        let alreadyFinished = false;
+        if (savedDuel) {
+          setGuesses(savedDuel.guesses);
+          setCellColors(savedDuel.cellColors as any);
+          setAutoGrayLetters(new Set(savedDuel.autoGrayLetters));
+          const won = savedDuel.guesses.some(
+            (g) => g.toUpperCase() === wordUpper
+          );
+          const lost = !won && savedDuel.guesses.length >= config.guesses;
+          if (won) {
+            restoredGameRef.current = true;
+            duelSubmittedRef.current = true;
+            setIsGameWon(true);
+          } else if (lost) {
+            restoredGameRef.current = true;
+            duelSubmittedRef.current = true;
+            setIsGameLost(true);
+          }
+          alreadyFinished = won || lost;
+        } else {
+          setGuesses([]);
+          setCellColors({});
+          setAutoGrayLetters(new Set());
+        }
+        setIsDuelModalOpen(!alreadyFinished);
         setIsLoading(false);
         return;
       }
@@ -532,7 +635,7 @@ function App() {
   };
 
   const handleNewGameWithFail = () => {
-    if (isChallengeMode) {
+    if (isDuelMode || isChallengeMode) {
       handleReturnToNormal();
       return;
     }
@@ -627,7 +730,7 @@ function App() {
   const clearCurrentRowClass = () => setCurrentRowClass("");
 
   useEffect(() => {
-    if (!isChallengeMode) {
+    if (!isChallengeMode && !isDuelMode) {
       saveSettingsToLocalStorage({
         wordLength,
         showGrayCount,
@@ -644,11 +747,19 @@ function App() {
     autoGray,
     autoGreen,
     extraEffects,
+    isChallengeMode,
+    isDuelMode,
   ]);
 
   useEffect(() => {
     if (!solution) return;
-    if (isChallengeMode && challengeConfig) {
+    if (isDuelMode && duelConfig) {
+      saveDuelState(duelConfig.id, duelConfig.discordId, {
+        guesses,
+        cellColors,
+        autoGrayLetters: Array.from(autoGrayLetters),
+      });
+    } else if (isChallengeMode && challengeConfig) {
       saveChallengeState(challengeConfig.id, {
         guesses,
         cellColors,
@@ -667,6 +778,8 @@ function App() {
     guesses,
     cellColors,
     autoGrayLetters,
+    isDuelMode,
+    duelConfig,
     isChallengeMode,
     challengeConfig,
     solution,
@@ -683,11 +796,18 @@ function App() {
       if (extraEffectsRef.current) {
         setTimeout(() => setIsCelebrating(true), delayMs + 250);
       } else {
-        const pool = isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
+        const pool =
+          isDuelMode || isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
         const winMessage = pool[Math.floor(Math.random() * pool.length)];
         showSuccessAlert(winMessage, {
           delayMs,
-          onClose: () => setIsStatsModalOpen(true),
+          onClose: () => {
+            if (isDuelMode) {
+              setIsDuelModalOpen(true);
+            } else {
+              setIsStatsModalOpen(true);
+            }
+          },
         });
       }
     }
@@ -696,10 +816,12 @@ function App() {
         restoredGameRef.current = false;
         return;
       }
-      setTimeout(
-        () => setIsStatsModalOpen(true),
-        (solution.length + 1) * REVEAL_TIME_MS
-      );
+      const delay = (solution.length + 1) * REVEAL_TIME_MS;
+      if (isDuelMode) {
+        setTimeout(() => setIsDuelModalOpen(true), delay);
+      } else {
+        setTimeout(() => setIsStatsModalOpen(true), delay);
+      }
     }
   }, [
     isGameWon,
@@ -707,7 +829,32 @@ function App() {
     showSuccessAlert,
     solution,
     isChallengeMode,
+    isDuelMode,
   ]);
+
+  useEffect(() => {
+    if (!isDuelMode || !duelToken) return;
+    if (!isGameWon && !isGameLost) return;
+    if (duelSubmittedRef.current) return;
+    duelSubmittedRef.current = true;
+
+    const submit = async () => {
+      setDuelSaveStatus("saving");
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) {
+          await new Promise((r) => setTimeout(r, 15000));
+        }
+        const ok = await submitDuelResult(duelToken, isGameWon, guesses.length);
+        if (ok) {
+          setDuelSaveStatus("saved");
+          return;
+        }
+      }
+      setDuelSaveStatus("failed");
+    };
+
+    void submit();
+  }, [isGameWon, isGameLost, isDuelMode, duelToken, guesses.length]);
 
   const onChar = (value: string) => {
     if (
@@ -769,14 +916,14 @@ function App() {
           return next;
         });
 
-        if (!isChallengeMode) recordStats(guesses.length);
+        if (!isChallengeMode && !isDuelMode) recordStats(guesses.length);
         return setIsGameWon(true);
       }
 
       if (guesses.length === maxChallenges - 1) {
-        if (!isChallengeMode) recordStats(guesses.length + 1);
+        if (!isChallengeMode && !isDuelMode) recordStats(guesses.length + 1);
         setIsGameLost(true);
-        if (!isChallengeMode) {
+        if (!isChallengeMode && !isDuelMode) {
           showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
             persist: true,
             delayMs: REVEAL_TIME_MS * solution.length + 1,
@@ -903,6 +1050,114 @@ function App() {
     );
   }
 
+  if (isMalformedDuel) {
+    return (
+      <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
+        {bgGrid}
+        <Navbar
+          setIsInfoModalOpen={() => {}}
+          setIsStatsModalOpen={() => {}}
+          setIsSettingsModalOpen={() => {}}
+          handleNewGame={() => {}}
+          hasActiveGame={false}
+          isInfoModalOpen={false}
+        />
+        <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="font-pixel text-center text-4xl text-crown-gold crown-glow tracking-widest"
+          >
+            VAGUDLE
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="max-w-sm w-full p-5 text-center"
+            style={{
+              background: "rgba(220,50,50,0.08)",
+              border: "2px solid rgba(220,50,50,0.4)",
+            }}
+          >
+            <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+              INVALID DUEL LINK
+            </p>
+            <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
+              This duel link is broken or has been tampered with. Ask for a new
+              link.
+            </p>
+            <button
+              onClick={handleReturnToNormal}
+              className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
+              style={{
+                background: "rgba(255,215,0,0.08)",
+                border: "1px solid rgba(255,215,0,0.3)",
+                color: "#d4af37",
+              }}
+            >
+              PLAY NORMAL VAGUDLE
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isDuelExpired) {
+    return (
+      <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
+        {bgGrid}
+        <Navbar
+          setIsInfoModalOpen={() => {}}
+          setIsStatsModalOpen={() => {}}
+          setIsSettingsModalOpen={() => {}}
+          handleNewGame={() => {}}
+          hasActiveGame={false}
+          isInfoModalOpen={false}
+        />
+        <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="font-pixel text-center text-4xl text-crown-gold crown-glow tracking-widest"
+          >
+            VAGUDLE
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="max-w-sm w-full p-5 text-center"
+            style={{
+              background: "rgba(220,50,50,0.08)",
+              border: "2px solid rgba(220,50,50,0.4)",
+            }}
+          >
+            <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+              DUEL EXPIRED
+            </p>
+            <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
+              This duel link has expired. Duel links are only valid for 24
+              hours. Ask for a new duel to be created.
+            </p>
+            <button
+              onClick={handleReturnToNormal}
+              className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
+              style={{
+                background: "rgba(255,215,0,0.08)",
+                border: "1px solid rgba(255,215,0,0.3)",
+                color: "#d4af37",
+              }}
+            >
+              PLAY NORMAL VAGUDLE
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
       {bgGrid}
@@ -914,6 +1169,7 @@ function App() {
         handleNewGame={handleNewGameWithFail}
         hasActiveGame={hasActiveGame}
         isChallengeMode={isChallengeMode}
+        isDuelMode={isDuelMode}
         isInfoModalOpen={isInfoModalOpen}
       />
       <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
@@ -954,6 +1210,44 @@ function App() {
                 <span className="flex items-center gap-1 font-code text-xs text-gray-400">
                   <Target className="w-3 h-3 text-crown-amber" />
                   {challengeConfig.guesses} guesses
+                </span>
+              </div>
+            </motion.div>
+          )}
+
+          {isDuelMode && duelConfig && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="mx-auto mb-4 max-w-sm w-full px-4 py-2.5"
+              style={{
+                background: "rgba(80,0,170,0.1)",
+                border: "1px solid rgba(80,0,170,0.4)",
+              }}
+            >
+              <p className="font-pixel text-[9px] text-crown-amber tracking-widest text-center mb-1.5">
+                DUEL
+              </p>
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                <span className="flex items-center gap-1 font-code text-xs text-gray-400">
+                  <Hash className="w-3 h-3 text-crown-amber" />
+                  {duelConfig.length} letters
+                </span>
+                <span className="font-code text-xs text-gray-600">·</span>
+                <span className="flex items-center gap-1 font-code text-xs text-gray-400">
+                  <BookOpen className="w-3 h-3 text-crown-amber" />
+                  {DICT_LABELS[duelConfig.dict]} word
+                </span>
+                <span className="font-code text-xs text-gray-600">·</span>
+                <span className="flex items-center gap-1 font-code text-xs text-gray-400">
+                  <Target className="w-3 h-3 text-crown-amber" />
+                  {duelConfig.guesses} guesses
+                </span>
+                <span className="font-code text-xs text-gray-600">·</span>
+                <span className="flex items-center gap-1 font-code text-xs text-gray-400">
+                  <Swords className="w-3 h-3 text-crown-amber" />
+                  24h
                 </span>
               </div>
             </motion.div>
@@ -1028,13 +1322,29 @@ function App() {
             setAutoGreen={setAutoGreen}
             extraEffects={extraEffects}
             setExtraEffects={setExtraEffects}
-            challengeConfig={isChallengeMode ? challengeConfig : null}
+            challengeConfig={
+              isDuelMode
+                ? (duelConfig as any)
+                : isChallengeMode
+                ? challengeConfig
+                : null
+            }
           />
           {isChallengeMode && challengeConfig && (
             <ChallengeAcceptModal
               isOpen={isChallengeModalOpen}
               onPlay={() => setIsChallengeModalOpen(false)}
               config={challengeConfig}
+            />
+          )}
+          {isDuelMode && duelConfig && (
+            <DuelModal
+              isOpen={isDuelModalOpen}
+              mode={isGameWon || isGameLost ? "complete" : "accept"}
+              config={duelConfig}
+              onPlay={() => setIsDuelModalOpen(false)}
+              onReturn={handleReturnToNormal}
+              saveStatus={duelSaveStatus}
             />
           )}
         </Suspense>
@@ -1046,7 +1356,11 @@ function App() {
             word={solution}
             onDone={() => {
               setIsCelebrating(false);
-              setIsStatsModalOpen(true);
+              if (isDuelMode) {
+                setIsDuelModalOpen(true);
+              } else {
+                setIsStatsModalOpen(true);
+              }
             }}
           />
         </Suspense>

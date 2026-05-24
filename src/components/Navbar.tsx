@@ -18,6 +18,7 @@ type Props = {
   handleNewGame: () => void;
   hasActiveGame: boolean;
   isChallengeMode?: boolean;
+  isDuelMode?: boolean;
   isInfoModalOpen: boolean;
 };
 
@@ -28,6 +29,7 @@ export const Navbar = ({
   handleNewGame,
   hasActiveGame,
   isChallengeMode = false,
+  isDuelMode = false,
   isInfoModalOpen,
 }: Props) => {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -69,6 +71,12 @@ export const Navbar = ({
     handleNewGame();
   };
 
+  const leaveLabel = isDuelMode
+    ? "Leave Duel"
+    : isChallengeMode
+    ? "Leave Challenge"
+    : "New Game";
+
   return (
     <div className="navbar">
       <header className="sticky top-0 z-50 bg-obsidian-900/95 backdrop-blur-sm border-b-4 border-crown-gold">
@@ -109,12 +117,12 @@ export const Navbar = ({
 
             <div className="right-icons">
               <motion.button
-                title={isChallengeMode ? "Leave Challenge" : "New Game"}
+                title={leaveLabel}
                 onClick={onNewGameClick}
                 className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95, rotate: 180 }}
-                aria-label={isChallengeMode ? "Leave Challenge" : "New Game"}
+                aria-label={leaveLabel}
               >
                 <RefreshIcon className="h-6 w-6 text-crown-gold" />
               </motion.button>
@@ -187,8 +195,8 @@ export const Navbar = ({
                           FIRST TIME HERE?
                         </p>
                         <p className="font-code text-xs text-gray-300 leading-relaxed mb-3">
-                          Check out Settings to customize word length, helpful tools,
-                          and more.
+                          Check out Settings to customize word length, helpful
+                          tools, and more.
                         </p>
                         <button
                           onClick={dismissNudge}
@@ -225,7 +233,17 @@ export const Navbar = ({
               border: "2px solid rgba(255,215,0,0.4)",
             }}
           >
-            {isChallengeMode ? (
+            {isDuelMode ? (
+              <>
+                <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+                  LEAVE DUEL?
+                </p>
+                <p className="font-code text-sm text-gray-300 mb-5">
+                  Your progress for this duel is saved for 24 hours. You can
+                  return to this link any time.
+                </p>
+              </>
+            ) : isChallengeMode ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
                   LEAVE CHALLENGE?
@@ -255,7 +273,7 @@ export const Navbar = ({
                   color: "#f87171",
                 }}
               >
-                {isChallengeMode ? "LEAVE" : "ABANDON"}
+                {isDuelMode ? "LEAVE" : isChallengeMode ? "LEAVE" : "ABANDON"}
               </button>
               <button
                 onClick={() => setShowConfirm(false)}
