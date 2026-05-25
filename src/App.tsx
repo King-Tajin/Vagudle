@@ -731,16 +731,14 @@ function App() {
 
   useEffect(() => {
     if (isLoading) return;
-    if (!isChallengeMode && !isDuelMode) {
-      saveSettingsToLocalStorage({
-        wordLength,
-        showGrayCount,
-        hardMode,
-        autoGray,
-        autoGreen,
-        extraEffects,
-      });
-    }
+    saveSettingsToLocalStorage({
+      wordLength,
+      showGrayCount,
+      hardMode,
+      autoGray,
+      autoGreen,
+      extraEffects,
+    });
   }, [
     isLoading,
     wordLength,
@@ -749,8 +747,6 @@ function App() {
     autoGray,
     autoGreen,
     extraEffects,
-    isChallengeMode,
-    isDuelMode,
   ]);
 
   useEffect(() => {
