@@ -31,15 +31,15 @@ export async function onRequestGet(context) {
     if (!validateDuelParsed(parsed))
       return json({ success: false, error: "Malformed duel data." }, 400);
 
-    if (Date.now() - parsed.createdAt > ONE_DAY_MS)
+    if (Date.now() - parsed.created_at > ONE_DAY_MS)
       return json({ success: true, expired: true });
 
-    const { word, dict, guesses, length, id, discordId, createdAt } = parsed;
+    const { word, dict, guesses, length, id, discord_id, created_at } = parsed;
 
     return json({
       success: true,
       expired: false,
-      config: { word, dict, guesses, length, id, discordId, createdAt },
+      config: { word, dict, guesses, length, id, discord_id, created_at },
     });
   } catch (error) {
     console.error("Duel decode error:", error);

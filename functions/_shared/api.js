@@ -42,8 +42,8 @@ export const validateDuelParsed = ({
   guesses,
   length,
   id,
-  discordId,
-  createdAt,
+  discord_id,
+  created_at,
 }) =>
   typeof word === "string" &&
   VALID_DICTS.includes(dict) &&
@@ -54,8 +54,8 @@ export const validateDuelParsed = ({
   word.length <= 7 &&
   word.length === length &&
   /^[a-zA-Z]+$/.test(word) &&
-  typeof discordId === "string" &&
-  discordId.length > 0 &&
+  typeof discord_id === "string" &&
+  discord_id.length > 0 &&
   typeof id === "string" &&
   id.length > 0 &&
-  typeof createdAt === "number";
+  typeof created_at === "number";

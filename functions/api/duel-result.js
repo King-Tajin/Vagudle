@@ -64,7 +64,7 @@ export async function onRequestPost(context) {
     if (!validateDuelParsed(parsed))
       return json({ success: false, error: "Malformed duel data." }, 400);
 
-    if (Date.now() - parsed.createdAt > ONE_DAY_MS)
+    if (Date.now() - parsed.created_at > ONE_DAY_MS)
       return json({ success: false, error: "Duel has expired." }, 400);
 
     const result = await db
@@ -78,7 +78,7 @@ export async function onRequestPost(context) {
         guessesUsed,
         new Date().toISOString(),
         parsed.id,
-        parsed.discordId
+        parsed.discord_id
       )
       .run();
 

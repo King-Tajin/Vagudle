@@ -452,7 +452,7 @@ function App() {
         setDuelToken(duelParam);
         setSolution(wordUpper);
 
-        const savedDuel = loadDuelState(config.id, config.discordId);
+        const savedDuel = loadDuelState(config.id, config.discord_id);
         let alreadyFinished = false;
         if (savedDuel) {
           setGuesses(savedDuel.guesses);
@@ -754,7 +754,7 @@ function App() {
   useEffect(() => {
     if (!solution) return;
     if (isDuelMode && duelConfig) {
-      saveDuelState(duelConfig.id, duelConfig.discordId, {
+      saveDuelState(duelConfig.id, duelConfig.discord_id, {
         guesses,
         cellColors,
         autoGrayLetters: Array.from(autoGrayLetters),

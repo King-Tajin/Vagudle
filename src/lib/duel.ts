@@ -8,8 +8,8 @@ export type DuelConfig = {
   guesses: 9 | 11;
   id: string;
   length: number;
-  discordId: string;
-  createdAt: number;
+  discord_id: string;
+  created_at: number;
 };
 
 export type DuelGameState = {
@@ -83,17 +83,17 @@ export const decodeDuel = async (
   }
 };
 
-const duelStateKey = (id: string, discordId: string) =>
-  `duel_${id}_${discordId}`;
+const duelStateKey = (id: string, discord_id: string) =>
+  `duel_${id}_${discord_id}`;
 
 export const saveDuelState = (
   id: string,
-  discordId: string,
+  discord_id: string,
   state: DuelGameState
 ): void => {
   try {
     localStorage.setItem(
-      duelStateKey(id, discordId),
+      duelStateKey(id, discord_id),
       JSON.stringify({ ...state, savedAt: Date.now() })
     );
   } catch {}
@@ -101,19 +101,19 @@ export const saveDuelState = (
 
 export const loadDuelState = (
   id: string,
-  discordId: string
+  discord_id: string
 ): DuelGameState | null => {
   try {
-    const stored = localStorage.getItem(duelStateKey(id, discordId));
+    const stored = localStorage.getItem(duelStateKey(id, discord_id));
     if (!stored) return null;
     const parsed = JSON.parse(stored) as DuelGameState;
     if (!parsed.savedAt || Date.now() - parsed.savedAt > ONE_DAY_MS) {
-      localStorage.removeItem(duelStateKey(id, discordId));
+      localStorage.removeItem(duelStateKey(id, discord_id));
       return null;
     }
     return parsed;
   } catch {
-    localStorage.removeItem(duelStateKey(id, discordId));
+    localStorage.removeItem(duelStateKey(id, discord_id));
     return null;
   }
 };
