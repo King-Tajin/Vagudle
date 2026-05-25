@@ -1300,6 +1300,8 @@ function App() {
               isChallengeMode ? handleReturnToNormal : undefined
             }
             extraEffects={extraEffects}
+            isDuelMode={isDuelMode}
+            handleDuelReturn={isDuelMode ? handleReturnToNormal : undefined}
           />
           <SettingsModal
             isOpen={isSettingsModalOpen}
