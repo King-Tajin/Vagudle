@@ -46,6 +46,7 @@ type Props = {
   extraEffects?: boolean;
   isDuelMode?: boolean;
   handleDuelReturn?: () => void;
+  duelConfig?: import("../../lib/duel").DuelConfig | null;
 };
 
 const playSadTrombone = () => {
@@ -297,6 +298,7 @@ export const StatsModal = ({
   extraEffects = true,
   isDuelMode = false,
   handleDuelReturn,
+  duelConfig,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<"normal" | "hard">(
     hardMode ? "hard" : "normal"
@@ -380,9 +382,28 @@ export const StatsModal = ({
           <div className="flex items-center gap-2">
             <Hash className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
             <span className="font-code text-xs text-gray-300">
-              {solution.length} letters
+              {duelConfig?.length ?? solution.length} letters
             </span>
           </div>
+          {duelConfig && (
+            <>
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                <span className="font-code text-xs text-gray-300">
+                  {DICT_LABELS[duelConfig.dict]} dictionary —{" "}
+                  <span className="text-gray-500">
+                    {DICT_DESCRIPTIONS[duelConfig.dict]}
+                  </span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Target className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                <span className="font-code text-xs text-gray-300">
+                  {duelConfig.guesses} guesses allowed
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
         {isGameWon && (
@@ -499,8 +520,8 @@ export const StatsModal = ({
               CHALLENGE FAILED
             </p>
             <p className="font-code text-sm text-gray-400 mt-1">
-              Better luck next time!
-              You can always ask the sender for the answer.
+              Better luck next time! You can always ask the sender for the
+              answer.
             </p>
           </div>
         )}

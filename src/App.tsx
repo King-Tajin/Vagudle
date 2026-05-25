@@ -1302,6 +1302,7 @@ function App() {
             extraEffects={extraEffects}
             isDuelMode={isDuelMode}
             handleDuelReturn={isDuelMode ? handleReturnToNormal : undefined}
+            duelConfig={isDuelMode ? duelConfig : null}
           />
           <SettingsModal
             isOpen={isSettingsModalOpen}
