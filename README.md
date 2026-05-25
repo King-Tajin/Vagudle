@@ -61,6 +61,16 @@ Then instead of `npm run start`, run:
 npx wrangler pages dev -- npm run start
 ```
 
+### Duels (external app required)
+
+The duel feature is not self-contained. Duel links cannot be generated from within Vagudle, they require an external application to:
+
+1. Generate the encoded duel token and two player links
+2. Pre-insert placeholder rows into the D1 database before the links are sent
+3. Handle the webhook notification Vagudle fires on completion
+
+Without the external app, visiting a duel link will show an invalid link error. The duel feature is used exclusively by the [Tajin Helper Bot](https://github.com/King-Tajin/King-Tajin-Discord-Bot).
+
 ## Built With
 
 - [React](https://react.dev) + [TypeScript](https://www.typescriptlang.org)

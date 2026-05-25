@@ -663,6 +663,25 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       </a>
                       .
                     </p>
+
+                    <div
+                      className="border-t border-obsidian-700"
+                    />
+
+                    <p className="font-code text-sm text-gray-400 leading-relaxed">
+                      The{" "}
+                      <a
+                        href="https://discord.gg/sU2XRxK8EB"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-crown-gold underline hover:text-crown-amber transition-colors"
+                      >
+                        Discord server
+                      </a>{" "}
+                      has an exclusive Duel feature where you can challenge other members
+                      head-to-head and compete on a live leaderboard to see
+                      who can crack the word in the fewest guesses.
+                    </p>
                   </div>
                 )}
 
