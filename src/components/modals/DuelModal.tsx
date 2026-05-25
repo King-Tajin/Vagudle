@@ -163,7 +163,7 @@ export const DuelModal = ({
               {mode === "complete" && (
                 <>
                   <p className="font-pixel text-xs text-crown-amber tracking-widest text-center">
-                    YOUR RESULT HAS BEEN SUBMITTED
+                    YOUR RESULT HAS BEEN RECORDED
                   </p>
                   <p className="font-code text-xs text-gray-500 text-center leading-snug">
                     The winner will be announced once both players have
