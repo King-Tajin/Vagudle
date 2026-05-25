@@ -730,6 +730,7 @@ function App() {
   const clearCurrentRowClass = () => setCurrentRowClass("");
 
   useEffect(() => {
+    if (isLoading) return;
     if (!isChallengeMode && !isDuelMode) {
       saveSettingsToLocalStorage({
         wordLength,
@@ -741,6 +742,7 @@ function App() {
       });
     }
   }, [
+    isLoading,
     wordLength,
     showGrayCount,
     hardMode,
@@ -752,6 +754,7 @@ function App() {
   ]);
 
   useEffect(() => {
+    if (isLoading) return;
     if (!solution) return;
     if (isDuelMode && duelConfig) {
       saveDuelState(duelConfig.id, duelConfig.discord_id, {
@@ -775,6 +778,7 @@ function App() {
       });
     }
   }, [
+    isLoading,
     guesses,
     cellColors,
     autoGrayLetters,
@@ -796,8 +800,7 @@ function App() {
       if (extraEffectsRef.current) {
         setTimeout(() => setIsCelebrating(true), delayMs + 250);
       } else {
-        const pool =
-          isDuelMode || isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
+        const pool = isDuelMode || isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
         const winMessage = pool[Math.floor(Math.random() * pool.length)];
         showSuccessAlert(winMessage, {
           delayMs,
