@@ -62,7 +62,11 @@ export const pruneOldDuelStates = (): void => {
 
 export const decodeDuel = async (
   token: string
-): Promise<{ config: DuelConfig; expired: boolean } | null> => {
+): Promise<
+  | { config: DuelConfig; expired: false }
+  | { config: null; expired: true }
+  | null
+> => {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
@@ -72,7 +76,7 @@ export const decodeDuel = async (
     clearTimeout(timeout);
     const data = await res.json();
     if (!data.success) return null;
-    if (data.expired) return { config: data.config as DuelConfig, expired: true };
+    if (data.expired) return { config: null, expired: true };
     return { config: data.config as DuelConfig, expired: false };
   } catch {
     return null;
@@ -128,11 +132,11 @@ export const submitDuelResult = async (
       body: JSON.stringify({ token, won, guessesUsed }),
       signal: controller.signal,
     });
-    clearTimeout(timeout);
     const data = await res.json();
     return data.success === true;
   } catch {
-    clearTimeout(timeout);
     return false;
+  } finally {
+    clearTimeout(timeout);
   }
 };
