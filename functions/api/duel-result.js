@@ -92,7 +92,7 @@ export async function onRequestPost(context) {
       );
 
     if (webhookSecret) {
-      context.waitUntil(notifyWebhook(parsed.id, webhookSecret));
+      await notifyWebhook(parsed.id, webhookSecret);
     } else {
       console.error("DUEL_WEBHOOK_SECRET not set — skipping webhook notify");
     }
