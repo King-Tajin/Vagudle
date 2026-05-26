@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import KingTajinIcon from "@/assets/icons/king-tajin.svg?react";
+import VagudleIcon from "@/assets/icons/vagudle.svg?react";
 
 const PURPLES = [
   "#a855f7",
@@ -284,7 +284,7 @@ export function WinCelebration({ word, onDone }: Props) {
           transition={{ delay: 0.6, duration: 0.5, ease: "easeIn" }}
           style={{ width: "clamp(90px, 24vw, 180px)", height: "auto" }}
         >
-          <KingTajinIcon style={{ width: "100%", height: "100%" }} />
+          <VagudleIcon style={{ width: "100%", height: "100%" }} />
         </motion.div>
       </div>
     </motion.div>
