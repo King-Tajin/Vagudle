@@ -1,0 +1,75 @@
+VAGUDLE PRIVACY POLICY
+
+Last updated: May 2026
+
+Vagudle (https://vagudle.king-tajin.dev) is operated by Roland Shikoski.
+
+For questions or data requests contact:
+  developer@king-tajin.dev
+  support@king-tajin.dev
+
+---
+
+LOCAL STORAGE
+
+Your game state, settings, and progress are stored locally in your browser
+using localStorage. This data never leaves your device and is not accessible
+to us.
+
+---
+
+DUEL RESULTS
+
+When you complete a duel, the following data is stored in a database to power
+the leaderboard:
+
+  - Your Discord ID
+  - Whether you won or lost
+  - The number of guesses used
+  - The word used in the duel
+  - The timestamp of completion
+
+This data is retained indefinitely. To request deletion of your data, contact
+us at the email addresses above.
+
+---
+
+ANALYTICS
+
+This site uses Cloudflare Web Analytics, which collects anonymous, aggregated
+traffic data. It does not use cookies, does not track you across sites, and
+does not collect any personal information. For more information see
+https://www.cloudflare.com/web-analytics/
+
+---
+
+COOKIES
+
+Vagudle does not use cookies.
+
+---
+
+YOUR RIGHTS
+
+If you are located in the European Union or United Kingdom, you have the right
+to access, correct, or request deletion of any personal data we hold about
+you. To exercise these rights, contact us at the email addresses above.
+
+If you are located in California, you have rights under the California
+Consumer Privacy Act (CCPA). We do not sell your personal data.
+
+---
+
+CHANGES TO THIS POLICY
+
+If this policy changes, the updated version will be posted at this location
+with a revised date at the top.
+
+---
+
+CONTACT
+
+Roland Shikoski
+developer@king-tajin.dev
+support@king-tajin.dev
+https://king-tajin.dev

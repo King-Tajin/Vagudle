@@ -664,9 +664,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       .
                     </p>
 
-                    <div
-                      className="border-t border-obsidian-700"
-                    />
+                    <div className="border-t border-obsidian-700" />
 
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       The{" "}
@@ -678,9 +676,10 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       >
                         Discord server
                       </a>{" "}
-                      has an exclusive Duel feature where you can challenge other members
-                      head-to-head and compete on a live leaderboard to see
-                      who can crack the word in the fewest guesses.
+                      has an exclusive Duel feature where you can challenge
+                      other members head-to-head and compete on a live
+                      leaderboard to see who can crack the word in the fewest
+                      guesses.
                     </p>
                   </div>
                 )}
@@ -718,7 +717,15 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 style={{ background: "rgba(10,0,20,0.97)" }}
               >
                 <p className="font-pixel text-xs text-obsidian-500 tracking-widest text-center">
-                  VAGUDLE · KING TAJIN
+                  VAGUDLE · KING TAJIN ·{" "}
+                  <a
+                    href="https://vagudle.king-tajin.dev/privacy_policy.txt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-crown-amber transition-colors underline"
+                  >
+                    PRIVACY POLICY
+                  </a>
                 </p>
               </div>
             </div>
