@@ -88,3 +88,7 @@ Built and maintained by [King-Tajin](https://king-tajin.dev).
 ## License
 
 See [LICENSE](./LICENSE).
+
+## Privacy Policy
+
+See [PRIVACY POLICY](https://vagudle.king-tajin.dev/privacy_policy.txt).
