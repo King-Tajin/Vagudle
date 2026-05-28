@@ -589,9 +589,9 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       go to the{" "}
                       <span className="text-crown-gold">Challenge</span> tab.
                       Pick a dictionary, choose how many guesses to allow, type
-                      your secret word, and hit Generate Link. Share the link
-                      to let others play your custom word with exactly the
-                      settings you chose.
+                      your secret word, and hit Generate Link. Share the link to
+                      let others play your custom word with exactly the settings
+                      you chose.
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Results never count toward the recipient's stats, and
@@ -681,6 +681,35 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       leaderboard to see who can crack the word in the fewest
                       guesses.
                     </p>
+
+                    <div className="border-t border-obsidian-700" />
+
+                    <div className="flex gap-4 justify-center pt-1 pb-2">
+                      <img
+                        src="/icon.png"
+                        alt="Vagudle icon"
+                        width={48}
+                        height={48}
+                        style={{
+                          width: "calc(50% - 8px)",
+                          height: "auto",
+                          aspectRatio: "1 / 1",
+                          imageRendering: "pixelated",
+                        }}
+                      />
+                      <img
+                        src="/icon.svg"
+                        alt="Vagudle icon"
+                        width={48}
+                        height={48}
+                        style={{
+                          width: "calc(50% - 8px)",
+                          height: "auto",
+                          aspectRatio: "1 / 1",
+                          imageRendering: "pixelated",
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
 

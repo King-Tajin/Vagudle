@@ -11,15 +11,12 @@
     <rect width="220.544" height="219.489" x="304.164" y="847.261" fill="#334155" rx="12.8"/>
     <rect width="220.544" height="219.489" x="539.864" y="848.031" fill="#eab308" rx="12.8"/>
     <rect width="220.544" height="219.489" x="779.088" y="848.577" fill="#eab308" rx="12.8"/>
-    <g fill="#334155">
-        <rect width="220.544" height="219.489" x="1019.88" y="847.891" rx="12.8"/>
-        <text xml:space="preserve" x="141.401" y="961.319" font-size="133.333" style="inline-size:0;white-space:pre"/>
-    </g>
+    <rect width="220.544" height="219.489" x="1019.88" y="847.891" rx="12.8" style="fill:#334155;fill-opacity:1"/>
     <g fill="#fff" font-family="'Plus Jakarta Sans'" font-size="194.472" font-weight="bold">
-        <text xml:space="preserve" x="107.815" y="1028.854" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal"><tspan x="107.815" y="1028.854">V</tspan></text>
-        <text xml:space="preserve" x="344.466" y="1028.972" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal"><tspan x="344.466" y="1028.972">A</tspan></text>
-        <text xml:space="preserve" x="567.35" y="1026.963" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal"><tspan x="567.35" y="1026.963">G</tspan></text>
-        <text xml:space="preserve" x="820.234" y="1025.351" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal"><tspan x="820.234" y="1025.351">U</tspan></text>
-        <text xml:space="preserve" x="1069.257" y="1027.945" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal"><tspan x="1069.257" y="1027.945">E</tspan></text>
+        <path d="m254.049 887.463-51.562 141.391h-40.831l-51.562-141.391h38.268l34.184 99.325 34.185-99.325z" aria-label="V"/>
+        <path d="M493.169 1028.972H455.47l-9.78-28.582h-52.417l-9.78 28.582h-36.749l52.226-141.391h41.971zm-56.31-54.505-17.377-50.707-17.377 50.707z" aria-label="A"/>
+        <path d="M710.45 1018.892q-9.495 3.703-25.163 7.406-15.668 3.609-31.241 3.609-36.084 0-56.5-19.561-20.415-19.657-20.415-54.22 0-32.951 20.605-53.082 20.606-20.226 57.45-20.226 13.958 0 26.587 2.564 12.63 2.469 28.107 9.97v33.14h-4.083q-2.658-1.994-7.786-5.602-5.128-3.703-9.876-6.267-5.507-3.039-12.914-5.223-7.312-2.184-15.573-2.184-9.685 0-17.567 2.849t-14.148 8.736q-5.983 5.697-9.496 14.528-3.419 8.737-3.419 20.226 0 23.455 12.44 35.894t36.748 12.44q2.09 0 4.558-.095 2.564-.095 4.653-.285V975.78h-28.202v-26.683h65.235z" aria-label="G"/>
+        <path d="M962.1 974.17q0 26.207-15.953 40.166t-47.004 13.959q-31.05 0-47.003-13.96-15.858-13.958-15.858-40.07V883.96h36.653v88.215q0 14.718 6.172 21.935 6.173 7.217 20.036 7.217 13.674 0 19.941-6.932 6.362-6.932 6.362-22.22V883.96H962.1z" aria-label="U"/>
+        <path d="M1189.568 1027.945h-102.27V886.554h102.27v27.348h-65.996v24.404h61.248v27.347h-61.248v34.944h65.996z" aria-label="E"/>
     </g>
 </svg>
