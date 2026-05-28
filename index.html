@@ -2,13 +2,116 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Vagudle" />
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />
     <title>Vagudle</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Vagudle",
+      "operatingSystem": "All",
+      "applicationCategory": "GameApplication",
+      "description": "Vagudle is a word-guessing game inspired by Hardle, with extra tools to help you solve the puzzle and no pesky daily limit to get in your way.",
+      "author": {
+        "@type": "Person",
+        "name": "King-Tajin",
+        "url": "https://King-Tajin.dev"
+      },
+      "discussionUrl": "https://discord.gg/sU2XRxK8EB",
+      "publishingPrinciples": "https://github.com/King-Tajin/Vagudle",
+      "featureList": [
+        "Variable word length: Play with anywhere between 4 and 7-letter words via Settings.",
+        "Hard mode: Solutions are selected from uncommon words and the player is limited to 9 guesses.",
+        "Cell painting: Select a brush and click or drag across cells to color them.",
+        "Auto-Gray: Automatically grays out letters from fully-gray rows.",
+        "Auto-Green: Fills in user marked correct letters across all rows automatically.",
+        "Gray count: Shows how many absent letters are in a row.",
+        "Custom Challenges: Generate unique challenge links with a custom word, dictionary, and guess limit. Share the link to let others play your custom word with exactly the settings you chose.",
+        "Discord Integration: Generate challenges via the /vagudle_challenge slash command directly from Discord, or compete in head-to-head Duels on a live leaderboard."
+      ],
+      "hasPart": [
+        {
+          "@type": "ItemList",
+          "name": "Vagudle Core Features",
+          "description": "Exclusive gameplay mechanics and quality-of-life features built into the Vagudle interface.",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Variable word length",
+              "description": "Play with anywhere between 4 and 7-letter words via Settings."
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Hard mode",
+              "description": "Solutions are selected from uncommon words and the player is limited to 9 guesses."
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Cell painting",
+              "description": "Select a brush and click or drag across cells to color them."
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Auto-Gray",
+              "description": "Automatically grays out letters from fully-gray rows."
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "name": "Auto-Green",
+              "description": "Fills in user marked correct letters across all rows automatically."
+            },
+            {
+              "@type": "ListItem",
+              "position": 6,
+              "name": "Gray count",
+              "description": "Shows how many absent letters are in a row."
+            },
+            {
+              "@type": "ListItem",
+              "position": 7,
+              "name": "Custom Challenges",
+              "description": "Open Settings and go to the Challenge tab. Pick a dictionary, choose how many guesses to allow, type your secret word, and hit Generate Link. Share the link to let others play your custom word with exactly the settings you chose. Results never count toward the recipient's stats, and their progress is saved to the link so they can come back to it any time."
+            },
+            {
+              "@type": "ListItem",
+              "position": 8,
+              "name": "Discord Integration",
+              "description": "Use the /vagudle_challenge slash command to generate a challenge link directly from Discord, or compete in head-to-head Duels on a live leaderboard to see who can crack the word in the fewest guesses."
+            }
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Play Vagudle",
+          "description": "A quick guide on how to play Vagudle.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Guess the Word",
+              "text": "Type a word and press Enter to submit a guess. You have 11 tries to find the hidden word."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Paint the Cells",
+              "text": "Select a brush, then click or drag cells to mark what you can figure out. Colors indicate right letter/right spot (Green), right letter/wrong spot (Yellow), or letter not in the word (Gray)."
+            }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

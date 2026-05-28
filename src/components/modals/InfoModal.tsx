@@ -545,7 +545,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       ],
                       [
                         "Hard mode",
-                        "Previously revealed hints must be used in subsequent guesses.",
+                        "Solutions are selected from uncommon words and the player is limited to 9 guesses.",
                       ],
                       [
                         "Cell painting",
@@ -557,7 +557,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       ],
                       [
                         "Auto-Green",
-                        "Locks correct letters across all rows automatically.",
+                        "Fills in user marked correct letters across all rows automatically.",
                       ],
                       [
                         "Gray count",
@@ -589,8 +589,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                       go to the{" "}
                       <span className="text-crown-gold">Challenge</span> tab.
                       Pick a dictionary, choose how many guesses to allow, type
-                      your secret word, and hit Generate Link. Share the link —
-                      whoever opens it plays your custom word with exactly the
+                      your secret word, and hit Generate Link. Share the link
+                      to let others play your custom word with exactly the
                       settings you chose.
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
@@ -619,7 +619,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                         /vagudle_challenge
                       </span>{" "}
                       slash command to generate a challenge link directly from
-                      Discord — no need to open the game first.
+                      Discord.
                     </p>
                   </div>
                 )}
