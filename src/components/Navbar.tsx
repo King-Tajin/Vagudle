@@ -8,6 +8,7 @@ import {
   RefreshIcon,
 } from "@heroicons/react/outline";
 import KingTajinIcon from "@/assets/icons/king-tajin.svg?react";
+import { openExternalLink } from "../lib/discord";
 
 const SETTINGS_NUDGE_KEY = "vagudle-settings-nudge-dismissed";
 
@@ -20,6 +21,7 @@ type Props = {
   isChallengeMode?: boolean;
   isDuelMode?: boolean;
   isInfoModalOpen: boolean;
+  isActivityMode?: boolean;
 };
 
 export const Navbar = ({
@@ -31,6 +33,7 @@ export const Navbar = ({
   isChallengeMode = false,
   isDuelMode = false,
   isInfoModalOpen,
+  isActivityMode = false,
 }: Props) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showNudge, setShowNudge] = useState(false);
@@ -92,50 +95,78 @@ export const Navbar = ({
               <InformationCircleIcon className="h-6 w-6 text-crown-gold" />
             </motion.button>
 
-            <motion.a
-              href="https://King-Tajin.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 select-none"
-              whileHover={{ scale: 1.02 }}
-            >
-              <div className="relative">
-                <div className="w-10 h-10 bg-obsidian-700 border-2 border-crown-gold flex items-center justify-center">
-                  <KingTajinIcon className="w-6 h-6 text-crown-gold float-animation" />
+            {isActivityMode ? (
+              <motion.button
+                type="button"
+                onClick={() => openExternalLink("https://King-Tajin.dev")}
+                className="flex items-center gap-3 select-none"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="relative">
+                  <div className="w-10 h-10 bg-obsidian-700 border-2 border-crown-gold flex items-center justify-center">
+                    <KingTajinIcon className="w-6 h-6 text-crown-gold float-animation" />
+                  </div>
+                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-tajin-red" />
                 </div>
-                <Flame className="absolute -top-1 -right-1 w-4 h-4 text-tajin-red" />
-              </div>
-              <div>
-                <h1 className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider">
-                  King-Tajin
-                </h1>
-                <p className="font-pixel text-xs text-crown-amber -mt-1">
-                  WEB GAMES
-                </p>
-              </div>
-            </motion.a>
+                <div>
+                  <h1 className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider">
+                    King-Tajin
+                  </h1>
+                  <p className="font-pixel text-xs text-crown-amber -mt-1">
+                    WEB GAMES
+                  </p>
+                </div>
+              </motion.button>
+            ) : (
+              <motion.a
+                href="https://King-Tajin.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 select-none"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="relative">
+                  <div className="w-10 h-10 bg-obsidian-700 border-2 border-crown-gold flex items-center justify-center">
+                    <KingTajinIcon className="w-6 h-6 text-crown-gold float-animation" />
+                  </div>
+                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-tajin-red" />
+                </div>
+                <div>
+                  <h1 className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider">
+                    King-Tajin
+                  </h1>
+                  <p className="font-pixel text-xs text-crown-amber -mt-1">
+                    WEB GAMES
+                  </p>
+                </div>
+              </motion.a>
+            )}
 
             <div className="right-icons">
-              <motion.button
-                title={leaveLabel}
-                onClick={onNewGameClick}
-                className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95, rotate: 180 }}
-                aria-label={leaveLabel}
-              >
-                <RefreshIcon className="h-6 w-6 text-crown-gold" />
-              </motion.button>
+              {!isActivityMode && (
+                <motion.button
+                  title={leaveLabel}
+                  onClick={onNewGameClick}
+                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95, rotate: 180 }}
+                  aria-label={leaveLabel}
+                >
+                  <RefreshIcon className="h-6 w-6 text-crown-gold" />
+                </motion.button>
+              )}
 
-              <motion.button
-                onClick={() => setIsStatsModalOpen(true)}
-                className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                aria-label="Statistics"
-              >
-                <ChartBarIcon className="h-6 w-6 text-crown-gold" />
-              </motion.button>
+              {!isActivityMode && (
+                <motion.button
+                  onClick={() => setIsStatsModalOpen(true)}
+                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Statistics"
+                >
+                  <ChartBarIcon className="h-6 w-6 text-crown-gold" />
+                </motion.button>
+              )}
 
               <div className="relative">
                 <motion.button

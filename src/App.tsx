@@ -86,6 +86,7 @@ import {
   type DuelConfig,
   type DuelSaveStatus,
 } from "./lib/duel";
+import { isDiscordActivity } from "./lib/discord";
 import { AlertContainer } from "./components/Alert";
 import { useAlert } from "./context/AlertContext";
 import { Navbar } from "./components/Navbar";
@@ -796,7 +797,8 @@ function App() {
       if (extraEffectsRef.current) {
         setTimeout(() => setIsCelebrating(true), delayMs + 250);
       } else {
-        const pool = isDuelMode || isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
+        const pool =
+          isDuelMode || isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
         const winMessage = pool[Math.floor(Math.random() * pool.length)];
         showSuccessAlert(winMessage, {
           delayMs,
@@ -945,6 +947,50 @@ function App() {
     />
   );
 
+  if (isDiscordActivity && !duelParam) {
+    return (
+      <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
+        {bgGrid}
+        <Navbar
+          setIsInfoModalOpen={() => {}}
+          setIsStatsModalOpen={() => {}}
+          setIsSettingsModalOpen={() => {}}
+          handleNewGame={() => {}}
+          hasActiveGame={false}
+          isInfoModalOpen={false}
+          isActivityMode
+        />
+        <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="font-pixel text-center text-4xl text-crown-gold crown-glow tracking-widest"
+          >
+            VAGUDLE
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="max-w-sm w-full p-5 text-center"
+            style={{
+              background: "rgba(80,0,170,0.08)",
+              border: "2px solid rgba(80,0,170,0.4)",
+            }}
+          >
+            <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+              NO DUEL FOUND
+            </p>
+            <p className="font-code text-sm text-gray-400 leading-relaxed">
+              This activity must be launched from a duel challenge. Ask someone
+              to send you a duel in Discord.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
@@ -956,6 +1002,7 @@ function App() {
           handleNewGame={() => {}}
           hasActiveGame={false}
           isInfoModalOpen={false}
+          isActivityMode={isDiscordActivity}
         />
         <div className="flex flex-col items-center justify-center flex-1 gap-6">
           <motion.p
@@ -1060,6 +1107,7 @@ function App() {
           handleNewGame={() => {}}
           hasActiveGame={false}
           isInfoModalOpen={false}
+          isActivityMode={isDiscordActivity}
         />
         <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
           <motion.p
@@ -1086,17 +1134,19 @@ function App() {
               This duel link is broken or has been tampered with. Ask for a new
               link.
             </p>
-            <button
-              onClick={handleReturnToNormal}
-              className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
-              style={{
-                background: "rgba(255,215,0,0.08)",
-                border: "1px solid rgba(255,215,0,0.3)",
-                color: "#d4af37",
-              }}
-            >
-              PLAY NORMAL VAGUDLE
-            </button>
+            {!isDiscordActivity && (
+              <button
+                onClick={handleReturnToNormal}
+                className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
+                style={{
+                  background: "rgba(255,215,0,0.08)",
+                  border: "1px solid rgba(255,215,0,0.3)",
+                  color: "#d4af37",
+                }}
+              >
+                PLAY NORMAL VAGUDLE
+              </button>
+            )}
           </motion.div>
         </div>
       </div>
@@ -1114,6 +1164,7 @@ function App() {
           handleNewGame={() => {}}
           hasActiveGame={false}
           isInfoModalOpen={false}
+          isActivityMode={isDiscordActivity}
         />
         <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
           <motion.p
@@ -1140,17 +1191,19 @@ function App() {
               This duel link has expired. Duel links are only valid for 24
               hours. Ask for a new duel to be created.
             </p>
-            <button
-              onClick={handleReturnToNormal}
-              className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
-              style={{
-                background: "rgba(255,215,0,0.08)",
-                border: "1px solid rgba(255,215,0,0.3)",
-                color: "#d4af37",
-              }}
-            >
-              PLAY NORMAL VAGUDLE
-            </button>
+            {!isDiscordActivity && (
+              <button
+                onClick={handleReturnToNormal}
+                className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
+                style={{
+                  background: "rgba(255,215,0,0.08)",
+                  border: "1px solid rgba(255,215,0,0.3)",
+                  color: "#d4af37",
+                }}
+              >
+                PLAY NORMAL VAGUDLE
+              </button>
+            )}
           </motion.div>
         </div>
       </div>
@@ -1170,6 +1223,7 @@ function App() {
         isChallengeMode={isChallengeMode}
         isDuelMode={isDuelMode}
         isInfoModalOpen={isInfoModalOpen}
+        isActivityMode={isDiscordActivity}
       />
       <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
@@ -1300,7 +1354,12 @@ function App() {
             }
             extraEffects={extraEffects}
             isDuelMode={isDuelMode}
-            handleDuelReturn={isDuelMode ? handleReturnToNormal : undefined}
+            handleDuelReturn={
+              isDuelMode && !isDiscordActivity
+                ? handleReturnToNormal
+                : undefined
+            }
+            isActivityMode={isDiscordActivity}
             duelConfig={isDuelMode ? duelConfig : null}
           />
           <SettingsModal
@@ -1331,6 +1390,7 @@ function App() {
                 ? challengeConfig
                 : null
             }
+            isActivityMode={isDiscordActivity}
           />
           {isChallengeMode && challengeConfig && (
             <ChallengeAcceptModal
@@ -1347,6 +1407,7 @@ function App() {
               onPlay={() => setIsDuelModalOpen(false)}
               onReturn={handleReturnToNormal}
               saveStatus={duelSaveStatus}
+              isActivityMode={isDiscordActivity}
             />
           )}
         </Suspense>

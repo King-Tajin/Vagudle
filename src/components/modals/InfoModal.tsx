@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import CrownIcon from "@/assets/icons/crown.svg?react";
 
+import { ActivityLink } from "../ActivityLink";
 import { Cell } from "../grid/Cell";
 import GreenBrushIcon from "@/assets/icons/green-brush.svg?react";
 import YellowBrushIcon from "@/assets/icons/yellow-brush.svg?react";
@@ -606,14 +607,12 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       In the{" "}
-                      <a
+                      <ActivityLink
                         href="https://discord.gg/sU2XRxK8EB"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         King-Tajin Discord server
-                      </a>
+                      </ActivityLink>
                       , use the{" "}
                       <span className="text-crown-gold">
                         /vagudle_challenge
@@ -628,39 +627,33 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                   <div className="space-y-4">
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Vagudle is a word-guessing game inspired by{" "}
-                      <a
+                      <ActivityLink
                         href="https://hardle.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         Hardle
-                      </a>
+                      </ActivityLink>
                       , with extra tools to help you solve the puzzle and no
                       pesky daily limit to get in your way.
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Built and maintained by{" "}
-                      <a
+                      <ActivityLink
                         href="https://King-Tajin.dev"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         King-Tajin
-                      </a>
+                      </ActivityLink>
                       .
                     </p>
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       Join the community on{" "}
-                      <a
+                      <ActivityLink
                         href="https://discord.gg/sU2XRxK8EB"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         Discord
-                      </a>
+                      </ActivityLink>
                       .
                     </p>
 
@@ -668,14 +661,12 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
 
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
                       The{" "}
-                      <a
+                      <ActivityLink
                         href="https://discord.gg/sU2XRxK8EB"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         Discord server
-                      </a>{" "}
+                      </ActivityLink>{" "}
                       has an exclusive Duel feature where you can challenge
                       other members head-to-head and compete on a live
                       leaderboard to see who can crack the word in the fewest
@@ -716,23 +707,19 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                 {activeTab === "opensource" && (
                   <div className="space-y-4">
                     <p className="font-code text-sm text-gray-400 leading-relaxed">
-                      <a
+                      <ActivityLink
                         href="https://github.com/King-Tajin/Vagudle"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         Vagudle
-                      </a>{" "}
+                      </ActivityLink>{" "}
                       is open source and based on{" "}
-                      <a
+                      <ActivityLink
                         href="https://github.com/markzither/react-wordle"
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-crown-gold underline hover:text-crown-amber transition-colors"
                       >
                         react-wordle
-                      </a>
+                      </ActivityLink>
                       . Contributions and feedback are welcome.
                     </p>
                   </div>
@@ -747,14 +734,12 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
               >
                 <p className="font-pixel text-xs text-obsidian-500 tracking-widest text-center">
                   VAGUDLE · KING TAJIN ·{" "}
-                  <a
+                  <ActivityLink
                     href="https://vagudle.king-tajin.dev/privacy_policy.txt"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="hover:text-crown-amber transition-colors underline"
                   >
                     PRIVACY POLICY
-                  </a>
+                  </ActivityLink>
                 </p>
               </div>
             </div>

@@ -18,6 +18,7 @@ type Props = {
   onPlay?: () => void;
   onReturn: () => void;
   saveStatus?: DuelSaveStatus;
+  isActivityMode?: boolean;
 };
 
 export const DuelModal = ({
@@ -27,6 +28,7 @@ export const DuelModal = ({
   onPlay,
   onReturn,
   saveStatus = "idle",
+  isActivityMode = false,
 }: Props) => {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -203,37 +205,41 @@ export const DuelModal = ({
                     )}
                   </div>
 
-                  <button
-                    onClick={onReturn}
-                    disabled={saveStatus === "saving" || saveStatus === "idle"}
-                    className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
-                    style={{
-                      background:
+                  {!isActivityMode && (
+                    <button
+                      onClick={onReturn}
+                      disabled={
                         saveStatus === "saving" || saveStatus === "idle"
-                          ? "rgba(255,255,255,0.02)"
-                          : "rgba(255,255,255,0.04)",
-                      border: "2px solid rgba(255,255,255,0.12)",
-                      color:
-                        saveStatus === "saving" || saveStatus === "idle"
-                          ? "#4b5563"
-                          : "#9ca3af",
-                      cursor:
-                        saveStatus === "saving" || saveStatus === "idle"
-                          ? "not-allowed"
-                          : "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (saveStatus === "saving" || saveStatus === "idle")
-                        return;
-                      e.currentTarget.style.filter = "brightness(1.2)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.filter = "brightness(1)";
-                    }}
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    RETURN TO NORMAL GAME
-                  </button>
+                      }
+                      className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+                      style={{
+                        background:
+                          saveStatus === "saving" || saveStatus === "idle"
+                            ? "rgba(255,255,255,0.02)"
+                            : "rgba(255,255,255,0.04)",
+                        border: "2px solid rgba(255,255,255,0.12)",
+                        color:
+                          saveStatus === "saving" || saveStatus === "idle"
+                            ? "#4b5563"
+                            : "#9ca3af",
+                        cursor:
+                          saveStatus === "saving" || saveStatus === "idle"
+                            ? "not-allowed"
+                            : "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (saveStatus === "saving" || saveStatus === "idle")
+                          return;
+                        e.currentTarget.style.filter = "brightness(1.2)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.filter = "brightness(1)";
+                      }}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      RETURN TO NORMAL GAME
+                    </button>
+                  )}
                 </>
               )}
             </div>

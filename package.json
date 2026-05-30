@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@discord/embedded-app-sdk": "^2.0.0",
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^1.0.6",
     "@types/react": "^18.3.28",

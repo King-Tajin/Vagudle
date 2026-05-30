@@ -47,6 +47,7 @@ type Props = {
   isDuelMode?: boolean;
   handleDuelReturn?: () => void;
   duelConfig?: import("../../lib/duel").DuelConfig | null;
+  isActivityMode?: boolean;
 };
 
 const playSadTrombone = () => {
@@ -299,6 +300,7 @@ export const StatsModal = ({
   isDuelMode = false,
   handleDuelReturn,
   duelConfig,
+  isActivityMode = false,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<"normal" | "hard">(
     hardMode ? "hard" : "normal"
@@ -549,27 +551,29 @@ export const StatsModal = ({
             </button>
           )}
 
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
-            style={{
-              background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
-              border: "2px solid #5000aa",
-              color: "#fff",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.filter = "brightness(1.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.filter = "brightness(1)";
-            }}
-            onClick={() =>
-              shareChallengeInvite(challengeConfig, handleShareToClipboard)
-            }
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            SHARE
-          </button>
+          {!isActivityMode && (
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              style={{
+                background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
+                border: "2px solid #5000aa",
+                color: "#fff",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.filter = "brightness(1.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.filter = "brightness(1)";
+              }}
+              onClick={() =>
+                shareChallengeInvite(challengeConfig, handleShareToClipboard)
+              }
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              SHARE
+            </button>
+          )}
         </div>
       </BaseModal>
     );
@@ -626,7 +630,7 @@ export const StatsModal = ({
         </div>
       )}
 
-      {hasGames && (
+      {hasGames && !isActivityMode && (
         <div className="mt-4 flex justify-end">
           <button
             type="button"
@@ -658,55 +662,63 @@ export const StatsModal = ({
 
       {(isGameLost || isGameWon) && (
         <>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
-              style={{
-                background: "linear-gradient(180deg, #3a7d44 0%, #2d6135 100%)",
-                border: "2px solid #3a7d44",
-                color: "#fff",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.filter = "brightness(1.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.filter = "brightness(1)";
-              }}
-              onClick={handleNewGame}
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              NEW GAME
-            </button>
+          <div
+            className={`mt-3 ${isActivityMode ? "" : "grid grid-cols-2 gap-3"}`}
+          >
+            {!isActivityMode && (
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+                style={{
+                  background:
+                    "linear-gradient(180deg, #3a7d44 0%, #2d6135 100%)",
+                  border: "2px solid #3a7d44",
+                  color: "#fff",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.filter = "brightness(1.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.filter = "brightness(1)";
+                }}
+                onClick={handleNewGame}
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                NEW GAME
+              </button>
+            )}
 
-            <button
-              type="button"
-              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
-              style={{
-                background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
-                border: "2px solid #5000aa",
-                color: "#fff",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.filter = "brightness(1.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.filter = "brightness(1)";
-              }}
-              onClick={() =>
-                shareStatus(
-                  solution,
-                  guesses,
-                  isGameLost,
-                  handleShareToClipboard,
-                  hardMode,
-                  gameMaxChallenges
-                )
-              }
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              SHARE GAME
-            </button>
+            {!isActivityMode && (
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+                style={{
+                  background:
+                    "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
+                  border: "2px solid #5000aa",
+                  color: "#fff",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.filter = "brightness(1.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.filter = "brightness(1)";
+                }}
+                onClick={() =>
+                  shareStatus(
+                    solution,
+                    guesses,
+                    isGameLost,
+                    handleShareToClipboard,
+                    hardMode,
+                    gameMaxChallenges
+                  )
+                }
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                SHARE GAME
+              </button>
+            )}
           </div>
 
           <button

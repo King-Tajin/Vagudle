@@ -28,6 +28,7 @@ type Props = {
   extraEffects: boolean;
   setExtraEffects: (value: boolean) => void;
   challengeConfig?: ChallengeConfig | null;
+  isActivityMode?: boolean;
 };
 
 const tabBase = "flex-1 py-2 font-pixel text-xs tracking-widest transition-all";
@@ -59,6 +60,7 @@ export const SettingsModal = ({
   extraEffects,
   setExtraEffects,
   challengeConfig,
+  isActivityMode = false,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>("settings");
   const [errorMessage, setErrorMessage] = useState("");
@@ -104,13 +106,17 @@ export const SettingsModal = ({
         >
           SETTINGS
         </button>
-        <button
-          className={tabBase}
-          style={activeTab === "challenge" ? activeTabStyle : inactiveTabStyle}
-          onClick={() => setActiveTab("challenge")}
-        >
-          CHALLENGE
-        </button>
+        {!isActivityMode && (
+          <button
+            className={tabBase}
+            style={
+              activeTab === "challenge" ? activeTabStyle : inactiveTabStyle
+            }
+            onClick={() => setActiveTab("challenge")}
+          >
+            CHALLENGE
+          </button>
+        )}
       </div>
 
       {activeTab === "settings" && (
