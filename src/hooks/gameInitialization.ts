@@ -1,0 +1,229 @@
+import React, { useEffect } from "react";
+import type { CharStatus } from "../lib/statuses";
+import { initWordLists, isWordInDict, getRandomWord } from "../lib/words";
+import {
+  loadGameStateFromLocalStorage,
+  loadSettingsFromLocalStorage,
+} from "../lib/localStorage";
+import {
+  decodeChallenge,
+  loadChallengeState,
+  pruneOldChallengeStates,
+  type ChallengeConfig,
+} from "../lib/challenge";
+import {
+  decodeDuel,
+  loadDuelState,
+  pruneOldDuelStates,
+  type DuelConfig,
+} from "../lib/duel";
+import { CORRECT_WORD_MESSAGE } from "../constants/strings";
+import {
+  HARD_MODE_MAX_CHALLENGES,
+  NORMAL_MODE_MAX_CHALLENGES,
+  WELCOME_INFO_MODAL_MS,
+} from "../constants/settings";
+
+type Params = {
+  challengeParam: string | null;
+  duelParam: string | null;
+  restoredGameRef: React.MutableRefObject<boolean>;
+  duelSubmittedRef: React.MutableRefObject<boolean>;
+  setIsLoading: (v: boolean) => void;
+  setIsMalformedChallenge: (v: boolean) => void;
+  setIsMalformedDuel: (v: boolean) => void;
+  setIsDuelExpired: (v: boolean) => void;
+  setChallengeConfig: (v: ChallengeConfig) => void;
+  setDuelConfig: (v: DuelConfig) => void;
+  setDuelToken: (v: string) => void;
+  setSolution: (v: string) => void;
+  setGuesses: (v: string[]) => void;
+  setCellColors: React.Dispatch<
+    React.SetStateAction<{ [key: string]: CharStatus }>
+  >;
+  setAutoGrayLetters: React.Dispatch<React.SetStateAction<Set<string>>>;
+  setIsGameWon: (v: boolean) => void;
+  setIsGameLost: (v: boolean) => void;
+  setIsChallengeModalOpen: (v: boolean) => void;
+  setIsDuelModalOpen: (v: boolean) => void;
+  setIsInfoModalOpen: (v: boolean) => void;
+  showErrorAlert: (message: string, options?: { persist?: boolean }) => void;
+};
+
+export const gameInitialization = ({
+  challengeParam,
+  duelParam,
+  restoredGameRef,
+  duelSubmittedRef,
+  setIsLoading,
+  setIsMalformedChallenge,
+  setIsMalformedDuel,
+  setIsDuelExpired,
+  setChallengeConfig,
+  setDuelConfig,
+  setDuelToken,
+  setSolution,
+  setGuesses,
+  setCellColors,
+  setAutoGrayLetters,
+  setIsGameWon,
+  setIsGameLost,
+  setIsChallengeModalOpen,
+  setIsDuelModalOpen,
+  setIsInfoModalOpen,
+  showErrorAlert,
+}: Params) => {
+  useEffect(() => {
+    const run = async () => {
+      pruneOldChallengeStates();
+      pruneOldDuelStates();
+      const loadStart = Date.now();
+      const savedSettings = loadSettingsFromLocalStorage();
+      const savedState = loadGameStateFromLocalStorage();
+      await initWordLists();
+
+      if (challengeParam) {
+        const config = await decodeChallenge(challengeParam);
+        if (!config) {
+          setIsMalformedChallenge(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const wordUpper = config.word.toUpperCase();
+        if (!isWordInDict(wordUpper, config.dict)) {
+          setIsMalformedChallenge(true);
+          setIsLoading(false);
+          return;
+        }
+
+        setChallengeConfig(config);
+        setSolution(wordUpper);
+
+        const savedChallenge = loadChallengeState(config.id);
+        let alreadyFinished = false;
+        if (savedChallenge) {
+          setGuesses(savedChallenge.guesses);
+          setCellColors(savedChallenge.cellColors as any);
+          setAutoGrayLetters(new Set(savedChallenge.autoGrayLetters));
+          const won = savedChallenge.guesses.some(
+            (g) => g.toUpperCase() === wordUpper
+          );
+          const lost = !won && savedChallenge.guesses.length >= config.guesses;
+          if (won) {
+            restoredGameRef.current = true;
+            setIsGameWon(true);
+          } else if (lost) {
+            restoredGameRef.current = true;
+            setIsGameLost(true);
+          }
+          alreadyFinished = won || lost;
+        } else {
+          setGuesses([]);
+          setCellColors({});
+          setAutoGrayLetters(new Set());
+        }
+        setIsChallengeModalOpen(!alreadyFinished);
+        setIsLoading(false);
+        return;
+      }
+
+      if (duelParam) {
+        const result = await decodeDuel(duelParam);
+        if (!result) {
+          setIsMalformedDuel(true);
+          setIsLoading(false);
+          return;
+        }
+        if (result.expired) {
+          setIsDuelExpired(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const config = result.config;
+        const wordUpper = config.word.toUpperCase();
+        if (!isWordInDict(wordUpper, config.dict)) {
+          setIsMalformedDuel(true);
+          setIsLoading(false);
+          return;
+        }
+
+        setDuelConfig(config);
+        setDuelToken(duelParam);
+        setSolution(wordUpper);
+
+        const savedDuel = loadDuelState(config.id, config.discord_id);
+        let alreadyFinished = false;
+        if (savedDuel) {
+          setGuesses(savedDuel.guesses);
+          setCellColors(savedDuel.cellColors as any);
+          setAutoGrayLetters(new Set(savedDuel.autoGrayLetters));
+          const won = savedDuel.guesses.some(
+            (g) => g.toUpperCase() === wordUpper
+          );
+          const lost = !won && savedDuel.guesses.length >= config.guesses;
+          if (won) {
+            restoredGameRef.current = true;
+            duelSubmittedRef.current = true;
+            setIsGameWon(true);
+          } else if (lost) {
+            restoredGameRef.current = true;
+            duelSubmittedRef.current = true;
+            setIsGameLost(true);
+          }
+          alreadyFinished = won || lost;
+        } else {
+          setGuesses([]);
+          setCellColors({});
+          setAutoGrayLetters(new Set());
+        }
+        setIsDuelModalOpen(!alreadyFinished);
+        setIsLoading(false);
+        return;
+      }
+
+      const elapsed = Date.now() - loadStart;
+      const remaining = Math.max(0, 1750 - elapsed);
+      await new Promise((r) => setTimeout(r, remaining));
+
+      if (savedState) {
+        const gameWasWon = savedState.guesses.some(
+          (g) => g.toUpperCase() === savedState.solution.toUpperCase()
+        );
+        const savedHardMode = savedState.hardMode ?? savedSettings.hardMode;
+        const savedMaxChallenges = savedHardMode
+          ? HARD_MODE_MAX_CHALLENGES
+          : NORMAL_MODE_MAX_CHALLENGES;
+        setSolution(savedState.solution);
+        setGuesses(savedState.guesses);
+        setCellColors((savedState.cellColors as any) ?? {});
+        setAutoGrayLetters(
+          new Set((savedState.autoGrayLetters ?? []) as string[])
+        );
+        if (gameWasWon) {
+          restoredGameRef.current = true;
+          setIsGameWon(true);
+        } else if (savedState.guesses.length >= savedMaxChallenges) {
+          restoredGameRef.current = true;
+          setIsGameLost(true);
+          showErrorAlert(CORRECT_WORD_MESSAGE(savedState.solution), {
+            persist: true,
+          });
+        }
+      } else {
+        const newSolution = getRandomWord(
+          savedSettings.wordLength,
+          savedSettings.hardMode
+        );
+        setSolution(newSolution);
+        setGuesses([]);
+        setCellColors({});
+        setAutoGrayLetters(new Set());
+        setTimeout(() => setIsInfoModalOpen(true), WELCOME_INFO_MODAL_MS);
+      }
+      setIsLoading(false);
+    };
+    void run();
+  }, []);
+};
