@@ -140,3 +140,32 @@ export const submitDuelResult = async (
     clearTimeout(timeout);
   }
 };
+
+export const submitActivityDuelResult = async (
+  instanceId: string,
+  accessToken: string,
+  won: boolean,
+  guessesUsed: number
+): Promise<boolean> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch("/api/activity-duel-result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        instance_id: instanceId,
+        access_token: accessToken,
+        won,
+        guesses_used: guessesUsed,
+      }),
+      signal: controller.signal,
+    });
+    const data = await res.json();
+    return data.success === true;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+};

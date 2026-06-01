@@ -10,11 +10,14 @@ import { BackgroundGrid } from "./components/background/BackgroundGrid";
 import { TajinRain } from "./components/background/TajinRain";
 import { GameBanner } from "./components/GameBanner";
 import {
-  NoDuelScreen,
   LoadingScreen,
   MalformedChallengeScreen,
   MalformedDuelScreen,
   ExpiredDuelScreen,
+  ActivityAuthErrorScreen,
+  ActivityNotFoundScreen,
+  ActivityWrongPlayerScreen,
+  ActivityServerErrorScreen,
 } from "./components/screens/GameScreens";
 
 const StatsModal = lazy(() =>
@@ -80,14 +83,12 @@ const challengeParam = new URLSearchParams(window.location.search).get(
 const duelParam = new URLSearchParams(window.location.search).get("duel");
 
 function App() {
-  // Alerts:
   const {
     showError: showErrorAlert,
     showSuccess: showSuccessAlert,
     dismiss: dismissAlert,
   } = useAlert();
 
-  // State:
   const [isLoading, setIsLoading] = useState(true);
   const [solution, setSolution] = useState(
     () => loadGameStateFromLocalStorage()?.solution ?? ""
@@ -106,8 +107,18 @@ function App() {
   const [isMalformedChallenge, setIsMalformedChallenge] = useState(false);
   const [duelConfig, setDuelConfig] = useState<DuelConfig | null>(null);
   const [duelToken, setDuelToken] = useState<string | null>(null);
+  const [activityInstanceId, setActivityInstanceId] = useState<string | null>(
+    null
+  );
+  const [activityAccessToken, setActivityAccessToken] = useState<string | null>(
+    null
+  );
   const [isMalformedDuel, setIsMalformedDuel] = useState(false);
   const [isDuelExpired, setIsDuelExpired] = useState(false);
+  const [isActivityAuthError, setIsActivityAuthError] = useState(false);
+  const [isActivityNotFound, setIsActivityNotFound] = useState(false);
+  const [isActivityWrongPlayer, setIsActivityWrongPlayer] = useState(false);
+  const [isActivityServerError, setIsActivityServerError] = useState(false);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
@@ -116,7 +127,6 @@ function App() {
   const [stats, setStats] = useState(() => loadStats(false));
   const [hardStats, setHardStats] = useState(() => loadStats(true));
 
-  // Settings:
   const [wordLength, setWordLength] = useState(
     () => loadSettingsFromLocalStorage().wordLength
   );
@@ -136,7 +146,6 @@ function App() {
     () => loadSettingsFromLocalStorage().extraEffects ?? true
   );
 
-  // Refs:
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
   const duelSubmittedRef = useRef(false);
@@ -146,7 +155,6 @@ function App() {
     extraEffectsRef.current = extraEffects;
   }, [extraEffects]);
 
-  // Cell Colors:
   const {
     cellColors,
     setCellColors,
@@ -158,7 +166,6 @@ function App() {
     clearAutoGray,
   } = tilePainting({ guesses, solution, autoGray, autoGreen });
 
-  // Derived:
   const isChallengeMode = challengeConfig !== null;
   const isDuelMode = duelConfig !== null;
   const maxChallenges =
@@ -171,10 +178,11 @@ function App() {
     if (!value) clearAutoGray();
   };
 
-  // Hooks:
   const duelSaveStatus = duelResult({
     isDuelMode,
     duelToken,
+    activityInstanceId,
+    activityAccessToken,
     isGameWon,
     isGameLost,
     guessCount: guesses.length,
@@ -258,9 +266,15 @@ function App() {
     setIsMalformedChallenge,
     setIsMalformedDuel,
     setIsDuelExpired,
+    setIsActivityAuthError,
+    setIsActivityNotFound,
+    setIsActivityWrongPlayer,
+    setIsActivityServerError,
     setChallengeConfig,
     setDuelConfig,
     setDuelToken,
+    setActivityInstanceId,
+    setActivityAccessToken,
     setSolution,
     setGuesses,
     setCellColors,
@@ -291,7 +305,6 @@ function App() {
     challengeConfig,
   });
 
-  // Effects:
   useEffect(() => {
     document.documentElement.classList.add("dark");
   }, []);
@@ -316,9 +329,11 @@ function App() {
       });
   }, [showErrorAlert]);
 
-  // Early Returns:
-  if (isDiscordActivity && !duelParam) return <NoDuelScreen />;
   if (isLoading) return <LoadingScreen />;
+  if (isActivityAuthError) return <ActivityAuthErrorScreen />;
+  if (isActivityNotFound) return <ActivityNotFoundScreen />;
+  if (isActivityWrongPlayer) return <ActivityWrongPlayerScreen />;
+  if (isActivityServerError) return <ActivityServerErrorScreen />;
   if (isMalformedChallenge)
     return (
       <MalformedChallengeScreen handleReturnToNormal={handleReturnToNormal} />
@@ -328,7 +343,6 @@ function App() {
   if (isDuelExpired)
     return <ExpiredDuelScreen handleReturnToNormal={handleReturnToNormal} />;
 
-  // Render:
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
       <BackgroundGrid />

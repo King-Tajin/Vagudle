@@ -17,6 +17,7 @@ import {
   pruneOldDuelStates,
   type DuelConfig,
 } from "../lib/duel";
+import { isDiscordActivity, bootActivity } from "../lib/discord";
 import { CORRECT_WORD_MESSAGE } from "../constants/strings";
 import {
   HARD_MODE_MAX_CHALLENGES,
@@ -33,9 +34,15 @@ type Params = {
   setIsMalformedChallenge: (v: boolean) => void;
   setIsMalformedDuel: (v: boolean) => void;
   setIsDuelExpired: (v: boolean) => void;
+  setIsActivityAuthError: (v: boolean) => void;
+  setIsActivityNotFound: (v: boolean) => void;
+  setIsActivityWrongPlayer: (v: boolean) => void;
+  setIsActivityServerError: (v: boolean) => void;
   setChallengeConfig: (v: ChallengeConfig) => void;
   setDuelConfig: (v: DuelConfig) => void;
   setDuelToken: (v: string) => void;
+  setActivityInstanceId: (v: string) => void;
+  setActivityAccessToken: (v: string) => void;
   setSolution: (v: string) => void;
   setGuesses: (v: string[]) => void;
   setCellColors: React.Dispatch<
@@ -59,9 +66,15 @@ export const gameInitialization = ({
   setIsMalformedChallenge,
   setIsMalformedDuel,
   setIsDuelExpired,
+  setIsActivityAuthError,
+  setIsActivityNotFound,
+  setIsActivityWrongPlayer,
+  setIsActivityServerError,
   setChallengeConfig,
   setDuelConfig,
   setDuelToken,
+  setActivityInstanceId,
+  setActivityAccessToken,
   setSolution,
   setGuesses,
   setCellColors,
@@ -81,6 +94,86 @@ export const gameInitialization = ({
       const savedSettings = loadSettingsFromLocalStorage();
       const savedState = loadGameStateFromLocalStorage();
       await initWordLists();
+
+      const restoreDuelState = (
+        duelId: string,
+        discordId: string,
+        wordUpper: string,
+        maxGuesses: number
+      ): boolean => {
+        const savedDuel = loadDuelState(duelId, discordId);
+        if (!savedDuel) {
+          setGuesses([]);
+          setCellColors({});
+          setAutoGrayLetters(new Set());
+          return false;
+        }
+        setGuesses(savedDuel.guesses);
+        setCellColors(savedDuel.cellColors as any);
+        setAutoGrayLetters(new Set(savedDuel.autoGrayLetters));
+        const won = savedDuel.guesses.some(
+          (g) => g.toUpperCase() === wordUpper
+        );
+        const lost = !won && savedDuel.guesses.length >= maxGuesses;
+        if (won) {
+          restoredGameRef.current = true;
+          duelSubmittedRef.current = true;
+          setIsGameWon(true);
+        } else if (lost) {
+          restoredGameRef.current = true;
+          duelSubmittedRef.current = true;
+          setIsGameLost(true);
+        }
+        return won || lost;
+      };
+
+      if (isDiscordActivity) {
+        const boot = await bootActivity();
+
+        if (!boot.ok) {
+          if (boot.reason === "auth_cancelled") setIsActivityAuthError(true);
+          else if (boot.reason === "not_found") setIsActivityNotFound(true);
+          else if (boot.reason === "wrong_player")
+            setIsActivityWrongPlayer(true);
+          else setIsActivityServerError(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const { instanceId, accessToken, discordUserId, payload } = boot;
+
+        const config: DuelConfig = {
+          word: payload.word,
+          dict: payload.dict_type,
+          guesses: payload.max_guesses as 9 | 11,
+          id: payload.duel_id,
+          length: payload.word_length,
+          discord_id: discordUserId,
+          created_at: new Date(payload.generated_at).getTime(),
+        };
+
+        const wordUpper = config.word.toUpperCase();
+        if (!isWordInDict(wordUpper, config.dict)) {
+          setIsActivityServerError(true);
+          setIsLoading(false);
+          return;
+        }
+
+        setDuelConfig(config);
+        setActivityInstanceId(instanceId);
+        setActivityAccessToken(accessToken);
+        setSolution(wordUpper);
+
+        const alreadyFinished = restoreDuelState(
+          config.id,
+          discordUserId,
+          wordUpper,
+          config.guesses
+        );
+        setIsDuelModalOpen(!alreadyFinished);
+        setIsLoading(false);
+        return;
+      }
 
       if (challengeParam) {
         const config = await decodeChallenge(challengeParam);
@@ -153,31 +246,12 @@ export const gameInitialization = ({
         setDuelToken(duelParam);
         setSolution(wordUpper);
 
-        const savedDuel = loadDuelState(config.id, config.discord_id);
-        let alreadyFinished = false;
-        if (savedDuel) {
-          setGuesses(savedDuel.guesses);
-          setCellColors(savedDuel.cellColors as any);
-          setAutoGrayLetters(new Set(savedDuel.autoGrayLetters));
-          const won = savedDuel.guesses.some(
-            (g) => g.toUpperCase() === wordUpper
-          );
-          const lost = !won && savedDuel.guesses.length >= config.guesses;
-          if (won) {
-            restoredGameRef.current = true;
-            duelSubmittedRef.current = true;
-            setIsGameWon(true);
-          } else if (lost) {
-            restoredGameRef.current = true;
-            duelSubmittedRef.current = true;
-            setIsGameLost(true);
-          }
-          alreadyFinished = won || lost;
-        } else {
-          setGuesses([]);
-          setCellColors({});
-          setAutoGrayLetters(new Set());
-        }
+        const alreadyFinished = restoreDuelState(
+          config.id,
+          config.discord_id,
+          wordUpper,
+          config.guesses
+        );
         setIsDuelModalOpen(!alreadyFinished);
         setIsLoading(false);
         return;
