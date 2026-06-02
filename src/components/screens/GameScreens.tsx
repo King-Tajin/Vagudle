@@ -181,35 +181,6 @@ export const ExpiredDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
   </div>
 );
 
-export const ActivityAuthErrorScreen = () => (
-  <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
-    <BackgroundGrid />
-    {emptyNavbar(true)}
-    <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
-      {title}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="max-w-sm w-full p-5 text-center"
-        style={{
-          background: "rgba(220,50,50,0.08)",
-          border: "2px solid rgba(220,50,50,0.4)",
-        }}
-      >
-        <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
-          AUTHORISATION REQUIRED
-        </p>
-        <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-          Vagudle needs to know who you are to load your duel. Please authorise
-          when prompted.
-        </p>
-        {retryButton()}
-      </motion.div>
-    </div>
-  </div>
-);
-
 export const ActivityNotFoundScreen = () => (
   <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
     <BackgroundGrid />

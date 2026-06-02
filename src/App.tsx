@@ -14,7 +14,6 @@ import {
   MalformedChallengeScreen,
   MalformedDuelScreen,
   ExpiredDuelScreen,
-  ActivityAuthErrorScreen,
   ActivityNotFoundScreen,
   ActivityWrongPlayerScreen,
   ActivityServerErrorScreen,
@@ -115,7 +114,6 @@ function App() {
   );
   const [isMalformedDuel, setIsMalformedDuel] = useState(false);
   const [isDuelExpired, setIsDuelExpired] = useState(false);
-  const [isActivityAuthError, setIsActivityAuthError] = useState(false);
   const [isActivityNotFound, setIsActivityNotFound] = useState(false);
   const [isActivityWrongPlayer, setIsActivityWrongPlayer] = useState(false);
   const [isActivityServerError, setIsActivityServerError] = useState(false);
@@ -266,7 +264,6 @@ function App() {
     setIsMalformedChallenge,
     setIsMalformedDuel,
     setIsDuelExpired,
-    setIsActivityAuthError,
     setIsActivityNotFound,
     setIsActivityWrongPlayer,
     setIsActivityServerError,
@@ -330,7 +327,6 @@ function App() {
   }, [showErrorAlert]);
 
   if (isLoading) return <LoadingScreen />;
-  if (isActivityAuthError) return <ActivityAuthErrorScreen />;
   if (isActivityNotFound) return <ActivityNotFoundScreen />;
   if (isActivityWrongPlayer) return <ActivityWrongPlayerScreen />;
   if (isActivityServerError) return <ActivityServerErrorScreen />;

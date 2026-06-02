@@ -34,7 +34,6 @@ type Params = {
   setIsMalformedChallenge: (v: boolean) => void;
   setIsMalformedDuel: (v: boolean) => void;
   setIsDuelExpired: (v: boolean) => void;
-  setIsActivityAuthError: (v: boolean) => void;
   setIsActivityNotFound: (v: boolean) => void;
   setIsActivityWrongPlayer: (v: boolean) => void;
   setIsActivityServerError: (v: boolean) => void;
@@ -66,7 +65,6 @@ export const gameInitialization = ({
   setIsMalformedChallenge,
   setIsMalformedDuel,
   setIsDuelExpired,
-  setIsActivityAuthError,
   setIsActivityNotFound,
   setIsActivityWrongPlayer,
   setIsActivityServerError,
@@ -131,8 +129,7 @@ export const gameInitialization = ({
         const boot = await bootActivity();
 
         if (!boot.ok) {
-          if (boot.reason === "auth_cancelled") setIsActivityAuthError(true);
-          else if (boot.reason === "not_found") setIsActivityNotFound(true);
+          if (boot.reason === "not_found") setIsActivityNotFound(true);
           else if (boot.reason === "wrong_player")
             setIsActivityWrongPlayer(true);
           else setIsActivityServerError(true);

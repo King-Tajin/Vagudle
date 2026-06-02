@@ -43,7 +43,7 @@ export type ActivityBootResult =
     }
   | {
       ok: false;
-      reason: "auth_cancelled" | "not_found" | "wrong_player" | "server_error";
+      reason: "not_found" | "wrong_player" | "server_error";
     };
 
 let _bootResult: ActivityBootResult | null = null;
@@ -66,17 +66,11 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    let code: string;
-    try {
-      const authResult = await _sdk.commands.authorize({
-        client_id: clientId,
-        response_type: "code",
-        scope: ["identify"],
-      });
-      code = authResult.code;
-    } catch {
-      return { ok: false, reason: "auth_cancelled" };
-    }
+    const { code } = await _sdk.commands.authorize({
+      client_id: clientId,
+      response_type: "code",
+      scope: ["identify"],
+    });
 
     const tokenRes = await fetch("/api/token", {
       method: "POST",
