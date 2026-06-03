@@ -1,3 +1,4 @@
 CHALLENGE_KEY=your_secret_key_here
 DUEL_WEBHOOK_SECRET=your_secret_key_here
 VITE_DISCORD_CLIENT_ID=your_secret_key_here
+DISCORD_CLIENT_ID=your_secret_key_here
