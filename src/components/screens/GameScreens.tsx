@@ -256,8 +256,11 @@ export const ActivityServerErrorScreen = () => (
         <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
           SOMETHING WENT WRONG
         </p>
-        <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
+        <p className="font-code text-sm text-gray-400 leading-relaxed mb-1">
           Could not load your duel. Try rejoining the activity from Discord.
+        </p>
+        <p className="font-code text-xs text-gray-600 leading-relaxed mb-4">
+          If this keeps happening, check the browser console for details.
         </p>
         {retryButton()}
       </motion.div>

@@ -15,7 +15,9 @@ export const initDiscordSDK = async (): Promise<void> => {
   if (!isDiscordActivity) return;
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
   if (!clientId) {
-    console.error("[Discord] VITE_DISCORD_CLIENT_ID is not set");
+    console.error(
+      "[Discord] VITE_DISCORD_CLIENT_ID is not set"
+    );
     return;
   }
   _sdk = new DiscordSDK(clientId);
@@ -52,6 +54,9 @@ let _bootPromise: Promise<ActivityBootResult> | null = null;
 const _doBootActivity = async (): Promise<ActivityBootResult> => {
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
   if (!clientId) {
+    console.error(
+      "[Discord] VITE_DISCORD_CLIENT_ID is not set — must be configured as a Cloudflare Pages build variable"
+    );
     return { ok: false, reason: "server_error" };
   }
 
@@ -63,6 +68,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
 
     const instanceId = _sdk.instanceId;
     if (!instanceId) {
+      console.error("[Discord] SDK instanceId is null after ready()");
       return { ok: false, reason: "server_error" };
     }
 
@@ -78,10 +84,14 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       body: JSON.stringify({ code }),
     });
     if (!tokenRes.ok) {
+      console.error(
+        `[Discord] /api/token failed: ${tokenRes.status} — check DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET are set`
+      );
       return { ok: false, reason: "server_error" };
     }
     const { access_token } = await tokenRes.json();
     if (!access_token) {
+      console.error("[Discord] /api/token returned no access_token");
       return { ok: false, reason: "server_error" };
     }
 
@@ -101,6 +111,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "wrong_player" };
     }
     if (!duelRes.ok) {
+      console.error(`[Discord] /api/activity-duel failed: ${duelRes.status}`);
       return { ok: false, reason: "server_error" };
     }
 
@@ -117,7 +128,8 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       discordUserId,
       payload,
     };
-  } catch {
+  } catch (err) {
+    console.error("[Discord] bootActivity failed:", err);
     return { ok: false, reason: "server_error" };
   }
 };

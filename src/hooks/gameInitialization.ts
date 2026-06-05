@@ -151,6 +151,9 @@ export const gameInitialization = ({
 
         const wordUpper = config.word.toUpperCase();
         if (!isWordInDict(wordUpper, config.dict)) {
+          console.error(
+            `[Activity] Word "${wordUpper}" not found in dict "${config.dict}"`
+          );
           setIsActivityServerError(true);
           setIsLoading(false);
           return;
