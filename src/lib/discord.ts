@@ -51,6 +51,18 @@ export type ActivityBootResult =
 let _bootResult: ActivityBootResult | null = null;
 let _bootPromise: Promise<ActivityBootResult> | null = null;
 
+const _logErr = (label: string, err: unknown): void => {
+  console.error(`[Discord] ${label}:`, err);
+  try {
+    console.error(
+      `[Discord] ${label} (serialized):`,
+      JSON.stringify(err, Object.getOwnPropertyNames(err as object))
+    );
+  } catch {
+    console.error(`[Discord] ${label} (keys):`, Object.keys(err as object));
+  }
+};
+
 const _doBootActivity = async (): Promise<ActivityBootResult> => {
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
   if (!clientId) {
@@ -72,11 +84,26 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    const { code } = await _sdk.commands.authorize({
-      client_id: clientId,
-      response_type: "code",
-      scope: ["identify"],
-    });
+    console.log(
+      "[Discord] Authorizing, clientId:",
+      clientId,
+      "instanceId:",
+      instanceId
+    );
+
+    let code: string;
+    try {
+      const result = await _sdk.commands.authorize({
+        client_id: clientId,
+        response_type: "code",
+        scope: ["identify"],
+      });
+      code = result.code;
+      console.log("[Discord] Authorized successfully");
+    } catch (err) {
+      _logErr("authorize failed", err);
+      return { ok: false, reason: "server_error" };
+    }
 
     const tokenRes = await fetch("/api/token", {
       method: "POST",
@@ -95,7 +122,17 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    const auth = await _sdk.commands.authenticate({ access_token });
+    console.log("[Discord] Token exchange succeeded, authenticating...");
+
+    let auth: Awaited<ReturnType<typeof _sdk.commands.authenticate>>;
+    try {
+      auth = await _sdk.commands.authenticate({ access_token });
+      console.log("[Discord] Authenticated as user:", auth.user.id);
+    } catch (err) {
+      _logErr("authenticate failed", err);
+      return { ok: false, reason: "server_error" };
+    }
+
     const discordUserId: string = auth.user.id;
 
     const duelRes = await fetch("/api/activity-duel", {
@@ -129,7 +166,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       payload,
     };
   } catch (err) {
-    console.error("[Discord] bootActivity failed:", err);
+    _logErr("bootActivity failed (unexpected)", err);
     return { ok: false, reason: "server_error" };
   }
 };
