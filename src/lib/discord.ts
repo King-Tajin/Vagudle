@@ -93,6 +93,9 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
     try {
       const result = await _sdk.commands.authorize({
         client_id: clientId,
+        response_type: "code",
+        state: "",
+        prompt: "none",
         scope: ["identify"],
       });
       code = result.code;
