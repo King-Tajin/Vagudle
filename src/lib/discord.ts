@@ -91,15 +91,9 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
 
     let code: string;
     try {
-      const redirectUri = `https://${clientId}.discordsays.com/`;
-      const authorize = _sdk.commands.authorize as unknown as (
-        args: Record<string, unknown>
-      ) => Promise<{ code: string }>;
-      const result = await authorize({
+      const result = await _sdk.commands.authorize({
         client_id: clientId,
-        response_type: "code",
         scope: ["identify"],
-        redirect_uri: redirectUri,
       });
       code = result.code;
       console.log("[Discord] Authorized successfully");
