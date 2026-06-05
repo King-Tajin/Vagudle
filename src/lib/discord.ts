@@ -61,6 +61,43 @@ const _logErr = (label: string, err: unknown): void => {
   }
 };
 
+const DUEL_FETCH_RETRY_DELAYS = [0, 750, 1500, 3000];
+
+const _fetchActivityDuel = async (
+  instanceId: string,
+  access_token: string
+): Promise<Response> => {
+  let lastRes: Response | null = null;
+
+  for (let i = 0; i < DUEL_FETCH_RETRY_DELAYS.length; i++) {
+    const delay = DUEL_FETCH_RETRY_DELAYS[i];
+    if (delay > 0) {
+      console.log(
+        `[Discord] /api/activity-duel not found, retrying in ${delay}ms (attempt ${
+          i + 1
+        }/${DUEL_FETCH_RETRY_DELAYS.length - 1})...`
+      );
+      await new Promise<void>((resolve) => setTimeout(resolve, delay));
+    }
+
+    try {
+      const res = await fetch("/api/activity-duel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ instance_id: instanceId, access_token }),
+      });
+
+      if (res.status !== 404) return res;
+      lastRes = res;
+    } catch (err) {
+      _logErr(`/api/activity-duel fetch attempt ${i + 1} threw`, err);
+      if (i === DUEL_FETCH_RETRY_DELAYS.length - 1) throw err;
+    }
+  }
+
+  return lastRes!;
+};
+
 const _doBootActivity = async (): Promise<ActivityBootResult> => {
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
   if (!clientId) {
@@ -135,13 +172,12 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
 
     const discordUserId: string = auth.user.id;
 
-    const duelRes = await fetch("/api/activity-duel", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ instance_id: instanceId, access_token }),
-    });
+    const duelRes = await _fetchActivityDuel(instanceId, access_token);
 
     if (duelRes.status === 404) {
+      console.error(
+        "[Discord] /api/activity-duel returned 404 after all retries"
+      );
       return { ok: false, reason: "not_found" };
     }
     if (duelRes.status === 403) {
