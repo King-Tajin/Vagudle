@@ -15,9 +15,7 @@ export const initDiscordSDK = async (): Promise<void> => {
   if (!isDiscordActivity) return;
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
   if (!clientId) {
-    console.error(
-      "[Discord] VITE_DISCORD_CLIENT_ID is not set"
-    );
+    console.error("[Discord] VITE_DISCORD_CLIENT_ID is not set");
     return;
   }
   _sdk = new DiscordSDK(clientId);
@@ -93,10 +91,15 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
 
     let code: string;
     try {
-      const result = await _sdk.commands.authorize({
+      const redirectUri = `https://${clientId}.discordsays.com/`;
+      const authorize = _sdk.commands.authorize as unknown as (
+        args: Record<string, unknown>
+      ) => Promise<{ code: string }>;
+      const result = await authorize({
         client_id: clientId,
         response_type: "code",
         scope: ["identify"],
+        redirect_uri: redirectUri,
       });
       code = result.code;
       console.log("[Discord] Authorized successfully");
