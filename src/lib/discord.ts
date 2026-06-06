@@ -1,6 +1,8 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 
-const frameId = new URLSearchParams(window.location.search).get("frame_id");
+const params = new URLSearchParams(window.location.search);
+const frameId = params.get("frame_id");
+export const activityChannelId = params.get("channel_id");
 export const isDiscordActivity = window.self !== window.top && frameId !== null;
 
 let _sdk: DiscordSDK | null = null;
@@ -64,7 +66,7 @@ const _logErr = (label: string, err: unknown): void => {
 const DUEL_FETCH_RETRY_DELAYS = [0, 750, 1500, 3000];
 
 const _fetchActivityDuel = async (
-  instanceId: string,
+  channelId: string,
   access_token: string
 ): Promise<Response> => {
   let lastRes: Response | null = null;
@@ -84,7 +86,7 @@ const _fetchActivityDuel = async (
       const res = await fetch("/api/activity-duel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ instance_id: instanceId, access_token }),
+        body: JSON.stringify({ channel_id: channelId, access_token }),
       });
 
       if (res.status !== 404) return res;
@@ -107,6 +109,11 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
     return { ok: false, reason: "server_error" };
   }
 
+  if (!activityChannelId) {
+    console.error("[Discord] channel_id is missing from URL params");
+    return { ok: false, reason: "server_error" };
+  }
+
   try {
     if (!_sdk) {
       _sdk = new DiscordSDK(clientId);
@@ -122,8 +129,8 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
     console.log(
       "[Discord] Authorizing, clientId:",
       clientId,
-      "instanceId:",
-      instanceId
+      "channelId:",
+      activityChannelId
     );
 
     let code: string;
@@ -172,7 +179,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
 
     const discordUserId: string = auth.user.id;
 
-    const duelRes = await _fetchActivityDuel(instanceId, access_token);
+    const duelRes = await _fetchActivityDuel(activityChannelId, access_token);
 
     if (duelRes.status === 404) {
       console.error(

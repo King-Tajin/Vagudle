@@ -5,8 +5,8 @@ import { submitDuelResult, submitActivityDuelResult } from "../lib/duel";
 type Params = {
   isDuelMode: boolean;
   duelToken: string | null;
-  activityInstanceId: string | null;
   activityAccessToken: string | null;
+  activityChannelId: string | null;
   isGameWon: boolean;
   isGameLost: boolean;
   guessCount: number;
@@ -16,8 +16,8 @@ type Params = {
 export const duelResult = ({
   isDuelMode,
   duelToken,
-  activityInstanceId,
   activityAccessToken,
+  activityChannelId,
   isGameWon,
   isGameLost,
   guessCount,
@@ -28,7 +28,7 @@ export const duelResult = ({
   useEffect(() => {
     if (!isDuelMode) return;
     const hasTokenPath = !!duelToken;
-    const hasActivityPath = !!(activityInstanceId && activityAccessToken);
+    const hasActivityPath = !!activityAccessToken && !!activityChannelId;
     if (!hasTokenPath && !hasActivityPath) return;
     if (!isGameWon && !isGameLost) return;
     if (submittedRef.current) return;
@@ -41,8 +41,8 @@ export const duelResult = ({
         const ok = hasTokenPath
           ? await submitDuelResult(duelToken!, isGameWon, guessCount)
           : await submitActivityDuelResult(
-              activityInstanceId!,
               activityAccessToken!,
+              activityChannelId!,
               isGameWon,
               guessCount
             );
@@ -60,8 +60,8 @@ export const duelResult = ({
     isGameLost,
     isDuelMode,
     duelToken,
-    activityInstanceId,
     activityAccessToken,
+    activityChannelId,
     guessCount,
     submittedRef,
   ]);

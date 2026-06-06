@@ -14,14 +14,14 @@ export async function onRequestPost(context) {
     }
 
     const body = await context.request.json();
-    const { instance_id, access_token } = body;
+    const { channel_id, access_token } = body;
     if (
-      !instance_id ||
-      typeof instance_id !== "string" ||
+      !channel_id ||
+      typeof channel_id !== "string" ||
       !access_token ||
       typeof access_token !== "string"
     ) {
-      return json({ error: "Missing instance_id or access_token." }, 400);
+      return json({ error: "Missing channel_id or access_token." }, 400);
     }
 
     const meRes = await fetch("https://discord.com/api/users/@me", {
@@ -36,7 +36,7 @@ export async function onRequestPost(context) {
       return json({ error: "Could not resolve Discord user ID." }, 401);
     }
 
-    const stored = await kv.get(`activity_duel:${instance_id}`, {
+    const stored = await kv.get(`activity_duel:${channel_id}`, {
       type: "json",
     });
     if (!stored) {

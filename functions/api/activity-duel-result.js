@@ -35,10 +35,11 @@ export async function onRequestPost(context) {
     }
 
     const body = await context.request.json();
-    const { instance_id, access_token, won, guesses_used } = body;
+    const { channel_id, access_token, won, guesses_used } = body;
 
     if (
-      typeof instance_id !== "string" ||
+      !channel_id ||
+      typeof channel_id !== "string" ||
       typeof access_token !== "string" ||
       typeof won !== "boolean" ||
       typeof guesses_used !== "number"
@@ -64,7 +65,7 @@ export async function onRequestPost(context) {
       );
     }
 
-    const stored = await kv.get(`activity_duel:${instance_id}`, {
+    const stored = await kv.get(`activity_duel:${channel_id}`, {
       type: "json",
     });
     if (!stored) {

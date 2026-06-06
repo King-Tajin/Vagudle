@@ -40,7 +40,7 @@ type Params = {
   setChallengeConfig: (v: ChallengeConfig) => void;
   setDuelConfig: (v: DuelConfig) => void;
   setDuelToken: (v: string) => void;
-  setActivityInstanceId: (v: string) => void;
+
   setActivityAccessToken: (v: string) => void;
   setSolution: (v: string) => void;
   setGuesses: (v: string[]) => void;
@@ -71,7 +71,6 @@ export const gameInitialization = ({
   setChallengeConfig,
   setDuelConfig,
   setDuelToken,
-  setActivityInstanceId,
   setActivityAccessToken,
   setSolution,
   setGuesses,
@@ -137,7 +136,7 @@ export const gameInitialization = ({
           return;
         }
 
-        const { instanceId, accessToken, discordUserId, payload } = boot;
+        const { accessToken, discordUserId, payload } = boot;
 
         const config: DuelConfig = {
           word: payload.word,
@@ -160,7 +159,6 @@ export const gameInitialization = ({
         }
 
         setDuelConfig(config);
-        setActivityInstanceId(instanceId);
         setActivityAccessToken(accessToken);
         setSolution(wordUpper);
 

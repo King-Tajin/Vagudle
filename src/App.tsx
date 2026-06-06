@@ -106,11 +106,11 @@ function App() {
   const [isMalformedChallenge, setIsMalformedChallenge] = useState(false);
   const [duelConfig, setDuelConfig] = useState<DuelConfig | null>(null);
   const [duelToken, setDuelToken] = useState<string | null>(null);
-  const [activityInstanceId, setActivityInstanceId] = useState<string | null>(
-    null
-  );
   const [activityAccessToken, setActivityAccessToken] = useState<string | null>(
     null
+  );
+  const [activityChannelId] = useState<string | null>(
+    new URLSearchParams(window.location.search).get("channel_id")
   );
   const [isMalformedDuel, setIsMalformedDuel] = useState(false);
   const [isDuelExpired, setIsDuelExpired] = useState(false);
@@ -179,8 +179,8 @@ function App() {
   const duelSaveStatus = duelResult({
     isDuelMode,
     duelToken,
-    activityInstanceId,
     activityAccessToken,
+    activityChannelId,
     isGameWon,
     isGameLost,
     guessCount: guesses.length,
@@ -270,7 +270,6 @@ function App() {
     setChallengeConfig,
     setDuelConfig,
     setDuelToken,
-    setActivityInstanceId,
     setActivityAccessToken,
     setSolution,
     setGuesses,
