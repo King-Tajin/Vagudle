@@ -28,19 +28,18 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const kv = context.env.FEEDBACK_KV;
     const db = context.env.DB;
-    if (!kv || !db) {
+    if (!db) {
       return json({ success: false, error: "Storage not configured." }, 500);
     }
 
     const body = await context.request.json();
-    const { channel_id, access_token, won, guesses_used } = body;
+    const { access_token, duel_id, won, guesses_used } = body;
 
     if (
-      !channel_id ||
-      typeof channel_id !== "string" ||
       typeof access_token !== "string" ||
+      typeof duel_id !== "string" ||
+      !duel_id ||
       typeof won !== "boolean" ||
       typeof guesses_used !== "number"
     ) {
@@ -65,48 +64,24 @@ export async function onRequestPost(context) {
       );
     }
 
-    const stored = await kv.get(`activity_duel:${channel_id}`, {
-      type: "json",
-    });
-    if (!stored) {
-      return json({ success: false, error: "Duel not found or expired." }, 404);
-    }
+    const completedAt = new Date().toISOString();
 
-    if (stored.discord_id !== discordId) {
-      return json(
-        { success: false, error: "This duel is not for your account." },
-        403
-      );
-    }
-
-    const result = await db
+    await db
       .prepare(
-        `UPDATE duel_results
-         SET won = ?, guesses_used = ?, completed_at = ?
-         WHERE duel_id = ? AND discord_id = ? AND completed_at IS NULL`
+        `INSERT INTO duel_results (duel_id, discord_id, won, guesses_used, completed_at)
+         VALUES (?, ?, ?, ?, ?)
+         ON CONFLICT(duel_id, discord_id) DO UPDATE SET
+           won = excluded.won,
+           guesses_used = excluded.guesses_used,
+           completed_at = excluded.completed_at
+         WHERE duel_results.completed_at IS NULL`
       )
-      .bind(
-        won ? 1 : 0,
-        guesses_used,
-        new Date().toISOString(),
-        stored.duel_id,
-        discordId
-      )
+      .bind(duel_id, discordId, won ? 1 : 0, guesses_used, completedAt)
       .run();
-
-    if (result.meta.changes === 0) {
-      return json(
-        {
-          success: false,
-          error: "No matching duel row found or already completed.",
-        },
-        404
-      );
-    }
 
     const webhookSecret = context.env.DUEL_WEBHOOK_SECRET;
     if (webhookSecret) {
-      await notifyWebhook(stored.duel_id, webhookSecret);
+      await notifyWebhook(duel_id, webhookSecret);
     } else {
       console.error(
         "[activity-duel-result] DUEL_WEBHOOK_SECRET not set — skipping webhook"

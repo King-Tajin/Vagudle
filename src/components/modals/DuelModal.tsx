@@ -164,12 +164,23 @@ export const DuelModal = ({
 
               {mode === "complete" && (
                 <>
-                  <p className="font-pixel text-xs text-crown-amber tracking-widest text-center">
-                    YOUR RESULT HAS BEEN RECORDED
+                  <p
+                    className="font-pixel text-xs tracking-widest text-center"
+                    style={{
+                      color:
+                        saveStatus === "failed"
+                          ? "var(--color-tajin-red, #ef4444)"
+                          : "var(--color-crown-amber, #f59e0b)",
+                    }}
+                  >
+                    {saveStatus === "failed"
+                      ? "RESULT NOT RECORDED"
+                      : "YOUR RESULT HAS BEEN RECORDED"}
                   </p>
                   <p className="font-code text-xs text-gray-500 text-center leading-snug">
-                    The winner will be announced once both players have
-                    finished.
+                    {saveStatus === "failed"
+                      ? "There was a problem saving your result. Please let the host know."
+                      : "The winner will be announced once both players have finished."}
                   </p>
 
                   <div

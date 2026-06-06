@@ -143,7 +143,7 @@ export const submitDuelResult = async (
 
 export const submitActivityDuelResult = async (
   accessToken: string,
-  channelId: string,
+  duelId: string,
   won: boolean,
   guessesUsed: number
 ): Promise<boolean> => {
@@ -154,8 +154,8 @@ export const submitActivityDuelResult = async (
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        channel_id: channelId,
         access_token: accessToken,
+        duel_id: duelId,
         won,
         guesses_used: guessesUsed,
       }),

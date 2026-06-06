@@ -109,9 +109,6 @@ function App() {
   const [activityAccessToken, setActivityAccessToken] = useState<string | null>(
     null
   );
-  const [activityChannelId] = useState<string | null>(
-    new URLSearchParams(window.location.search).get("channel_id")
-  );
   const [isMalformedDuel, setIsMalformedDuel] = useState(false);
   const [isDuelExpired, setIsDuelExpired] = useState(false);
   const [isActivityNotFound, setIsActivityNotFound] = useState(false);
@@ -180,7 +177,7 @@ function App() {
     isDuelMode,
     duelToken,
     activityAccessToken,
-    activityChannelId,
+    activityDuelId: duelConfig?.id ?? null,
     isGameWon,
     isGameLost,
     guessCount: guesses.length,
