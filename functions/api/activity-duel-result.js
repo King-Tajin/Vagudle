@@ -4,7 +4,7 @@ import { CORS_HEADERS, json } from "../_shared/api.js";
 
 const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/duel";
 
-const notifyWebhook = async (duelId, webhookSecret) => {
+const notifyWebhook = async (payload, webhookSecret) => {
   try {
     const res = await fetch(WEBHOOK_URL, {
       method: "POST",
@@ -12,7 +12,7 @@ const notifyWebhook = async (duelId, webhookSecret) => {
         "Content-Type": "application/json",
         "X-Duel-Secret": webhookSecret,
       },
-      body: JSON.stringify({ duel_id: duelId }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) {
       console.error(`[activity-duel-result] Webhook failed: ${res.status}`);
@@ -68,20 +68,19 @@ export async function onRequestPost(context) {
 
     await db
       .prepare(
-        `INSERT INTO duel_results (duel_id, discord_id, won, guesses_used, completed_at)
-         VALUES (?, ?, ?, ?, ?)
-         ON CONFLICT(duel_id, discord_id) DO UPDATE SET
-           won = excluded.won,
-           guesses_used = excluded.guesses_used,
-           completed_at = excluded.completed_at
-         WHERE duel_results.completed_at IS NULL`
+        `UPDATE duel_results
+         SET won = ?, guesses_used = ?, completed_at = ?
+         WHERE duel_id = ? AND discord_id = ? AND completed_at IS NULL`
       )
-      .bind(duel_id, discordId, won ? 1 : 0, guesses_used, completedAt)
+      .bind(won ? 1 : 0, guesses_used, completedAt, duel_id, discordId)
       .run();
 
     const webhookSecret = context.env.DUEL_WEBHOOK_SECRET;
     if (webhookSecret) {
-      await notifyWebhook(duel_id, webhookSecret);
+      await notifyWebhook(
+        { duel_id, discord_id: discordId, won, guesses_used },
+        webhookSecret
+      );
     } else {
       console.error(
         "[activity-duel-result] DUEL_WEBHOOK_SECRET not set — skipping webhook"
