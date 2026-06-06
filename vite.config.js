@@ -13,4 +13,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: "vendor-react", test: /node_modules\/(react|react-dom)\// },
+            { name: "vendor-framer", test: /node_modules\/framer-motion\// },
+          ],
+        },
+      },
+    },
+  },
 });

@@ -3,12 +3,21 @@ import { motion } from "framer-motion";
 
 import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
-import { InfoModal } from "./components/modals/InfoModal";
 import { AlertContainer } from "./components/Alert";
 import { Navbar } from "./components/Navbar";
 import { BackgroundGrid } from "./components/background/BackgroundGrid";
-import { TajinRain } from "./components/background/TajinRain";
 import { GameBanner } from "./components/GameBanner";
+
+const InfoModal = lazy(() =>
+  import("./components/modals/InfoModal").then((m) => ({
+    default: m.InfoModal,
+  }))
+);
+const TajinRain = lazy(() =>
+  import("./components/background/TajinRain").then((m) => ({
+    default: m.TajinRain,
+  }))
+);
 import {
   LoadingScreen,
   MalformedChallengeScreen,
@@ -338,7 +347,9 @@ function App() {
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
       <BackgroundGrid />
-      <TajinRain keyboardRef={keyboardRef} />
+      <Suspense fallback={null}>
+        <TajinRain keyboardRef={keyboardRef} />
+      </Suspense>
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
         setIsStatsModalOpen={setIsStatsModalOpen}
@@ -393,10 +404,12 @@ function App() {
           containerRef={keyboardRef}
         />
 
-        <InfoModal
-          isOpen={isInfoModalOpen}
-          handleClose={() => setIsInfoModalOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <InfoModal
+            isOpen={isInfoModalOpen}
+            handleClose={() => setIsInfoModalOpen(false)}
+          />
+        </Suspense>
 
         <Suspense fallback={null}>
           <StatsModal
