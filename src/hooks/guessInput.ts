@@ -66,7 +66,8 @@ export const guessInput = ({
     if (
       unicodeLength(`${currentGuess}${value}`) <= solution.length &&
       guesses.length < maxChallenges &&
-      !isGameWon
+      !isGameWon &&
+      !isGameLost
     ) {
       setCurrentGuess(`${currentGuess}${value}`);
     }

@@ -23,6 +23,7 @@ type Params = {
   setSolution: (v: string) => void;
   setGuesses: (v: string[]) => void;
   setCurrentGuess: (v: string) => void;
+  setCurrentRowClass: (v: string) => void;
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
@@ -60,6 +61,7 @@ export const gameFlow = ({
   setSolution,
   setGuesses,
   setCurrentGuess,
+  setCurrentRowClass,
   setCellColors,
   setAutoGrayLetters,
   setIsGameWon,
@@ -88,6 +90,7 @@ export const gameFlow = ({
     setSolution(newSolution);
     setGuesses([]);
     setCurrentGuess("");
+    setCurrentRowClass("");
     setCellColors({});
     setAutoGrayLetters(new Set());
     setIsGameWon(false);

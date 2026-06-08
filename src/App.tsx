@@ -230,6 +230,7 @@ function App() {
     setSolution,
     setGuesses,
     setCurrentGuess,
+    setCurrentRowClass,
     setCellColors,
     setAutoGrayLetters,
     setIsGameWon,

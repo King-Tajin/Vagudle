@@ -81,7 +81,7 @@ export const tilePainting = ({
 
       return changed ? next : prev;
     });
-  }, [cellColors, autoGray, guesses, solution]);
+  }, [autoGray, guesses, solution]);
 
   useEffect(() => {
     if (!autoGreen || guesses.length === 0) return;

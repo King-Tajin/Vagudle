@@ -218,7 +218,8 @@ export const bootActivity = (): Promise<ActivityBootResult> => {
   if (_bootResult) return Promise.resolve(_bootResult);
   if (_bootPromise) return _bootPromise;
   _bootPromise = _doBootActivity().then((result) => {
-    _bootResult = result;
+    if (result.ok) _bootResult = result;
+    _bootPromise = null;
     return result;
   });
   return _bootPromise;

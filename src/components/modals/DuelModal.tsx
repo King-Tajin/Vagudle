@@ -170,17 +170,23 @@ export const DuelModal = ({
                       color:
                         saveStatus === "failed"
                           ? "var(--color-tajin-red, #ef4444)"
-                          : "var(--color-crown-amber, #f59e0b)",
+                          : saveStatus === "saved"
+                          ? "var(--color-crown-amber, #f59e0b)"
+                          : "#6b7280",
                     }}
                   >
                     {saveStatus === "failed"
                       ? "RESULT NOT RECORDED"
-                      : "YOUR RESULT HAS BEEN RECORDED"}
+                      : saveStatus === "saved"
+                      ? "YOUR RESULT HAS BEEN RECORDED"
+                      : "SAVING RESULT..."}
                   </p>
                   <p className="font-code text-xs text-gray-500 text-center leading-snug">
                     {saveStatus === "failed"
                       ? "There was a problem saving your result. Please let the host know."
-                      : "The winner will be announced once both players have finished."}
+                      : saveStatus === "saved"
+                      ? "The winner will be announced once both players have finished."
+                      : "Please wait while your result is being recorded."}
                   </p>
 
                   <div

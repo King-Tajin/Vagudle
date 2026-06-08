@@ -19,7 +19,12 @@ export const initWordLists = async () => {
 };
 
 export const isWordInWordList = (word: string) => {
-  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return false;
+  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) {
+    console.error(
+      "[words] isWordInWordList called before initWordLists completed"
+    );
+    return false;
+  }
   const lower = word.toLowerCase();
   return (
     SCRABBLE_SET.has(lower) || NORMAL_SET.has(lower) || HARD_SET.has(lower)
@@ -66,7 +71,10 @@ export const isWordInDict = (
   word: string,
   dict: "normal" | "hard" | "full"
 ): boolean => {
-  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) return false;
+  if (!SCRABBLE_SET || !NORMAL_SET || !HARD_SET) {
+    console.error("[words] isWordInDict called before initWordLists completed");
+    return false;
+  }
   const lower = word.toLowerCase();
   if (dict === "full") return SCRABBLE_SET.has(lower);
   if (dict === "hard") return HARD_SET.has(lower);
