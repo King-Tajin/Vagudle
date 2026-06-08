@@ -53,6 +53,7 @@ type Params = {
   setIsChallengeModalOpen: (v: boolean) => void;
   setIsDuelModalOpen: (v: boolean) => void;
   setIsInfoModalOpen: (v: boolean) => void;
+  setIsStatsModalOpen: (v: boolean) => void;
   showErrorAlert: (message: string, options?: { persist?: boolean }) => void;
 };
 
@@ -81,6 +82,7 @@ export const gameInitialization = ({
   setIsChallengeModalOpen,
   setIsDuelModalOpen,
   setIsInfoModalOpen,
+  setIsStatsModalOpen,
   showErrorAlert,
 }: Params) => {
   useEffect(() => {
@@ -282,6 +284,7 @@ export const gameInitialization = ({
           showErrorAlert(CORRECT_WORD_MESSAGE(savedState.solution), {
             persist: true,
           });
+          setTimeout(() => setIsStatsModalOpen(true), 250);
         }
       } else {
         const newSolution = getRandomWord(

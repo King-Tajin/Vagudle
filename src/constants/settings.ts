@@ -1,4 +1,3 @@
-export const MAX_CHALLENGES = 11;
 export const HARD_MODE_MAX_CHALLENGES = 9;
 export const NORMAL_MODE_MAX_CHALLENGES = 11;
 export const ALERT_TIME_MS = 2000;

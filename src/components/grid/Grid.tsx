@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MAX_CHALLENGES } from "../../constants/settings";
+import { NORMAL_MODE_MAX_CHALLENGES } from "../../constants/settings";
 import { CharStatus } from "../../lib/statuses";
 import { CompletedRow } from "./CompletedRow";
 import { CurrentRow, EmptyRow } from "./GridRows";
@@ -95,7 +95,7 @@ export const Grid = ({
   isRevealing,
   currentRowClassName,
   showGrayCount,
-  maxChallenges = MAX_CHALLENGES,
+  maxChallenges = NORMAL_MODE_MAX_CHALLENGES,
   cellColors,
   onCellPaint,
   onRowReset,

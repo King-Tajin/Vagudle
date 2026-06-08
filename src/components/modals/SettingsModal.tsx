@@ -8,6 +8,7 @@ import {
   DICT_DESCRIPTIONS,
   type ChallengeConfig,
 } from "../../lib/challenge";
+import type { DuelConfig } from "../../lib/duel";
 
 type Tab = "settings" | "challenge";
 
@@ -27,7 +28,7 @@ type Props = {
   setAutoGreen: (value: boolean) => void;
   extraEffects: boolean;
   setExtraEffects: (value: boolean) => void;
-  challengeConfig?: ChallengeConfig | null;
+  challengeConfig?: ChallengeConfig | DuelConfig | null;
   isActivityMode?: boolean;
 };
 

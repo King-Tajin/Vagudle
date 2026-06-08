@@ -287,6 +287,7 @@ function App() {
     setIsChallengeModalOpen,
     setIsDuelModalOpen,
     setIsInfoModalOpen,
+    setIsStatsModalOpen,
     showErrorAlert,
   });
 
@@ -461,11 +462,7 @@ function App() {
             extraEffects={extraEffects}
             setExtraEffects={setExtraEffects}
             challengeConfig={
-              isDuelMode
-                ? (duelConfig as any)
-                : isChallengeMode
-                ? challengeConfig
-                : null
+              isDuelMode ? duelConfig : isChallengeMode ? challengeConfig : null
             }
             isActivityMode={isDiscordActivity}
           />

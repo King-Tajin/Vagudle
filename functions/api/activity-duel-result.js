@@ -66,7 +66,7 @@ export async function onRequestPost(context) {
 
     const completedAt = new Date().toISOString();
 
-    await db
+    const result = await db
       .prepare(
         `UPDATE duel_results
          SET won = ?, guesses_used = ?, completed_at = ?
@@ -74,6 +74,15 @@ export async function onRequestPost(context) {
       )
       .bind(won ? 1 : 0, guesses_used, completedAt, duel_id, discordId)
       .run();
+
+    if (result.meta.changes === 0)
+      return json(
+        {
+          success: false,
+          error: "No matching duel row found or already completed.",
+        },
+        404
+      );
 
     const webhookSecret = context.env.DUEL_WEBHOOK_SECRET;
     if (webhookSecret) {

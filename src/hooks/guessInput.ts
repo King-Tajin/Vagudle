@@ -74,6 +74,7 @@ export const guessInput = ({
   };
 
   const onDelete = () => {
+    if (isGameWon || isGameLost) return;
     setCurrentGuess(currentGuess.slice(0, -1));
   };
 
