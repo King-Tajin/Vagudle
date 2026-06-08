@@ -12,6 +12,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   Swords,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import CrownIcon from "@/assets/icons/crown.svg?react";
 
@@ -60,9 +62,9 @@ const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
 
 const Badge = ({
-  color,
-  n,
-}: {
+                 color,
+                 n,
+               }: {
   color: "green" | "yellow" | "gray";
   n: number;
 }) => {
@@ -93,6 +95,7 @@ const FeedbackTab = () => {
     "idle" | "submitting" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const messageRemaining = MESSAGE_MAX - formData.message.length;
   const messageNearLimit = messageRemaining <= 500;
@@ -291,30 +294,97 @@ const FeedbackTab = () => {
               color: messageAtLimit
                 ? "#f87171"
                 : messageNearLimit
-                ? "#fbbf24"
-                : "#4b5563",
+                  ? "#fbbf24"
+                  : "#4b5563",
             }}
           >
             {(MESSAGE_MAX - formData.message.length).toLocaleString()}{" "}
             characters left
           </span>
         </div>
-        <textarea
-          value={formData.message}
-          onChange={(e) =>
-            setFormData({ ...formData, message: e.target.value })
-          }
-          onKeyDown={(e) => e.stopPropagation()}
-          placeholder="Tell us what's on your mind..."
-          rows={5}
-          maxLength={MESSAGE_MAX}
-          className="w-full border-2 font-code text-sm p-2 outline-none transition-colors resize-none"
-          style={{
-            background: "#0a0014",
-            borderColor: formData.message ? "#d4af37" : "rgba(255,255,255,0.1)",
-            color: "#d1d5db",
-          }}
-        />
+        <div className="relative">
+          <textarea
+            value={formData.message}
+            onChange={(e) =>
+              setFormData({ ...formData, message: e.target.value })
+            }
+            onKeyDown={(e) => e.stopPropagation()}
+            placeholder="Tell us what's on your mind..."
+            rows={5}
+            maxLength={MESSAGE_MAX}
+            className="w-full border-2 font-code text-sm p-2 pb-7 outline-none transition-colors resize-none"
+            style={{
+              background: "#0a0014",
+              borderColor: formData.message ? "#d4af37" : "rgba(255,255,255,0.1)",
+              color: "#d1d5db",
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => setIsFullscreen(true)}
+            title="Expand"
+            className="absolute bottom-2 right-2 p-1 transition-opacity opacity-40 hover:opacity-100"
+            style={{ color: "#d4af37" }}
+          >
+            <Maximize2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {isFullscreen && (
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center"
+            style={{ background: "rgba(0,0,0,0.6)" }}
+            onClick={() => setIsFullscreen(false)}
+          >
+            <div
+              className="flex flex-col"
+              style={{ width: "90vw", height: "90vh", background: "#0a0014", border: "2px solid rgba(212,175,55,0.3)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+                <span className="font-pixel text-xs text-crown-amber tracking-widest">YOUR FEEDBACK</span>
+                <div className="flex items-center gap-3">
+                  <span
+                    className="font-code text-xs tabular-nums"
+                    style={{
+                      color: messageAtLimit
+                        ? "#f87171"
+                        : messageNearLimit
+                          ? "#fbbf24"
+                          : "#4b5563",
+                    }}
+                  >
+                    {(MESSAGE_MAX - formData.message.length).toLocaleString()} characters left
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsFullscreen(false)}
+                    title="Collapse"
+                    className="p-1 transition-opacity opacity-60 hover:opacity-100"
+                    style={{ color: "#d4af37" }}
+                  >
+                    <Minimize2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <textarea
+                value={formData.message}
+                onChange={(e) =>
+                  setFormData({ ...formData, message: e.target.value })
+                }
+                onKeyDown={(e) => e.stopPropagation()}
+                placeholder="Tell us what's on your mind..."
+                maxLength={MESSAGE_MAX}
+                autoFocus
+                className="flex-1 w-full font-code text-sm p-4 outline-none resize-none"
+                style={{
+                  background: "#0a0014",
+                  color: "#d1d5db",
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {status === "error" && (
