@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BookOpen, Hash, Target } from "lucide-react";
+import { BookOpen, ChevronDown, Hash, Lock, Target } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { ChallengeCreatorTab } from "./ChallengeCreatorTab";
@@ -9,6 +9,11 @@ import {
   type ChallengeConfig,
 } from "../../lib/challenge";
 import type { DuelConfig } from "../../lib/duel";
+import {
+  BACKGROUNDS,
+  type BackgroundId,
+  type BackgroundDef,
+} from "../../lib/backgrounds";
 
 type Tab = "settings" | "challenge";
 
@@ -28,8 +33,109 @@ type Props = {
   setAutoGreen: (value: boolean) => void;
   extraEffects: boolean;
   setExtraEffects: (value: boolean) => void;
+  backgroundId: BackgroundId;
+  setBackgroundId: (value: BackgroundId) => void;
+  unlockedAchievementIds: string[];
+  isMobile?: boolean;
   challengeConfig?: ChallengeConfig | DuelConfig | null;
   isActivityMode?: boolean;
+};
+
+const isBgUnlocked = (bg: BackgroundDef, unlockedIds: string[]) =>
+  !bg.requiresAchievementId || unlockedIds.includes(bg.requiresAchievementId);
+
+const BackgroundDropdown = ({
+  currentId,
+  unlockedIds,
+  isMobile,
+  onChange,
+}: {
+  currentId: BackgroundId;
+  unlockedIds: string[];
+  isMobile: boolean;
+  onChange: (id: BackgroundId) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const current = BACKGROUNDS.find((b) => b.id === currentId);
+  const label = isMobile ? current?.mobileLabel : current?.desktopLabel;
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative flex-shrink-0">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-1.5 font-pixel text-xs tracking-widest px-2.5 py-2"
+        style={{
+          background: "rgba(255,255,255,0.05)",
+          border: "2px solid #3a3a4a",
+          color: "#d4af37",
+          cursor: "pointer",
+          minWidth: 0,
+        }}
+      >
+        {label}
+        <ChevronDown className="w-3 h-3 flex-shrink-0 text-gray-500" />
+      </button>
+
+      {open && (
+        <div
+          className="absolute right-0 bottom-full mb-1 z-50"
+          style={{
+            background: "#0d1322",
+            border: "2px solid #3a3a4a",
+            whiteSpace: "nowrap",
+            minWidth: "100%",
+          }}
+        >
+          {BACKGROUNDS.map((bg) => {
+            const unlocked = isBgUnlocked(bg, unlockedIds);
+            const bgLabel = isMobile ? bg.mobileLabel : bg.desktopLabel;
+            const isSelected = bg.id === currentId;
+
+            return (
+              <button
+                key={bg.id}
+                onClick={() => {
+                  if (!unlocked) return;
+                  onChange(bg.id);
+                  setOpen(false);
+                }}
+                className="w-full text-left font-pixel text-xs tracking-widest px-3 py-2 flex items-center gap-2"
+                style={{
+                  color: !unlocked
+                    ? "#374151"
+                    : isSelected
+                    ? "#d4af37"
+                    : "#9ca3af",
+                  textDecoration: !unlocked ? "line-through" : "none",
+                  cursor: unlocked ? "pointer" : "default",
+                  background:
+                    isSelected && unlocked
+                      ? "rgba(80,0,170,0.2)"
+                      : "transparent",
+                }}
+              >
+                {!unlocked && (
+                  <Lock className="w-2.5 h-2.5 flex-shrink-0 text-gray-700" />
+                )}
+                {bgLabel}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const tabBase = "flex-1 py-2 font-pixel text-xs tracking-widest transition-all";
@@ -60,12 +166,15 @@ export const SettingsModal = ({
   setAutoGreen,
   extraEffects,
   setExtraEffects,
+  backgroundId,
+  setBackgroundId,
+  unlockedAchievementIds,
+  isMobile = false,
   challengeConfig,
   isActivityMode = false,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>("settings");
   const [errorMessage, setErrorMessage] = useState("");
-
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -81,12 +190,11 @@ export const SettingsModal = ({
   };
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newLength = Number(e.target.value);
     if (hasStarted) {
       showError("Finish or start a new game before changing the word length!");
       return;
     }
-    onWordLengthChange(newLength);
+    onWordLengthChange(Number(e.target.value));
   };
 
   const handleHardModeChange = (value: boolean) => {
@@ -135,6 +243,7 @@ export const SettingsModal = ({
               </span>
             </div>
           )}
+
           <div className="flex flex-col divide-y divide-obsidian-700">
             {challengeConfig ? (
               <div className="py-3 space-y-2">
@@ -274,20 +383,36 @@ export const SettingsModal = ({
               handleFlag={setShowGrayCount}
               description="Show the number of gray (absent) letters next to each guess."
             />
-
             <SettingsToggle
               settingName="Auto Gray"
               flag={autoGray}
               handleFlag={setAutoGray}
               description="Fully-gray rows auto-gray matching letters everywhere. Auto-grayed cells are protected and persist through resets."
             />
-
             <SettingsToggle
               settingName="Auto Green"
               flag={autoGreen}
               handleFlag={setAutoGreen}
               description="Painting a cell green auto-greens the same letter in that column. Changing a green cell clears those auto-greens."
             />
+
+            <div className="flex justify-between gap-4 py-3">
+              <div className="text-left mt-1">
+                <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
+                  BACKGROUND
+                </p>
+                <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
+                  Choose your background style. New ones unlock via
+                  achievements.
+                </p>
+              </div>
+              <BackgroundDropdown
+                currentId={backgroundId}
+                unlockedIds={unlockedAchievementIds}
+                isMobile={isMobile}
+                onChange={setBackgroundId}
+              />
+            </div>
 
             <SettingsToggle
               settingName="Extra Sounds & Animations"

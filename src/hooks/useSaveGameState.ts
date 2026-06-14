@@ -27,7 +27,7 @@ type Params = {
   challengeConfig: ChallengeConfig | null;
 };
 
-export const saveGameState = ({
+export const useSaveGameState = ({
   isLoading,
   solution,
   guesses,

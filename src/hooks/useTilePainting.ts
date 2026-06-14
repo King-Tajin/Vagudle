@@ -23,7 +23,7 @@ type Return = {
   clearAutoGray: () => void;
 };
 
-export const tilePainting = ({
+export const useTilePainting = ({
   guesses,
   solution,
   autoGray,

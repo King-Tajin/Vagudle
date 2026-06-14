@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import { motion } from "framer-motion";
+import RibbonIcon from "./assets/icons/ribon.svg";
 
 import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
 import { AlertContainer } from "./components/Alert";
 import { Navbar } from "./components/Navbar";
 import { BackgroundGrid } from "./components/background/BackgroundGrid";
+import { VagudleSprinkles } from "./components/background/VagudleSprinkles";
 import { GameBanner } from "./components/GameBanner";
+import { AchievementsModal } from "./components/modals/AchievementsModal";
+import { useAchievements } from "./hooks/useAchievements";
+import {
+  type BackgroundId,
+  loadBackgroundId,
+  saveBackgroundId,
+} from "./lib/backgrounds";
+import type { Achievement } from "./lib/achievements";
 
 const InfoModal = lazy(() =>
   import("./components/modals/InfoModal").then((m) => ({
@@ -18,16 +28,6 @@ const TajinRain = lazy(() =>
     default: m.TajinRain,
   }))
 );
-import {
-  LoadingScreen,
-  MalformedChallengeScreen,
-  MalformedDuelScreen,
-  ExpiredDuelScreen,
-  ActivityNotFoundScreen,
-  ActivityWrongPlayerScreen,
-  ActivityServerErrorScreen,
-} from "./components/screens/GameScreens";
-
 const StatsModal = lazy(() =>
   import("./components/modals/StatsModal").then((m) => ({
     default: m.StatsModal,
@@ -54,14 +54,24 @@ const WinCelebration = lazy(() =>
   }))
 );
 
+import {
+  LoadingScreen,
+  MalformedChallengeScreen,
+  MalformedDuelScreen,
+  ExpiredDuelScreen,
+  ActivityNotFoundScreen,
+  ActivityWrongPlayerScreen,
+  ActivityServerErrorScreen,
+} from "./components/screens/GameScreens";
+
 import { useAlert } from "./context/AlertContext";
-import { tilePainting } from "./hooks/tilePainting";
-import { duelResult } from "./hooks/duelResult";
-import { gameOutcome } from "./hooks/gameOutcome";
-import { gameInitialization } from "./hooks/gameInitialization";
-import { gameFlow } from "./hooks/gameFlow";
-import { guessInput } from "./hooks/guessInput";
-import { saveGameState } from "./hooks/saveGameState";
+import { useTilePainting } from "./hooks/useTilePainting";
+import { useDuelResult } from "./hooks/useDuelResult";
+import { useGameOutcome } from "./hooks/useGameOutcome";
+import { useGameInitialization } from "./hooks/useGameInitialization";
+import { useGameFlow } from "./hooks/useGameFlow";
+import { useGuessInput } from "./hooks/useGuessInput";
+import { useSaveGameState } from "./hooks/useSaveGameState";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
@@ -84,6 +94,11 @@ import {
   GAME_COPIED_MESSAGE,
   DISCOURAGE_INAPP_BROWSER_TEXT,
 } from "./constants/strings";
+
+const IS_MOBILE = window.innerWidth < 640;
+
+// icon (w-14 = 56px) + padding (p-2 = 8px * 2) + right border (border-2 = 2px) = 74px
+const ACHIEVEMENT_TRAY_WIDTH = 74;
 
 const challengeParam = new URLSearchParams(window.location.search).get(
   "challenge"
@@ -128,8 +143,13 @@ function App() {
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
+  const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
+  const [isTrayOpen, setIsTrayOpen] = useState(true);
   const [stats, setStats] = useState(() => loadStats(false));
   const [hardStats, setHardStats] = useState(() => loadStats(true));
+  const [newlyUnlockedAchievements, setNewlyUnlockedAchievements] = useState<
+    Achievement[]
+  >([]);
 
   const [wordLength, setWordLength] = useState(
     () => loadSettingsFromLocalStorage().wordLength
@@ -149,15 +169,60 @@ function App() {
   const [extraEffects, setExtraEffects] = useState(
     () => loadSettingsFromLocalStorage().extraEffects ?? true
   );
+  const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
+    loadBackgroundId(IS_MOBILE)
+  );
+
+  const { unlockedIds, recordWin, resetWinRecord } = useAchievements();
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
   const duelSubmittedRef = useRef(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
+  const achievementCheckedRef = useRef(false);
+  const hasAutoClosedTrayRef = useRef(false);
   const extraEffectsRef = useRef(extraEffects);
   useEffect(() => {
     extraEffectsRef.current = extraEffects;
   }, [extraEffects]);
+
+  useEffect(() => {
+    saveBackgroundId(backgroundId);
+  }, [backgroundId]);
+
+  useEffect(() => {
+    achievementCheckedRef.current = false;
+    resetWinRecord();
+  }, [solution]);
+
+  useEffect(() => {
+    setIsTrayOpen(true);
+    hasAutoClosedTrayRef.current = false;
+  }, [solution]);
+
+  useEffect(() => {
+    if (IS_MOBILE && guesses.length === 1 && !hasAutoClosedTrayRef.current) {
+      hasAutoClosedTrayRef.current = true;
+      setIsTrayOpen(false);
+    }
+  }, [guesses.length]);
+
+  useEffect(() => {
+    if (
+      !isGameWon ||
+      isDuelMode ||
+      isChallengeMode ||
+      achievementCheckedRef.current
+    )
+      return;
+    achievementCheckedRef.current = true;
+    const newly = recordWin({
+      wordLength: solution.length,
+      guessCount: guesses.length,
+      hardMode,
+    });
+    if (newly.length > 0) setNewlyUnlockedAchievements(newly);
+  }, [isGameWon]);
 
   const {
     cellColors,
@@ -168,7 +233,7 @@ function App() {
     onRowReset,
     onFullReset,
     clearAutoGray,
-  } = tilePainting({ guesses, solution, autoGray, autoGreen });
+  } = useTilePainting({ guesses, solution, autoGray, autoGreen });
 
   const isChallengeMode = challengeConfig !== null;
   const isDuelMode = duelConfig !== null;
@@ -177,12 +242,13 @@ function App() {
     challengeConfig?.guesses ??
     (hardMode ? HARD_MODE_MAX_CHALLENGES : NORMAL_MODE_MAX_CHALLENGES);
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
+
   const handleSetAutoGray = (value: boolean) => {
     setAutoGray(value);
     if (!value) clearAutoGray();
   };
 
-  const duelSaveStatus = duelResult({
+  const duelSaveStatus = useDuelResult({
     isDuelMode,
     duelToken,
     activityAccessToken,
@@ -193,7 +259,7 @@ function App() {
     submittedRef: duelSubmittedRef,
   });
 
-  gameOutcome({
+  useGameOutcome({
     isGameWon,
     isGameLost,
     solution,
@@ -214,7 +280,7 @@ function App() {
     handleWordLengthChange,
     recordStats,
     hasActiveGame,
-  } = gameFlow({
+  } = useGameFlow({
     wordLength,
     hardMode,
     guesses,
@@ -241,7 +307,7 @@ function App() {
     dismissAlert,
   });
 
-  const { onChar, onDelete, onEnter } = guessInput({
+  const { onChar, onDelete, onEnter } = useGuessInput({
     currentGuess,
     solution,
     guesses,
@@ -262,7 +328,7 @@ function App() {
     recordStats,
   });
 
-  gameInitialization({
+  useGameInitialization({
     challengeParam,
     duelParam,
     restoredGameRef,
@@ -291,7 +357,7 @@ function App() {
     showErrorAlert,
   });
 
-  saveGameState({
+  useSaveGameState({
     isLoading,
     solution,
     guesses,
@@ -346,12 +412,66 @@ function App() {
   if (isDuelExpired)
     return <ExpiredDuelScreen handleReturnToNormal={handleReturnToNormal} />;
 
+  const renderBackground = () => {
+    switch (backgroundId) {
+      case "sprinkles":
+        return IS_MOBILE ? (
+          <div
+            className="fixed inset-0 pointer-events-none"
+            style={{ background: "#0d1322", zIndex: 0 }}
+          />
+        ) : (
+          <VagudleSprinkles keyboardRef={keyboardRef} />
+        );
+      case "tajin":
+        return IS_MOBILE ? (
+          <BackgroundGrid />
+        ) : (
+          <>
+            <BackgroundGrid />
+            <Suspense fallback={null}>
+              <TajinRain keyboardRef={keyboardRef} />
+            </Suspense>
+          </>
+        );
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
-      <BackgroundGrid />
-      <Suspense fallback={null}>
-        <TajinRain keyboardRef={keyboardRef} />
-      </Suspense>
+      {renderBackground()}
+
+      {!isChallengeMode && !isDuelMode && (
+        <motion.div
+          className="fixed left-0 z-20 flex items-stretch"
+          style={{ top: "4.5rem" }}
+          initial={false}
+          animate={{ x: isTrayOpen ? 0 : -ACHIEVEMENT_TRAY_WIDTH }}
+          transition={{ type: "spring", stiffness: 280, damping: 28 }}
+        >
+          <button
+            className="p-2 flex items-center justify-center bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 transition-colors"
+            style={{ borderLeft: "none", borderRadius: 0 }}
+            onClick={() => setIsAchievementsModalOpen(true)}
+            aria-label="Achievements"
+          >
+            <img src={RibbonIcon} alt="Achievements" className="w-14 h-14" />
+          </button>
+          <button
+            className="flex items-center justify-center px-1.5 bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 hover:bg-obsidian-700 transition-colors text-crown-gold"
+            style={{ borderLeft: "none", borderRadius: "0 6px 6px 0" }}
+            onClick={() => setIsTrayOpen((prev) => !prev)}
+            aria-label={
+              isTrayOpen ? "Hide achievements tray" : "Show achievements tray"
+            }
+          >
+            <span style={{ fontSize: "16px", lineHeight: 1 }}>
+              {isTrayOpen ? "‹" : "›"}
+            </span>
+          </button>
+        </motion.div>
+      )}
+
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
         setIsStatsModalOpen={setIsStatsModalOpen}
@@ -363,6 +483,7 @@ function App() {
         isInfoModalOpen={isInfoModalOpen}
         isActivityMode={isDiscordActivity}
       />
+
       <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
           <motion.p
@@ -440,6 +561,8 @@ function App() {
             }
             isActivityMode={isDiscordActivity}
             duelConfig={isDuelMode ? duelConfig : null}
+            newlyUnlockedAchievements={newlyUnlockedAchievements}
+            onAchievementsViewed={() => setNewlyUnlockedAchievements([])}
           />
           <SettingsModal
             isOpen={isSettingsModalOpen}
@@ -461,6 +584,10 @@ function App() {
             setAutoGreen={setAutoGreen}
             extraEffects={extraEffects}
             setExtraEffects={setExtraEffects}
+            backgroundId={backgroundId}
+            setBackgroundId={setBackgroundId}
+            unlockedAchievementIds={unlockedIds}
+            isMobile={IS_MOBILE}
             challengeConfig={
               isDuelMode ? duelConfig : isChallengeMode ? challengeConfig : null
             }
@@ -485,6 +612,12 @@ function App() {
             />
           )}
         </Suspense>
+
+        <AchievementsModal
+          isOpen={isAchievementsModalOpen}
+          handleClose={() => setIsAchievementsModalOpen(false)}
+          unlockedIds={unlockedIds}
+        />
 
         <AlertContainer />
       </div>

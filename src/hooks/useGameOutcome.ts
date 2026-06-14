@@ -19,7 +19,7 @@ type Params = {
   setIsStatsModalOpen: (value: boolean) => void;
 };
 
-export const gameOutcome = ({
+export const useGameOutcome = ({
   isGameWon,
   isGameLost,
   solution,

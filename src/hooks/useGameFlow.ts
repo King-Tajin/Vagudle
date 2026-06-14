@@ -45,7 +45,7 @@ type Return = {
   hasActiveGame: boolean;
 };
 
-export const gameFlow = ({
+export const useGameFlow = ({
   wordLength,
   hardMode,
   guesses,

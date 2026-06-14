@@ -13,7 +13,7 @@ type Params = {
   submittedRef: React.MutableRefObject<boolean>;
 };
 
-export const duelResult = ({
+export const useDuelResult = ({
   isDuelMode,
   duelToken,
   activityAccessToken,

@@ -40,7 +40,7 @@ type Return = {
   onEnter: () => void;
 };
 
-export const guessInput = ({
+export const useGuessInput = ({
   currentGuess,
   solution,
   guesses,

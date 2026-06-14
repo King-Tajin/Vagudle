@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import RibbonIcon from "../../assets/icons/ribon.svg";
 import { StatBar } from "../stats/StatBar";
 import { Histogram } from "../stats/Histogram";
 import { GameStats } from "../../lib/localStorage";
@@ -27,6 +28,8 @@ import {
   type ChallengeConfig,
   type ChallengeDict,
 } from "../../lib/challenge";
+import type { Achievement } from "../../lib/achievements";
+import { BACKGROUNDS } from "../../lib/backgrounds";
 
 type Props = {
   isOpen: boolean;
@@ -48,6 +51,8 @@ type Props = {
   handleDuelReturn?: () => void;
   duelConfig?: import("../../lib/duel").DuelConfig | null;
   isActivityMode?: boolean;
+  newlyUnlockedAchievements?: Achievement[];
+  onAchievementsViewed?: () => void;
 };
 
 const playSadTrombone = () => {
@@ -164,7 +169,6 @@ const playSadTrombone = () => {
             detunedFreq * (0.91 + r() * 0.015),
             ctx.currentTime + t + dur
           );
-
           const vibratoLfo = ctx.createOscillator();
           const vibratoGain = ctx.createGain();
           vibratoLfo.type = "sine";
@@ -264,7 +268,6 @@ const shareChallengeInvite = async (
     } guesses\n` +
     `(Results won't affect your stats)\n` +
     window.location.href;
-
   try {
     if (
       typeof navigator.share === "function" &&
@@ -274,7 +277,33 @@ const shareChallengeInvite = async (
       return;
     }
   } catch {}
+  try {
+    await navigator.clipboard.writeText(text);
+    handleShareToClipboard();
+  } catch {}
+};
 
+const shareAchievement = async (
+  achievement: Achievement,
+  handleShareToClipboard: () => void
+) => {
+  const bgUnlock = BACKGROUNDS.find(
+    (b) => b.requiresAchievementId === achievement.id
+  );
+  const text =
+    `🏆 Achievement Unlocked: ${achievement.title}\n` +
+    `${achievement.description}\n` +
+    (bgUnlock ? `Unlocked background: ${bgUnlock.desktopLabel}\n` : "") +
+    window.location.href;
+  try {
+    if (
+      typeof navigator.share === "function" &&
+      navigator.canShare?.({ text })
+    ) {
+      await navigator.share({ title: "Vagudle Achievement", text });
+      return;
+    }
+  } catch {}
   try {
     await navigator.clipboard.writeText(text);
     handleShareToClipboard();
@@ -301,15 +330,21 @@ export const StatsModal = ({
   handleDuelReturn,
   duelConfig,
   isActivityMode = false,
+  newlyUnlockedAchievements = [],
+  onAchievementsViewed,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<"normal" | "hard">(
     hardMode ? "hard" : "normal"
   );
   const [showChallengeCreator, setShowChallengeCreator] = useState(false);
+  const [achievementIdx, setAchievementIdx] = useState(0);
   const hasPlayedSoundRef = useRef(false);
 
   useEffect(() => {
-    if (isOpen) setShowChallengeCreator(false);
+    if (isOpen) {
+      setShowChallengeCreator(false);
+      setAchievementIdx(0);
+    }
   }, [isOpen, solution]);
 
   useEffect(() => {
@@ -317,10 +352,24 @@ export const StatsModal = ({
       hasPlayedSoundRef.current = true;
       setTimeout(() => playSadTrombone(), 200);
     }
-    if (!isOpen) {
-      hasPlayedSoundRef.current = false;
-    }
+    if (!isOpen) hasPlayedSoundRef.current = false;
   }, [isOpen, isGameLost, extraEffects]);
+
+  const showingAchievement =
+    !isDuelMode &&
+    !challengeConfig &&
+    !showChallengeCreator &&
+    newlyUnlockedAchievements.length > 0 &&
+    achievementIdx < newlyUnlockedAchievements.length;
+
+  const handleAchievementOkay = () => {
+    if (achievementIdx < newlyUnlockedAchievements.length - 1) {
+      setAchievementIdx((i) => i + 1);
+    } else {
+      onAchievementsViewed?.();
+      setAchievementIdx(0);
+    }
+  };
 
   const displayStats = activeTab === "hard" ? hardGameStats : gameStats;
   const tabMaxChallenges =
@@ -332,7 +381,6 @@ export const StatsModal = ({
     : NORMAL_MODE_MAX_CHALLENGES;
   const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
   const hasGames = displayStats.totalGames > 0;
-
   const presetDict: ChallengeDict = hardMode ? "hard" : "normal";
   const presetGuesses: 9 | 11 = hardMode ? 9 : 11;
 
@@ -348,6 +396,94 @@ export const StatsModal = ({
     border: "2px solid rgba(255,255,255,0.1)",
     color: "#6b7280",
   };
+
+  if (showingAchievement) {
+    const a = newlyUnlockedAchievements[achievementIdx];
+    const total = newlyUnlockedAchievements.length;
+    const bgUnlock = BACKGROUNDS.find((b) => b.requiresAchievementId === a.id);
+    const modalTitle =
+      total > 1
+        ? `Achievement Unlocked (${achievementIdx + 1}/${total})`
+        : "Achievement Unlocked";
+
+    return (
+      <BaseModal title={modalTitle} isOpen={isOpen} handleClose={handleClose}>
+        <div className="flex flex-col items-center text-center py-4 gap-4">
+          <img src={RibbonIcon} alt="Achievement" className="w-24 h-24" />
+
+          <div>
+            <p className="font-pixel text-sm text-crown-gold tracking-widest mb-2">
+              {a.title}
+            </p>
+            <p className="font-code text-xs text-gray-400 leading-snug">
+              {a.description}
+            </p>
+          </div>
+
+          {bgUnlock && (
+            <div
+              className="px-3 py-2 flex items-center gap-2"
+              style={{
+                background: "rgba(255,215,0,0.06)",
+                border: "1px solid rgba(255,215,0,0.25)",
+              }}
+            >
+              <img
+                src={RibbonIcon}
+                alt=""
+                className="w-3.5 h-3.5 flex-shrink-0"
+              />
+              <span className="font-pixel text-[9px] text-crown-amber tracking-widest">
+                BACKGROUND UNLOCKED: {bgUnlock.desktopLabel}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mt-2">
+          <button
+            type="button"
+            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+            style={{
+              background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
+              border: "2px solid #5000aa",
+              color: "#fff",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.filter = "brightness(1.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.filter = "brightness(1)";
+            }}
+            onClick={() => shareAchievement(a, handleShareToClipboard)}
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            SHARE
+          </button>
+          <button
+            type="button"
+            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "2px solid rgba(255,255,255,0.12)",
+              color: "#9ca3af",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.filter = "brightness(1.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.filter = "brightness(1)";
+            }}
+            onClick={handleAchievementOkay}
+          >
+            {achievementIdx < newlyUnlockedAchievements.length - 1
+              ? "NEXT"
+              : "OKAY"}
+          </button>
+        </div>
+      </BaseModal>
+    );
+  }
 
   if (showChallengeCreator) {
     return (
@@ -368,7 +504,6 @@ export const StatsModal = ({
 
   if (isDuelMode) {
     const score = isGameLost ? "X" : guesses.length;
-
     return (
       <BaseModal title="Duel Result" isOpen={isOpen} handleClose={handleClose}>
         <div
@@ -419,7 +554,6 @@ export const StatsModal = ({
             </p>
           </div>
         )}
-
         {isGameLost && (
           <div className="text-center py-3">
             <p className="font-pixel text-xs text-tajin-red tracking-widest">
@@ -461,7 +595,6 @@ export const StatsModal = ({
   if (challengeConfig) {
     const score = isGameLost ? "X" : guesses.length;
     const maxG = challengeConfig.guesses;
-
     return (
       <BaseModal
         title="Challenge Result"
@@ -515,7 +648,6 @@ export const StatsModal = ({
             </p>
           </div>
         )}
-
         {isGameLost && (
           <div className="text-center py-3">
             <p className="font-pixel text-xs text-tajin-red tracking-widest">
@@ -550,7 +682,6 @@ export const StatsModal = ({
               LEAVE
             </button>
           )}
-
           {!isActivityMode && (
             <button
               type="button"
@@ -605,11 +736,9 @@ export const StatsModal = ({
       {hasGames ? (
         <>
           <StatBar gameStats={displayStats} />
-
           <p className="font-pixel text-xs text-gray-500 tracking-widest mt-4 mb-3">
             {GUESS_DISTRIBUTION_TEXT.toUpperCase()}
           </p>
-
           <Histogram
             gameStats={displayStats}
             isGameWon={isGameWon && isCurrentTab}
@@ -687,7 +816,6 @@ export const StatsModal = ({
                 NEW GAME
               </button>
             )}
-
             {!isActivityMode && (
               <button
                 type="button"

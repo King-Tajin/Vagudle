@@ -57,7 +57,7 @@ type Params = {
   showErrorAlert: (message: string, options?: { persist?: boolean }) => void;
 };
 
-export const gameInitialization = ({
+export const useGameInitialization = ({
   challengeParam,
   duelParam,
   restoredGameRef,
