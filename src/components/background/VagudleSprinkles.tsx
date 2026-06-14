@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 const PARTICLE_SIZE = 35;
-const SPREAD = 1.1;
+const SPREAD = 1.5;
 
 const PARTICLE_HEIGHT = (PARTICLE_SIZE * 30) / 73;
 const CELL_SIZE = PARTICLE_SIZE * 3.5;
 const HALF_DIAG = Math.sqrt(PARTICLE_SIZE ** 2 + PARTICLE_HEIGHT ** 2) / 2;
+const OVERSPILL = CELL_SIZE * 0.6;
 
 const COLORS = ["#22c55e", "#eab308", "#58626e"];
 
@@ -79,7 +80,7 @@ export const VagudleSprinkles = ({
     const H = window.innerHeight;
     const padding = HALF_DIAG;
     const range = CELL_SIZE - 2 * padding;
-    const rows = Math.floor((H * SPREAD) / CELL_SIZE);
+    const rows = Math.ceil((H * SPREAD) / CELL_SIZE);
     const marginY = (H - rows * CELL_SIZE) / 2;
     const items: {
       id: number;
@@ -91,12 +92,10 @@ export const VagudleSprinkles = ({
     let id = 0;
 
     if (strips.leftWidth >= CELL_SIZE) {
-      const leftCols = Math.floor(strips.leftWidth / CELL_SIZE);
-      const leftMarginX = (strips.leftWidth - leftCols * CELL_SIZE) / 2;
+      const leftCols = Math.floor((strips.leftWidth + OVERSPILL) / CELL_SIZE);
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < leftCols; col++) {
-          const x =
-            leftMarginX + col * CELL_SIZE + padding + Math.random() * range;
+          const x = col * CELL_SIZE + padding + Math.random() * range;
           const y = marginY + row * CELL_SIZE + padding + Math.random() * range;
           items.push({
             id: id++,
@@ -110,16 +109,12 @@ export const VagudleSprinkles = ({
     }
 
     if (strips.rightWidth >= CELL_SIZE) {
-      const rightCols = Math.floor(strips.rightWidth / CELL_SIZE);
-      const rightMarginX = (strips.rightWidth - rightCols * CELL_SIZE) / 2;
+      const rightCols = Math.floor((strips.rightWidth + OVERSPILL) / CELL_SIZE);
+      const rightOrigin = W - rightCols * CELL_SIZE;
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < rightCols; col++) {
           const x =
-            strips.rightStart +
-            rightMarginX +
-            col * CELL_SIZE +
-            padding +
-            Math.random() * range;
+            rightOrigin + col * CELL_SIZE + padding + Math.random() * range;
           const y = marginY + row * CELL_SIZE + padding + Math.random() * range;
           items.push({
             id: id++,
@@ -133,7 +128,7 @@ export const VagudleSprinkles = ({
     }
 
     return items;
-  }, [strips]);
+  }, [strips.leftWidth, strips.rightWidth]);
 
   return (
     <div
