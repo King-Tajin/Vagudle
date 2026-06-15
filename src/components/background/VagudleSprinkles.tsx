@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { measureKeyboardStrips, type StripMeasure } from "../../lib/stripMeasure";
 
 const PARTICLE_SIZE = 35;
-const SPREAD = 1.5;
+const SPREAD = 1.4;
 
 const PARTICLE_HEIGHT = (PARTICLE_SIZE * 30) / 73;
 const CELL_SIZE = PARTICLE_SIZE * 3.5;
@@ -10,10 +11,9 @@ const OVERSPILL = CELL_SIZE * 0.6;
 
 const COLORS = ["#22c55e", "#eab308", "#58626e"];
 
-interface StripMeasure {
-  leftWidth: number;
-  rightStart: number;
-  rightWidth: number;
+interface WindowSize {
+  W: number;
+  H: number;
 }
 
 export const VagudleSprinkles = ({
@@ -26,42 +26,34 @@ export const VagudleSprinkles = ({
     rightStart: window.innerWidth,
     rightWidth: 0,
   });
+  const [windowSize, setWindowSize] = useState<WindowSize>({
+    W: window.innerWidth,
+    H: window.innerHeight,
+  });
 
   useEffect(() => {
     const measure = () => {
       const el = keyboardRef.current;
       if (!el) return;
-      const buttons = el.querySelectorAll("button");
-      if (buttons.length === 0) return;
-
-      let minLeft = Infinity;
-      let maxRight = -Infinity;
-      buttons.forEach((btn) => {
-        const label = btn.getAttribute("aria-label") ?? "";
-        const isSpecial =
-          label.toLowerCase().startsWith("enter") ||
-          label.toLowerCase().startsWith("delete");
-        if (isSpecial) return;
-        const r = btn.getBoundingClientRect();
-        if (r.left < minLeft) minLeft = r.left;
-        if (r.right > maxRight) maxRight = r.right;
-      });
-
-      if (minLeft === Infinity || maxRight === -Infinity) return;
+      const result = measureKeyboardStrips(el);
+      if (!result) return;
 
       const vw = window.innerWidth;
-      const leftWidth = Math.max(0, minLeft - 8);
-      const rightStart = maxRight + 8;
-      const rightWidth = Math.max(0, vw - rightStart);
+      const vh = window.innerHeight;
+
+      setWindowSize((prev) => {
+        if (prev.W === vw && prev.H === vh) return prev;
+        return { W: vw, H: vh };
+      });
 
       setStrips((prev) => {
         if (
-          Math.abs(prev.leftWidth - leftWidth) < 1 &&
-          Math.abs(prev.rightStart - rightStart) < 1 &&
-          Math.abs(prev.rightWidth - rightWidth) < 1
+          Math.abs(prev.leftWidth - result.leftWidth) < 1 &&
+          Math.abs(prev.rightStart - result.rightStart) < 1 &&
+          Math.abs(prev.rightWidth - result.rightWidth) < 1
         )
           return prev;
-        return { leftWidth, rightStart, rightWidth };
+        return result;
       });
     };
 
@@ -75,9 +67,10 @@ export const VagudleSprinkles = ({
     };
   }, [keyboardRef]);
 
+  const { leftWidth, rightWidth } = strips;
+  const { W, H } = windowSize;
+
   const sprinkles = useMemo(() => {
-    const W = window.innerWidth;
-    const H = window.innerHeight;
     const padding = HALF_DIAG;
     const range = CELL_SIZE - 2 * padding;
     const rows = Math.ceil((H * SPREAD) / CELL_SIZE);
@@ -91,11 +84,10 @@ export const VagudleSprinkles = ({
     }[] = [];
     let id = 0;
 
-    if (strips.leftWidth >= CELL_SIZE) {
-      const leftCols = Math.floor((strips.leftWidth + OVERSPILL) / CELL_SIZE);
+    const fillStrip = (cols: number, originX: number) => {
       for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < leftCols; col++) {
-          const x = col * CELL_SIZE + padding + Math.random() * range;
+        for (let col = 0; col < cols; col++) {
+          const x = originX + col * CELL_SIZE + padding + Math.random() * range;
           const y = marginY + row * CELL_SIZE + padding + Math.random() * range;
           items.push({
             id: id++,
@@ -106,29 +98,20 @@ export const VagudleSprinkles = ({
           });
         }
       }
+    };
+
+    if (leftWidth >= CELL_SIZE) {
+      const leftCols = Math.floor((leftWidth + OVERSPILL) / CELL_SIZE);
+      fillStrip(leftCols, 0);
     }
 
-    if (strips.rightWidth >= CELL_SIZE) {
-      const rightCols = Math.floor((strips.rightWidth + OVERSPILL) / CELL_SIZE);
-      const rightOrigin = W - rightCols * CELL_SIZE;
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < rightCols; col++) {
-          const x =
-            rightOrigin + col * CELL_SIZE + padding + Math.random() * range;
-          const y = marginY + row * CELL_SIZE + padding + Math.random() * range;
-          items.push({
-            id: id++,
-            x: (x / W) * 100,
-            y: (y / H) * 100,
-            rotation: Math.random() * 360,
-            color: COLORS[Math.floor(Math.random() * COLORS.length)],
-          });
-        }
-      }
+    if (rightWidth >= CELL_SIZE) {
+      const rightCols = Math.floor((rightWidth + OVERSPILL) / CELL_SIZE);
+      fillStrip(rightCols, W - rightCols * CELL_SIZE);
     }
 
     return items;
-  }, [strips.leftWidth, strips.rightWidth]);
+  }, [leftWidth, rightWidth, W, H]);
 
   return (
     <div
