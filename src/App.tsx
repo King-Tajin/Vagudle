@@ -193,6 +193,7 @@ function App() {
   useEffect(() => {
     achievementCheckedRef.current = false;
     resetWinRecord();
+    setNewlyUnlockedAchievements([]);
   }, [solution]);
 
   useEffect(() => {
