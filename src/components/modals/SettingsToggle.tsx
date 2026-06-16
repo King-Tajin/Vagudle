@@ -1,7 +1,7 @@
 type Props = {
   settingName: string;
   flag: boolean;
-  handleFlag: Function;
+  handleFlag: (value: boolean) => void;
   description?: string;
 };
 

@@ -38,14 +38,19 @@ export const useDuelResult = ({
       setSaveStatus("saving");
       for (let attempt = 0; attempt < 3; attempt++) {
         if (attempt > 0) await new Promise((r) => setTimeout(r, 15000));
-        const ok = hasTokenPath
-          ? await submitDuelResult(duelToken!, isGameWon, guessCount)
-          : await submitActivityDuelResult(
-              activityAccessToken!,
-              activityDuelId!,
-              isGameWon,
-              guessCount
-            );
+        let ok: boolean;
+        if (duelToken) {
+          ok = await submitDuelResult(duelToken, isGameWon, guessCount);
+        } else if (activityAccessToken && activityDuelId) {
+          ok = await submitActivityDuelResult(
+            activityAccessToken,
+            activityDuelId,
+            isGameWon,
+            guessCount
+          );
+        } else {
+          break;
+        }
         if (ok) {
           setSaveStatus("saved");
           return;

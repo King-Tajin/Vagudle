@@ -50,7 +50,7 @@ const useCellSize = (solutionLength: number, showGrayCount?: boolean) => {
 
 const BRUSHES: {
   status: CharStatus;
-  Icon: React.ComponentType<any>;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   border: string;
   bg: string;
 }[] = [

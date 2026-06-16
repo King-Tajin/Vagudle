@@ -251,7 +251,7 @@ const playSadTrombone = () => {
 
     setTimeout(() => {
       try {
-        ctx.close();
+        void ctx.close();
       } catch {}
     }, (totalDur + 2.5) * 1000);
   } catch {}

@@ -56,10 +56,13 @@ const _logErr = (label: string, err: unknown): void => {
   try {
     console.error(
       `[Discord] ${label} (serialized):`,
-      JSON.stringify(err, Object.getOwnPropertyNames(err as object))
+      JSON.stringify(err, Object.getOwnPropertyNames(Object(err)))
     );
   } catch {
-    console.error(`[Discord] ${label} (keys):`, Object.keys(err as object));
+    console.error(
+      `[Discord] ${label} (keys):`,
+      Object.keys(err as Record<string, unknown>)
+    );
   }
 };
 
@@ -97,7 +100,10 @@ const _fetchActivityDuel = async (
     }
   }
 
-  return lastRes!;
+  if (!lastRes) {
+    throw new Error("[Discord] No response received from /api/activity-duel");
+  }
+  return lastRes;
 };
 
 const _doBootActivity = async (): Promise<ActivityBootResult> => {
@@ -160,7 +166,9 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       );
       return { ok: false, reason: "server_error" };
     }
-    const { access_token } = await tokenRes.json();
+    const { access_token } = (await tokenRes.json()) as {
+      access_token: string;
+    };
     if (!access_token) {
       console.error("[Discord] /api/token returned no access_token");
       return { ok: false, reason: "server_error" };
@@ -195,7 +203,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    const payload: DuelPayload = await duelRes.json();
+    const payload = (await duelRes.json()) as DuelPayload;
 
     if (payload.discord_id !== discordUserId) {
       return { ok: false, reason: "wrong_player" };

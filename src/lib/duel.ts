@@ -74,10 +74,14 @@ export const decodeDuel = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
-    const data = await res.json();
+    const data = (await res.json()) as {
+      success: boolean;
+      expired: boolean;
+      config: DuelConfig;
+    };
     if (!data.success) return null;
     if (data.expired) return { config: null, expired: true };
-    return { config: data.config as DuelConfig, expired: false };
+    return { config: data.config, expired: false };
   } catch {
     return null;
   }
@@ -132,8 +136,8 @@ export const submitDuelResult = async (
       body: JSON.stringify({ token, won, guessesUsed }),
       signal: controller.signal,
     });
-    const data = await res.json();
-    return data.success === true;
+    const data = (await res.json()) as { success: boolean };
+    return data.success;
   } catch {
     return false;
   } finally {
@@ -161,8 +165,8 @@ export const submitActivityDuelResult = async (
       }),
       signal: controller.signal,
     });
-    const data = await res.json();
-    return data.success === true;
+    const data = (await res.json()) as { success: boolean };
+    return data.success;
   } catch {
     return false;
   } finally {

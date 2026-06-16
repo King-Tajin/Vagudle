@@ -194,6 +194,7 @@ function App() {
     achievementCheckedRef.current = false;
     resetWinRecord();
     setNewlyUnlockedAchievements([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [solution]);
 
   useEffect(() => {
@@ -223,6 +224,7 @@ function App() {
       hardMode,
     });
     if (newly.length > 0) setNewlyUnlockedAchievements(newly);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameWon]);
 
   const {
@@ -392,12 +394,12 @@ function App() {
   }, [isChallengeMode, isDuelMode]);
 
   useEffect(() => {
-    DISCOURAGE_INAPP_BROWSERS &&
-      isInAppBrowser() &&
+    if (DISCOURAGE_INAPP_BROWSERS && isInAppBrowser()) {
       showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
         persist: false,
         durationMs: 7000,
       });
+    }
   }, [showErrorAlert]);
 
   if (isLoading) return <LoadingScreen />;
@@ -598,14 +600,14 @@ function App() {
             <ChallengeAcceptModal
               isOpen={isChallengeModalOpen}
               onPlay={() => setIsChallengeModalOpen(false)}
-              config={challengeConfig!}
+              config={challengeConfig}
             />
           )}
           {isDuelMode && duelConfig && (
             <DuelModal
               isOpen={isDuelModalOpen}
               mode={isGameWon || isGameLost ? "complete" : "accept"}
-              config={duelConfig!}
+              config={duelConfig}
               onPlay={() => setIsDuelModalOpen(false)}
               onReturn={handleReturnToNormal}
               saveStatus={duelSaveStatus}

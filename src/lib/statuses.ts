@@ -8,9 +8,9 @@ export const getGuessStatuses = (
   const splitSolution = unicodeSplit(solution);
   const splitGuess = unicodeSplit(guess);
 
-  const solutionCharsTaken = splitSolution.map((_) => false);
+  const solutionCharsTaken = splitSolution.map(() => false);
 
-  const statuses: CharStatus[] = Array.from(Array(guess.length));
+  const statuses = new Array<CharStatus>(guess.length);
 
   splitGuess.forEach((letter, i) => {
     if (letter === splitSolution[i]) {

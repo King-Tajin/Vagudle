@@ -174,7 +174,7 @@ export const ChallengeCreatorTab = ({
         length: w.length,
       };
       setGenerateStatus("loading");
-      encodeChallenge(config).then((result) => {
+      void encodeChallenge(config).then((result) => {
         if (!result) {
           setGenerateStatus("error");
           return;
@@ -191,6 +191,7 @@ export const ChallengeCreatorTab = ({
       setWordStatus("invalid-word");
       setDictHints(getDictHints(w, d));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const cleanInput = wordInput.toUpperCase().replace(/[^A-Z]/g, "");

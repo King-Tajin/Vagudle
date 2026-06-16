@@ -67,7 +67,11 @@ export const encodeChallenge = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
-    const data = await res.json();
+    const data = (await res.json()) as {
+      success: boolean;
+      encoded: string;
+      id: string;
+    };
     if (!data.success) return null;
     return { encoded: data.encoded, id: data.id };
   } catch {
@@ -88,9 +92,12 @@ export const decodeChallenge = async (
       }
     );
     clearTimeout(timeout);
-    const data = await res.json();
+    const data = (await res.json()) as {
+      success: boolean;
+      config: ChallengeConfig;
+    };
     if (!data.success) return null;
-    return data.config as ChallengeConfig;
+    return data.config;
   } catch {
     return null;
   }

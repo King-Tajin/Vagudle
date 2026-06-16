@@ -113,7 +113,7 @@ function playWinSound() {
 
     setTimeout(() => {
       try {
-        ctx.close();
+        void ctx.close();
       } catch {}
     }, 2500);
   } catch {}
@@ -282,7 +282,11 @@ export function WinCelebration({ word, onDone }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5, ease: "easeIn" }}
-          style={{ width: "clamp(160px, 42vw, 320px)", height: "auto", marginTop: 16 }}
+          style={{
+            width: "clamp(160px, 42vw, 320px)",
+            height: "auto",
+            marginTop: 16,
+          }}
         >
           <VagudleIcon style={{ width: "100%", height: "100%" }} />
         </motion.div>

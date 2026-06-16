@@ -108,7 +108,7 @@ export const useGameInitialization = ({
           return false;
         }
         setGuesses(savedDuel.guesses);
-        setCellColors(savedDuel.cellColors as any);
+        setCellColors(savedDuel.cellColors as { [key: string]: CharStatus });
         setAutoGrayLetters(new Set(savedDuel.autoGrayLetters));
         const won = savedDuel.guesses.some(
           (g) => g.toUpperCase() === wordUpper
@@ -197,7 +197,9 @@ export const useGameInitialization = ({
         let alreadyFinished = false;
         if (savedChallenge) {
           setGuesses(savedChallenge.guesses);
-          setCellColors(savedChallenge.cellColors as any);
+          setCellColors(
+            savedChallenge.cellColors as { [key: string]: CharStatus }
+          );
           setAutoGrayLetters(new Set(savedChallenge.autoGrayLetters));
           const won = savedChallenge.guesses.some(
             (g) => g.toUpperCase() === wordUpper
@@ -271,10 +273,10 @@ export const useGameInitialization = ({
           : NORMAL_MODE_MAX_CHALLENGES;
         setSolution(savedState.solution);
         setGuesses(savedState.guesses);
-        setCellColors((savedState.cellColors as any) ?? {});
-        setAutoGrayLetters(
-          new Set((savedState.autoGrayLetters ?? []) as string[])
+        setCellColors(
+          (savedState.cellColors as { [key: string]: CharStatus }) ?? {}
         );
+        setAutoGrayLetters(new Set(savedState.autoGrayLetters ?? []));
         if (gameWasWon) {
           restoredGameRef.current = true;
           setIsGameWon(true);
@@ -300,5 +302,6 @@ export const useGameInitialization = ({
       setIsLoading(false);
     };
     void run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

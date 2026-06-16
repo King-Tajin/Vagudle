@@ -64,6 +64,7 @@ export const useGameOutcome = ({
       if (isDuelMode) setTimeout(() => setIsDuelModalOpen(true), delay);
       else setTimeout(() => setIsStatsModalOpen(true), delay);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isGameWon,
     isGameLost,

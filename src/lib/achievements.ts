@@ -21,6 +21,10 @@ export type AchievementProgress = {
   wonWith7LettersEver: boolean;
 };
 
+type StoredProgress = Partial<AchievementProgress> & {
+  totalRegularWins?: number;
+};
+
 const defaultProgress = (): AchievementProgress => ({
   unlockedIds: [],
   totalWins: 0,
@@ -80,8 +84,8 @@ export const loadAchievementProgress = (): AchievementProgress => {
   try {
     const stored = localStorage.getItem(KEY);
     if (stored) {
-      const parsed = JSON.parse(stored);
-      const progress = { ...defaultProgress(), ...parsed };
+      const parsed = JSON.parse(stored) as StoredProgress;
+      const progress: AchievementProgress = { ...defaultProgress(), ...parsed };
       if (
         progress.totalWins === 0 &&
         typeof parsed.totalRegularWins === "number"

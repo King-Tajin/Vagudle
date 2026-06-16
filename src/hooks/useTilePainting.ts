@@ -30,13 +30,13 @@ export const useTilePainting = ({
   autoGreen,
 }: Params): Return => {
   const [cellColors, setCellColors] = useState<{ [key: string]: CharStatus }>(
-    () => (loadGameStateFromLocalStorage()?.cellColors as any) || {}
+    () =>
+      (loadGameStateFromLocalStorage()?.cellColors as {
+        [key: string]: CharStatus;
+      }) ?? {}
   );
   const [autoGrayLetters, setAutoGrayLetters] = useState<Set<string>>(
-    () =>
-      new Set(
-        (loadGameStateFromLocalStorage()?.autoGrayLetters ?? []) as string[]
-      )
+    () => new Set(loadGameStateFromLocalStorage()?.autoGrayLetters ?? [])
   );
 
   useEffect(() => {

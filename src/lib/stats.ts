@@ -55,7 +55,7 @@ export const loadStats = (hardMode: boolean) => {
   if (stored.winDistribution.length < maxChallenges) {
     stored.winDistribution = [
       ...stored.winDistribution,
-      ...Array(maxChallenges - stored.winDistribution.length).fill(0),
+      ...Array<number>(maxChallenges - stored.winDistribution.length).fill(0),
     ];
   }
   return stored;
