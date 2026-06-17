@@ -32,6 +32,7 @@ type Params = {
     options?: { onClose?: () => void; persist?: boolean; delayMs?: number }
   ) => void;
   recordStats: (count: number) => void;
+  onGuessSubmit?: (word: string) => void;
 };
 
 type Return = {
@@ -59,6 +60,7 @@ export const useGuessInput = ({
   setCellColors,
   showErrorAlert,
   recordStats,
+  onGuessSubmit,
 }: Params): Return => {
   const clearCurrentRowClass = () => setCurrentRowClass("");
 
@@ -113,6 +115,8 @@ export const useGuessInput = ({
     ) {
       setGuesses([...guesses, currentGuess]);
       setCurrentGuess("");
+
+      if (!isChallengeMode && !isDuelMode) onGuessSubmit?.(currentGuess);
 
       if (winningWord) {
         const winRowIndex = guesses.length;

@@ -3,6 +3,7 @@ export type AchievementContext = {
   wonInHardMode5Plus: boolean;
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
+  guessedWords: string[];
 };
 
 export type Achievement = {
@@ -19,6 +20,7 @@ export type AchievementProgress = {
   wonInHardMode5Plus: boolean;
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
+  guessedWords: string[];
 };
 
 type StoredProgress = Partial<AchievementProgress> & {
@@ -31,6 +33,7 @@ const defaultProgress = (): AchievementProgress => ({
   wonInHardMode5Plus: false,
   wonIn5GuessesEver: false,
   wonWith7LettersEver: false,
+  guessedWords: [],
 });
 
 export const ACHIEVEMENTS: Achievement[] = [
@@ -75,6 +78,13 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: "Win a game with a 7-letter word",
     hidden: false,
     check: (ctx) => ctx.wonWith7LettersEver,
+  },
+  {
+    id: "guess_mouse",
+    title: "Squeak!",
+    description: "Type MOUSE as a guess during a game",
+    hidden: false,
+    check: (ctx) => ctx.guessedWords.includes("mouse"),
   },
 ];
 

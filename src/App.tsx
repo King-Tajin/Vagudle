@@ -8,10 +8,12 @@ import { AlertContainer } from "./components/Alert";
 import { Navbar } from "./components/Navbar";
 import { BackgroundGrid } from "./components/background/BackgroundGrid";
 import { VagudleSprinkles } from "./components/background/VagudleSprinkles";
+import { VideoBackground } from "./components/background/VideoBackground";
 import { GameBanner } from "./components/GameBanner";
 import { AchievementsModal } from "./components/modals/AchievementsModal";
 import { useAchievements } from "./hooks/useAchievements";
 import {
+  BACKGROUNDS,
   type BackgroundId,
   loadBackgroundId,
   saveBackgroundId,
@@ -173,7 +175,8 @@ function App() {
     loadBackgroundId(IS_MOBILE)
   );
 
-  const { unlockedIds, recordWin, resetWinRecord } = useAchievements();
+  const { unlockedIds, recordWin, recordGuess, resetWinRecord } =
+    useAchievements();
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
@@ -209,6 +212,17 @@ function App() {
     }
   }, [guesses.length]);
 
+  const announceAchievement = (achievement: Achievement) => {
+    const bg = BACKGROUNDS.find(
+      (b) => b.requiresAchievementId === achievement.id
+    );
+    showSuccessAlert(
+      `🏆 Achievement Unlocked: ${achievement.title}` +
+        (bg ? ` — ${bg.desktopLabel} background unlocked!` : ""),
+      { durationMs: 4000 }
+    );
+  };
+
   useEffect(() => {
     if (
       !isGameWon ||
@@ -223,7 +237,8 @@ function App() {
       guessCount: guesses.length,
       hardMode,
     });
-    if (newly.length > 0) setNewlyUnlockedAchievements(newly);
+    if (newly.length > 0)
+      setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameWon]);
 
@@ -329,6 +344,13 @@ function App() {
     setCellColors,
     showErrorAlert,
     recordStats,
+    onGuessSubmit: (word) => {
+      const newly = recordGuess(word);
+      if (newly.length > 0) {
+        setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
+        newly.forEach(announceAchievement);
+      }
+    },
   });
 
   useGameInitialization({
@@ -416,6 +438,21 @@ function App() {
     return <ExpiredDuelScreen handleReturnToNormal={handleReturnToNormal} />;
 
   const renderBackground = () => {
+    const bg = BACKGROUNDS.find((b) => b.id === backgroundId);
+
+    if (bg?.kind === "video" && bg.videoSrc) {
+      return (
+        <VideoBackground
+          key={bg.videoSrc}
+          src={bg.videoSrc}
+          posterSrc={bg.posterSrc}
+          audioEnabled={extraEffects}
+          objectPosition={bg.objectPosition}
+          label={bg.desktopLabel}
+        />
+      );
+    }
+
     switch (backgroundId) {
       case "sprinkles":
         return IS_MOBILE ? (

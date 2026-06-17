@@ -1,2 +1,5 @@
 /*
   Content-Security-Policy: frame-ancestors 'self' https://*.discordsays.com
+
+/backgrounds/*
+  Cache-Control: public, max-age=31536000, immutable

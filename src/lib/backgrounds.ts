@@ -1,10 +1,14 @@
-export type BackgroundId = "sprinkles" | "tajin";
+export type BackgroundId = "sprinkles" | "tajin" | "mouse_cam";
 
 export type BackgroundDef = {
   id: BackgroundId;
   desktopLabel: string;
   mobileLabel: string;
   requiresAchievementId?: string;
+  kind: "css" | "video";
+  videoSrc?: string;
+  posterSrc?: string;
+  objectPosition?: string;
 };
 
 export const BACKGROUNDS: BackgroundDef[] = [
@@ -12,11 +16,22 @@ export const BACKGROUNDS: BackgroundDef[] = [
     id: "sprinkles",
     desktopLabel: "VAGUDLE SPRINKLES",
     mobileLabel: "GRAY",
+    kind: "css",
   },
   {
     id: "tajin",
     desktopLabel: "TAJIN RAIN",
     mobileLabel: "GRID",
+    kind: "css",
+  },
+  {
+    id: "mouse_cam",
+    desktopLabel: "MOUSE EATING",
+    mobileLabel: "MOUSE",
+    requiresAchievementId: "guess_mouse",
+    kind: "video",
+    videoSrc: "/backgrounds/mouse.mp4",
+    objectPosition: "65% 65%",
   },
 ];
 

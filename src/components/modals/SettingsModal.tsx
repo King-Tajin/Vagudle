@@ -418,7 +418,7 @@ export const SettingsModal = ({
               settingName="Extra Sounds & Animations"
               flag={extraEffects}
               handleFlag={setExtraEffects}
-              description="Play a firework celebration on wins and a sad sound effect on losses."
+              description="Play a firework celebration on wins and a sad sound effect on losses. Also toggles audio on backgrounds that support it."
             />
           </div>
         </>
