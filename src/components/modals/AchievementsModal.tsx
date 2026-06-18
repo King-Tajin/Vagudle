@@ -1,4 +1,4 @@
-import { Award, Lock, CheckCircle2 } from "lucide-react";
+import { Award, Lock, SquareCheckBig } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { ACHIEVEMENTS } from "../../lib/achievements";
 import { BACKGROUNDS } from "../../lib/backgrounds";
@@ -29,16 +29,14 @@ export const AchievementsModal = ({ isOpen, handleClose, unlockedIds }: Props) =
                 ? "rgba(80,0,170,0.1)"
                 : "rgba(255,255,255,0.02)",
               border: `1px solid ${
-                isUnlocked
-                  ? "rgba(80,0,170,0.35)"
-                  : "rgba(255,255,255,0.06)"
+                isUnlocked ? "rgba(80,0,170,0.35)" : "rgba(255,255,255,0.06)"
               }`,
               opacity: isUnlocked ? 1 : 0.55,
             }}
           >
             <div className="flex-shrink-0 mt-0.5">
               {isUnlocked ? (
-                <CheckCircle2 className="w-4 h-4 text-tajin-lime" />
+                <SquareCheckBig className="w-6 h-6 text-tajin-lime" />
               ) : (
                 <Lock className="w-4 h-4 text-gray-600" />
               )}

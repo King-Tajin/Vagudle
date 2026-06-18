@@ -37,9 +37,9 @@ type StoredSettings = {
 
 const defaultSettings: StoredSettings = {
   wordLength: 5,
-  showGrayCount: false,
+  showGrayCount: true,
   hardMode: false,
-  autoGray: false,
+  autoGray: true,
   autoGreen: false,
   extraEffects: true,
 };
