@@ -55,6 +55,11 @@ const WinCelebration = lazy(() =>
     default: m.WinCelebration,
   }))
 );
+const SevenLetterWords = lazy(() =>
+  import("./components/background/SevenLetterWords").then((m) => ({
+    default: m.SevenLetterWords,
+  }))
+);
 
 import {
   LoadingScreen,
@@ -471,6 +476,19 @@ function App() {
               <TajinRain keyboardRef={keyboardRef} />
             </Suspense>
           </>
+        );
+      case "seven_letters":
+        return (
+          <Suspense
+            fallback={
+              <div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: "#ffffff", zIndex: 0 }}
+              />
+            }
+          >
+            <SevenLetterWords />
+          </Suspense>
         );
     }
   };

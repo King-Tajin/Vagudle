@@ -1,4 +1,9 @@
-export type BackgroundId = "sprinkles" | "tajin" | "mouse_eating" | "number_rain";
+export type BackgroundId =
+  | "sprinkles"
+  | "tajin"
+  | "mouse_eating"
+  | "number_rain"
+  | "seven_letters";
 
 export type BackgroundDef = {
   id: BackgroundId;
@@ -39,6 +44,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
     requiresAchievementId: "fifth_guess",
     kind: "video",
     videoSrc: "/backgrounds/number_rain.mp4",
+  },
+  {
+    id: "seven_letters",
+    desktopLabel: "SEVEN LETTER WORDS",
+    mobileLabel: "WORDS",
+    requiresAchievementId: "seven_letters",
+    kind: "css",
   },
 ];
 
