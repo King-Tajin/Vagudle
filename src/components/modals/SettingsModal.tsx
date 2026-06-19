@@ -14,6 +14,7 @@ import {
   type BackgroundId,
   type BackgroundDef,
 } from "../../lib/backgrounds";
+import { ACHIEVEMENTS } from "../../lib/achievements";
 
 type Tab = "settings" | "challenge";
 
@@ -99,7 +100,16 @@ const BackgroundDropdown = ({
         >
           {BACKGROUNDS.map((bg) => {
             const unlocked = isBgUnlocked(bg, unlockedIds);
-            const bgLabel = isMobile ? bg.mobileLabel : bg.desktopLabel;
+            const requiredAchievement = bg.requiresAchievementId
+              ? ACHIEVEMENTS.find((a) => a.id === bg.requiresAchievementId)
+              : undefined;
+            const isHiddenLock =
+              !unlocked && (requiredAchievement?.hidden ?? false);
+            const bgLabel = isHiddenLock
+              ? "???"
+              : isMobile
+              ? bg.mobileLabel
+              : bg.desktopLabel;
             const isSelected = bg.id === currentId;
 
             return (

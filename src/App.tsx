@@ -445,10 +445,8 @@ function App() {
         <VideoBackground
           key={bg.videoSrc}
           src={bg.videoSrc}
-          posterSrc={bg.posterSrc}
           audioEnabled={extraEffects}
           objectPosition={bg.objectPosition}
-          label={bg.desktopLabel}
         />
       );
     }

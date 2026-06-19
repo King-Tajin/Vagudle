@@ -3,39 +3,29 @@ import { createPortal } from "react-dom";
 
 type Props = {
   src: string;
-  posterSrc?: string;
   audioEnabled: boolean;
   objectPosition?: string;
-  label?: string;
 };
 
 type LoadingOverlayProps = {
-  posterSrc?: string;
-  objectPosition: string;
-  label: string;
+  received: number;
+  total: number;
   progress: number;
   indeterminate: boolean;
 };
 
+const formatMB = (bytes: number) => (bytes / 1_048_576).toFixed(1) + " MB";
+
 const LoadingOverlay = ({
-  posterSrc,
-  objectPosition,
-  label,
+  received,
+  total,
   progress,
   indeterminate,
 }: LoadingOverlayProps) => (
   <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-    {posterSrc && (
-      <img
-        src={posterSrc}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover opacity-30"
-        style={{ objectPosition }}
-      />
-    )}
     <div className="relative flex flex-col items-center gap-4">
       <p className="font-pixel text-crown-gold tracking-widest text-lg">
-        {label}
+        DOWNLOADING BACKGROUND
       </p>
       <div className="w-48 h-3 border-2 border-obsidian-600 bg-obsidian-800 overflow-hidden">
         <div
@@ -48,7 +38,9 @@ const LoadingOverlay = ({
         />
       </div>
       <p className="font-pixel text-obsidian-500 text-sm tracking-widest">
-        {indeterminate ? "LOADING..." : `${progress}%`}
+        {indeterminate
+          ? formatMB(received)
+          : `${formatMB(received)} / ${formatMB(total)}`}
       </p>
     </div>
   </div>
@@ -56,14 +48,14 @@ const LoadingOverlay = ({
 
 export const VideoBackground = ({
   src,
-  posterSrc,
   audioEnabled,
   objectPosition = "50% 50%",
-  label = "LOADING BACKGROUND",
 }: Props) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [received, setReceived] = useState(0);
+  const [total, setTotal] = useState(0);
   const [indeterminate, setIndeterminate] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -73,6 +65,8 @@ export const VideoBackground = ({
 
     setObjectUrl(null);
     setProgress(0);
+    setReceived(0);
+    setTotal(0);
     setIndeterminate(false);
     setHasError(false);
 
@@ -85,12 +79,16 @@ export const VideoBackground = ({
         }
 
         const totalHeader = response.headers.get("content-length");
-        const total = totalHeader ? parseInt(totalHeader, 10) : 0;
-        if (!total) setIndeterminate(true);
+        const totalBytes = totalHeader ? parseInt(totalHeader, 10) : 0;
+        if (!totalBytes) {
+          setIndeterminate(true);
+        } else {
+          setTotal(totalBytes);
+        }
 
         const reader = response.body.getReader();
         const chunks: Uint8Array[] = [];
-        let received = 0;
+        let receivedBytes = 0;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -98,9 +96,12 @@ export const VideoBackground = ({
           if (done) break;
           if (value) {
             chunks.push(value);
-            received += value.length;
-            if (total)
-              setProgress(Math.min(99, Math.round((received / total) * 100)));
+            receivedBytes += value.length;
+            setReceived(receivedBytes);
+            if (totalBytes)
+              setProgress(
+                Math.min(99, Math.round((receivedBytes / totalBytes) * 100))
+              );
           }
         }
 
@@ -192,9 +193,8 @@ export const VideoBackground = ({
             style={{ background: "#0d1322", zIndex: 30 }}
           >
             <LoadingOverlay
-              posterSrc={posterSrc}
-              objectPosition={objectPosition}
-              label={label}
+              received={received}
+              total={total}
               progress={progress}
               indeterminate={indeterminate}
             />

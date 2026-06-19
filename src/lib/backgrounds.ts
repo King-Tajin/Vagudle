@@ -1,4 +1,4 @@
-export type BackgroundId = "sprinkles" | "tajin" | "mouse_cam";
+export type BackgroundId = "sprinkles" | "tajin" | "mouse_eating" | "hacking";
 
 export type BackgroundDef = {
   id: BackgroundId;
@@ -7,7 +7,6 @@ export type BackgroundDef = {
   requiresAchievementId?: string;
   kind: "css" | "video";
   videoSrc?: string;
-  posterSrc?: string;
   objectPosition?: string;
 };
 
@@ -25,13 +24,21 @@ export const BACKGROUNDS: BackgroundDef[] = [
     kind: "css",
   },
   {
-    id: "mouse_cam",
-    desktopLabel: "MOUSE EATING",
+    id: "mouse_eating",
+    desktopLabel: "MOUSE EATING M&M",
     mobileLabel: "MOUSE",
     requiresAchievementId: "guess_mouse",
     kind: "video",
-    videoSrc: "/backgrounds/mouse.mp4",
+    videoSrc: "/backgrounds/mouse_v2.mp4",
     objectPosition: "65% 65%",
+  },
+  {
+    id: "hacking",
+    desktopLabel: "GREEN HACKING",
+    mobileLabel: "HACKING",
+    requiresAchievementId: "fifth_guess",
+    kind: "video",
+    videoSrc: "/backgrounds/hacking.mp4",
   },
 ];
 
