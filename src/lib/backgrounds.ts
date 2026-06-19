@@ -1,4 +1,4 @@
-export type BackgroundId = "sprinkles" | "tajin" | "mouse_eating" | "hacking";
+export type BackgroundId = "sprinkles" | "tajin" | "mouse_eating" | "number_rain";
 
 export type BackgroundDef = {
   id: BackgroundId;
@@ -33,12 +33,12 @@ export const BACKGROUNDS: BackgroundDef[] = [
     objectPosition: "65% 65%",
   },
   {
-    id: "hacking",
-    desktopLabel: "GREEN HACKING",
-    mobileLabel: "HACKING",
+    id: "number_rain",
+    desktopLabel: "NUMBER RAIN",
+    mobileLabel: "NUMBERS",
     requiresAchievementId: "fifth_guess",
     kind: "video",
-    videoSrc: "/backgrounds/hacking.mp4",
+    videoSrc: "/backgrounds/number_rain.mp4",
   },
 ];
 
