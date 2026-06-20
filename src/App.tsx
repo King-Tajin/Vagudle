@@ -120,6 +120,7 @@ import { useGameInitialization } from "./hooks/useGameInitialization";
 import { useGameFlow } from "./hooks/useGameFlow";
 import { useGuessInput } from "./hooks/useGuessInput";
 import { useSaveGameState } from "./hooks/useSaveGameState";
+import { useCrossTabSync } from "./hooks/useCrossTabSync";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
@@ -232,6 +233,7 @@ function App() {
   const duelSubmittedRef = useRef(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
   const achievementCheckedRef = useRef(false);
+  const skipNextSolutionResetRef = useRef(false);
   const hasAutoClosedTrayRef = useRef(false);
   const extraEffectsRef = useRef(extraEffects);
   useEffect(() => {
@@ -262,6 +264,10 @@ function App() {
   };
 
   useEffect(() => {
+    if (skipNextSolutionResetRef.current) {
+      skipNextSolutionResetRef.current = false;
+      return;
+    }
     achievementCheckedRef.current = false;
     resetWinRecord();
     setNewlyUnlockedAchievements([]);
@@ -375,8 +381,6 @@ function App() {
     isDuelMode,
     isChallengeMode,
     maxChallenges,
-    stats,
-    hardStats,
     revealTimerRef,
     setWordLength,
     setSolution,
@@ -466,6 +470,40 @@ function App() {
     duelConfig,
     isChallengeMode,
     challengeConfig,
+  });
+
+  useCrossTabSync({
+    isLoading,
+    isMobile: IS_MOBILE,
+    isDuelMode,
+    isChallengeMode,
+    duelConfig,
+    challengeConfig,
+    solution,
+    hardMode,
+    restoredGameRef,
+    achievementCheckedRef,
+    duelSubmittedRef,
+    skipNextSolutionResetRef,
+    setSolution,
+    setGuesses,
+    setCellColors,
+    setAutoGrayLetters,
+    setIsGameWon,
+    setIsGameLost,
+    setCurrentGuess,
+    setCurrentRowClass,
+    setIsRevealing,
+    setWordLength,
+    setHardMode,
+    setShowGrayCount,
+    setAutoGray,
+    setAutoGreen,
+    setExtraEffects,
+    setStats,
+    setHardStats,
+    setBackgroundId,
+    setHiddenAttributionIds,
   });
 
   useEffect(() => {

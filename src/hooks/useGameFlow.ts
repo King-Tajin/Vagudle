@@ -2,6 +2,7 @@ import type { CharStatus } from "../lib/statuses";
 import type { GameStats } from "../lib/localStorage";
 import {
   addStatsForCompletedGame,
+  loadStats,
   saveStatsToLocalStorage,
 } from "../lib/stats";
 import { getRandomWord } from "../lib/words";
@@ -16,8 +17,6 @@ type Params = {
   isDuelMode: boolean;
   isChallengeMode: boolean;
   maxChallenges: number;
-  stats: GameStats;
-  hardStats: GameStats;
   revealTimerRef: React.MutableRefObject<ReturnType<typeof setTimeout> | null>;
   setWordLength: (v: number) => void;
   setSolution: (v: string) => void;
@@ -54,8 +53,6 @@ export const useGameFlow = ({
   isDuelMode,
   isChallengeMode,
   maxChallenges,
-  stats,
-  hardStats,
   revealTimerRef,
   setWordLength,
   setSolution,
@@ -72,13 +69,12 @@ export const useGameFlow = ({
   dismissAlert,
 }: Params): Return => {
   const recordStats = (count: number) => {
+    const base = loadStats(hardMode);
+    const updated = addStatsForCompletedGame(base, count, maxChallenges);
+    saveStatsToLocalStorage(updated, hardMode);
     if (hardMode) {
-      const updated = addStatsForCompletedGame(hardStats, count, maxChallenges);
-      saveStatsToLocalStorage(updated, true);
       setHardStats(updated);
     } else {
-      const updated = addStatsForCompletedGame(stats, count, maxChallenges);
-      saveStatsToLocalStorage(updated, false);
       setStats(updated);
     }
   };

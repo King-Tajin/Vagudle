@@ -88,11 +88,11 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
 ];
 
-const KEY = "vagudle-achievements";
+export const ACHIEVEMENTS_KEY = "vagudle-achievements";
 
 export const loadAchievementProgress = (): AchievementProgress => {
   try {
-    const stored = localStorage.getItem(KEY);
+    const stored = localStorage.getItem(ACHIEVEMENTS_KEY);
     if (stored) {
       const parsed = JSON.parse(stored) as StoredProgress;
       const progress: AchievementProgress = { ...defaultProgress(), ...parsed };
@@ -110,6 +110,6 @@ export const loadAchievementProgress = (): AchievementProgress => {
 
 export const saveAchievementProgress = (p: AchievementProgress): void => {
   try {
-    localStorage.setItem(KEY, JSON.stringify(p));
+    localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(p));
   } catch {}
 };

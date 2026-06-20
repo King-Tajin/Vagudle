@@ -100,7 +100,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
   },
 ];
 
-const BG_KEY = "vagudle-bg-theme";
+export const BG_KEY = "vagudle-bg-theme";
 
 export const loadBackgroundId = (isMobile: boolean): BackgroundId => {
   try {
@@ -117,7 +117,7 @@ export const saveBackgroundId = (id: BackgroundId): void => {
   } catch {}
 };
 
-const ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden";
+export const ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden";
 
 export const loadHiddenAttributionIds = (): BackgroundId[] => {
   try {

@@ -106,7 +106,7 @@ export const decodeChallenge = async (
 export const buildChallengeUrl = (encoded: string): string =>
   `${window.location.origin}${window.location.pathname}?challenge=${encoded}`;
 
-const challengeStateKey = (id: string) => `chal_${id}`;
+export const challengeStateKey = (id: string) => `chal_${id}`;
 
 export const saveChallengeState = (
   id: string,

@@ -4,9 +4,11 @@ import {
   AchievementContext,
   AchievementProgress,
   ACHIEVEMENTS,
+  ACHIEVEMENTS_KEY,
   loadAchievementProgress,
   saveAchievementProgress,
 } from "../lib/achievements";
+import { useStorageSync } from "./useStorageSync";
 
 type WinEvent = {
   wordLength: number;
@@ -20,11 +22,18 @@ export const useAchievements = () => {
   );
   const hasRecordedWinRef = useRef(false);
 
+  useStorageSync(ACHIEVEMENTS_KEY, () => {
+    setProgress(loadAchievementProgress());
+  });
+
   const resetWinRecord = () => {
     hasRecordedWinRef.current = false;
   };
 
-  const commitProgress = (next: AchievementProgress): Achievement[] => {
+  const commitProgress = (
+    base: AchievementProgress,
+    next: AchievementProgress
+  ): Achievement[] => {
     const ctx: AchievementContext = {
       totalWins: next.totalWins,
       wonInHardMode5Plus: next.wonInHardMode5Plus,
@@ -34,13 +43,10 @@ export const useAchievements = () => {
     };
 
     const newlyUnlocked = ACHIEVEMENTS.filter(
-      (a) => !progress.unlockedIds.includes(a.id) && a.check(ctx)
+      (a) => !base.unlockedIds.includes(a.id) && a.check(ctx)
     );
 
-    next.unlockedIds = [
-      ...progress.unlockedIds,
-      ...newlyUnlocked.map((a) => a.id),
-    ];
+    next.unlockedIds = [...base.unlockedIds, ...newlyUnlocked.map((a) => a.id)];
 
     setProgress(next);
     saveAchievementProgress(next);
@@ -51,25 +57,27 @@ export const useAchievements = () => {
     if (hasRecordedWinRef.current) return [];
     hasRecordedWinRef.current = true;
 
-    const next: AchievementProgress = { ...progress };
+    const base = loadAchievementProgress();
+    const next: AchievementProgress = { ...base };
     next.totalWins += 1;
     if (event.hardMode && event.wordLength >= 5) next.wonInHardMode5Plus = true;
     if (event.guessCount <= 5) next.wonIn5GuessesEver = true;
     if (event.wordLength === 7) next.wonWith7LettersEver = true;
 
-    return commitProgress(next);
+    return commitProgress(base, next);
   };
 
   const recordGuess = (word: string): Achievement[] => {
     const normalized = word.toLowerCase();
-    if (progress.guessedWords.includes(normalized)) return [];
+    const base = loadAchievementProgress();
+    if (base.guessedWords.includes(normalized)) return [];
 
     const next: AchievementProgress = {
-      ...progress,
-      guessedWords: [...progress.guessedWords, normalized],
+      ...base,
+      guessedWords: [...base.guessedWords, normalized],
     };
 
-    return commitProgress(next);
+    return commitProgress(base, next);
   };
 
   return {

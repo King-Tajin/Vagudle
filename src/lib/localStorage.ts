@@ -1,4 +1,4 @@
-const gameStateKey = "gameState";
+export const gameStateKey = "gameState";
 
 type StoredGameState = {
   guesses: string[];
@@ -24,7 +24,7 @@ export const loadGameStateFromLocalStorage = (): StoredGameState | null => {
   }
 };
 
-const settingsKey = "settings";
+export const settingsKey = "settings";
 
 type StoredSettings = {
   wordLength: number;
@@ -65,8 +65,8 @@ export const loadSettingsFromLocalStorage = (): StoredSettings => {
   }
 };
 
-const normalStatKey = "gameStats";
-const hardStatKey = "gameStatsHard";
+export const normalStatKey = "gameStats";
+export const hardStatKey = "gameStatsHard";
 
 export type GameStats = {
   winDistribution: number[];

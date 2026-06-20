@@ -87,7 +87,7 @@ export const decodeDuel = async (
   }
 };
 
-const duelStateKey = (id: string, discord_id: string) =>
+export const duelStateKey = (id: string, discord_id: string) =>
   `duel_${id}_${discord_id}`;
 
 export const saveDuelState = (
