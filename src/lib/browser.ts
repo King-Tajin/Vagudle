@@ -10,9 +10,7 @@ const inAppBrowserNames = [
   "WeChat",
 ];
 
-const parser = new UAParser();
-const browser = parser.getBrowser();
-
 export const isInAppBrowser = () => {
+  const browser = new UAParser().getBrowser();
   return inAppBrowserNames.indexOf(browser.name ?? "") > -1;
 };

@@ -8,9 +8,7 @@ import { AlertContainer } from "./components/Alert";
 import { Navbar } from "./components/Navbar";
 import { BackgroundGrid } from "./components/background/BackgroundGrid";
 import { VagudleSprinkles } from "./components/background/VagudleSprinkles";
-import { VideoBackground } from "./components/background/VideoBackground";
 import { GameBanner } from "./components/GameBanner";
-import { AchievementsModal } from "./components/modals/AchievementsModal";
 import { AttributionButton } from "./components/AttributionButton";
 import { useAchievements } from "./hooks/useAchievements";
 import {
@@ -70,16 +68,49 @@ const SevenLetterWords = lazy(() =>
     default: m.SevenLetterWords,
   }))
 );
+const VideoBackground = lazy(() =>
+  import("./components/background/VideoBackground").then((m) => ({
+    default: m.VideoBackground,
+  }))
+);
+const AchievementsModal = lazy(() =>
+  import("./components/modals/AchievementsModal").then((m) => ({
+    default: m.AchievementsModal,
+  }))
+);
 
-import {
-  LoadingScreen,
-  MalformedChallengeScreen,
-  MalformedDuelScreen,
-  ExpiredDuelScreen,
-  ActivityNotFoundScreen,
-  ActivityWrongPlayerScreen,
-  ActivityServerErrorScreen,
-} from "./components/screens/GameScreens";
+const MalformedChallengeScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.MalformedChallengeScreen,
+  }))
+);
+const MalformedDuelScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.MalformedDuelScreen,
+  }))
+);
+const ExpiredDuelScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.ExpiredDuelScreen,
+  }))
+);
+const ActivityNotFoundScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.ActivityNotFoundScreen,
+  }))
+);
+const ActivityWrongPlayerScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.ActivityWrongPlayerScreen,
+  }))
+);
+const ActivityServerErrorScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.ActivityServerErrorScreen,
+  }))
+);
+
+import { LoadingScreen } from "./components/screens/GameScreens";
 
 import { useAlert } from "./context/AlertContext";
 import { useTilePainting } from "./hooks/useTilePainting";
@@ -98,7 +129,6 @@ import {
 } from "./lib/localStorage";
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
-import { isInAppBrowser } from "./lib/browser";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
 
@@ -454,38 +484,84 @@ function App() {
   }, [isChallengeMode, isDuelMode]);
 
   useEffect(() => {
-    if (DISCOURAGE_INAPP_BROWSERS && isInAppBrowser()) {
-      showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
-        persist: false,
-        durationMs: 7000,
-      });
-    }
+    if (!DISCOURAGE_INAPP_BROWSERS) return;
+    let cancelled = false;
+    void import("./lib/browser").then(({ isInAppBrowser }) => {
+      if (!cancelled && isInAppBrowser()) {
+        showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
+          persist: false,
+          durationMs: 7000,
+        });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [showErrorAlert]);
 
   if (isLoading) return <LoadingScreen />;
-  if (isActivityNotFound) return <ActivityNotFoundScreen />;
-  if (isActivityWrongPlayer) return <ActivityWrongPlayerScreen />;
-  if (isActivityServerError) return <ActivityServerErrorScreen />;
+
+  const screenFallback = (
+    <div className="h-screen" style={{ background: "#0A0A0A" }} />
+  );
+
+  if (isActivityNotFound)
+    return (
+      <Suspense fallback={screenFallback}>
+        <ActivityNotFoundScreen />
+      </Suspense>
+    );
+  if (isActivityWrongPlayer)
+    return (
+      <Suspense fallback={screenFallback}>
+        <ActivityWrongPlayerScreen />
+      </Suspense>
+    );
+  if (isActivityServerError)
+    return (
+      <Suspense fallback={screenFallback}>
+        <ActivityServerErrorScreen />
+      </Suspense>
+    );
   if (isMalformedChallenge)
     return (
-      <MalformedChallengeScreen handleReturnToNormal={handleReturnToNormal} />
+      <Suspense fallback={screenFallback}>
+        <MalformedChallengeScreen handleReturnToNormal={handleReturnToNormal} />
+      </Suspense>
     );
   if (isMalformedDuel)
-    return <MalformedDuelScreen handleReturnToNormal={handleReturnToNormal} />;
+    return (
+      <Suspense fallback={screenFallback}>
+        <MalformedDuelScreen handleReturnToNormal={handleReturnToNormal} />
+      </Suspense>
+    );
   if (isDuelExpired)
-    return <ExpiredDuelScreen handleReturnToNormal={handleReturnToNormal} />;
+    return (
+      <Suspense fallback={screenFallback}>
+        <ExpiredDuelScreen handleReturnToNormal={handleReturnToNormal} />
+      </Suspense>
+    );
 
   const renderBackground = () => {
     const bg = BACKGROUNDS.find((b) => b.id === backgroundId);
 
     if (bg?.kind === "video" && bg.videoSrc) {
       return (
-        <VideoBackground
-          key={bg.videoSrc}
-          src={bg.videoSrc}
-          audioEnabled={extraEffects}
-          objectPosition={bg.objectPosition}
-        />
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#0d1322", zIndex: 0 }}
+            />
+          }
+        >
+          <VideoBackground
+            key={bg.videoSrc}
+            src={bg.videoSrc}
+            audioEnabled={extraEffects}
+            objectPosition={bg.objectPosition}
+          />
+        </Suspense>
       );
     }
 
@@ -727,11 +803,13 @@ function App() {
           )}
         </Suspense>
 
-        <AchievementsModal
-          isOpen={isAchievementsModalOpen}
-          handleClose={() => setIsAchievementsModalOpen(false)}
-          unlockedIds={unlockedIds}
-        />
+        <Suspense fallback={null}>
+          <AchievementsModal
+            isOpen={isAchievementsModalOpen}
+            handleClose={() => setIsAchievementsModalOpen(false)}
+            unlockedIds={unlockedIds}
+          />
+        </Suspense>
 
         <AlertContainer />
       </div>

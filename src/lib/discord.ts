@@ -1,4 +1,4 @@
-import { DiscordSDK } from "@discord/embedded-app-sdk";
+import type { DiscordSDK } from "@discord/embedded-app-sdk";
 
 const params = new URLSearchParams(window.location.search);
 const frameId = params.get("frame_id");
@@ -20,6 +20,7 @@ export const initDiscordSDK = async (): Promise<void> => {
     console.error("[Discord] VITE_DISCORD_CLIENT_ID is not set");
     return;
   }
+  const { DiscordSDK } = await import("@discord/embedded-app-sdk");
   _sdk = new DiscordSDK(clientId);
   await _sdk.ready();
 };
@@ -122,6 +123,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
 
   try {
     if (!_sdk) {
+      const { DiscordSDK } = await import("@discord/embedded-app-sdk");
       _sdk = new DiscordSDK(clientId);
       await _sdk.ready();
     }
