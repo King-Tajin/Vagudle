@@ -1,5 +1,5 @@
 import { isDiscordActivity, openExternalLink } from "../lib/discord";
-import React from 'react'
+import React from "react";
 
 type Props = {
   href: string;
@@ -20,7 +20,12 @@ export const ActivityLink = ({ href, className, children }: Props) => {
     );
   }
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
       {children}
     </a>
   );

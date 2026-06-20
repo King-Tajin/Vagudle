@@ -5,6 +5,18 @@ export type BackgroundId =
   | "number_rain"
   | "seven_letters";
 
+export type AttributionCredit = {
+  role: string;
+  title: string;
+  creator: string;
+  sourceUrl?: string;
+};
+
+export type BackgroundAttribution = {
+  credits: AttributionCredit[];
+  license: string;
+};
+
 export type BackgroundDef = {
   id: BackgroundId;
   desktopLabel: string;
@@ -13,6 +25,7 @@ export type BackgroundDef = {
   kind: "css" | "video";
   videoSrc?: string;
   objectPosition?: string;
+  attribution?: BackgroundAttribution;
 };
 
 export const BACKGROUNDS: BackgroundDef[] = [
@@ -36,6 +49,28 @@ export const BACKGROUNDS: BackgroundDef[] = [
     kind: "video",
     videoSrc: "/backgrounds/mouse_v2.mp4",
     objectPosition: "65% 65%",
+    attribution: {
+      credits: [
+        {
+          role: "Video",
+          title:
+            "Mouse eating M&M's with peaceful music for 10 minutes. (He will keep you company and be your friend)",
+          creator: "June Hargadon",
+          sourceUrl: "https://www.youtube.com/watch?v=bBRgYIvaL00",
+        },
+        {
+          role: "Animation",
+          title: "Creature Comforts",
+          creator: "Aardman Animations",
+        },
+        {
+          role: "Music",
+          title: "New Home (Slowed)",
+          creator: "Austin Farwell",
+        },
+      ],
+      license: "Unknown",
+    },
   },
   {
     id: "number_rain",
@@ -44,6 +79,17 @@ export const BACKGROUNDS: BackgroundDef[] = [
     requiresAchievementId: "fifth_guess",
     kind: "video",
     videoSrc: "/backgrounds/number_rain.mp4",
+    attribution: {
+      credits: [
+        {
+          role: "Video",
+          title: "Matrix Rain Codes (4K FULL HD)",
+          creator: "Fatih Kalkan",
+          sourceUrl: "https://www.youtube.com/watch?v=MUVo20q6tx8",
+        },
+      ],
+      license: "Unknown",
+    },
   },
   {
     id: "seven_letters",
@@ -68,5 +114,45 @@ export const loadBackgroundId = (isMobile: boolean): BackgroundId => {
 export const saveBackgroundId = (id: BackgroundId): void => {
   try {
     localStorage.setItem(BG_KEY, id);
+  } catch {}
+};
+
+const ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden";
+
+export const loadHiddenAttributionIds = (): BackgroundId[] => {
+  try {
+    const stored = localStorage.getItem(ATTRIBUTION_HIDDEN_KEY);
+    if (!stored) return [];
+    const parsed: unknown = JSON.parse(stored);
+    if (Array.isArray(parsed)) return parsed as BackgroundId[];
+  } catch {}
+  return [];
+};
+
+export const hideAttributionForever = (id: BackgroundId): void => {
+  try {
+    const hidden = loadHiddenAttributionIds();
+    if (!hidden.includes(id)) {
+      localStorage.setItem(
+        ATTRIBUTION_HIDDEN_KEY,
+        JSON.stringify([...hidden, id])
+      );
+    }
+  } catch {}
+};
+
+export const unhideAttribution = (id: BackgroundId): void => {
+  try {
+    const hidden = loadHiddenAttributionIds();
+    localStorage.setItem(
+      ATTRIBUTION_HIDDEN_KEY,
+      JSON.stringify(hidden.filter((hiddenId) => hiddenId !== id))
+    );
+  } catch {}
+};
+
+export const clearHiddenAttributions = (): void => {
+  try {
+    localStorage.removeItem(ATTRIBUTION_HIDDEN_KEY);
   } catch {}
 };

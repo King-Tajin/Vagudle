@@ -34,10 +34,8 @@ const buildSlots = (W: number, H: number, pool: string[]): WordSlot[] => {
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const x =
-        (col + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.6;
-      const y =
-        (row + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.6;
+      const x = (col + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.6;
+      const y = (row + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.6;
 
       slots.push({
         id: slotId++,
@@ -109,14 +107,18 @@ export const SevenLetterWords = () => {
     Promise.all([
       import("../../constants/normalWords"),
       import("../../constants/hardWords"),
-    ]).then(([{ NORMAL_WORDS }, { HARD_WORDS }]) => {
-      const merged = Array.from(
-        new Set(
-          [...NORMAL_WORDS, ...HARD_WORDS].filter((w) => w.length === 7)
-        )
-      );
-      setPool(merged);
-    });
+    ])
+      .then(([{ NORMAL_WORDS }, { HARD_WORDS }]) => {
+        const merged = Array.from(
+          new Set(
+            [...NORMAL_WORDS, ...HARD_WORDS].filter((w) => w.length === 7)
+          )
+        );
+        setPool(merged);
+      })
+      .catch((error: unknown) => {
+        console.error("Failed to load seven-letter word list:", error);
+      });
   }, []);
 
   useEffect(() => {

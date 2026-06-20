@@ -11,12 +11,17 @@ import { VagudleSprinkles } from "./components/background/VagudleSprinkles";
 import { VideoBackground } from "./components/background/VideoBackground";
 import { GameBanner } from "./components/GameBanner";
 import { AchievementsModal } from "./components/modals/AchievementsModal";
+import { AttributionButton } from "./components/AttributionButton";
 import { useAchievements } from "./hooks/useAchievements";
 import {
   BACKGROUNDS,
   type BackgroundId,
   loadBackgroundId,
   saveBackgroundId,
+  loadHiddenAttributionIds,
+  hideAttributionForever,
+  unhideAttribution,
+  clearHiddenAttributions,
 } from "./lib/backgrounds";
 import type { Achievement } from "./lib/achievements";
 
@@ -38,6 +43,11 @@ const StatsModal = lazy(() =>
 const SettingsModal = lazy(() =>
   import("./components/modals/SettingsModal").then((m) => ({
     default: m.SettingsModal,
+  }))
+);
+const AttributionModal = lazy(() =>
+  import("./components/modals/AttributionModal").then((m) => ({
+    default: m.AttributionModal,
   }))
 );
 const ChallengeAcceptModal = lazy(() =>
@@ -151,6 +161,10 @@ function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
   const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
+  const [isAttributionModalOpen, setIsAttributionModalOpen] = useState(false);
+  const [hiddenAttributionIds, setHiddenAttributionIds] = useState<
+    BackgroundId[]
+  >(() => loadHiddenAttributionIds());
   const [isTrayOpen, setIsTrayOpen] = useState(true);
   const [stats, setStats] = useState(() => loadStats(false));
   const [hardStats, setHardStats] = useState(() => loadStats(true));
@@ -197,6 +211,25 @@ function App() {
   useEffect(() => {
     saveBackgroundId(backgroundId);
   }, [backgroundId]);
+
+  const handleAttributionHideForeverChange = (hidden: boolean) => {
+    if (hidden) {
+      hideAttributionForever(backgroundId);
+      setHiddenAttributionIds((prev) =>
+        prev.includes(backgroundId) ? prev : [...prev, backgroundId]
+      );
+    } else {
+      unhideAttribution(backgroundId);
+      setHiddenAttributionIds((prev) =>
+        prev.filter((id) => id !== backgroundId)
+      );
+    }
+  };
+
+  const handleRestoreHiddenAttributions = () => {
+    clearHiddenAttributions();
+    setHiddenAttributionIds([]);
+  };
 
   useEffect(() => {
     achievementCheckedRef.current = false;
@@ -493,9 +526,23 @@ function App() {
     }
   };
 
+  const currentBackground = BACKGROUNDS.find((b) => b.id === backgroundId);
+  const showAttributionButton =
+    currentBackground?.kind === "video" &&
+    !!currentBackground.attribution &&
+    !hiddenAttributionIds.includes(backgroundId);
+
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
       {renderBackground()}
+
+      {showAttributionButton && (
+        <AttributionButton
+          onClick={() => setIsAttributionModalOpen(true)}
+          keyboardRef={keyboardRef}
+          isMobile={IS_MOBILE}
+        />
+      )}
 
       {!isChallengeMode && !isDuelMode && (
         <motion.div
@@ -587,6 +634,8 @@ function App() {
           <InfoModal
             isOpen={isInfoModalOpen}
             handleClose={() => setIsInfoModalOpen(false)}
+            hasHiddenAttributions={hiddenAttributionIds.length > 0}
+            onRestoreHiddenAttributions={handleRestoreHiddenAttributions}
           />
         </Suspense>
 
@@ -665,6 +714,15 @@ function App() {
               onReturn={handleReturnToNormal}
               saveStatus={duelSaveStatus}
               isActivityMode={isDiscordActivity}
+            />
+          )}
+          {currentBackground?.attribution && (
+            <AttributionModal
+              isOpen={isAttributionModalOpen}
+              handleClose={() => setIsAttributionModalOpen(false)}
+              attribution={currentBackground.attribution}
+              isHidden={hiddenAttributionIds.includes(backgroundId)}
+              onHideForeverChange={handleAttributionHideForeverChange}
             />
           )}
         </Suspense>

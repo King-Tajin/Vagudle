@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { measureKeyboardStrips, type StripMeasure } from "../../lib/stripMeasure";
+import {
+  measureKeyboardStrips,
+  type StripMeasure,
+} from "../../lib/stripMeasure";
 
 const PARTICLE_SIZE = 35;
 const SPREAD = 1.4;

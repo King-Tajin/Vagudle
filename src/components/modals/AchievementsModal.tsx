@@ -12,7 +12,11 @@ type Props = {
 const bgUnlockedBy = (achievementId: string) =>
   BACKGROUNDS.find((b) => b.requiresAchievementId === achievementId);
 
-export const AchievementsModal = ({ isOpen, handleClose, unlockedIds }: Props) => (
+export const AchievementsModal = ({
+  isOpen,
+  handleClose,
+  unlockedIds,
+}: Props) => (
   <BaseModal title="Achievements" isOpen={isOpen} handleClose={handleClose}>
     <div className="space-y-2">
       {ACHIEVEMENTS.map((a) => {
