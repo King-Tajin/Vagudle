@@ -145,10 +145,10 @@ export const useCrossTabSync = ({
     const isNewPuzzle = saved.solution !== solution;
     const wordUpper = saved.solution.toUpperCase();
     const won = saved.guesses.some((g) => g.toUpperCase() === wordUpper);
-    const maxChallenges =
-      saved.hardMode ?? hardMode
-        ? HARD_MODE_MAX_CHALLENGES
-        : NORMAL_MODE_MAX_CHALLENGES;
+    const savedHardMode = saved.hardMode ?? hardMode;
+    const maxChallenges = savedHardMode
+      ? HARD_MODE_MAX_CHALLENGES
+      : NORMAL_MODE_MAX_CHALLENGES;
     const lost = !won && saved.guesses.length >= maxChallenges;
     const alreadyDecided = won || lost;
 
@@ -206,7 +206,7 @@ export const useCrossTabSync = ({
       if (isLoading || !isChallengeMode || !challengeConfig) return;
       const saved = loadChallengeState(challengeConfig.id);
       if (!saved) return;
-      const wordUpper = solution.toUpperCase();
+      const wordUpper = challengeConfig.word.toUpperCase();
       const won = saved.guesses.some((g) => g.toUpperCase() === wordUpper);
       const lost = !won && saved.guesses.length >= challengeConfig.guesses;
 

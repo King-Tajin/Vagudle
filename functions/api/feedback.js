@@ -91,11 +91,8 @@ export async function onRequestPost(context) {
     );
 
     const dateKey = new Date().toISOString().split("T")[0];
-    const indexKey = `index:${dateKey}`;
-    const existingIndexStr = await context.env.FEEDBACK_KV.get(indexKey);
-    const existingIndex = existingIndexStr ? JSON.parse(existingIndexStr) : [];
-    existingIndex.push(feedbackId);
-    await context.env.FEEDBACK_KV.put(indexKey, JSON.stringify(existingIndex));
+    const indexItemKey = `index:${dateKey}:${feedbackId}`;
+    await context.env.FEEDBACK_KV.put(indexItemKey, feedbackId);
 
     return json({
       success: true,

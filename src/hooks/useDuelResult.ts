@@ -37,7 +37,7 @@ export const useDuelResult = ({
     const submit = async () => {
       setSaveStatus("saving");
       for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) await new Promise((r) => setTimeout(r, 15000));
+        if (attempt > 0) await new Promise((r) => setTimeout(r, 2000));
         let ok: boolean;
         if (duelToken) {
           ok = await submitDuelResult(duelToken, isGameWon, guessCount);

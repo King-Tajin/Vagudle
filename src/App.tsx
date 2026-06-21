@@ -22,6 +22,7 @@ import {
   clearHiddenAttributions,
 } from "./lib/backgrounds";
 import type { Achievement } from "./lib/achievements";
+import type { CharStatus } from "./lib/statuses";
 
 const InfoModal = lazy(() =>
   import("./components/modals/InfoModal").then((m) => ({
@@ -143,8 +144,6 @@ import {
   DISCOURAGE_INAPP_BROWSER_TEXT,
 } from "./constants/strings";
 
-const IS_MOBILE = window.innerWidth < 640;
-
 // icon (w-14 = 56px) + padding (p-2 = 8px * 2) + right border (border-2 = 2px) = 74px
 const ACHIEVEMENT_TRAY_WIDTH = 74;
 
@@ -153,6 +152,16 @@ const challengeParam = new URLSearchParams(window.location.search).get(
 );
 const duelParam = new URLSearchParams(window.location.search).get("duel");
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isMobile;
+};
+
 function App() {
   const {
     showError: showErrorAlert,
@@ -160,12 +169,27 @@ function App() {
     dismiss: dismissAlert,
   } = useAlert();
 
+  const isMobile = useIsMobile();
+  const isMobileRef = useRef(isMobile);
+  useEffect(() => {
+    isMobileRef.current = isMobile;
+  }, [isMobile]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [solution, setSolution] = useState(
     () => loadGameStateFromLocalStorage()?.solution ?? ""
   );
   const [guesses, setGuesses] = useState<string[]>(
     () => loadGameStateFromLocalStorage()?.guesses ?? []
+  );
+  const [cellColors, setCellColors] = useState<{ [key: string]: CharStatus }>(
+    () =>
+      (loadGameStateFromLocalStorage()?.cellColors as {
+        [key: string]: CharStatus;
+      }) ?? {}
+  );
+  const [autoGrayLetters, setAutoGrayLetters] = useState<Set<string>>(
+    () => new Set(loadGameStateFromLocalStorage()?.autoGrayLetters ?? [])
   );
   const [currentGuess, setCurrentGuess] = useState("");
   const [currentRowClass, setCurrentRowClass] = useState("");
@@ -222,7 +246,7 @@ function App() {
     () => loadSettingsFromLocalStorage().extraEffects ?? true
   );
   const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
-    loadBackgroundId(IS_MOBILE)
+    loadBackgroundId(window.innerWidth < 640)
   );
 
   const { unlockedIds, recordWin, recordGuess, resetWinRecord } =
@@ -280,7 +304,11 @@ function App() {
   }, [solution]);
 
   useEffect(() => {
-    if (IS_MOBILE && guesses.length === 1 && !hasAutoClosedTrayRef.current) {
+    if (
+      isMobileRef.current &&
+      guesses.length === 1 &&
+      !hasAutoClosedTrayRef.current
+    ) {
       hasAutoClosedTrayRef.current = true;
       setIsTrayOpen(false);
     }
@@ -316,16 +344,17 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameWon]);
 
-  const {
-    cellColors,
-    setCellColors,
-    autoGrayLetters,
-    setAutoGrayLetters,
-    onCellPaint,
-    onRowReset,
-    onFullReset,
-    clearAutoGray,
-  } = useTilePainting({ guesses, solution, autoGray, autoGreen });
+  const { onCellPaint, onRowReset, onFullReset, clearAutoGray } =
+    useTilePainting({
+      guesses,
+      solution,
+      autoGray,
+      autoGreen,
+      cellColors,
+      setCellColors,
+      autoGrayLetters,
+      setAutoGrayLetters,
+    });
 
   const isChallengeMode = challengeConfig !== null;
   const isDuelMode = duelConfig !== null;
@@ -474,7 +503,7 @@ function App() {
 
   useCrossTabSync({
     isLoading,
-    isMobile: IS_MOBILE,
+    isMobile,
     isDuelMode,
     isChallengeMode,
     duelConfig,
@@ -605,7 +634,7 @@ function App() {
 
     switch (backgroundId) {
       case "sprinkles":
-        return IS_MOBILE ? (
+        return isMobile ? (
           <div
             className="fixed inset-0 pointer-events-none"
             style={{ background: "#0d1322", zIndex: 0 }}
@@ -614,7 +643,7 @@ function App() {
           <VagudleSprinkles keyboardRef={keyboardRef} />
         );
       case "tajin":
-        return IS_MOBILE ? (
+        return isMobile ? (
           <BackgroundGrid />
         ) : (
           <>
@@ -654,7 +683,7 @@ function App() {
         <AttributionButton
           onClick={() => setIsAttributionModalOpen(true)}
           keyboardRef={keyboardRef}
-          isMobile={IS_MOBILE}
+          isMobile={isMobile}
         />
       )}
 
@@ -806,7 +835,7 @@ function App() {
             backgroundId={backgroundId}
             setBackgroundId={setBackgroundId}
             unlockedAchievementIds={unlockedIds}
-            isMobile={IS_MOBILE}
+            isMobile={isMobile}
             challengeConfig={
               isDuelMode ? duelConfig : isChallengeMode ? challengeConfig : null
             }

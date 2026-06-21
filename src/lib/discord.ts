@@ -3,7 +3,8 @@ import type { DiscordSDK } from "@discord/embedded-app-sdk";
 const params = new URLSearchParams(window.location.search);
 const frameId = params.get("frame_id");
 export const activityChannelId = params.get("channel_id");
-export const isDiscordActivity = window.self !== window.top && frameId !== null;
+export const isDiscordActivity =
+  window.self !== window.top && frameId !== null && activityChannelId !== null;
 
 let _sdk: DiscordSDK | null = null;
 

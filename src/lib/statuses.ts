@@ -10,7 +10,7 @@ export const getGuessStatuses = (
 
   const solutionCharsTaken = splitSolution.map(() => false);
 
-  const statuses = new Array<CharStatus>(guess.length);
+  const statuses = new Array<CharStatus>(splitGuess.length);
 
   splitGuess.forEach((letter, i) => {
     if (letter === splitSolution[i]) {

@@ -58,13 +58,15 @@ export const getRandomWord = (
   const pool = (hardMode ? HARD_WORDS_ARR : NORMAL_WORDS_ARR).filter(
     (w) => w.length === length
   );
-  if (pool.length === 0) {
-    const fallback = hardMode ? HARD_WORDS_ARR : NORMAL_WORDS_ARR;
-    return localeAwareUpperCase(
-      fallback[Math.floor(Math.random() * fallback.length)] ?? ""
-    );
+  if (pool.length > 0) {
+    return localeAwareUpperCase(pool[Math.floor(Math.random() * pool.length)]);
   }
-  return localeAwareUpperCase(pool[Math.floor(Math.random() * pool.length)]);
+  const fallback = hardMode ? HARD_WORDS_ARR : NORMAL_WORDS_ARR;
+  const word = fallback[Math.floor(Math.random() * fallback.length)];
+  if (!word) {
+    throw new Error("[words] Word lists are not loaded");
+  }
+  return localeAwareUpperCase(word);
 };
 
 export const isWordInDict = (

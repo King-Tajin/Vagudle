@@ -40,7 +40,6 @@ type Params = {
   setChallengeConfig: (v: ChallengeConfig) => void;
   setDuelConfig: (v: DuelConfig) => void;
   setDuelToken: (v: string) => void;
-
   setActivityAccessToken: (v: string) => void;
   setSolution: (v: string) => void;
   setGuesses: (v: string[]) => void;
@@ -92,7 +91,16 @@ export const useGameInitialization = ({
       const loadStart = Date.now();
       const savedSettings = loadSettingsFromLocalStorage();
       const savedState = loadGameStateFromLocalStorage();
-      await initWordLists();
+
+      try {
+        await initWordLists();
+      } catch {
+        showErrorAlert("Failed to load word lists. Please refresh the page.", {
+          persist: true,
+        });
+        setIsLoading(false);
+        return;
+      }
 
       const restoreDuelState = (
         duelId: string,
@@ -286,7 +294,7 @@ export const useGameInitialization = ({
           showErrorAlert(CORRECT_WORD_MESSAGE(savedState.solution), {
             persist: true,
           });
-          setTimeout(() => setIsStatsModalOpen(true), 250);
+          setTimeout(() => setIsStatsModalOpen(true), 500);
         }
       } else {
         const newSolution = getRandomWord(

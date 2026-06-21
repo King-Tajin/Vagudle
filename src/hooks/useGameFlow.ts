@@ -107,7 +107,6 @@ export const useGameFlow = ({
     }
     if (hasActiveGame) {
       recordStats(maxChallenges);
-      setIsGameLost(true);
     }
     handleNewGame();
   };

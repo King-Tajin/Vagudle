@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import type { CharStatus } from "../lib/statuses";
 import { computeFullyGrayLetters } from "../lib/rowAnalysis";
-import { loadGameStateFromLocalStorage } from "../lib/localStorage";
 
 type Params = {
   guesses: string[];
   solution: string;
   autoGray: boolean;
   autoGreen: boolean;
-};
-
-type Return = {
   cellColors: { [key: string]: CharStatus };
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
   autoGrayLetters: Set<string>;
   setAutoGrayLetters: React.Dispatch<React.SetStateAction<Set<string>>>;
+};
+
+type Return = {
   onCellPaint: (rowIndex: number, cellIndex: number, color: CharStatus) => void;
   onRowReset: (rowIndex: number) => void;
   onFullReset: () => void;
@@ -28,17 +27,10 @@ export const useTilePainting = ({
   solution,
   autoGray,
   autoGreen,
+  cellColors,
+  setCellColors,
+  setAutoGrayLetters,
 }: Params): Return => {
-  const [cellColors, setCellColors] = useState<{ [key: string]: CharStatus }>(
-    () =>
-      (loadGameStateFromLocalStorage()?.cellColors as {
-        [key: string]: CharStatus;
-      }) ?? {}
-  );
-  const [autoGrayLetters, setAutoGrayLetters] = useState<Set<string>>(
-    () => new Set(loadGameStateFromLocalStorage()?.autoGrayLetters ?? [])
-  );
-
   useEffect(() => {
     if (!autoGray) return;
 
@@ -81,7 +73,7 @@ export const useTilePainting = ({
 
       return changed ? next : prev;
     });
-  }, [autoGray, guesses, solution]);
+  }, [autoGray, guesses, solution, setAutoGrayLetters, setCellColors]);
 
   useEffect(() => {
     if (!autoGreen || guesses.length === 0) return;
@@ -111,7 +103,7 @@ export const useTilePainting = ({
 
       return changed ? next : prev;
     });
-  }, [guesses, autoGreen]);
+  }, [guesses, autoGreen, setCellColors]);
 
   const onCellPaint = (
     rowIndex: number,
@@ -187,10 +179,6 @@ export const useTilePainting = ({
   };
 
   return {
-    cellColors,
-    setCellColors,
-    autoGrayLetters,
-    setAutoGrayLetters,
     onCellPaint,
     onRowReset,
     onFullReset,

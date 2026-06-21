@@ -1,5 +1,10 @@
 import type { CharStatus } from "../lib/statuses";
-import { isWordInWordList, isWinningWord, unicodeLength } from "../lib/words";
+import {
+  isWordInWordList,
+  isWinningWord,
+  unicodeLength,
+  unicodeSplit,
+} from "../lib/words";
 import {
   NOT_ENOUGH_LETTERS_MESSAGE,
   WORD_NOT_FOUND_MESSAGE,
@@ -122,7 +127,7 @@ export const useGuessInput = ({
         const winRowIndex = guesses.length;
         setCellColors((prev) => {
           const next = { ...prev };
-          currentGuess.split("").forEach((_, c) => {
+          unicodeSplit(currentGuess).forEach((_, c) => {
             next[`${winRowIndex}-${c}`] = "correct";
           });
           return next;
