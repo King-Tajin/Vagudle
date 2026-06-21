@@ -1,6 +1,6 @@
 VAGUDLE PRIVACY POLICY
 
-Last updated: May 2026
+Last updated: June 2026
 
 Vagudle (https://vagudle.king-tajin.dev) is operated by Roland Shikoski.
 
@@ -31,6 +31,22 @@ the leaderboard:
 
 This data is retained indefinitely. To request deletion of your data, contact
 us at the email addresses above.
+
+---
+
+FEEDBACK
+
+When you submit feedback through the in-app feedback form, the following
+data is stored:
+
+  - The feedback message, category, and sentiment you provide
+  - Your email address, if you choose to provide one
+  - Your IP address and browser user agent
+  - The timestamp of submission
+
+This data is retained indefinitely and used only to review and respond to
+feedback. To request deletion of your data, contact us at the email
+addresses above.
 
 ---
 

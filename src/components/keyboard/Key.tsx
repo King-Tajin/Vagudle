@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import classnames from "classnames";
-import { CharStatus } from "../../lib/statuses";
+import { CharStatus, describeLetterStatus } from "../../lib/statuses";
 import { REVEAL_TIME_MS } from "../../constants/settings";
 
 type Props = {
@@ -65,7 +65,7 @@ export const Key = ({
   return (
     <button
       style={styles}
-      aria-label={`${value} ${status}`}
+      aria-label={describeLetterStatus(value, status)}
       className={classes}
       onClick={handleClick}
     >

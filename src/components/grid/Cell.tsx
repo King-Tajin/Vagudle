@@ -1,4 +1,4 @@
-import { CharStatus } from "../../lib/statuses";
+import { CharStatus, describeLetterStatus } from "../../lib/statuses";
 import classnames from "classnames";
 import { REVEAL_TIME_MS } from "../../constants/settings";
 
@@ -48,6 +48,8 @@ export const Cell = ({
   return (
     <div
       className={classes}
+      role="img"
+      aria-label={describeLetterStatus(value, status)}
       data-row={dataRow}
       data-cell={dataCell}
       style={{
@@ -59,7 +61,11 @@ export const Cell = ({
         fontFamily: "'Plus Jakarta Sans', sans-serif",
       }}
     >
-      <div className="letter-container" style={{ animationDelay }}>
+      <div
+        className="letter-container"
+        aria-hidden="true"
+        style={{ animationDelay }}
+      >
         {value}
       </div>
     </div>

@@ -1,6 +1,17 @@
 import { unicodeSplit } from "./words";
 
 export type CharStatus = "absent" | "present" | "correct" | "auto-absent";
+
+export const describeLetterStatus = (
+  value: string | undefined,
+  status: CharStatus | undefined
+): string => {
+  if (!value) return "Empty";
+  if (!status) return value;
+  const word = status === "auto-absent" ? "absent" : status;
+  return `${value}, ${word}`;
+};
+
 export const getGuessStatuses = (
   solution: string,
   guess: string
@@ -10,7 +21,7 @@ export const getGuessStatuses = (
 
   const solutionCharsTaken = splitSolution.map(() => false);
 
-  const statuses = new Array<CharStatus>(splitGuess.length);
+  const statuses = new Array<CharStatus>(guess.length);
 
   splitGuess.forEach((letter, i) => {
     if (letter === splitSolution[i]) {
