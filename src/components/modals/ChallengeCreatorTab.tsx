@@ -523,7 +523,7 @@ export const ChallengeCreatorTab = ({
         <select
           value={dict}
           onChange={handleDictChange}
-          className="w-full border-2 font-code text-sm p-2 outline-none transition-colors"
+          className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"
           style={{
             background: "#0a0014",
             borderColor: "#d4af37",
@@ -553,7 +553,7 @@ export const ChallengeCreatorTab = ({
             onKeyDown={handleKeyDown}
             maxLength={7}
             placeholder="Type a word (4–7 letters)..."
-            className="w-full border-2 font-pixel text-sm p-2 pr-8 outline-none tracking-widest uppercase"
+            className="w-full border-2 font-pixel text-sm p-2 pr-8 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber tracking-widest uppercase"
             style={{
               background: "#0a0014",
               borderColor: borderColor[wordStatus],

@@ -202,6 +202,7 @@ export const Grid = ({
                   background: selectedBrush === status ? bg : "transparent",
                 }}
                 aria-label={`${status} brush`}
+                aria-pressed={selectedBrush === status}
               >
                 <Icon className="w-9 h-9" />
               </button>
@@ -235,13 +236,19 @@ export const Grid = ({
               style={{ background: "rgba(0,0,0,0.7)" }}
             >
               <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="reset-dialog-title"
                 className="mx-4 p-5 max-w-sm w-full"
                 style={{
                   background: "#111",
                   border: "2px solid rgba(255,215,0,0.4)",
                 }}
               >
-                <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+                <p
+                  id="reset-dialog-title"
+                  className="font-pixel text-xs text-crown-amber tracking-widest mb-2"
+                >
                   RESET ALL COLORS?
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
@@ -265,6 +272,7 @@ export const Grid = ({
                     RESET
                   </button>
                   <button
+                    autoFocus
                     onClick={() => setShowResetConfirm(false)}
                     className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"
                     style={{

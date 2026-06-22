@@ -249,7 +249,7 @@ const FeedbackTab = () => {
           onChange={(e) =>
             setFormData({ ...formData, category: e.target.value })
           }
-          className="w-full border-2 font-code text-sm p-2 outline-none transition-colors"
+          className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"
           style={{
             background: "#0a0014",
             borderColor: formData.category
@@ -276,7 +276,7 @@ const FeedbackTab = () => {
           onKeyDown={(e) => e.stopPropagation()}
           placeholder="your.email@example.com"
           maxLength={EMAIL_MAX}
-          className="w-full border-2 font-code text-sm p-2 outline-none transition-colors"
+          className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"
           style={{
             background: "#0a0014",
             borderColor: "rgba(255,255,255,0.1)",
@@ -317,7 +317,7 @@ const FeedbackTab = () => {
             placeholder="Tell us what's on your mind..."
             rows={5}
             maxLength={MESSAGE_MAX}
-            className="w-full border-2 font-code text-sm p-2 pb-7 outline-none transition-colors resize-none"
+            className="w-full border-2 font-code text-sm p-2 pb-7 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors resize-none"
             style={{
               background: "#0a0014",
               borderColor: formData.message
@@ -394,7 +394,7 @@ const FeedbackTab = () => {
                 placeholder="Tell us what's on your mind..."
                 maxLength={MESSAGE_MAX}
                 autoFocus
-                className="flex-1 w-full font-code text-sm p-4 outline-none resize-none"
+                className="flex-1 w-full font-code text-sm p-4 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber resize-none"
                 style={{
                   background: "#0a0014",
                   color: "#d1d5db",

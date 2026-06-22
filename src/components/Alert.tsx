@@ -40,5 +40,17 @@ const Alert = ({ isOpen, message, variant = "error" }: Props) => {
 
 export const AlertContainer = () => {
   const { message, status, isVisible } = useAlert();
-  return <Alert isOpen={isVisible} message={message || ""} variant={status} />;
+  return (
+    <>
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {isVisible ? message : ""}
+      </div>
+      <Alert isOpen={isVisible} message={message || ""} variant={status} />
+    </>
+  );
 };
