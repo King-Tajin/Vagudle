@@ -13,4 +13,10 @@
         <priority>0.5</priority>
     </url>
 
+    <url>
+        <loc>https://vagudle.king-tajin.dev/terms_of_service.txt</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
 </urlset>

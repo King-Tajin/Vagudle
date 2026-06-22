@@ -872,7 +872,13 @@ export const InfoModal = ({
                   style={{ background: "rgba(10,0,20,0.97)" }}
                 >
                   <p className="font-pixel text-xs text-obsidian-500 tracking-widest text-center">
-                    VAGUDLE · KING TAJIN ·{" "}
+                    <ActivityLink
+                      href="https://vagudle.king-tajin.dev/terms_of_service.txt"
+                      className="hover:text-crown-amber transition-colors underline"
+                    >
+                      TOS
+                    </ActivityLink>{" "}
+                    · KING TAJIN ·{" "}
                     <ActivityLink
                       href="https://vagudle.king-tajin.dev/privacy_policy.txt"
                       className="hover:text-crown-amber transition-colors underline"

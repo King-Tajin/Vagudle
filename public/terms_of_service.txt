@@ -1,0 +1,152 @@
+VAGUDLE TERMS OF SERVICE
+
+Last updated: June 2026
+
+These Terms of Service ("Terms") govern your use of Vagudle, a free online
+word game available at vagudle.com ("the Game", "the Site"). By using the
+Site, you agree to these Terms. If you do not agree, please do not use the
+Site.
+
+---
+
+1. WHO WE ARE
+
+Vagudle is operated by Roland Shikoski. For questions or concerns, contact
+us at:
+
+  developer@king-tajin.dev
+  support@king-tajin.dev
+
+---
+
+2. ELIGIBILITY
+
+You must be at least 13 years old to use the Site. By using the Site, you
+confirm that you meet this requirement. The Site is not directed at children
+under 13, and we do not knowingly collect information from children under 13.
+
+---
+
+3. THE SERVICE
+
+Vagudle is a free word-guessing game. It offers:
+
+  - On-demand word game in normal and hard modes
+  - Custom challenge links you can share with other players
+  - Duel mode, including integration with Discord Activities
+
+The Site is provided free of charge. We reserve the right to modify,
+suspend, or discontinue any part of the Site at any time without notice.
+
+---
+
+4. ACCEPTABLE USE
+
+You agree not to:
+
+  - Submit spam, repeated identical messages, or automated submissions
+    through the feedback form or any other input on the Site
+  - Attempt to disrupt, overload, or interfere with the Site or its servers
+  - Use the Site for any unlawful purpose
+  - Attempt to reverse-engineer, scrape, or otherwise extract data from
+    the Site in ways not intended by its normal operation
+
+We reserve the right to disregard feedback or block access from sources
+that violate these rules.
+
+---
+
+5. USER-SUBMITTED CONTENT
+
+The Site allows you to create custom challenge words and submit feedback.
+By submitting content, you confirm that it does not violate any applicable
+law and that you have the right to submit it.
+
+We do not monitor all submitted content in real time, but reserve the right
+to review and discard any submission at our discretion. Challenge words and
+feedback are not publicly displayed on the Site — challenge words are encoded
+in a shareable link and feedback is sent directly to us.
+
+---
+
+6. MERCHANDISE
+
+The Site may contain a link to a third-party merchandise store. Purchases
+made through that store are subject to the third party's own terms and
+policies. We are not responsible for the products, prices, availability, or
+any disputes arising from purchases made on third-party platforms.
+
+---
+
+7. DISCORD INTEGRATION
+
+Duel mode on the Site uses Discord's Activity and OAuth features. Your use
+of those features is also subject to Discord's Terms of Service
+(discord.com/terms) and Privacy Policy (discord.com/privacy). We are not
+affiliated with or endorsed by Discord Inc.
+
+---
+
+8. INTELLECTUAL PROPERTY
+
+The Vagudle source code is released under the MIT License. You are free to
+view, fork, and build upon it in accordance with that license. The MIT
+License text is included in the source code repository.
+
+Game assets, background media, and the Vagudle name and branding are not
+covered by the MIT License and remain the property of the operator unless
+otherwise stated.
+
+---
+
+9. DISCLAIMERS
+
+THE SITE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+WE DO NOT WARRANT THAT THE SITE WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE
+OF HARMFUL COMPONENTS.
+
+---
+
+10. LIMITATION OF LIABILITY
+
+TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, THE OPERATOR SHALL NOT
+BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE
+DAMAGES ARISING FROM YOUR USE OF, OR INABILITY TO USE, THE SITE — INCLUDING
+BUT NOT LIMITED TO LOSS OF DATA, LOSS OF ENJOYMENT, OR ANY OTHER INTANGIBLE
+LOSS — EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+Because the Site is free of charge, our aggregate liability to you for any
+claim arising from your use of the Site shall not exceed zero dollars ($0).
+
+---
+
+11. GOVERNING LAW
+
+These Terms are governed by the laws of the United States and the State of
+Georgia, without regard to conflict-of-law principles. Any dispute that
+cannot be resolved informally will be subject to the exclusive jurisdiction
+of the state and federal courts located in Georgia.
+
+If you are located outside the United States, you acknowledge that you are
+voluntarily accessing a US-based service and agree that US law governs these
+Terms to the extent permitted by your local law.
+
+---
+
+12. CHANGES TO THESE TERMS
+
+We may update these Terms from time to time. When we do, we will update the
+"Last updated" date at the top of this document. Continued use of the Site
+after any changes constitutes acceptance of the updated Terms.
+
+---
+
+13. CONTACT
+
+If you have questions about these Terms, contact us at:
+
+  developer@king-tajin.dev
+  support@king-tajin.dev
