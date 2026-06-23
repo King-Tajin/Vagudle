@@ -823,12 +823,11 @@ export const InfoModal = ({
 
                       <ActivityLink
                         href="https://store.king-tajin.dev/"
-                        className="store-cta-btn block w-full relative overflow-hidden"
+                        className="shiny-btn block w-full relative overflow-hidden"
                       >
-                        <div className="store-cta-grid absolute inset-0" />
-                        <div className="store-cta-shimmer absolute inset-y-0" />
+                        <div className="shiny-btn-shimmer absolute inset-y-0" />
                         <div className="relative z-10 flex flex-col items-center gap-2 py-5 px-4">
-                          <CrownIcon className="store-cta-crown w-10 h-10 text-crown-gold" />
+                          <CrownIcon className="shiny-btn-crown w-10 h-10 text-crown-gold" />
                           <span
                             className="font-pixel text-2xl tracking-widest crown-glow"
                             style={{ color: "#FFD700" }}

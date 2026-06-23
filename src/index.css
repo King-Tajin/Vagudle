@@ -293,7 +293,7 @@ svg.cursor-pointer:hover {
   animation: float 2s ease-in-out infinite;
 }
 
-@keyframes store-cta-pulse {
+@keyframes shiny-btn-pulse {
   0%,
   100% {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
@@ -303,7 +303,7 @@ svg.cursor-pointer:hover {
   }
 }
 
-@keyframes store-cta-shimmer {
+@keyframes shiny-btn-shimmer {
   0% {
     transform: translateX(-200%) skewX(-20deg);
   }
@@ -312,7 +312,7 @@ svg.cursor-pointer:hover {
   }
 }
 
-@keyframes store-cta-crown {
+@keyframes shiny-btn-crown {
   0%,
   100% {
     transform: translateY(0px);
@@ -324,42 +324,17 @@ svg.cursor-pointer:hover {
   }
 }
 
-.store-cta-btn {
-  animation: store-cta-pulse 2.8s ease-in-out infinite;
+.shiny-btn {
+  animation: shiny-btn-pulse 2.8s ease-in-out infinite;
   border: 2px solid #d4af37;
   cursor: pointer;
   transition: border-color 0.25s ease, transform 0.15s ease;
 }
 
-.store-cta-btn:hover {
-  border-color: #ffd700;
-  transform: translateY(-1px);
-}
-
-.store-cta-btn:active {
-  transform: translateY(0px);
-}
-
-.store-cta-shimmer {
-  background: linear-gradient(
-          90deg,
-          transparent 0%,
-          rgba(255, 215, 0, 0.06) 40%,
-          rgba(255, 255, 255, 0.08) 50%,
-          rgba(255, 215, 0, 0.06) 60%,
-          transparent 100%
-  );
-  animation: store-cta-shimmer 4s ease-in-out infinite;
-  animation-delay: 1s;
-  width: 35%;
-  pointer-events: none;
-}
-
-.store-cta-crown {
-  animation: store-cta-crown 2.8s ease-in-out infinite;
-}
-
-.store-cta-grid {
+.shiny-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background-image: linear-gradient(
           90deg,
           rgba(255, 215, 0, 0.04) 1px,
@@ -368,4 +343,32 @@ svg.cursor-pointer:hover {
   linear-gradient(rgba(255, 215, 0, 0.04) 1px, transparent 1px);
   background-size: 14px 14px;
   pointer-events: none;
+}
+
+.shiny-btn:hover {
+  border-color: #ffd700;
+  transform: translateY(-1px);
+}
+
+.shiny-btn:active {
+  transform: translateY(0px);
+}
+
+.shiny-btn-shimmer {
+  background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 215, 0, 0.25) 35%,
+          rgba(255, 255, 255, 0.55) 50%,
+          rgba(255, 215, 0, 0.25) 65%,
+          transparent 100%
+  );
+  animation: shiny-btn-shimmer 3s ease-in-out infinite;
+  animation-delay: 1s;
+  width: 35%;
+  pointer-events: none;
+}
+
+.shiny-btn-crown {
+  animation: shiny-btn-crown 2.8s ease-in-out infinite;
 }
