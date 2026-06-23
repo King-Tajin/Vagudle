@@ -731,26 +731,6 @@ export const InfoModal = ({
                         , with extra tools to help you solve the puzzle and no
                         pesky daily limit to get in your way.
                       </p>
-                      <p className="font-code text-sm text-gray-400 leading-relaxed">
-                        Built and maintained by{" "}
-                        <ActivityLink
-                          href="https://King-Tajin.dev"
-                          className="text-crown-gold underline hover:text-crown-amber transition-colors"
-                        >
-                          King-Tajin
-                        </ActivityLink>
-                        .
-                      </p>
-                      <p className="font-code text-sm text-gray-400 leading-relaxed">
-                        Join the community on{" "}
-                        <ActivityLink
-                          href="https://discord.gg/sU2XRxK8EB"
-                          className="text-crown-gold underline hover:text-crown-amber transition-colors"
-                        >
-                          Discord
-                        </ActivityLink>
-                        .
-                      </p>
 
                       <div className="border-t border-obsidian-700" />
 
@@ -840,6 +820,29 @@ export const InfoModal = ({
                             : "ATTRIBUTIONS VISIBLE"}
                         </button>
                       </div>
+
+                      <ActivityLink
+                        href="https://store.king-tajin.dev/"
+                        className="store-cta-btn block w-full relative overflow-hidden"
+                      >
+                        <div className="store-cta-grid absolute inset-0" />
+                        <div className="store-cta-shimmer absolute inset-y-0" />
+                        <div className="relative z-10 flex flex-col items-center gap-2 py-5 px-4">
+                          <CrownIcon className="store-cta-crown w-10 h-10 text-crown-gold" />
+                          <span
+                            className="font-pixel text-2xl tracking-widest crown-glow"
+                            style={{ color: "#FFD700" }}
+                          >
+                            VISIT THE STORE
+                          </span>
+                          <span
+                            className="font-code text-xs tracking-wide"
+                            style={{ color: "#FFBF00", opacity: 0.65 }}
+                          >
+                            store.king-tajin.dev →
+                          </span>
+                        </div>
+                      </ActivityLink>
                     </div>
                   )}
 
