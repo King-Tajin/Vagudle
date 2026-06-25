@@ -5,7 +5,7 @@ import { Histogram } from "../stats/Histogram";
 import { GameStats } from "../../lib/localStorage";
 import { shareStatus, shareStats } from "../../lib/share";
 import { BaseModal } from "./BaseModal";
-import { ChallengeCreatorTab } from "./ChallengeCreatorTab";
+import { ChallengeCreatorModal } from "./ChallengeCreatorModal";
 import {
   Share2,
   RotateCcw,
@@ -492,7 +492,7 @@ export const StatsModal = ({
         isOpen={isOpen}
         handleClose={handleClose}
       >
-        <ChallengeCreatorTab
+        <ChallengeCreatorModal
           autoFilledWord={solution}
           autoFilledDict={presetDict}
           autoFilledGuesses={presetGuesses}

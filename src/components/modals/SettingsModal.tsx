@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { BookOpen, ChevronDown, Hash, Lock, Target } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
-import { ChallengeCreatorTab } from "./ChallengeCreatorTab";
+import { ChallengeCreatorModal } from "./ChallengeCreatorModal";
 import {
   DICT_LABELS,
   DICT_DESCRIPTIONS,
@@ -434,7 +434,7 @@ export const SettingsModal = ({
         </>
       )}
 
-      {activeTab === "challenge" && <ChallengeCreatorTab />}
+      {activeTab === "challenge" && <ChallengeCreatorModal />}
     </BaseModal>
   );
 };

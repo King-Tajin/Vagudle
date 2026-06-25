@@ -121,7 +121,7 @@ type Props = {
   onBack?: () => void;
 };
 
-export const ChallengeCreatorTab = ({
+export const ChallengeCreatorModal = ({
   autoFilledWord,
   autoFilledDict,
   autoFilledGuesses,
@@ -151,6 +151,8 @@ export const ChallengeCreatorTab = ({
 
   useEffect(() => {
     if (!autoFilledWord) return;
+    let cancelled = false;
+
     const w = autoFilledWord.toUpperCase().replace(/[^A-Z]/g, "");
     const d = autoFilledDict ?? "normal";
     const g = autoFilledGuesses ?? 11;
@@ -161,7 +163,9 @@ export const ChallengeCreatorTab = ({
 
     if (w.length < 4 || w.length > 7) {
       setWordStatus("invalid-length");
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
     if (isWordInDict(w, d)) {
@@ -175,6 +179,7 @@ export const ChallengeCreatorTab = ({
       };
       setGenerateStatus("loading");
       void encodeChallenge(config).then((result) => {
+        if (cancelled) return;
         if (!result) {
           setGenerateStatus("error");
           return;
@@ -191,6 +196,10 @@ export const ChallengeCreatorTab = ({
       setWordStatus("invalid-word");
       setDictHints(getDictHints(w, d));
     }
+
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

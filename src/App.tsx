@@ -176,20 +176,21 @@ function App() {
   }, [isMobile]);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [solution, setSolution] = useState(
-    () => loadGameStateFromLocalStorage()?.solution ?? ""
-  );
+
+  const [{ savedGameState, savedSettings }] = useState(() => ({
+    savedGameState: loadGameStateFromLocalStorage(),
+    savedSettings: loadSettingsFromLocalStorage(),
+  }));
+
+  const [solution, setSolution] = useState(savedGameState?.solution ?? "");
   const [guesses, setGuesses] = useState<string[]>(
-    () => loadGameStateFromLocalStorage()?.guesses ?? []
+    savedGameState?.guesses ?? []
   );
   const [cellColors, setCellColors] = useState<{ [key: string]: CharStatus }>(
-    () =>
-      (loadGameStateFromLocalStorage()?.cellColors as {
-        [key: string]: CharStatus;
-      }) ?? {}
+    (savedGameState?.cellColors as { [key: string]: CharStatus }) ?? {}
   );
   const [autoGrayLetters, setAutoGrayLetters] = useState<Set<string>>(
-    () => new Set(loadGameStateFromLocalStorage()?.autoGrayLetters ?? [])
+    new Set(savedGameState?.autoGrayLetters ?? [])
   );
   const [currentGuess, setCurrentGuess] = useState("");
   const [currentRowClass, setCurrentRowClass] = useState("");
@@ -227,23 +228,15 @@ function App() {
     Achievement[]
   >([]);
 
-  const [wordLength, setWordLength] = useState(
-    () => loadSettingsFromLocalStorage().wordLength
-  );
-  const [hardMode, setHardMode] = useState(
-    () => loadSettingsFromLocalStorage().hardMode
-  );
+  const [wordLength, setWordLength] = useState(savedSettings.wordLength);
+  const [hardMode, setHardMode] = useState(savedSettings.hardMode);
   const [showGrayCount, setShowGrayCount] = useState(
-    () => loadSettingsFromLocalStorage().showGrayCount
+    savedSettings.showGrayCount
   );
-  const [autoGray, setAutoGray] = useState(
-    () => loadSettingsFromLocalStorage().autoGray ?? false
-  );
-  const [autoGreen, setAutoGreen] = useState(
-    () => loadSettingsFromLocalStorage().autoGreen ?? false
-  );
+  const [autoGray, setAutoGray] = useState(savedSettings.autoGray ?? false);
+  const [autoGreen, setAutoGreen] = useState(savedSettings.autoGreen ?? false);
   const [extraEffects, setExtraEffects] = useState(
-    () => loadSettingsFromLocalStorage().extraEffects ?? true
+    savedSettings.extraEffects ?? true
   );
   const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
     loadBackgroundId(window.innerWidth < 640)
