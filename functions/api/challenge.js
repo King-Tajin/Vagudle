@@ -44,7 +44,7 @@ export async function onRequestPost(context) {
       length: body.length,
       id,
     };
-    const encoded = encode(config, key);
+    const encoded = await encode(config, key);
 
     return json({ success: true, encoded, id });
   } catch (error) {
@@ -64,7 +64,7 @@ export async function onRequestGet(context) {
 
     let parsed;
     try {
-      parsed = decode(token, key);
+      parsed = await decode(token, key);
     } catch {
       return json({ success: false, error: "Invalid token." }, 400);
     }

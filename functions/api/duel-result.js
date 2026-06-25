@@ -56,7 +56,7 @@ export async function onRequestPost(context) {
 
     let parsed;
     try {
-      parsed = decode(token, key);
+      parsed = await decode(token, key);
     } catch {
       return json({ success: false, error: "Invalid token." }, 400);
     }

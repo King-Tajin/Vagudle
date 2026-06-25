@@ -10,25 +10,51 @@ export const json = (data, status = 200) =>
     headers: { "Content-Type": "application/json", ...CORS_HEADERS },
   });
 
-export const xor = (input, key) => {
-  const keyBytes = key.split("").map((c) => c.charCodeAt(0));
-  return input
-    .split("")
-    .map((c, i) =>
-      String.fromCharCode(c.charCodeAt(0) ^ keyBytes[i % keyBytes.length])
-    )
-    .join("");
+const textEncoder = new TextEncoder();
+const textDecoder = new TextDecoder();
+
+const importAesKey = async (secret) => {
+  const keyBytes = await crypto.subtle.digest(
+    "SHA-256",
+    textEncoder.encode(secret)
+  );
+  return crypto.subtle.importKey("raw", keyBytes, { name: "AES-GCM" }, false, [
+    "encrypt",
+    "decrypt",
+  ]);
 };
 
-export const encode = (config, key) => {
-  const binary = xor(JSON.stringify(config), key);
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+export const encode = async (config, secret) => {
+  const key = await importAesKey(secret);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    textEncoder.encode(JSON.stringify(config))
+  );
+  const combined = new Uint8Array(12 + ciphertext.byteLength);
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(ciphertext), 12);
+  return btoa(String.fromCharCode(...combined))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 };
 
-export const decode = (token, key) => {
+export const decode = async (token, secret) => {
+  const key = await importAesKey(secret);
   const pad = token.length % 4 === 0 ? "" : "=".repeat(4 - (token.length % 4));
   const binary = atob(token.replace(/-/g, "+").replace(/_/g, "/") + pad);
-  return JSON.parse(xor(binary, key));
+  const combined = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) combined[i] = binary.charCodeAt(i);
+  const iv = combined.slice(0, 12);
+  const ciphertext = combined.slice(12);
+  const plaintext = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv },
+    key,
+    ciphertext
+  );
+  return JSON.parse(textDecoder.decode(plaintext));
 };
 
 export const VALID_DICTS = ["normal", "hard", "full"];
