@@ -8,8 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/*.json\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/*.json\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/*.{html,json}\" \".github/**/*.md\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/*.{html,json}\" \".github/**/*.md\""
   },
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.0.0",
@@ -61,6 +61,7 @@
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",
     "functions/**/*.js": "prettier --write",
     "*.{html,json,js,cjs,md}": "prettier --write",
-    "public/*.json": "prettier --write"
+    "public/*.{html,json}": "prettier --write",
+    ".github/**/*.md": "prettier --write"
   }
 }
