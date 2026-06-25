@@ -875,14 +875,14 @@ export const InfoModal = ({
                 >
                   <p className="font-pixel text-xs text-obsidian-500 tracking-widest text-center">
                     <ActivityLink
-                      href="https://vagudle.king-tajin.dev/terms_of_service.txt"
+                      href="https://vagudle.king-tajin.dev/terms.html"
                       className="hover:text-crown-amber transition-colors underline"
                     >
                       TOS
                     </ActivityLink>{" "}
                     · KING TAJIN ·{" "}
                     <ActivityLink
-                      href="https://vagudle.king-tajin.dev/privacy_policy.txt"
+                      href="https://vagudle.king-tajin.dev/privacy.html"
                       className="hover:text-crown-amber transition-colors underline"
                     >
                       PRIVACY POLICY

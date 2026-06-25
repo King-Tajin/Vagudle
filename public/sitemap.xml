@@ -8,13 +8,13 @@
     </url>
 
     <url>
-        <loc>https://vagudle.king-tajin.dev/privacy_policy.txt</loc>
+        <loc>https://vagudle.king-tajin.dev/privacy.html</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
 
     <url>
-        <loc>https://vagudle.king-tajin.dev/terms_of_service.txt</loc>
+        <loc>https://vagudle.king-tajin.dev/terms.html</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
