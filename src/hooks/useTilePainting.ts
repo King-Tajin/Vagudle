@@ -11,7 +11,6 @@ type Params = {
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
-  autoGrayLetters: Set<string>;
   setAutoGrayLetters: React.Dispatch<React.SetStateAction<Set<string>>>;
 };
 

@@ -318,6 +318,9 @@ function App() {
     );
   };
 
+  const isChallengeMode = challengeConfig !== null;
+  const isDuelMode = duelConfig !== null;
+
   useEffect(() => {
     if (
       !isGameWon ||
@@ -334,8 +337,15 @@ function App() {
     });
     if (newly.length > 0)
       setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGameWon]);
+  }, [
+    isGameWon,
+    isDuelMode,
+    isChallengeMode,
+    solution.length,
+    guesses.length,
+    hardMode,
+    recordWin,
+  ]);
 
   const { onCellPaint, onRowReset, onFullReset, clearAutoGray } =
     useTilePainting({
@@ -345,12 +355,9 @@ function App() {
       autoGreen,
       cellColors,
       setCellColors,
-      autoGrayLetters,
       setAutoGrayLetters,
     });
 
-  const isChallengeMode = challengeConfig !== null;
-  const isDuelMode = duelConfig !== null;
   const maxChallenges =
     duelConfig?.guesses ??
     challengeConfig?.guesses ??
