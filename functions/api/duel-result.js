@@ -64,6 +64,13 @@ export async function onRequestPost(context) {
     if (!validateDuelParsed(parsed))
       return json({ success: false, error: "Malformed duel data." }, 400);
 
+    if (
+      !Number.isInteger(guessesUsed) ||
+      guessesUsed < 1 ||
+      guessesUsed > parsed.guesses
+    )
+      return json({ success: false, error: "Invalid guessesUsed." }, 400);
+
     if (Date.now() - parsed.created_at > ONE_DAY_MS)
       return json({ success: false, error: "Duel has expired." }, 400);
 

@@ -1,6 +1,8 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json } from "../_shared/api.js";
+import { CORS_HEADERS, json, VALID_GUESSES } from "../_shared/api.js";
+
+const MAX_GUESSES = Math.max(...VALID_GUESSES);
 
 const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/duel";
 
@@ -41,7 +43,10 @@ export async function onRequestPost(context) {
       typeof duel_id !== "string" ||
       !duel_id ||
       typeof won !== "boolean" ||
-      typeof guesses_used !== "number"
+      typeof guesses_used !== "number" ||
+      !Number.isInteger(guesses_used) ||
+      guesses_used < 1 ||
+      guesses_used > MAX_GUESSES
     ) {
       return json({ success: false, error: "Invalid request body." }, 400);
     }
