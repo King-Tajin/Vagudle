@@ -30,6 +30,8 @@ export const useTilePainting = ({
   setCellColors,
   setAutoGrayLetters,
 }: Params): Return => {
+  const guessesRef = React.useRef(guesses);
+  guessesRef.current = guesses;
   useEffect(() => {
     if (!autoGray) return;
 
@@ -118,11 +120,13 @@ export const useTilePainting = ({
       next[key] = color;
 
       if (autoGreen) {
-        const paintedLetter = guesses[rowIndex]?.[cellIndex]?.toUpperCase();
+        const currentGuesses = guessesRef.current;
+        const paintedLetter =
+          currentGuesses[rowIndex]?.[cellIndex]?.toUpperCase();
         if (!paintedLetter) return next;
 
         if (color === "correct") {
-          guesses.forEach((g, r) => {
+          currentGuesses.forEach((g, r) => {
             if (r === rowIndex) return;
             if (g[cellIndex]?.toUpperCase() === paintedLetter) {
               const k = `${r}-${cellIndex}`;
@@ -130,7 +134,7 @@ export const useTilePainting = ({
             }
           });
         } else if (prevColor === "correct") {
-          guesses.forEach((g, r) => {
+          currentGuesses.forEach((g, r) => {
             if (r === rowIndex) return;
             if (g[cellIndex]?.toUpperCase() === paintedLetter) {
               const k = `${r}-${cellIndex}`;
