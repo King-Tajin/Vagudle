@@ -93,7 +93,9 @@ export const useTilePainting = ({
 
         for (let r = 0; r < newRowIndex; r++) {
           if (prev[`${r}-${c}`] === "correct") {
-            if (guesses[r]?.[c]?.toUpperCase() === letter.toUpperCase()) {
+            if (
+              guessesRef.current[r]?.[c]?.toUpperCase() === letter.toUpperCase()
+            ) {
               next[key] = "correct";
               changed = true;
               break;
