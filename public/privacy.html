@@ -29,10 +29,13 @@
     <script>
       function linkify(esc) {
         return esc
-          .replace(/(https?:\/\/[^\s,)<]+)/g, '<a href="$1">$1</a>')
+          .replace(
+            /(https?:\/\/[^\s,)<]+)/g,
+            (_, url) => `<a href="${url}">${url}</a>`
+          )
           .replace(
             /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-            '<a href="mailto:$1">$1</a>'
+            (_, email) => `<a href="mailto:${email}">${email}</a>`
           );
       }
 
