@@ -123,7 +123,13 @@ export const saveChallengeState = (
 export const loadChallengeState = (id: string): ChallengeGameState | null => {
   try {
     const stored = localStorage.getItem(challengeStateKey(id));
-    return stored ? (JSON.parse(stored) as ChallengeGameState) : null;
+    if (!stored) return null;
+    const parsed = JSON.parse(stored) as ChallengeGameState;
+    if (!parsed.savedAt || Date.now() - parsed.savedAt > TWO_YEARS_MS) {
+      localStorage.removeItem(challengeStateKey(id));
+      return null;
+    }
+    return parsed;
   } catch {
     localStorage.removeItem(challengeStateKey(id));
     return null;
