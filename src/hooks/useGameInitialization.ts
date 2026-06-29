@@ -18,6 +18,7 @@ import {
   type DuelConfig,
 } from "../lib/duel";
 import { isDiscordActivity, bootActivity } from "../lib/discord";
+import { runStorageOptimization } from "../lib/storageOptimizer";
 import { CORRECT_WORD_MESSAGE } from "../constants/strings";
 import {
   HARD_MODE_MAX_CHALLENGES,
@@ -86,6 +87,7 @@ export const useGameInitialization = ({
 }: Params) => {
   useEffect(() => {
     const run = async () => {
+      runStorageOptimization();
       pruneOldChallengeStates();
       pruneOldDuelStates();
       const loadStart = Date.now();
