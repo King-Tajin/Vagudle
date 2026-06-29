@@ -7,22 +7,33 @@ type Props = {
   isOpen: boolean;
   handleClose: () => void;
   unlockedIds: string[];
+  totalWins: number;
+};
+
+const WIN_PROGRESS_IDS: Record<string, number> = {
+  win_15: 15,
+  win_50: 50,
 };
 
 const bgUnlockedBy = (achievementId: string) =>
   BACKGROUNDS.find((b) => b.requiresAchievementId === achievementId);
 
 export const AchievementsModal = ({
-  isOpen,
-  handleClose,
-  unlockedIds,
-}: Props) => (
+                                    isOpen,
+                                    handleClose,
+                                    unlockedIds,
+                                    totalWins,
+                                  }: Props) => (
   <BaseModal title="Achievements" isOpen={isOpen} handleClose={handleClose}>
     <div className="space-y-2">
       {ACHIEVEMENTS.map((a) => {
         const isUnlocked = unlockedIds.includes(a.id);
         const isHiddenLocked = !isUnlocked && a.hidden;
         const bg = bgUnlockedBy(a.id);
+        const target = WIN_PROGRESS_IDS[a.id];
+        const showProgress = target !== undefined && !isUnlocked;
+        const progress = target ? Math.min(totalWins, target) : 0;
+        const pct = target ? Math.round((progress / target) * 100) : 0;
 
         return (
           <div
@@ -60,6 +71,34 @@ export const AchievementsModal = ({
               <p className="font-code text-xs text-gray-500 leading-snug">
                 {isHiddenLocked ? "???" : a.description}
               </p>
+
+              {showProgress && (
+                <div className="mt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-pixel text-[8px] text-gray-500 tracking-widest">
+                      PROGRESS
+                    </span>
+                    <span className="font-pixel text-[8px] tracking-widest" style={{ color: "#d4af37" }}>
+                      {progress}/{target}
+                    </span>
+                  </div>
+                  <div
+                    className="w-full h-2 overflow-hidden"
+                    style={{
+                      background: "rgba(255,215,0,0.06)",
+                      border: "1px solid rgba(255,215,0,0.15)",
+                    }}
+                  >
+                    <div
+                      className="h-full transition-all duration-500"
+                      style={{
+                        width: `${pct}%`,
+                        background: "linear-gradient(90deg, #b8860b 0%, #ffd700 100%)",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
               {bg && (
                 <div

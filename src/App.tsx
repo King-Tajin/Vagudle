@@ -875,6 +875,11 @@ function App() {
             isOpen={isAchievementsModalOpen}
             handleClose={() => setIsAchievementsModalOpen(false)}
             unlockedIds={unlockedIds}
+            totalWins={
+              stats.totalGames -
+              stats.gamesFailed +
+              (hardStats.totalGames - hardStats.gamesFailed)
+            }
           />
         </Suspense>
 
