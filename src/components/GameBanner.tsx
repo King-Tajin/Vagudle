@@ -25,8 +25,10 @@ export const GameBanner = ({
         transition={{ delay: 0.1 }}
         className="mx-auto mb-4 max-w-sm w-full px-4 py-2.5"
         style={{
-          background: "rgba(80,0,170,0.1)",
-          border: "1px solid rgba(80,0,170,0.4)",
+          background: "rgba(80,0,170,0.45)",
+          border: "1px solid rgba(80,0,170,0.6)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
         }}
       >
         <p className="font-pixel text-[9px] text-crown-amber tracking-widest text-center mb-1.5">
@@ -58,8 +60,10 @@ export const GameBanner = ({
         transition={{ delay: 0.1 }}
         className="mx-auto mb-4 max-w-sm w-full px-4 py-2.5"
         style={{
-          background: "rgba(80,0,170,0.1)",
-          border: "1px solid rgba(80,0,170,0.4)",
+          background: "rgba(80,0,170,0.45)",
+          border: "1px solid rgba(80,0,170,0.6)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
         }}
       >
         <p className="font-pixel text-[9px] text-crown-amber tracking-widest text-center mb-1.5">
