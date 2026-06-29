@@ -7,6 +7,9 @@ import {
   ACHIEVEMENTS_KEY,
   loadAchievementProgress,
   saveAchievementProgress,
+  loadWordConnoisseurList,
+  saveWordConnoisseurList,
+  deleteWordConnoisseurList,
 } from "../lib/achievements";
 import { useStorageSync } from "./useStorageSync";
 
@@ -20,6 +23,11 @@ export const useAchievements = () => {
   const [progress, setProgress] = useState<AchievementProgress>(() =>
     loadAchievementProgress()
   );
+  const [uniqueWordCount, setUniqueWordCount] = useState<number>(() => {
+    const p = loadAchievementProgress();
+    if (p.unlockedIds.includes("word_connoisseur")) return 200;
+    return loadWordConnoisseurList().length;
+  });
   const hasRecordedWinRef = useRef(false);
 
   useStorageSync(ACHIEVEMENTS_KEY, () => {
@@ -32,21 +40,19 @@ export const useAchievements = () => {
 
   const commitProgress = (
     base: AchievementProgress,
-    next: AchievementProgress
+    next: AchievementProgress,
+    ctx: AchievementContext
   ): Achievement[] => {
-    const ctx: AchievementContext = {
-      totalWins: next.totalWins,
-      wonInHardMode5Plus: next.wonInHardMode5Plus,
-      wonIn5GuessesEver: next.wonIn5GuessesEver,
-      wonWith7LettersEver: next.wonWith7LettersEver,
-      guessedWords: next.guessedWords,
-    };
-
     const newlyUnlocked = ACHIEVEMENTS.filter(
       (a) => !base.unlockedIds.includes(a.id) && a.check(ctx)
     );
 
     next.unlockedIds = [...base.unlockedIds, ...newlyUnlocked.map((a) => a.id)];
+
+    if (newlyUnlocked.some((a) => a.id === "word_connoisseur")) {
+      deleteWordConnoisseurList();
+      setUniqueWordCount(200);
+    }
 
     setProgress(next);
     saveAchievementProgress(next);
@@ -64,24 +70,50 @@ export const useAchievements = () => {
     if (event.guessCount <= 5) next.wonIn5GuessesEver = true;
     if (event.wordLength === 7) next.wonWith7LettersEver = true;
 
-    return commitProgress(base, next);
+    const ctx: AchievementContext = {
+      totalWins: next.totalWins,
+      wonInHardMode5Plus: next.wonInHardMode5Plus,
+      wonIn5GuessesEver: next.wonIn5GuessesEver,
+      wonWith7LettersEver: next.wonWith7LettersEver,
+      lastGuess: "",
+      uniqueWordCount,
+    };
+
+    return commitProgress(base, next, ctx);
   };
 
   const recordGuess = (word: string): Achievement[] => {
-    const normalized = word.toLowerCase();
     const base = loadAchievementProgress();
-    if (base.guessedWords.includes(normalized)) return [];
+    const normalized = word.toLowerCase();
 
-    const next: AchievementProgress = {
-      ...base,
-      guessedWords: [...base.guessedWords, normalized],
+    let currentUniqueCount = uniqueWordCount;
+
+    if (!base.unlockedIds.includes("word_connoisseur")) {
+      const list = loadWordConnoisseurList();
+      if (!list.includes(normalized)) {
+        const updated = [...list, normalized];
+        saveWordConnoisseurList(updated);
+        currentUniqueCount = updated.length;
+        setUniqueWordCount(updated.length);
+      }
+    }
+
+    const ctx: AchievementContext = {
+      totalWins: base.totalWins,
+      wonInHardMode5Plus: base.wonInHardMode5Plus,
+      wonIn5GuessesEver: base.wonIn5GuessesEver,
+      wonWith7LettersEver: base.wonWith7LettersEver,
+      lastGuess: normalized,
+      uniqueWordCount: currentUniqueCount,
     };
 
-    return commitProgress(base, next);
+    const next: AchievementProgress = { ...base };
+    return commitProgress(base, next, ctx);
   };
 
   return {
     unlockedIds: progress.unlockedIds,
+    uniqueWordCount,
     recordWin,
     recordGuess,
     resetWinRecord,

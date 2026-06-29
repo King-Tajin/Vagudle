@@ -3,7 +3,8 @@ export type AchievementContext = {
   wonInHardMode5Plus: boolean;
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
-  guessedWords: string[];
+  lastGuess: string;
+  uniqueWordCount: number;
 };
 
 export type Achievement = {
@@ -20,7 +21,6 @@ export type AchievementProgress = {
   wonInHardMode5Plus: boolean;
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
-  guessedWords: string[];
 };
 
 type StoredProgress = Partial<AchievementProgress> & {
@@ -33,7 +33,6 @@ const defaultProgress = (): AchievementProgress => ({
   wonInHardMode5Plus: false,
   wonIn5GuessesEver: false,
   wonWith7LettersEver: false,
-  guessedWords: [],
 });
 
 export const ACHIEVEMENTS: Achievement[] = [
@@ -80,15 +79,44 @@ export const ACHIEVEMENTS: Achievement[] = [
     check: (ctx) => ctx.wonWith7LettersEver,
   },
   {
+    id: "word_connoisseur",
+    title: "Word Connoisseur",
+    description: "Guess 200 unique words in normal or hard mode",
+    hidden: false,
+    check: (ctx) => ctx.uniqueWordCount >= 200,
+  },
+  {
     id: "guess_mouse",
     title: "Squeak!",
     description: "Type MOUSE as a guess during a game",
     hidden: false,
-    check: (ctx) => ctx.guessedWords.includes("mouse"),
+    check: (ctx) => ctx.lastGuess === "mouse",
   },
 ];
 
 export const ACHIEVEMENTS_KEY = "vagudle-achievements";
+export const WORD_CONNOISSEUR_KEY = "vagudle-word-connoisseur";
+
+export const loadWordConnoisseurList = (): string[] => {
+  try {
+    const stored = localStorage.getItem(WORD_CONNOISSEUR_KEY);
+    return stored ? (JSON.parse(stored) as string[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+export const saveWordConnoisseurList = (words: string[]): void => {
+  try {
+    localStorage.setItem(WORD_CONNOISSEUR_KEY, JSON.stringify(words));
+  } catch {}
+};
+
+export const deleteWordConnoisseurList = (): void => {
+  try {
+    localStorage.removeItem(WORD_CONNOISSEUR_KEY);
+  } catch {}
+};
 
 export const loadAchievementProgress = (): AchievementProgress => {
   try {

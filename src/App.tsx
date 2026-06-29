@@ -247,8 +247,13 @@ function App() {
     loadBackgroundId(window.innerWidth < 640)
   );
 
-  const { unlockedIds, recordWin, recordGuess, resetWinRecord } =
-    useAchievements();
+  const {
+    unlockedIds,
+    uniqueWordCount,
+    recordWin,
+    recordGuess,
+    resetWinRecord,
+  } = useAchievements();
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
@@ -451,6 +456,7 @@ function App() {
     showErrorAlert,
     recordStats,
     onGuessSubmit: (word) => {
+      if (isChallengeMode || isDuelMode) return;
       const newly = recordGuess(word);
       if (newly.length > 0) {
         setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
@@ -898,6 +904,7 @@ function App() {
               stats.gamesFailed +
               (hardStats.totalGames - hardStats.gamesFailed)
             }
+            uniqueWordCount={uniqueWordCount}
           />
         </Suspense>
 
