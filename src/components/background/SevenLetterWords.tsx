@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-const FONT_SIZE = 18;
-const SPREAD = 125;
-const MAX_ROTATION = 22;
-
-const WORD_OPACITY = 1;
+const FONT_SIZE = 17;
+const SPREAD = 150;
+const MAX_ROTATION = 22.5;
+const WORD_SPEED_MULTIPLIER = 5;
+const WORD_OPACITY = 0.95;
 
 const toTitleCase = (w: string) =>
   w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
@@ -43,7 +43,7 @@ const buildSlots = (W: number, H: number, pool: string[]): WordSlot[] => {
         y: Math.max(2, Math.min(98, y)),
         rotation: (Math.random() - 0.5) * 2 * MAX_ROTATION,
         word: pickWord(pool),
-        duration: 4 + Math.random() * 4,
+        duration: 4 + Math.random() * 4 * WORD_SPEED_MULTIPLIER,
         initialDelay: Math.random() * 7,
       });
     }
@@ -75,7 +75,7 @@ const FadingWord = ({ slot, pool }: FadingWordProps) => {
         fontSize: FONT_SIZE,
         fontFamily: "'Plus Jakarta Sans', sans-serif",
         fontWeight: 700,
-        color: "#000000",
+        color: "#a855f7",
         whiteSpace: "nowrap",
         userSelect: "none",
         pointerEvents: "none",
