@@ -74,6 +74,11 @@ const VideoBackground = lazy(() =>
     default: m.VideoBackground,
   }))
 );
+const SpinningCarrots = lazy(() =>
+  import("./components/background/SpinningCarrots").then((m) => ({
+    default: m.SpinningCarrots,
+  }))
+);
 const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
@@ -664,6 +669,19 @@ function App() {
             }
           >
             <SevenLetterWords />
+          </Suspense>
+        );
+      case "carrots":
+        return (
+          <Suspense
+            fallback={
+              <div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: "#2d1508", zIndex: 0 }}
+              />
+            }
+          >
+            <SpinningCarrots />
           </Suspense>
         );
     }
