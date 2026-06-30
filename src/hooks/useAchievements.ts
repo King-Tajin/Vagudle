@@ -11,12 +11,23 @@ import {
   saveWordConnoisseurList,
   deleteWordConnoisseurList,
 } from "../lib/achievements";
+import { loadStats } from "../lib/stats";
 import { useStorageSync } from "./useStorageSync";
 
 type WinEvent = {
   wordLength: number;
   guessCount: number;
   hardMode: boolean;
+};
+
+const getRealTotalWins = (): number => {
+  const normal = loadStats(false);
+  const hard = loadStats(true);
+  return (
+    normal.totalGames -
+    normal.gamesFailed +
+    (hard.totalGames - hard.gamesFailed)
+  );
 };
 
 export const useAchievements = () => {
@@ -65,13 +76,12 @@ export const useAchievements = () => {
 
     const base = loadAchievementProgress();
     const next: AchievementProgress = { ...base };
-    next.totalWins += 1;
     if (event.hardMode && event.wordLength >= 5) next.wonInHardMode5Plus = true;
     if (event.guessCount <= 5) next.wonIn5GuessesEver = true;
     if (event.wordLength === 7) next.wonWith7LettersEver = true;
 
     const ctx: AchievementContext = {
-      totalWins: next.totalWins,
+      totalWins: getRealTotalWins(),
       wonInHardMode5Plus: next.wonInHardMode5Plus,
       wonIn5GuessesEver: next.wonIn5GuessesEver,
       wonWith7LettersEver: next.wonWith7LettersEver,
@@ -99,7 +109,7 @@ export const useAchievements = () => {
     }
 
     const ctx: AchievementContext = {
-      totalWins: base.totalWins,
+      totalWins: getRealTotalWins(),
       wonInHardMode5Plus: base.wonInHardMode5Plus,
       wonIn5GuessesEver: base.wonIn5GuessesEver,
       wonWith7LettersEver: base.wonWith7LettersEver,

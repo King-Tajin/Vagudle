@@ -17,19 +17,13 @@ export type Achievement = {
 
 export type AchievementProgress = {
   unlockedIds: string[];
-  totalWins: number;
   wonInHardMode5Plus: boolean;
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
 };
 
-type StoredProgress = Partial<AchievementProgress> & {
-  totalRegularWins?: number;
-};
-
 const defaultProgress = (): AchievementProgress => ({
   unlockedIds: [],
-  totalWins: 0,
   wonInHardMode5Plus: false,
   wonIn5GuessesEver: false,
   wonWith7LettersEver: false,
@@ -122,15 +116,8 @@ export const loadAchievementProgress = (): AchievementProgress => {
   try {
     const stored = localStorage.getItem(ACHIEVEMENTS_KEY);
     if (stored) {
-      const parsed = JSON.parse(stored) as StoredProgress;
-      const progress: AchievementProgress = { ...defaultProgress(), ...parsed };
-      if (
-        progress.totalWins === 0 &&
-        typeof parsed.totalRegularWins === "number"
-      ) {
-        progress.totalWins = parsed.totalRegularWins;
-      }
-      return progress;
+      const parsed = JSON.parse(stored) as Partial<AchievementProgress>;
+      return { ...defaultProgress(), ...parsed };
     }
   } catch {}
   return defaultProgress();
