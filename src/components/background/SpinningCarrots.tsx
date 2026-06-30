@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
 import CarrotUrl from "../../assets/icons/carrot.svg";
+import { lerpColor, averageColor } from "../../lib/colorUtils";
 
 const PIXEL_SIZE = 6;
 const COLOR_UNIFORMITY = 0.58;
@@ -26,34 +27,8 @@ const CARROT_OPACITY_MIN = 0.9;
 const CARROT_OPACITY_MAX = 1.0;
 const INITIAL_ANGLE_MAX = 360;
 
-const hexToRgb = (hex: string): [number, number, number] => {
-  const n = parseInt(hex.slice(1), 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-};
-
-const rgbToHex = (r: number, g: number, b: number): string =>
-  "#" +
-  [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
-
-const lerpColor = (from: string, to: string, t: number): string => {
-  const [r1, g1, b1] = hexToRgb(from);
-  const [r2, g2, b2] = hexToRgb(to);
-  return rgbToHex(r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t);
-};
-
 const _ALL = [...DIRT_COLORS, ...STONE_COLORS, ...ORGANIC_COLORS];
-const _SUM = _ALL.reduce(
-  ([ra, ga, ba], h) => {
-    const [r, g, b] = hexToRgb(h);
-    return [ra + r, ga + g, ba + b] as [number, number, number];
-  },
-  [0, 0, 0] as [number, number, number]
-);
-const AVG_COLOR = rgbToHex(
-  _SUM[0] / _ALL.length,
-  _SUM[1] / _ALL.length,
-  _SUM[2] / _ALL.length
-);
+const AVG_COLOR = averageColor(_ALL);
 
 interface CarrotParticle {
   id: number;
@@ -82,10 +57,7 @@ const drawDirt = (canvas: HTMLCanvasElement) => {
       } else {
         color = DIRT_COLORS[Math.floor(Math.random() * DIRT_COLORS.length)];
       }
-      ctx.fillStyle =
-        COLOR_UNIFORMITY > 0
-          ? lerpColor(color, AVG_COLOR, COLOR_UNIFORMITY)
-          : color;
+      ctx.fillStyle = lerpColor(color, AVG_COLOR, COLOR_UNIFORMITY);
       ctx.fillRect(col * PIXEL_SIZE, row * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
     }
   }
@@ -174,7 +146,7 @@ export const SpinningCarrots = () => {
           CARROT_OPACITY_MIN +
           Math.random() * (CARROT_OPACITY_MAX - CARROT_OPACITY_MIN),
         initialAngle: Math.random() * INITIAL_ANGLE_MAX,
-        direction: (Math.random() < 0.5 ? 1 : -1) as 1 | -1,
+        direction: Math.random() < 0.5 ? 1 : -1,
       };
     });
   }, []);

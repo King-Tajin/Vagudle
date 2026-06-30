@@ -4,7 +4,8 @@ export type BackgroundId =
   | "mouse_eating"
   | "number_rain"
   | "seven_letters"
-  | "carrots";
+  | "carrots"
+  | "pulsing_purple";
 
 export type AttributionCredit = {
   role: string;
@@ -104,6 +105,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
     desktopLabel: "SPINNING CARROTS",
     mobileLabel: "CARROTS",
     requiresAchievementId: "win_50",
+    kind: "css",
+  },
+  {
+    id: "pulsing_purple",
+    desktopLabel: "PULSING PURPLE",
+    mobileLabel: "PURPLE",
+    requiresAchievementId: "win_15",
     kind: "css",
   },
 ];

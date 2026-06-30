@@ -79,6 +79,11 @@ const SpinningCarrots = lazy(() =>
     default: m.SpinningCarrots,
   }))
 );
+const PulsingPurple = lazy(() =>
+  import("./components/background/PulsingPurple").then((m) => ({
+    default: m.PulsingPurple,
+  }))
+);
 const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
@@ -688,6 +693,19 @@ function App() {
             }
           >
             <SpinningCarrots />
+          </Suspense>
+        );
+      case "pulsing_purple":
+        return (
+          <Suspense
+            fallback={
+              <div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: "#0d0020", zIndex: 0 }}
+              />
+            }
+          >
+            <PulsingPurple />
           </Suspense>
         );
     }

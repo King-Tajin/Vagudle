@@ -85,7 +85,7 @@ export const AchievementsModal = (props: Props) => {
                         className="font-pixel text-[8px] tracking-widest"
                         style={{ color: "#d4af37" }}
                       >
-                        {progress}/{cfg!.target}
+                        {progress}/{cfg.target}
                       </span>
                     </div>
                     <div
