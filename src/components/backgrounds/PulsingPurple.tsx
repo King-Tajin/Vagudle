@@ -6,7 +6,9 @@ import {
   averageColor,
 } from "../../lib/colorUtils";
 
-const PIXEL_SIZE = 42;
+const PIXEL_SIZE_RATIO = 1 / 18;
+const PIXEL_SIZE_MIN = 16;
+const PIXEL_SIZE_MAX = 42;
 
 const PULSE_GROUPS = 6;
 const PULSE_SPEED = 0.0001;
@@ -28,7 +30,8 @@ const PALETTE = [
 const AVG_COLOR = averageColor(PALETTE);
 
 const paletteColor = (phase: number): string => {
-  const idx = (phase % 1) * PALETTE.length;
+  const wrapped = ((phase % 1) + 1) % 1;
+  const idx = wrapped * PALETTE.length;
   const i0 = Math.floor(idx) % PALETTE.length;
   const i1 = (i0 + 1) % PALETTE.length;
   const color = lerpColor(PALETTE[i0], PALETTE[i1], idx - Math.floor(idx));
@@ -48,13 +51,19 @@ export const PulsingPurple = () => {
 
     let cols = 0;
     let rows = 0;
+    let pixelSize = PIXEL_SIZE_MAX;
     let groupMap = new Uint8Array(0);
 
     const setup = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      cols = Math.ceil(canvas.width / PIXEL_SIZE);
-      rows = Math.ceil(canvas.height / PIXEL_SIZE);
+      const shortSide = Math.min(canvas.width, canvas.height);
+      pixelSize = Math.min(
+        PIXEL_SIZE_MAX,
+        Math.max(PIXEL_SIZE_MIN, Math.round(shortSide * PIXEL_SIZE_RATIO))
+      );
+      cols = Math.ceil(canvas.width / pixelSize);
+      rows = Math.ceil(canvas.height / pixelSize);
       groupMap = new Uint8Array(cols * rows);
       for (let i = 0; i < groupMap.length; i++) {
         groupMap[i] = Math.floor(Math.random() * PULSE_GROUPS);
@@ -72,7 +81,7 @@ export const PulsingPurple = () => {
     let rafId: number;
 
     const tick = (now: number) => {
-      const delta = now - lastTime;
+      const delta = Math.max(0, now - lastTime);
       lastTime = now;
 
       for (let g = 0; g < PULSE_GROUPS; g++) {
@@ -86,10 +95,10 @@ export const PulsingPurple = () => {
         for (let i = 0; i < groupMap.length; i++) {
           if (groupMap[i] === g) {
             ctx.fillRect(
-              (i % cols) * PIXEL_SIZE,
-              Math.floor(i / cols) * PIXEL_SIZE,
-              PIXEL_SIZE,
-              PIXEL_SIZE
+              (i % cols) * pixelSize,
+              Math.floor(i / cols) * pixelSize,
+              pixelSize,
+              pixelSize
             );
           }
         }

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { BackgroundGrid } from "../background/BackgroundGrid";
+import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import { isDiscordActivity } from "../../lib/discord";
 import { emptyNavbar, title, returnButton, retryButton } from "./screenHelpers";
 

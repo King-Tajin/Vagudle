@@ -6,8 +6,8 @@ import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
 import { AlertContainer } from "./components/Alert";
 import { Navbar } from "./components/Navbar";
-import { BackgroundGrid } from "./components/background/BackgroundGrid";
-import { VagudleSprinkles } from "./components/background/VagudleSprinkles";
+import { BackgroundGrid } from "./components/backgrounds/BackgroundGrid";
+import { VagudleSprinkles } from "./components/backgrounds/VagudleSprinkles";
 import { GameBanner } from "./components/GameBanner";
 import { AttributionButton } from "./components/AttributionButton";
 import { useAchievements } from "./hooks/useAchievements";
@@ -30,7 +30,7 @@ const InfoModal = lazy(() =>
   }))
 );
 const TajinRain = lazy(() =>
-  import("./components/background/TajinRain").then((m) => ({
+  import("./components/backgrounds/TajinRain").then((m) => ({
     default: m.TajinRain,
   }))
 );
@@ -65,22 +65,22 @@ const WinCelebration = lazy(() =>
   }))
 );
 const SevenLetterWords = lazy(() =>
-  import("./components/background/SevenLetterWords").then((m) => ({
+  import("./components/backgrounds/SevenLetterWords").then((m) => ({
     default: m.SevenLetterWords,
   }))
 );
 const VideoBackground = lazy(() =>
-  import("./components/background/VideoBackground").then((m) => ({
+  import("./components/backgrounds/VideoBackground").then((m) => ({
     default: m.VideoBackground,
   }))
 );
 const SpinningCarrots = lazy(() =>
-  import("./components/background/SpinningCarrots").then((m) => ({
+  import("./components/backgrounds/SpinningCarrots").then((m) => ({
     default: m.SpinningCarrots,
   }))
 );
 const PulsingPurple = lazy(() =>
-  import("./components/background/PulsingPurple").then((m) => ({
+  import("./components/backgrounds/PulsingPurple").then((m) => ({
     default: m.PulsingPurple,
   }))
 );
