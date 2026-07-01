@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame } from "lucide-react";
 import {
@@ -39,6 +39,39 @@ export const Navbar = ({
   const [showNudge, setShowNudge] = useState(false);
   const settingsRef = useRef<HTMLButtonElement>(null);
   const prevInfoModalOpen = useRef(false);
+  const headerWrapperRef = useRef<HTMLDivElement>(null);
+  const navbarContentRef = useRef<HTMLDivElement>(null);
+  const brandTitleRef = useRef<HTMLHeadingElement>(null);
+  const brandSubtitleRef = useRef<HTMLParagraphElement>(null);
+
+  useLayoutEffect(() => {
+    const wrapper = headerWrapperRef.current;
+    const content = navbarContentRef.current;
+    const title = brandTitleRef.current;
+    const subtitle = brandSubtitleRef.current;
+    if (!wrapper || !content || !title || !subtitle) return;
+
+    const measure = () => {
+      subtitle.style.display = "";
+      title.classList.remove("text-sm");
+      title.classList.add("text-xl");
+
+      if (content.scrollWidth > content.clientWidth) {
+        subtitle.style.display = "none";
+      }
+
+      if (content.scrollWidth > content.clientWidth) {
+        title.classList.remove("text-xl");
+        title.classList.add("text-sm");
+      }
+    };
+
+    measure();
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(wrapper);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const dismissed = localStorage.getItem(SETTINGS_NUDGE_KEY);
@@ -83,8 +116,8 @@ export const Navbar = ({
   return (
     <div className="navbar">
       <header className="sticky top-0 z-50 bg-obsidian-900/95 backdrop-blur-sm border-b-4 border-crown-gold">
-        <div className="max-w-7xl mx-auto px-5">
-          <div className="navbar-content">
+        <div ref={headerWrapperRef} className="max-w-7xl mx-auto px-5">
+          <div ref={navbarContentRef} className="navbar-content">
             <motion.button
               onClick={() => setIsInfoModalOpen(true)}
               className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
@@ -109,10 +142,16 @@ export const Navbar = ({
                   <Flame className="absolute -top-1 -right-1 w-4 h-4 text-tajin-red" />
                 </div>
                 <div>
-                  <h1 className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider">
+                  <h1
+                    ref={brandTitleRef}
+                    className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
+                  >
                     King-Tajin
                   </h1>
-                  <p className="font-pixel text-xs text-crown-amber -mt-1">
+                  <p
+                    ref={brandSubtitleRef}
+                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap"
+                  >
                     WEB GAMES
                   </p>
                 </div>
@@ -132,10 +171,16 @@ export const Navbar = ({
                   <Flame className="absolute -top-1 -right-1 w-4 h-4 text-tajin-red" />
                 </div>
                 <div>
-                  <h1 className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider">
+                  <h1
+                    ref={brandTitleRef}
+                    className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
+                  >
                     King-Tajin
                   </h1>
-                  <p className="font-pixel text-xs text-crown-amber -mt-1">
+                  <p
+                    ref={brandSubtitleRef}
+                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap"
+                  >
                     WEB GAMES
                   </p>
                 </div>
