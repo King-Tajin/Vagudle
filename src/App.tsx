@@ -268,7 +268,6 @@ function App() {
     recordWin,
     recordGuess,
     resetWinRecord,
-    resetCloseCallStreak,
   } = useAchievements();
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -313,7 +312,6 @@ function App() {
     }
     achievementCheckedRef.current = false;
     resetWinRecord();
-    resetCloseCallStreak();
     setNewlyUnlockedAchievements([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [solution]);
@@ -474,7 +472,7 @@ function App() {
     recordStats,
     onGuessSubmit: (word) => {
       if (isChallengeMode || isDuelMode) return;
-      const newly = recordGuess(word, solution);
+      const newly = recordGuess(word, solution, guesses);
       if (newly.length > 0) {
         setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
         newly.forEach(announceAchievement);

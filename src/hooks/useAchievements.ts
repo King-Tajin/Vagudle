@@ -31,6 +31,37 @@ const getRealTotalWins = (): number => {
   );
 };
 
+const isCloseCallGuess = (solution: string, guess: string): boolean => {
+  const statuses = getGuessStatuses(solution, guess);
+  const grayCount = statuses.filter((s) => s === "absent").length;
+  const greenCount = statuses.filter((s) => s === "correct").length;
+  return grayCount === 1 && greenCount === statuses.length - 1;
+};
+
+export const computeCloseCallStreak = (
+  guessHistory: string[],
+  solution: string
+): boolean => {
+  let streak: string[] = [];
+
+  for (const guess of guessHistory) {
+    const normalized = guess.toLowerCase();
+
+    if (isCloseCallGuess(solution, normalized)) {
+      if (streak.includes(normalized)) {
+        streak = [normalized];
+      } else {
+        streak.push(normalized);
+      }
+      if (streak.length >= 3) return true;
+    } else {
+      streak = [];
+    }
+  }
+
+  return false;
+};
+
 export const useAchievements = () => {
   const [progress, setProgress] = useState<AchievementProgress>(() =>
     loadAchievementProgress()
@@ -41,7 +72,6 @@ export const useAchievements = () => {
     return loadWordConnoisseurList().length;
   });
   const hasRecordedWinRef = useRef(false);
-  const closeCallStreakWordsRef = useRef<string[]>([]);
 
   useStorageSync(ACHIEVEMENTS_KEY, () => {
     setProgress(loadAchievementProgress());
@@ -49,10 +79,6 @@ export const useAchievements = () => {
 
   const resetWinRecord = () => {
     hasRecordedWinRef.current = false;
-  };
-
-  const resetCloseCallStreak = () => {
-    closeCallStreakWordsRef.current = [];
   };
 
   const commitProgress = (
@@ -99,7 +125,11 @@ export const useAchievements = () => {
     return commitProgress(base, next, ctx);
   };
 
-  const recordGuess = (word: string, solution: string): Achievement[] => {
+  const recordGuess = (
+    word: string,
+    solution: string,
+    previousGuesses: string[]
+  ): Achievement[] => {
     const base = loadAchievementProgress();
     const normalized = word.toLowerCase();
 
@@ -115,26 +145,10 @@ export const useAchievements = () => {
       }
     }
 
-    const statuses = getGuessStatuses(solution, normalized);
-    const grayCount = statuses.filter((s) => s === "absent").length;
-    const greenCount = statuses.filter((s) => s === "correct").length;
-    const isCloseCall = grayCount === 1 && greenCount === statuses.length - 1;
-
-    let gotCloseCallStreak = false;
-
-    if (isCloseCall) {
-      if (closeCallStreakWordsRef.current.includes(normalized)) {
-        closeCallStreakWordsRef.current = [normalized];
-      } else {
-        closeCallStreakWordsRef.current.push(normalized);
-      }
-      if (closeCallStreakWordsRef.current.length >= 3) {
-        gotCloseCallStreak = true;
-        closeCallStreakWordsRef.current = [];
-      }
-    } else {
-      closeCallStreakWordsRef.current = [];
-    }
+    const gotCloseCallStreak = computeCloseCallStreak(
+      [...previousGuesses, normalized],
+      solution
+    );
 
     const ctx: AchievementContext = {
       totalWins: getRealTotalWins(),
@@ -156,6 +170,5 @@ export const useAchievements = () => {
     recordWin,
     recordGuess,
     resetWinRecord,
-    resetCloseCallStreak,
   };
 };
