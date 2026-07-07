@@ -47,7 +47,7 @@ export const computeCloseCallStreak = (
   for (const guess of guessHistory) {
     const normalized = guess.toLowerCase();
 
-    if (isCloseCallGuess(solution, normalized)) {
+    if (isCloseCallGuess(solution, guess)) {
       if (streak.includes(normalized)) {
         streak = [normalized];
       } else {
@@ -146,7 +146,7 @@ export const useAchievements = () => {
     }
 
     const gotCloseCallStreak = computeCloseCallStreak(
-      [...previousGuesses, normalized],
+      [...previousGuesses, word],
       solution
     );
 
