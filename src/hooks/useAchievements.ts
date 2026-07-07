@@ -12,6 +12,7 @@ import {
   deleteWordConnoisseurList,
 } from "../lib/achievements";
 import { loadStats } from "../lib/stats";
+import { getGuessStatuses } from "../lib/statuses";
 import { useStorageSync } from "./useStorageSync";
 
 type WinEvent = {
@@ -40,6 +41,7 @@ export const useAchievements = () => {
     return loadWordConnoisseurList().length;
   });
   const hasRecordedWinRef = useRef(false);
+  const closeCallStreakWordsRef = useRef<string[]>([]);
 
   useStorageSync(ACHIEVEMENTS_KEY, () => {
     setProgress(loadAchievementProgress());
@@ -47,6 +49,10 @@ export const useAchievements = () => {
 
   const resetWinRecord = () => {
     hasRecordedWinRef.current = false;
+  };
+
+  const resetCloseCallStreak = () => {
+    closeCallStreakWordsRef.current = [];
   };
 
   const commitProgress = (
@@ -87,12 +93,13 @@ export const useAchievements = () => {
       wonWith7LettersEver: next.wonWith7LettersEver,
       lastGuess: "",
       uniqueWordCount,
+      gotCloseCallStreak: false,
     };
 
     return commitProgress(base, next, ctx);
   };
 
-  const recordGuess = (word: string): Achievement[] => {
+  const recordGuess = (word: string, solution: string): Achievement[] => {
     const base = loadAchievementProgress();
     const normalized = word.toLowerCase();
 
@@ -108,6 +115,27 @@ export const useAchievements = () => {
       }
     }
 
+    const statuses = getGuessStatuses(solution, normalized);
+    const grayCount = statuses.filter((s) => s === "absent").length;
+    const greenCount = statuses.filter((s) => s === "correct").length;
+    const isCloseCall = grayCount === 1 && greenCount === statuses.length - 1;
+
+    let gotCloseCallStreak = false;
+
+    if (isCloseCall) {
+      if (closeCallStreakWordsRef.current.includes(normalized)) {
+        closeCallStreakWordsRef.current = [normalized];
+      } else {
+        closeCallStreakWordsRef.current.push(normalized);
+      }
+      if (closeCallStreakWordsRef.current.length >= 3) {
+        gotCloseCallStreak = true;
+        closeCallStreakWordsRef.current = [];
+      }
+    } else {
+      closeCallStreakWordsRef.current = [];
+    }
+
     const ctx: AchievementContext = {
       totalWins: getRealTotalWins(),
       wonInHardMode5Plus: base.wonInHardMode5Plus,
@@ -115,6 +143,7 @@ export const useAchievements = () => {
       wonWith7LettersEver: base.wonWith7LettersEver,
       lastGuess: normalized,
       uniqueWordCount: currentUniqueCount,
+      gotCloseCallStreak,
     };
 
     const next: AchievementProgress = { ...base };
@@ -127,5 +156,6 @@ export const useAchievements = () => {
     recordWin,
     recordGuess,
     resetWinRecord,
+    resetCloseCallStreak,
   };
 };

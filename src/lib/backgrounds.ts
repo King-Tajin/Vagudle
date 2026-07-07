@@ -5,7 +5,9 @@ export type BackgroundId =
   | "number_rain"
   | "seven_letters"
   | "carrots"
-  | "pulsing_purple";
+  | "pulsing_purple"
+  | "letter_rain"
+  | "snowfall";
 
 export type AttributionCredit = {
   role: string;
@@ -112,6 +114,20 @@ export const BACKGROUNDS: BackgroundDef[] = [
     desktopLabel: "PULSING PURPLE",
     mobileLabel: "PURPLE",
     requiresAchievementId: "win_15",
+    kind: "css",
+  },
+  {
+    id: "letter_rain",
+    desktopLabel: "LETTER RAIN",
+    mobileLabel: "LETTERS",
+    requiresAchievementId: "word_connoisseur",
+    kind: "css",
+  },
+  {
+    id: "snowfall",
+    desktopLabel: "SNOWFALL",
+    mobileLabel: "SNOW",
+    requiresAchievementId: "close_but_no_cigar",
     kind: "css",
   },
 ];

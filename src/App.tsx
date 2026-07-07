@@ -84,6 +84,16 @@ const PulsingPurple = lazy(() =>
     default: m.PulsingPurple,
   }))
 );
+const LetterRain = lazy(() =>
+  import("./components/backgrounds/LetterRain").then((m) => ({
+    default: m.LetterRain,
+  }))
+);
+const Snowfall = lazy(() =>
+  import("./components/backgrounds/Snowfall").then((m) => ({
+    default: m.Snowfall,
+  }))
+);
 const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
@@ -258,6 +268,7 @@ function App() {
     recordWin,
     recordGuess,
     resetWinRecord,
+    resetCloseCallStreak,
   } = useAchievements();
 
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -302,6 +313,7 @@ function App() {
     }
     achievementCheckedRef.current = false;
     resetWinRecord();
+    resetCloseCallStreak();
     setNewlyUnlockedAchievements([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [solution]);
@@ -462,7 +474,7 @@ function App() {
     recordStats,
     onGuessSubmit: (word) => {
       if (isChallengeMode || isDuelMode) return;
-      const newly = recordGuess(word);
+      const newly = recordGuess(word, solution);
       if (newly.length > 0) {
         setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
         newly.forEach(announceAchievement);
@@ -706,6 +718,32 @@ function App() {
             }
           >
             <PulsingPurple />
+          </Suspense>
+        );
+      case "letter_rain":
+        return (
+          <Suspense
+            fallback={
+              <div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: "#0d1322", zIndex: 0 }}
+              />
+            }
+          >
+            <LetterRain />
+          </Suspense>
+        );
+      case "snowfall":
+        return (
+          <Suspense
+            fallback={
+              <div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: "#122341", zIndex: 0 }}
+              />
+            }
+          >
+            <Snowfall guessesUsed={guesses.length} maxGuesses={maxChallenges} />
           </Suspense>
         );
     }

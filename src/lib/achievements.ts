@@ -5,6 +5,7 @@ export type AchievementContext = {
   wonWith7LettersEver: boolean;
   lastGuess: string;
   uniqueWordCount: number;
+  gotCloseCallStreak: boolean;
 };
 
 export type Achievement = {
@@ -71,6 +72,14 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: "Win a game with a 7-letter word",
     hidden: false,
     check: (ctx) => ctx.wonWith7LettersEver,
+  },
+  {
+    id: "close_but_no_cigar",
+    title: "Close But No Cigar",
+    description:
+      "Guess 3 different words in a row with only one letter incorrect",
+    hidden: true,
+    check: (ctx) => ctx.gotCloseCallStreak,
   },
   {
     id: "word_connoisseur",
