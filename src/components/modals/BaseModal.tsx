@@ -8,9 +8,18 @@ type Props = {
   children: React.ReactNode;
   isOpen: boolean;
   handleClose: () => void;
+  maxWidthClass?: string;
+  headerExtra?: React.ReactNode;
 };
 
-export const BaseModal = ({ title, children, isOpen, handleClose }: Props) => {
+export const BaseModal = ({
+  title,
+  children,
+  isOpen,
+  handleClose,
+  maxWidthClass = "sm:max-w-sm",
+  headerExtra,
+}: Props) => {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
@@ -51,7 +60,7 @@ export const BaseModal = ({ title, children, isOpen, handleClose }: Props) => {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div
-              className="inline-block align-bottom text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full"
+              className={`inline-block align-bottom text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:w-full ${maxWidthClass}`}
               style={{
                 background: "#0a0014",
                 border: "4px solid",
@@ -73,6 +82,7 @@ export const BaseModal = ({ title, children, isOpen, handleClose }: Props) => {
                     {title.toUpperCase()}
                   </Dialog.Title>
                 </div>
+                {headerExtra}
                 <button
                   onClick={handleClose}
                   className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
