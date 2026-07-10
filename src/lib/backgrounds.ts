@@ -11,7 +11,8 @@ export type BackgroundId =
   | "pulsing_purple"
   | "letter_rain"
   | "snowfall"
-  | "dvd_screensaver";
+  | "dvd_screensaver"
+  | "escalating_fire";
 
 export type AttributionCredit = {
   role: string;
@@ -163,6 +164,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
     desktopLabel: "DVD SCREENSAVER",
     mobileLabel: "DVD",
     requiresAchievementId: "hard_5plus",
+    kind: "css",
+  },
+  {
+    id: "escalating_fire",
+    desktopLabel: "ESCALATING FIRE",
+    mobileLabel: "FIRE",
+    requiresAchievementId: "unstoppable",
     kind: "css",
   },
 ];

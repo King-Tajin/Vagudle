@@ -99,6 +99,11 @@ const DvdScreensaver = lazy(() =>
     default: m.DvdScreensaver,
   }))
 );
+const FireStreak = lazy(() =>
+  import("./components/backgrounds/FireStreak").then((m) => ({
+    default: m.FireStreak,
+  }))
+);
 const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
@@ -249,6 +254,10 @@ function App() {
   const [isTrayOpen, setIsTrayOpen] = useState(true);
   const [stats, setStats] = useState(() => loadStats(false));
   const [hardStats, setHardStats] = useState(() => loadStats(true));
+  const currentWinStreak = Math.max(
+    stats.currentStreak,
+    hardStats.currentStreak
+  );
   const [newlyUnlockedAchievements, setNewlyUnlockedAchievements] = useState<
     Achievement[]
   >([]);
@@ -762,6 +771,19 @@ function App() {
             <DvdScreensaver />
           </Suspense>
         );
+      case "escalating_fire":
+        return (
+          <Suspense
+            fallback={
+              <div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: "#3d0f04", zIndex: 0 }}
+              />
+            }
+          >
+            <FireStreak currentStreak={currentWinStreak} />
+          </Suspense>
+        );
     }
   };
 
@@ -977,10 +999,7 @@ function App() {
               (hardStats.totalGames - hardStats.gamesFailed)
             }
             uniqueWordCount={uniqueWordCount}
-            currentWinStreak={Math.max(
-              stats.currentStreak,
-              hardStats.currentStreak
-            )}
+            currentWinStreak={currentWinStreak}
           />
         </Suspense>
 
