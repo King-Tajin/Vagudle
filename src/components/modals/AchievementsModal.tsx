@@ -16,6 +16,7 @@ type Props = {
   unlockedIds: string[];
   totalWins: number;
   uniqueWordCount: number;
+  currentWinStreak: number;
 };
 
 const PROGRESS_CONFIG: Record<
@@ -25,6 +26,8 @@ const PROGRESS_CONFIG: Record<
   win_15: { target: 15, getValue: (p) => p.totalWins },
   win_50: { target: 50, getValue: (p) => p.totalWins },
   word_connoisseur: { target: 200, getValue: (p) => p.uniqueWordCount },
+  on_a_roll: { target: 5, getValue: (p) => p.currentWinStreak },
+  unstoppable: { target: 15, getValue: (p) => p.currentWinStreak },
 };
 
 const bgUnlockedBy = (achievementId: string) =>

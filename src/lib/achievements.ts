@@ -3,9 +3,11 @@ export type AchievementContext = {
   wonInHardMode5Plus: boolean;
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
+  wonOnFinalGuessEver: boolean;
   lastGuess: string;
   uniqueWordCount: number;
   gotCloseCallStreak: boolean;
+  bestCurrentStreak: number;
 };
 
 export type Achievement = {
@@ -21,6 +23,7 @@ export type AchievementProgress = {
   wonInHardMode5Plus: boolean;
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
+  wonOnFinalGuessEver: boolean;
 };
 
 const defaultProgress = (): AchievementProgress => ({
@@ -28,7 +31,10 @@ const defaultProgress = (): AchievementProgress => ({
   wonInHardMode5Plus: false,
   wonIn5GuessesEver: false,
   wonWith7LettersEver: false,
+  wonOnFinalGuessEver: false,
 });
+
+export const COMPLETIONIST_ID = "completionist";
 
 export const ACHIEVEMENTS: Achievement[] = [
   {
@@ -51,6 +57,20 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: "Win 50 games",
     hidden: false,
     check: (ctx) => ctx.totalWins >= 50,
+  },
+  {
+    id: "on_a_roll",
+    title: "On a Roll",
+    description: "Win 5 games in a row",
+    hidden: false,
+    check: (ctx) => ctx.bestCurrentStreak >= 5,
+  },
+  {
+    id: "unstoppable",
+    title: "Unstoppable",
+    description: "Win 15 games in a row",
+    hidden: false,
+    check: (ctx) => ctx.bestCurrentStreak >= 15,
   },
   {
     id: "hard_5plus",
@@ -95,7 +115,36 @@ export const ACHIEVEMENTS: Achievement[] = [
     hidden: false,
     check: (ctx) => ctx.lastGuess === "mouse",
   },
+  {
+    id: "nail_biter",
+    title: "Nail-Biter",
+    description: "Win a game on your very last guess",
+    hidden: true,
+    check: (ctx) => ctx.wonOnFinalGuessEver,
+  },
+  {
+    id: COMPLETIONIST_ID,
+    title: "Completionist",
+    description: "Unlock every other achievement",
+    hidden: false,
+    check: () => false,
+  },
 ];
+
+export const isCompletionistUnlocked = (unlockedIds: string[]): boolean =>
+  ACHIEVEMENTS.filter((a) => a.id !== COMPLETIONIST_ID).every((a) =>
+    unlockedIds.includes(a.id)
+  );
+
+export const getEffectiveUnlockedIds = (unlockedIds: string[]): string[] => {
+  if (
+    !unlockedIds.includes(COMPLETIONIST_ID) &&
+    isCompletionistUnlocked(unlockedIds)
+  ) {
+    return [...unlockedIds, COMPLETIONIST_ID];
+  }
+  return unlockedIds;
+};
 
 export const ACHIEVEMENTS_KEY = "vagudle-achievements";
 export const WORD_CONNOISSEUR_KEY = "vagudle-word-connoisseur";

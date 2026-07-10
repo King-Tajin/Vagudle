@@ -1,13 +1,17 @@
+import { COMPLETIONIST_ID } from "./achievements";
+
 export type BackgroundId =
   | "sprinkles"
   | "tajin"
   | "mouse_eating"
+  | "spinning_seal"
   | "number_rain"
   | "seven_letters"
   | "carrots"
   | "pulsing_purple"
   | "letter_rain"
-  | "snowfall";
+  | "snowfall"
+  | "dvd_screensaver";
 
 export type AttributionCredit = {
   role: string;
@@ -77,6 +81,30 @@ export const BACKGROUNDS: BackgroundDef[] = [
     },
   },
   {
+    id: "spinning_seal",
+    desktopLabel: "SPINNING SEAL",
+    mobileLabel: "SEAL",
+    requiresAchievementId: COMPLETIONIST_ID,
+    kind: "video",
+    videoSrc: "/backgrounds/seal.mp4",
+    attribution: {
+      credits: [
+        {
+          role: "Video",
+          title: "there is no need to be upset",
+          creator: "High Valley",
+          sourceUrl: "https://www.youtube.com/watch?v=GJDNkVDGM_s&t=14s",
+        },
+        {
+          role: "Music",
+          title: "Happy H. Christmas",
+          creator: "Maniacs of Noise",
+        },
+      ],
+      license: "Unknown",
+    },
+  },
+  {
     id: "number_rain",
     desktopLabel: "NUMBER RAIN",
     mobileLabel: "NUMBERS",
@@ -128,6 +156,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
     desktopLabel: "SNOWFALL",
     mobileLabel: "SNOW",
     requiresAchievementId: "close_but_no_cigar",
+    kind: "css",
+  },
+  {
+    id: "dvd_screensaver",
+    desktopLabel: "DVD SCREENSAVER",
+    mobileLabel: "DVD",
+    requiresAchievementId: "hard_5plus",
     kind: "css",
   },
 ];

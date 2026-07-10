@@ -5,6 +5,9 @@ import {
   AchievementProgress,
   ACHIEVEMENTS,
   ACHIEVEMENTS_KEY,
+  COMPLETIONIST_ID,
+  isCompletionistUnlocked,
+  getEffectiveUnlockedIds,
   loadAchievementProgress,
   saveAchievementProgress,
   loadWordConnoisseurList,
@@ -14,6 +17,10 @@ import {
 import { loadStats } from "../lib/stats";
 import { getGuessStatuses } from "../lib/statuses";
 import { useStorageSync } from "./useStorageSync";
+import {
+  HARD_MODE_MAX_CHALLENGES,
+  NORMAL_MODE_MAX_CHALLENGES,
+} from "../constants/settings";
 
 type WinEvent = {
   wordLength: number;
@@ -29,6 +36,12 @@ const getRealTotalWins = (): number => {
     normal.gamesFailed +
     (hard.totalGames - hard.gamesFailed)
   );
+};
+
+const getBestCurrentStreak = (): number => {
+  const normal = loadStats(false);
+  const hard = loadStats(true);
+  return Math.max(normal.currentStreak, hard.currentStreak);
 };
 
 const isCloseCallGuess = (solution: string, guess: string): boolean => {
@@ -87,7 +100,10 @@ export const useAchievements = () => {
     ctx: AchievementContext
   ): Achievement[] => {
     const newlyUnlocked = ACHIEVEMENTS.filter(
-      (a) => !base.unlockedIds.includes(a.id) && a.check(ctx)
+      (a) =>
+        a.id !== COMPLETIONIST_ID &&
+        !base.unlockedIds.includes(a.id) &&
+        a.check(ctx)
     );
 
     next.unlockedIds = [...base.unlockedIds, ...newlyUnlocked.map((a) => a.id)];
@@ -99,7 +115,17 @@ export const useAchievements = () => {
 
     setProgress(next);
     saveAchievementProgress(next);
-    return newlyUnlocked;
+
+    const result = [...newlyUnlocked];
+    if (
+      !isCompletionistUnlocked(base.unlockedIds) &&
+      isCompletionistUnlocked(next.unlockedIds)
+    ) {
+      const completionist = ACHIEVEMENTS.find((a) => a.id === COMPLETIONIST_ID);
+      if (completionist) result.push(completionist);
+    }
+
+    return result;
   };
 
   const recordWin = (event: WinEvent): Achievement[] => {
@@ -112,14 +138,21 @@ export const useAchievements = () => {
     if (event.guessCount <= 5) next.wonIn5GuessesEver = true;
     if (event.wordLength === 7) next.wonWith7LettersEver = true;
 
+    const maxChallenges = event.hardMode
+      ? HARD_MODE_MAX_CHALLENGES
+      : NORMAL_MODE_MAX_CHALLENGES;
+    if (event.guessCount === maxChallenges) next.wonOnFinalGuessEver = true;
+
     const ctx: AchievementContext = {
       totalWins: getRealTotalWins(),
       wonInHardMode5Plus: next.wonInHardMode5Plus,
       wonIn5GuessesEver: next.wonIn5GuessesEver,
       wonWith7LettersEver: next.wonWith7LettersEver,
+      wonOnFinalGuessEver: next.wonOnFinalGuessEver,
       lastGuess: "",
       uniqueWordCount,
       gotCloseCallStreak: false,
+      bestCurrentStreak: getBestCurrentStreak(),
     };
 
     return commitProgress(base, next, ctx);
@@ -155,9 +188,11 @@ export const useAchievements = () => {
       wonInHardMode5Plus: base.wonInHardMode5Plus,
       wonIn5GuessesEver: base.wonIn5GuessesEver,
       wonWith7LettersEver: base.wonWith7LettersEver,
+      wonOnFinalGuessEver: base.wonOnFinalGuessEver,
       lastGuess: normalized,
       uniqueWordCount: currentUniqueCount,
       gotCloseCallStreak,
+      bestCurrentStreak: getBestCurrentStreak(),
     };
 
     const next: AchievementProgress = { ...base };
@@ -165,7 +200,7 @@ export const useAchievements = () => {
   };
 
   return {
-    unlockedIds: progress.unlockedIds,
+    unlockedIds: getEffectiveUnlockedIds(progress.unlockedIds),
     uniqueWordCount,
     recordWin,
     recordGuess,

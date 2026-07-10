@@ -94,6 +94,11 @@ const Snowfall = lazy(() =>
     default: m.Snowfall,
   }))
 );
+const DvdScreensaver = lazy(() =>
+  import("./components/backgrounds/DvdScreensaver").then((m) => ({
+    default: m.DvdScreensaver,
+  }))
+);
 const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
@@ -744,6 +749,19 @@ function App() {
             <Snowfall guessesUsed={guesses.length} maxGuesses={maxChallenges} />
           </Suspense>
         );
+      case "dvd_screensaver":
+        return (
+          <Suspense
+            fallback={
+              <div
+                className="fixed inset-0 pointer-events-none"
+                style={{ background: "#000000", zIndex: 0 }}
+              />
+            }
+          >
+            <DvdScreensaver />
+          </Suspense>
+        );
     }
   };
 
@@ -959,6 +977,10 @@ function App() {
               (hardStats.totalGames - hardStats.gamesFailed)
             }
             uniqueWordCount={uniqueWordCount}
+            currentWinStreak={Math.max(
+              stats.currentStreak,
+              hardStats.currentStreak
+            )}
           />
         </Suspense>
 
