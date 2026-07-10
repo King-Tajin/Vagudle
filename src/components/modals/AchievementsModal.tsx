@@ -294,7 +294,9 @@ export const AchievementsModal = (props: Props) => {
       maxWidthClass="sm:max-w-md"
       headerExtra={
         <HeaderProgressRing
-          unlocked={props.unlockedIds.length}
+          unlocked={
+            ACHIEVEMENTS.filter((a) => props.unlockedIds.includes(a.id)).length
+          }
           total={ACHIEVEMENTS.length}
         />
       }
