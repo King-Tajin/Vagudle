@@ -29,7 +29,7 @@ import {
   type ChallengeDict,
 } from "../../lib/challenge";
 import type { Achievement } from "../../lib/achievements";
-import { BACKGROUNDS } from "../../lib/backgrounds";
+import { BACKGROUNDS, type BackgroundId } from "../../lib/backgrounds";
 
 type Props = {
   isOpen: boolean;
@@ -53,6 +53,7 @@ type Props = {
   isActivityMode?: boolean;
   newlyUnlockedAchievements?: Achievement[];
   onAchievementsViewed?: () => void;
+  setBackgroundId?: (id: BackgroundId) => void;
 };
 
 const playSadTrombone = () => {
@@ -332,6 +333,7 @@ export const StatsModal = ({
   isActivityMode = false,
   newlyUnlockedAchievements = [],
   onAchievementsViewed,
+  setBackgroundId,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<"normal" | "hard">(
     hardMode ? "hard" : "normal"
@@ -440,7 +442,11 @@ export const StatsModal = ({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mt-2">
+        <div
+          className={`grid gap-3 mt-2 ${
+            bgUnlock ? "grid-cols-3" : "grid-cols-2"
+          }`}
+        >
           <button
             type="button"
             className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
@@ -460,6 +466,26 @@ export const StatsModal = ({
             <Share2 className="w-3.5 h-3.5" />
             SHARE
           </button>
+          {bgUnlock && (
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              style={{
+                background: "rgba(255,215,0,0.1)",
+                border: "2px solid rgba(255,215,0,0.4)",
+                color: "#FFD700",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.filter = "brightness(1.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.filter = "brightness(1)";
+              }}
+              onClick={() => setBackgroundId?.(bgUnlock.id)}
+            >
+              EQUIP
+            </button>
+          )}
           <button
             type="button"
             className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
@@ -478,7 +504,7 @@ export const StatsModal = ({
           >
             {achievementIdx < newlyUnlockedAchievements.length - 1
               ? "NEXT"
-              : "OKAY"}
+              : "CONTINUE"}
           </button>
         </div>
       </BaseModal>

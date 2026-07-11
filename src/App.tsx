@@ -64,6 +64,11 @@ const WinCelebration = lazy(() =>
     default: m.WinCelebration,
   }))
 );
+const AchievementReveal = lazy(() =>
+  import("./components/screens/AchievementReveal").then((m) => ({
+    default: m.AchievementReveal,
+  }))
+);
 const SevenLetterWords = lazy(() =>
   import("./components/backgrounds/SevenLetterWords").then((m) => ({
     default: m.SevenLetterWords,
@@ -228,6 +233,7 @@ function App() {
   const [isGameLost, setIsGameLost] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
   const [isCelebrating, setIsCelebrating] = useState(false);
+  const [isRevealingAchievement, setIsRevealingAchievement] = useState(false);
   const [challengeConfig, setChallengeConfig] =
     useState<ChallengeConfig | null>(null);
   const [isMalformedChallenge, setIsMalformedChallenge] = useState(false);
@@ -289,6 +295,7 @@ function App() {
   const duelSubmittedRef = useRef(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
   const achievementCheckedRef = useRef(false);
+  const achievementRevealPendingRef = useRef(false);
   const skipNextSolutionResetRef = useRef(false);
   const hasAutoClosedTrayRef = useRef(false);
   const extraEffectsRef = useRef(extraEffects);
@@ -374,8 +381,10 @@ function App() {
       guessCount: guesses.length,
       hardMode,
     });
-    if (newly.length > 0)
+    if (newly.length > 0) {
       setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
+      achievementRevealPendingRef.current = true;
+    }
   }, [
     isGameWon,
     isDuelMode,
@@ -929,6 +938,7 @@ function App() {
             duelConfig={isDuelMode ? duelConfig : null}
             newlyUnlockedAchievements={newlyUnlockedAchievements}
             onAchievementsViewed={() => setNewlyUnlockedAchievements([])}
+            setBackgroundId={setBackgroundId}
           />
           <SettingsModal
             isOpen={isSettingsModalOpen}
@@ -1012,6 +1022,24 @@ function App() {
             word={solution}
             onDone={() => {
               setIsCelebrating(false);
+              if (achievementRevealPendingRef.current) {
+                achievementRevealPendingRef.current = false;
+                setIsRevealingAchievement(true);
+              } else if (isDuelMode) {
+                setIsDuelModalOpen(true);
+              } else {
+                setIsStatsModalOpen(true);
+              }
+            }}
+          />
+        </Suspense>
+      )}
+
+      {isRevealingAchievement && (
+        <Suspense fallback={null}>
+          <AchievementReveal
+            onDone={() => {
+              setIsRevealingAchievement(false);
               if (isDuelMode) setIsDuelModalOpen(true);
               else setIsStatsModalOpen(true);
             }}

@@ -3,16 +3,16 @@ import { COMPLETIONIST_ID } from "./achievements";
 export type BackgroundId =
   | "sprinkles"
   | "tajin"
-  | "mouse_eating"
-  | "spinning_seal"
+  | "pulsing_purple"
+  | "carrots"
+  | "escalating_fire"
+  | "dvd_screensaver"
   | "number_rain"
   | "seven_letters"
-  | "carrots"
-  | "pulsing_purple"
-  | "letter_rain"
   | "snowfall"
-  | "dvd_screensaver"
-  | "escalating_fire";
+  | "letter_rain"
+  | "mouse_eating"
+  | "spinning_seal";
 
 export type AttributionCredit = {
   role: string;
@@ -48,6 +48,74 @@ export const BACKGROUNDS: BackgroundDef[] = [
     id: "tajin",
     desktopLabel: "TAJIN RAIN",
     mobileLabel: "GRID",
+    kind: "css",
+  },
+  {
+    id: "pulsing_purple",
+    desktopLabel: "PULSING PURPLE",
+    mobileLabel: "PURPLE",
+    requiresAchievementId: "win_15",
+    kind: "css",
+  },
+  {
+    id: "carrots",
+    desktopLabel: "SPINNING CARROTS",
+    mobileLabel: "CARROTS",
+    requiresAchievementId: "win_50",
+    kind: "css",
+  },
+  {
+    id: "escalating_fire",
+    desktopLabel: "ESCALATING FIRE",
+    mobileLabel: "FIRE",
+    requiresAchievementId: "unstoppable",
+    kind: "css",
+  },
+  {
+    id: "dvd_screensaver",
+    desktopLabel: "DVD SCREENSAVER",
+    mobileLabel: "DVD",
+    requiresAchievementId: "hard_5plus",
+    kind: "css",
+  },
+  {
+    id: "number_rain",
+    desktopLabel: "NUMBER RAIN",
+    mobileLabel: "NUMBERS",
+    requiresAchievementId: "fifth_guess",
+    kind: "video",
+    videoSrc: "/backgrounds/number_rain.mp4",
+    attribution: {
+      credits: [
+        {
+          role: "Video",
+          title: "Matrix Rain Codes (4K FULL HD)",
+          creator: "Fatih Kalkan",
+          sourceUrl: "https://www.youtube.com/watch?v=MUVo20q6tx8",
+        },
+      ],
+      license: "Unknown",
+    },
+  },
+  {
+    id: "seven_letters",
+    desktopLabel: "SEVEN LETTER WORDS",
+    mobileLabel: "WORDS",
+    requiresAchievementId: "seven_letters",
+    kind: "css",
+  },
+  {
+    id: "snowfall",
+    desktopLabel: "SNOWFALL",
+    mobileLabel: "SNOW",
+    requiresAchievementId: "close_but_no_cigar",
+    kind: "css",
+  },
+  {
+    id: "letter_rain",
+    desktopLabel: "LETTER RAIN",
+    mobileLabel: "LETTERS",
+    requiresAchievementId: "word_connoisseur",
     kind: "css",
   },
   {
@@ -104,74 +172,6 @@ export const BACKGROUNDS: BackgroundDef[] = [
       ],
       license: "Unknown",
     },
-  },
-  {
-    id: "number_rain",
-    desktopLabel: "NUMBER RAIN",
-    mobileLabel: "NUMBERS",
-    requiresAchievementId: "fifth_guess",
-    kind: "video",
-    videoSrc: "/backgrounds/number_rain.mp4",
-    attribution: {
-      credits: [
-        {
-          role: "Video",
-          title: "Matrix Rain Codes (4K FULL HD)",
-          creator: "Fatih Kalkan",
-          sourceUrl: "https://www.youtube.com/watch?v=MUVo20q6tx8",
-        },
-      ],
-      license: "Unknown",
-    },
-  },
-  {
-    id: "seven_letters",
-    desktopLabel: "SEVEN LETTER WORDS",
-    mobileLabel: "WORDS",
-    requiresAchievementId: "seven_letters",
-    kind: "css",
-  },
-  {
-    id: "carrots",
-    desktopLabel: "SPINNING CARROTS",
-    mobileLabel: "CARROTS",
-    requiresAchievementId: "win_50",
-    kind: "css",
-  },
-  {
-    id: "pulsing_purple",
-    desktopLabel: "PULSING PURPLE",
-    mobileLabel: "PURPLE",
-    requiresAchievementId: "win_15",
-    kind: "css",
-  },
-  {
-    id: "letter_rain",
-    desktopLabel: "LETTER RAIN",
-    mobileLabel: "LETTERS",
-    requiresAchievementId: "word_connoisseur",
-    kind: "css",
-  },
-  {
-    id: "snowfall",
-    desktopLabel: "SNOWFALL",
-    mobileLabel: "SNOW",
-    requiresAchievementId: "close_but_no_cigar",
-    kind: "css",
-  },
-  {
-    id: "dvd_screensaver",
-    desktopLabel: "DVD SCREENSAVER",
-    mobileLabel: "DVD",
-    requiresAchievementId: "hard_5plus",
-    kind: "css",
-  },
-  {
-    id: "escalating_fire",
-    desktopLabel: "ESCALATING FIRE",
-    mobileLabel: "FIRE",
-    requiresAchievementId: "unstoppable",
-    kind: "css",
   },
 ];
 
