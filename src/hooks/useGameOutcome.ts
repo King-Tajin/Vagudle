@@ -10,11 +10,13 @@ type Params = {
   isChallengeMode: boolean;
   restoredRef: React.MutableRefObject<boolean>;
   extraEffectsRef: React.MutableRefObject<boolean>;
+  achievementRevealPendingRef: React.MutableRefObject<boolean>;
   showSuccessAlert: (
     message: string,
     options?: { delayMs?: number; onClose?: () => void }
   ) => void;
   setIsCelebrating: (value: boolean) => void;
+  setIsRevealingAchievement: (value: boolean) => void;
   setIsDuelModalOpen: (value: boolean) => void;
   setIsStatsModalOpen: (value: boolean) => void;
 };
@@ -27,8 +29,10 @@ export const useGameOutcome = ({
   isChallengeMode,
   restoredRef,
   extraEffectsRef,
+  achievementRevealPendingRef,
   showSuccessAlert,
   setIsCelebrating,
+  setIsRevealingAchievement,
   setIsDuelModalOpen,
   setIsStatsModalOpen,
 }: Params) => {
@@ -61,8 +65,14 @@ export const useGameOutcome = ({
         return;
       }
       const delay = (solution.length + 1) * REVEAL_TIME_MS;
-      if (isDuelMode) setTimeout(() => setIsDuelModalOpen(true), delay);
-      else setTimeout(() => setIsStatsModalOpen(true), delay);
+      if (extraEffectsRef.current && achievementRevealPendingRef.current) {
+        achievementRevealPendingRef.current = false;
+        setTimeout(() => setIsRevealingAchievement(true), delay);
+      } else if (isDuelMode) {
+        setTimeout(() => setIsDuelModalOpen(true), delay);
+      } else {
+        setTimeout(() => setIsStatsModalOpen(true), delay);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

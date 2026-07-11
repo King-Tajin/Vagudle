@@ -350,12 +350,18 @@ export const StatsModal = ({
   }, [isOpen, solution]);
 
   useEffect(() => {
-    if (isOpen && isGameLost && extraEffects && !hasPlayedSoundRef.current) {
+    if (
+      isOpen &&
+      isGameLost &&
+      extraEffects &&
+      !hasPlayedSoundRef.current &&
+      newlyUnlockedAchievements.length === 0
+    ) {
       hasPlayedSoundRef.current = true;
       setTimeout(() => playSadTrombone(), 200);
     }
     if (!isOpen) hasPlayedSoundRef.current = false;
-  }, [isOpen, isGameLost, extraEffects]);
+  }, [isOpen, isGameLost, extraEffects, newlyUnlockedAchievements.length]);
 
   const showingAchievement =
     !isDuelMode &&

@@ -436,8 +436,10 @@ function App() {
     isChallengeMode,
     restoredRef: restoredGameRef,
     extraEffectsRef,
+    achievementRevealPendingRef,
     showSuccessAlert,
     setIsCelebrating,
+    setIsRevealingAchievement,
     setIsDuelModalOpen,
     setIsStatsModalOpen,
   });
@@ -498,6 +500,7 @@ function App() {
       const newly = recordGuess(word, solution, guesses);
       if (newly.length > 0) {
         setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
+        achievementRevealPendingRef.current = true;
         newly.forEach(announceAchievement);
       }
     },
