@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { motion } from "framer-motion";
 import RibbonIcon from "./assets/icons/ribon.svg";
 
@@ -6,145 +6,29 @@ import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
 import { AlertContainer } from "./components/Alert";
 import { Navbar } from "./components/Navbar";
-import { BackgroundGrid } from "./components/backgrounds/BackgroundGrid";
-import { VagudleSprinkles } from "./components/backgrounds/VagudleSprinkles";
+import { BackgroundStage } from "./components/backgrounds/BackgroundStage";
 import { GameBanner } from "./components/GameBanner";
 import { AttributionButton } from "./components/AttributionButton";
+import { GameModals } from "./components/screens/GameModals";
 import { useAchievements } from "./hooks/useAchievements";
 import {
   BACKGROUNDS,
   type BackgroundId,
   loadBackgroundId,
-  saveBackgroundId,
-  loadHiddenAttributionIds,
-  hideAttributionForever,
-  unhideAttribution,
-  clearHiddenAttributions,
 } from "./lib/backgrounds";
 import type { Achievement } from "./lib/achievements";
 import type { CharStatus } from "./lib/statuses";
 
-const InfoModal = lazy(() =>
-  import("./components/modals/InfoModal").then((m) => ({
-    default: m.InfoModal,
-  }))
-);
-const TajinRain = lazy(() =>
-  import("./components/backgrounds/TajinRain").then((m) => ({
-    default: m.TajinRain,
-  }))
-);
-const StatsModal = lazy(() =>
-  import("./components/modals/StatsModal").then((m) => ({
-    default: m.StatsModal,
-  }))
-);
-const SettingsModal = lazy(() =>
-  import("./components/modals/SettingsModal").then((m) => ({
-    default: m.SettingsModal,
-  }))
-);
-const AttributionModal = lazy(() =>
-  import("./components/modals/AttributionModal").then((m) => ({
-    default: m.AttributionModal,
-  }))
-);
-const ChallengeAcceptModal = lazy(() =>
-  import("./components/modals/ChallengeAcceptModal").then((m) => ({
-    default: m.ChallengeAcceptModal,
-  }))
-);
-const DuelModal = lazy(() =>
-  import("./components/modals/DuelModal").then((m) => ({
-    default: m.DuelModal,
-  }))
-);
-const WinCelebration = lazy(() =>
-  import("./components/screens/WinCelebration").then((m) => ({
-    default: m.WinCelebration,
-  }))
-);
-const AchievementReveal = lazy(() =>
-  import("./components/screens/AchievementReveal").then((m) => ({
-    default: m.AchievementReveal,
-  }))
-);
-const SevenLetterWords = lazy(() =>
-  import("./components/backgrounds/SevenLetterWords").then((m) => ({
-    default: m.SevenLetterWords,
-  }))
-);
-const VideoBackground = lazy(() =>
-  import("./components/backgrounds/VideoBackground").then((m) => ({
-    default: m.VideoBackground,
-  }))
-);
-const SpinningCarrots = lazy(() =>
-  import("./components/backgrounds/SpinningCarrots").then((m) => ({
-    default: m.SpinningCarrots,
-  }))
-);
-const PulsingPurple = lazy(() =>
-  import("./components/backgrounds/PulsingPurple").then((m) => ({
-    default: m.PulsingPurple,
-  }))
-);
-const LetterRain = lazy(() =>
-  import("./components/backgrounds/LetterRain").then((m) => ({
-    default: m.LetterRain,
-  }))
-);
-const Snowfall = lazy(() =>
-  import("./components/backgrounds/Snowfall").then((m) => ({
-    default: m.Snowfall,
-  }))
-);
-const DvdScreensaver = lazy(() =>
-  import("./components/backgrounds/DvdScreensaver").then((m) => ({
-    default: m.DvdScreensaver,
-  }))
-);
-const FireStreak = lazy(() =>
-  import("./components/backgrounds/FireStreak").then((m) => ({
-    default: m.FireStreak,
-  }))
-);
-const AchievementsModal = lazy(() =>
-  import("./components/modals/AchievementsModal").then((m) => ({
-    default: m.AchievementsModal,
-  }))
-);
-
-const MalformedChallengeScreen = lazy(() =>
-  import("./components/screens/ErrorScreens").then((m) => ({
-    default: m.MalformedChallengeScreen,
-  }))
-);
-const MalformedDuelScreen = lazy(() =>
-  import("./components/screens/ErrorScreens").then((m) => ({
-    default: m.MalformedDuelScreen,
-  }))
-);
-const ExpiredDuelScreen = lazy(() =>
-  import("./components/screens/ErrorScreens").then((m) => ({
-    default: m.ExpiredDuelScreen,
-  }))
-);
-const ActivityNotFoundScreen = lazy(() =>
-  import("./components/screens/ErrorScreens").then((m) => ({
-    default: m.ActivityNotFoundScreen,
-  }))
-);
-const ActivityWrongPlayerScreen = lazy(() =>
-  import("./components/screens/ErrorScreens").then((m) => ({
-    default: m.ActivityWrongPlayerScreen,
-  }))
-);
-const ActivityServerErrorScreen = lazy(() =>
-  import("./components/screens/ErrorScreens").then((m) => ({
-    default: m.ActivityServerErrorScreen,
-  }))
-);
+import {
+  WinCelebration,
+  AchievementReveal,
+  MalformedChallengeScreen,
+  MalformedDuelScreen,
+  ExpiredDuelScreen,
+  ActivityNotFoundScreen,
+  ActivityWrongPlayerScreen,
+  ActivityServerErrorScreen,
+} from "./lazyComponents";
 
 import { LoadingScreen } from "./components/screens/GameScreens";
 
@@ -157,6 +41,7 @@ import { useGameFlow } from "./hooks/useGameFlow";
 import { useGuessInput } from "./hooks/useGuessInput";
 import { useSaveGameState } from "./hooks/useSaveGameState";
 import { useCrossTabSync } from "./hooks/useCrossTabSync";
+import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
@@ -254,9 +139,6 @@ function App() {
   const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
   const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
   const [isAttributionModalOpen, setIsAttributionModalOpen] = useState(false);
-  const [hiddenAttributionIds, setHiddenAttributionIds] = useState<
-    BackgroundId[]
-  >(() => loadHiddenAttributionIds());
   const [isTrayOpen, setIsTrayOpen] = useState(true);
   const [stats, setStats] = useState(() => loadStats(false));
   const [hardStats, setHardStats] = useState(() => loadStats(true));
@@ -283,6 +165,15 @@ function App() {
   );
 
   const {
+    hiddenAttributionIds,
+    setHiddenAttributionIds,
+    currentBackground,
+    showAttributionButton,
+    handleAttributionHideForeverChange,
+    handleRestoreHiddenAttributions,
+  } = useBackgroundAttribution(backgroundId);
+
+  const {
     unlockedIds,
     uniqueWordCount,
     recordWin,
@@ -302,29 +193,6 @@ function App() {
   useEffect(() => {
     extraEffectsRef.current = extraEffects;
   }, [extraEffects]);
-
-  useEffect(() => {
-    saveBackgroundId(backgroundId);
-  }, [backgroundId]);
-
-  const handleAttributionHideForeverChange = (hidden: boolean) => {
-    if (hidden) {
-      hideAttributionForever(backgroundId);
-      setHiddenAttributionIds((prev) =>
-        prev.includes(backgroundId) ? prev : [...prev, backgroundId]
-      );
-    } else {
-      unhideAttribution(backgroundId);
-      setHiddenAttributionIds((prev) =>
-        prev.filter((id) => id !== backgroundId)
-      );
-    }
-  };
-
-  const handleRestoreHiddenAttributions = () => {
-    clearHiddenAttributions();
-    setHiddenAttributionIds([]);
-  };
 
   useEffect(() => {
     if (skipNextSolutionResetRef.current) {
@@ -661,153 +529,17 @@ function App() {
       </Suspense>
     );
 
-  const renderBackground = () => {
-    const bg = BACKGROUNDS.find((b) => b.id === backgroundId);
-
-    if (bg?.kind === "video" && bg.videoSrc) {
-      return (
-        <Suspense
-          fallback={
-            <div
-              className="fixed inset-0 pointer-events-none"
-              style={{ background: "#0d1322", zIndex: 0 }}
-            />
-          }
-        >
-          <VideoBackground
-            key={bg.videoSrc}
-            src={bg.videoSrc}
-            audioEnabled={extraEffects}
-            objectPosition={bg.objectPosition}
-          />
-        </Suspense>
-      );
-    }
-
-    switch (backgroundId) {
-      case "sprinkles":
-        return isMobile ? (
-          <div
-            className="fixed inset-0 pointer-events-none"
-            style={{ background: "#0d1322", zIndex: 0 }}
-          />
-        ) : (
-          <VagudleSprinkles keyboardRef={keyboardRef} />
-        );
-      case "tajin":
-        return isMobile ? (
-          <BackgroundGrid />
-        ) : (
-          <>
-            <BackgroundGrid />
-            <Suspense fallback={null}>
-              <TajinRain keyboardRef={keyboardRef} />
-            </Suspense>
-          </>
-        );
-      case "seven_letters":
-        return (
-          <Suspense
-            fallback={
-              <div
-                className="fixed inset-0 pointer-events-none"
-                style={{ background: "#ffffff", zIndex: 0 }}
-              />
-            }
-          >
-            <SevenLetterWords />
-          </Suspense>
-        );
-      case "carrots":
-        return (
-          <Suspense
-            fallback={
-              <div
-                className="fixed inset-0 pointer-events-none"
-                style={{ background: "#2d1508", zIndex: 0 }}
-              />
-            }
-          >
-            <SpinningCarrots />
-          </Suspense>
-        );
-      case "pulsing_purple":
-        return (
-          <Suspense
-            fallback={
-              <div
-                className="fixed inset-0 pointer-events-none"
-                style={{ background: "#0d0020", zIndex: 0 }}
-              />
-            }
-          >
-            <PulsingPurple />
-          </Suspense>
-        );
-      case "letter_rain":
-        return (
-          <Suspense
-            fallback={
-              <div
-                className="fixed inset-0 pointer-events-none"
-                style={{ background: "#0d1322", zIndex: 0 }}
-              />
-            }
-          >
-            <LetterRain />
-          </Suspense>
-        );
-      case "snowfall":
-        return (
-          <Suspense
-            fallback={
-              <div
-                className="fixed inset-0 pointer-events-none"
-                style={{ background: "#122341", zIndex: 0 }}
-              />
-            }
-          >
-            <Snowfall guessesUsed={guesses.length} maxGuesses={maxChallenges} />
-          </Suspense>
-        );
-      case "dvd_screensaver":
-        return (
-          <Suspense
-            fallback={
-              <div
-                className="fixed inset-0 pointer-events-none"
-                style={{ background: "#000000", zIndex: 0 }}
-              />
-            }
-          >
-            <DvdScreensaver />
-          </Suspense>
-        );
-      case "escalating_fire":
-        return (
-          <Suspense
-            fallback={
-              <div
-                className="fixed inset-0 pointer-events-none"
-                style={{ background: "#3d0f04", zIndex: 0 }}
-              />
-            }
-          >
-            <FireStreak currentStreak={currentWinStreak} />
-          </Suspense>
-        );
-    }
-  };
-
-  const currentBackground = BACKGROUNDS.find((b) => b.id === backgroundId);
-  const showAttributionButton =
-    currentBackground?.kind === "video" &&
-    !!currentBackground.attribution &&
-    !hiddenAttributionIds.includes(backgroundId);
-
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
-      {renderBackground()}
+      <BackgroundStage
+        backgroundId={backgroundId}
+        isMobile={isMobile}
+        extraEffects={extraEffects}
+        keyboardRef={keyboardRef}
+        guessesUsed={guesses.length}
+        maxChallenges={maxChallenges}
+        currentWinStreak={currentWinStreak}
+      />
 
       {showAttributionButton && (
         <AttributionButton
@@ -903,118 +635,72 @@ function App() {
           containerRef={keyboardRef}
         />
 
-        <Suspense fallback={null}>
-          <InfoModal
-            isOpen={isInfoModalOpen}
-            handleClose={() => setIsInfoModalOpen(false)}
-            hasHiddenAttributions={hiddenAttributionIds.length > 0}
-            onRestoreHiddenAttributions={handleRestoreHiddenAttributions}
-          />
-        </Suspense>
-
-        <Suspense fallback={null}>
-          <StatsModal
-            isOpen={isStatsModalOpen}
-            handleClose={() => setIsStatsModalOpen(false)}
-            solution={solution}
-            guesses={guesses}
-            gameStats={stats}
-            hardGameStats={hardStats}
-            isGameLost={isGameLost}
-            isGameWon={isGameWon}
-            handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
-            numberOfGuessesMade={guesses.length}
-            handleNewGame={() => handleNewGame()}
-            hardMode={hardMode}
-            challengeConfig={isChallengeMode ? challengeConfig : null}
-            handleReturnToNormal={
-              isChallengeMode ? handleReturnToNormal : undefined
-            }
-            extraEffects={extraEffects}
-            isDuelMode={isDuelMode}
-            handleDuelReturn={
-              isDuelMode && !isDiscordActivity
-                ? handleReturnToNormal
-                : undefined
-            }
-            isActivityMode={isDiscordActivity}
-            duelConfig={isDuelMode ? duelConfig : null}
-            newlyUnlockedAchievements={newlyUnlockedAchievements}
-            onAchievementsViewed={() => setNewlyUnlockedAchievements([])}
-            setBackgroundId={setBackgroundId}
-          />
-          <SettingsModal
-            isOpen={isSettingsModalOpen}
-            handleClose={() => setIsSettingsModalOpen(false)}
-            wordLength={wordLength}
-            hasStarted={guesses.length > 0}
-            onWordLengthChange={handleWordLengthChange}
-            showGrayCount={showGrayCount}
-            setShowGrayCount={setShowGrayCount}
-            hardMode={hardMode}
-            setHardMode={(value: boolean) => {
-              setHardMode(value);
-              if (guesses.length === 0)
-                setSolution(getRandomWord(wordLength, value));
-            }}
-            autoGray={autoGray}
-            setAutoGray={handleSetAutoGray}
-            autoGreen={autoGreen}
-            setAutoGreen={setAutoGreen}
-            extraEffects={extraEffects}
-            setExtraEffects={setExtraEffects}
-            backgroundId={backgroundId}
-            setBackgroundId={setBackgroundId}
-            unlockedAchievementIds={unlockedIds}
-            isMobile={isMobile}
-            challengeConfig={
-              isDuelMode ? duelConfig : isChallengeMode ? challengeConfig : null
-            }
-            isActivityMode={isDiscordActivity}
-          />
-          {isChallengeMode && challengeConfig && (
-            <ChallengeAcceptModal
-              isOpen={isChallengeModalOpen}
-              onPlay={() => setIsChallengeModalOpen(false)}
-              config={challengeConfig}
-            />
-          )}
-          {isDuelMode && duelConfig && (
-            <DuelModal
-              isOpen={isDuelModalOpen}
-              mode={isGameWon || isGameLost ? "complete" : "accept"}
-              config={duelConfig}
-              onPlay={() => setIsDuelModalOpen(false)}
-              onReturn={handleReturnToNormal}
-              saveStatus={duelSaveStatus}
-              isActivityMode={isDiscordActivity}
-            />
-          )}
-          {currentBackground?.attribution && (
-            <AttributionModal
-              isOpen={isAttributionModalOpen}
-              handleClose={() => setIsAttributionModalOpen(false)}
-              attribution={currentBackground.attribution}
-              isHidden={hiddenAttributionIds.includes(backgroundId)}
-              onHideForeverChange={handleAttributionHideForeverChange}
-            />
-          )}
-        </Suspense>
-
-        <Suspense fallback={null}>
-          <AchievementsModal
-            isOpen={isAchievementsModalOpen}
-            handleClose={() => setIsAchievementsModalOpen(false)}
-            unlockedIds={unlockedIds}
-            totalWins={
-              stats.totalGames -
-              stats.gamesFailed +
-              (hardStats.totalGames - hardStats.gamesFailed)
-            }
-            uniqueWordCount={uniqueWordCount}
-            currentWinStreak={currentWinStreak}
-          />
-        </Suspense>
+        <GameModals
+          solution={solution}
+          guesses={guesses}
+          stats={stats}
+          hardStats={hardStats}
+          hardMode={hardMode}
+          extraEffects={extraEffects}
+          setExtraEffects={setExtraEffects}
+          isDuelMode={isDuelMode}
+          isChallengeMode={isChallengeMode}
+          isActivityMode={isDiscordActivity}
+          isMobile={isMobile}
+          isGameWon={isGameWon}
+          isGameLost={isGameLost}
+          wordLength={wordLength}
+          challengeConfig={challengeConfig}
+          duelConfig={duelConfig}
+          duelSaveStatus={duelSaveStatus}
+          showGrayCount={showGrayCount}
+          setShowGrayCount={setShowGrayCount}
+          autoGray={autoGray}
+          handleSetAutoGray={handleSetAutoGray}
+          autoGreen={autoGreen}
+          setAutoGreen={setAutoGreen}
+          backgroundId={backgroundId}
+          setBackgroundId={setBackgroundId}
+          unlockedIds={unlockedIds}
+          newlyUnlockedAchievements={newlyUnlockedAchievements}
+          onAchievementsViewed={() => setNewlyUnlockedAchievements([])}
+          currentBackground={currentBackground}
+          hiddenAttributionIds={hiddenAttributionIds}
+          handleAttributionHideForeverChange={
+            handleAttributionHideForeverChange
+          }
+          handleRestoreHiddenAttributions={handleRestoreHiddenAttributions}
+          uniqueWordCount={uniqueWordCount}
+          currentWinStreak={currentWinStreak}
+          totalWins={
+            stats.totalGames -
+            stats.gamesFailed +
+            (hardStats.totalGames - hardStats.gamesFailed)
+          }
+          handleNewGame={handleNewGame}
+          handleReturnToNormal={handleReturnToNormal}
+          handleWordLengthChange={handleWordLengthChange}
+          handleHardModeChange={(value: boolean) => {
+            setHardMode(value);
+            if (guesses.length === 0)
+              setSolution(getRandomWord(wordLength, value));
+          }}
+          handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
+          isInfoModalOpen={isInfoModalOpen}
+          handleCloseInfo={() => setIsInfoModalOpen(false)}
+          isStatsModalOpen={isStatsModalOpen}
+          handleCloseStats={() => setIsStatsModalOpen(false)}
+          isSettingsModalOpen={isSettingsModalOpen}
+          handleCloseSettings={() => setIsSettingsModalOpen(false)}
+          isChallengeModalOpen={isChallengeModalOpen}
+          handlePlayChallenge={() => setIsChallengeModalOpen(false)}
+          isDuelModalOpen={isDuelModalOpen}
+          handlePlayDuel={() => setIsDuelModalOpen(false)}
+          isAttributionModalOpen={isAttributionModalOpen}
+          handleCloseAttribution={() => setIsAttributionModalOpen(false)}
+          isAchievementsModalOpen={isAchievementsModalOpen}
+          handleCloseAchievements={() => setIsAchievementsModalOpen(false)}
+        />
 
         <AlertContainer />
       </div>
