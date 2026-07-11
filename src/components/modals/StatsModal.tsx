@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import RibbonIcon from "../../assets/icons/ribon.svg";
+import RibbonIcon from "../../assets/icons/ribon.svg?react";
 import { StatBar } from "../stats/StatBar";
 import { Histogram } from "../stats/Histogram";
 import { GameStats } from "../../lib/localStorage";
@@ -417,7 +417,7 @@ export const StatsModal = ({
     return (
       <BaseModal title={modalTitle} isOpen={isOpen} handleClose={handleClose}>
         <div className="flex flex-col items-center text-center py-4 gap-4">
-          <img src={RibbonIcon} alt="Achievement" className="w-24 h-24" />
+          <RibbonIcon className="w-24 h-24" />
 
           <div>
             <p className="font-pixel text-sm text-crown-gold tracking-widest mb-2">
@@ -436,11 +436,7 @@ export const StatsModal = ({
                 border: "1px solid rgba(255,215,0,0.25)",
               }}
             >
-              <img
-                src={RibbonIcon}
-                alt=""
-                className="w-3.5 h-3.5 flex-shrink-0"
-              />
+              <RibbonIcon className="w-3.5 h-3.5 flex-shrink-0" />
               <span className="font-pixel text-[9px] text-crown-amber tracking-widest">
                 BACKGROUND UNLOCKED: {bgUnlock.desktopLabel}
               </span>

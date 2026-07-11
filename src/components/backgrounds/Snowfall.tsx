@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import SnowflakeUrl from "../../assets/icons/snowflake.svg";
+import Snowflake from "../../assets/icons/snowflake.svg?react";
 
 const SKY_COLOR = "#122341";
 const SNOW_COLOR = "#f5f9ff";
@@ -24,6 +24,8 @@ const BUMP_HEIGHT_VARIANCE = 7;
 const SNOW_HEIGHT_TRANSITION_MS = 9500;
 const SNOW_HEIGHT_TRANSITION_EASING = "ease";
 const MAX_SNOW_HEIGHT_PERCENT = 95;
+
+const MotionSnowflake = motion(Snowflake);
 
 interface Flake {
   id: number;
@@ -85,9 +87,7 @@ const FlakeItem = ({ flake }: { flake: Flake }) => (
       ease: "linear",
     }}
   >
-    <motion.img
-      src={SnowflakeUrl}
-      alt=""
+    <MotionSnowflake
       style={{ width: "100%", height: "100%", opacity: flake.opacity }}
       animate={{
         x: [-flake.swayAmplitude, flake.swayAmplitude, -flake.swayAmplitude],

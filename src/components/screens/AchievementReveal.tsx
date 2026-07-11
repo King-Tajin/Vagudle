@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import ChestBase from "@/assets/icons/chest-base.svg";
 import ChestDoorLeft from "@/assets/icons/chest-door-left.svg";
 import ChestDoorRight from "@/assets/icons/chest-door-right.svg";
-import RibbonIcon from "@/assets/icons/ribon.svg";
+import RibbonIcon from "@/assets/icons/ribon.svg?react";
 
 const TIME_SCALE = 1.6;
 
@@ -539,11 +539,7 @@ export function AchievementReveal({ onDone }: Props) {
                   : { duration: RIBBON_SETTLE_MS / 1000, ease: "easeInOut" }
               }
             >
-              <img
-                src={RibbonIcon}
-                alt=""
-                style={{ width: "100%", height: "auto" }}
-              />
+              <RibbonIcon style={{ width: "100%", height: "auto" }} />
             </motion.div>
 
             <div

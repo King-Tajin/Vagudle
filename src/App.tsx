@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import { motion } from "framer-motion";
-import RibbonIcon from "./assets/icons/ribon.svg";
+import RibbonIcon from "./assets/icons/ribon.svg?react";
 
 import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
@@ -563,7 +563,7 @@ function App() {
             onClick={() => setIsAchievementsModalOpen(true)}
             aria-label="Achievements"
           >
-            <img src={RibbonIcon} alt="Achievements" className="w-14 h-14" />
+            <RibbonIcon className="w-14 h-14" />
           </button>
           <button
             className="flex items-center justify-center px-1.5 bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 hover:bg-obsidian-700 transition-colors text-crown-gold"
