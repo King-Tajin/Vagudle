@@ -73,6 +73,25 @@ export const computeNoLetterReuseWin = (guesses: string[]): boolean => {
   return true;
 };
 
+export const computeDuckVerticalSpell = (guesses: string[]): boolean => {
+  if (guesses.length < 4) return false;
+
+  const normalized = guesses.map((g) => g.toLowerCase());
+  const wordLength = normalized[0]?.length ?? 0;
+
+  for (let start = 0; start <= normalized.length - 4; start++) {
+    for (let col = 0; col < wordLength; col++) {
+      const vertical = normalized
+        .slice(start, start + 4)
+        .map((g) => g[col])
+        .join("");
+      if (vertical === "duck") return true;
+    }
+  }
+
+  return false;
+};
+
 export const computeCloseCallStreak = (
   guessHistory: string[],
   solution: string
@@ -178,6 +197,7 @@ export const useAchievements = () => {
       uniqueWordCount,
       gotCloseCallStreak: false,
       bestCurrentStreak: getBestCurrentStreak(),
+      spelledDuckVertically: computeDuckVerticalSpell(event.guesses),
     };
 
     return commitProgress(base, next, ctx);
@@ -208,6 +228,11 @@ export const useAchievements = () => {
       solution
     );
 
+    const spelledDuckVertically = computeDuckVerticalSpell([
+      ...previousGuesses,
+      word,
+    ]);
+
     const ctx: AchievementContext = {
       totalWins: getRealTotalWins(),
       wonInHardMode5Plus: base.wonInHardMode5Plus,
@@ -219,6 +244,7 @@ export const useAchievements = () => {
       uniqueWordCount: currentUniqueCount,
       gotCloseCallStreak,
       bestCurrentStreak: getBestCurrentStreak(),
+      spelledDuckVertically,
     };
 
     const next: AchievementProgress = { ...base };

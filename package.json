@@ -8,8 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/*.{html,json}\" \".github/**/*.md\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/*.{html,json}\" \".github/**/*.md\""
+    "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\""
   },
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.0.0",
@@ -20,6 +20,7 @@
     "@types/ua-parser-js": "^0.7.36",
     "classnames": "^2.5.1",
     "framer-motion": "^12.38.0",
+    "lottie-web": "^5.13.0",
     "lucide-react": "^1.7.0",
     "react": "^18.3.1",
     "react-countdown": "^2.3.6",
@@ -63,7 +64,7 @@
     "src/**/*.svg": "svgo",
     "functions/**/*.js": "prettier --write",
     "*.{html,json,js,cjs,md}": "prettier --write",
-    "public/*.{html,json}": "prettier --write",
+    "public/**/*.{html,json}": "prettier --write",
     "public/**/*.svg": "svgo",
     ".github/**/*.md": "prettier --write"
   }

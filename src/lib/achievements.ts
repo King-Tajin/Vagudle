@@ -9,6 +9,7 @@ export type AchievementContext = {
   uniqueWordCount: number;
   gotCloseCallStreak: boolean;
   bestCurrentStreak: number;
+  spelledDuckVertically: boolean;
 };
 
 export type Achievement = {
@@ -110,6 +111,14 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: "Guess 200 unique words in normal or hard mode",
     hidden: false,
     check: (ctx) => ctx.uniqueWordCount >= 200,
+  },
+  {
+    id: "quack",
+    title: "Quack!",
+    description:
+      "Spell DUCK vertically down any column across 4 guesses in a row",
+    hidden: false,
+    check: (ctx) => ctx.spelledDuckVertically,
   },
   {
     id: "guess_mouse",

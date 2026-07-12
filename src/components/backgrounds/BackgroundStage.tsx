@@ -13,6 +13,7 @@ import {
   DvdScreensaver,
   FireStreak,
   Fireworks,
+  DuckParade,
 } from "../../lazyComponents";
 
 type Props = {
@@ -179,6 +180,19 @@ export const BackgroundStage = ({
           }
         >
           <Fireworks extraEffects={extraEffects} />
+        </Suspense>
+      );
+    case "duck_parade":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#8fd3f4", zIndex: 0 }}
+            />
+          }
+        >
+          <DuckParade keyboardRef={keyboardRef} />
         </Suspense>
       );
     default:

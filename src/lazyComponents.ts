@@ -90,6 +90,11 @@ export const Fireworks = lazy(() =>
     default: m.Fireworks,
   }))
 );
+export const DuckParade = lazy(() =>
+  import("./components/backgrounds/DuckParade").then((m) => ({
+    default: m.DuckParade,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
