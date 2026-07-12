@@ -33,7 +33,7 @@ export const BackgroundStage = ({
   guessesUsed,
   maxChallenges,
   currentWinStreak,
-}: Props): JSX.Element | null => {
+}: Props): React.JSX.Element | null => {
   const bg = BACKGROUNDS.find((b) => b.id === backgroundId);
 
   if (bg?.kind === "video" && bg.videoSrc) {

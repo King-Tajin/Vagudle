@@ -354,9 +354,13 @@ export const Fireworks = ({ extraEffects }: Props) => {
           if (!Ctx) return null;
           audioContext = new Ctx();
           noiseBuffer = createNoiseBuffer(audioContext);
-          loadBurstBuffers(audioContext).then((buffers) => {
-            burstFileBuffers = buffers;
-          });
+          loadBurstBuffers(audioContext)
+            .then((buffers) => {
+              burstFileBuffers = buffers;
+            })
+            .catch(() => {
+              burstFileBuffers = [];
+            });
         }
         if (audioContext.state === "suspended") void audioContext.resume();
         return noiseBuffer ? { ctx: audioContext, noise: noiseBuffer } : null;

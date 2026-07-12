@@ -259,7 +259,7 @@ function App() {
     isDuelMode,
     isChallengeMode,
     solution.length,
-    guesses.length,
+    guesses,
     hardMode,
     recordWin,
   ]);
