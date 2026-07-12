@@ -12,7 +12,8 @@ export type BackgroundId =
   | "snowfall"
   | "letter_rain"
   | "mouse_eating"
-  | "spinning_seal";
+  | "spinning_seal"
+  | "fireworks";
 
 export type AttributionCredit = {
   role: string;
@@ -148,6 +149,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
       ],
       license: "Unknown",
     },
+  },
+  {
+    id: "fireworks",
+    desktopLabel: "FIREWORKS",
+    mobileLabel: "FIREWORKS",
+    requiresAchievementId: "diversify",
+    kind: "css",
   },
   {
     id: "spinning_seal",

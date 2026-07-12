@@ -12,6 +12,7 @@ import {
   Snowfall,
   DvdScreensaver,
   FireStreak,
+  Fireworks,
 } from "../../lazyComponents";
 
 type Props = {
@@ -165,6 +166,19 @@ export const BackgroundStage = ({
           }
         >
           <FireStreak currentStreak={currentWinStreak} />
+        </Suspense>
+      );
+    case "fireworks":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#02030d", zIndex: 0 }}
+            />
+          }
+        >
+          <Fireworks extraEffects={extraEffects} />
         </Suspense>
       );
     default:

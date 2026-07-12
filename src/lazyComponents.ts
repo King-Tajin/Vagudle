@@ -85,6 +85,11 @@ export const FireStreak = lazy(() =>
     default: m.FireStreak,
   }))
 );
+export const Fireworks = lazy(() =>
+  import("./components/backgrounds/Fireworks").then((m) => ({
+    default: m.Fireworks,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
