@@ -248,6 +248,7 @@ function App() {
       wordLength: solution.length,
       guessCount: guesses.length,
       hardMode,
+      guesses,
     });
     if (newly.length > 0) {
       setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);

@@ -4,6 +4,7 @@ export type AchievementContext = {
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
   wonOnFinalGuessEver: boolean;
+  wonWithoutReusingLettersEver: boolean;
   lastGuess: string;
   uniqueWordCount: number;
   gotCloseCallStreak: boolean;
@@ -24,6 +25,7 @@ export type AchievementProgress = {
   wonIn5GuessesEver: boolean;
   wonWith7LettersEver: boolean;
   wonOnFinalGuessEver: boolean;
+  wonWithoutReusingLettersEver: boolean;
 };
 
 const defaultProgress = (): AchievementProgress => ({
@@ -32,6 +34,7 @@ const defaultProgress = (): AchievementProgress => ({
   wonIn5GuessesEver: false,
   wonWith7LettersEver: false,
   wonOnFinalGuessEver: false,
+  wonWithoutReusingLettersEver: false,
 });
 
 export const COMPLETIONIST_ID = "completionist";
@@ -121,6 +124,14 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: "Win a game on your very last guess",
     hidden: true,
     check: (ctx) => ctx.wonOnFinalGuessEver,
+  },
+  {
+    id: "diversify",
+    title: "Diversify",
+    description:
+      "Win in 3+ guesses without repeating a letter's position across your earlier guesses (excluding solution)",
+    hidden: false,
+    check: (ctx) => ctx.wonWithoutReusingLettersEver,
   },
   {
     id: COMPLETIONIST_ID,

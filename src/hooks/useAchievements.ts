@@ -26,6 +26,7 @@ type WinEvent = {
   wordLength: number;
   guessCount: number;
   hardMode: boolean;
+  guesses: string[];
 };
 
 const getRealTotalWins = (): number => {
@@ -49,6 +50,27 @@ const isCloseCallGuess = (solution: string, guess: string): boolean => {
   const grayCount = statuses.filter((s) => s === "absent").length;
   const greenCount = statuses.filter((s) => s === "correct").length;
   return grayCount === 1 && greenCount === statuses.length - 1;
+};
+
+export const computeNoLetterReuseWin = (guesses: string[]): boolean => {
+  if (guesses.length < 3) return false;
+
+  const priorGuesses = guesses.slice(0, -1);
+  const seenLettersByPosition = new Map<number, Set<string>>();
+
+  for (const guess of priorGuesses) {
+    const normalized = guess.toLowerCase();
+    for (let position = 0; position < normalized.length; position++) {
+      const letter = normalized[position];
+      const seenAtPosition =
+        seenLettersByPosition.get(position) ?? new Set<string>();
+      if (seenAtPosition.has(letter)) return false;
+      seenAtPosition.add(letter);
+      seenLettersByPosition.set(position, seenAtPosition);
+    }
+  }
+
+  return true;
 };
 
 export const computeCloseCallStreak = (
@@ -142,6 +164,8 @@ export const useAchievements = () => {
       ? HARD_MODE_MAX_CHALLENGES
       : NORMAL_MODE_MAX_CHALLENGES;
     if (event.guessCount === maxChallenges) next.wonOnFinalGuessEver = true;
+    if (computeNoLetterReuseWin(event.guesses))
+      next.wonWithoutReusingLettersEver = true;
 
     const ctx: AchievementContext = {
       totalWins: getRealTotalWins(),
@@ -149,6 +173,7 @@ export const useAchievements = () => {
       wonIn5GuessesEver: next.wonIn5GuessesEver,
       wonWith7LettersEver: next.wonWith7LettersEver,
       wonOnFinalGuessEver: next.wonOnFinalGuessEver,
+      wonWithoutReusingLettersEver: next.wonWithoutReusingLettersEver,
       lastGuess: "",
       uniqueWordCount,
       gotCloseCallStreak: false,
@@ -189,6 +214,7 @@ export const useAchievements = () => {
       wonIn5GuessesEver: base.wonIn5GuessesEver,
       wonWith7LettersEver: base.wonWith7LettersEver,
       wonOnFinalGuessEver: base.wonOnFinalGuessEver,
+      wonWithoutReusingLettersEver: base.wonWithoutReusingLettersEver,
       lastGuess: normalized,
       uniqueWordCount: currentUniqueCount,
       gotCloseCallStreak,
