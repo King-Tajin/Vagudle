@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Snowflake from "../../assets/icons/snowflake.svg?react";
 
@@ -24,8 +24,6 @@ const BUMP_HEIGHT_VARIANCE = 7;
 const SNOW_HEIGHT_TRANSITION_MS = 9500;
 const SNOW_HEIGHT_TRANSITION_EASING = "ease";
 const MAX_SNOW_HEIGHT_PERCENT = 95;
-
-const MotionSnowflake = motion(Snowflake);
 
 interface Flake {
   id: number;
@@ -87,7 +85,7 @@ const FlakeItem = ({ flake }: { flake: Flake }) => (
       ease: "linear",
     }}
   >
-    <MotionSnowflake
+    <motion.div
       style={{ width: "100%", height: "100%", opacity: flake.opacity }}
       animate={{
         x: [-flake.swayAmplitude, flake.swayAmplitude, -flake.swayAmplitude],
@@ -105,7 +103,9 @@ const FlakeItem = ({ flake }: { flake: Flake }) => (
           ease: "linear",
         },
       }}
-    />
+    >
+      <Snowflake style={{ width: "100%", height: "100%" }} />
+    </motion.div>
   </motion.div>
 );
 
@@ -135,7 +135,8 @@ interface SnowfallProps {
 
 export const Snowfall = ({ guessesUsed, maxGuesses }: SnowfallProps) => {
   const [flakes, setFlakes] = useState<Flake[]>(() => buildFlakes());
-  const wavePath = useMemo(() => buildWavePath(), []);
+  const [wavePath, setWavePath] = useState<string>(() => buildWavePath());
+  const wasEmptyRef = useRef(true);
 
   useEffect(() => {
     const onResize = () => setFlakes(buildFlakes());
@@ -146,6 +147,21 @@ export const Snowfall = ({ guessesUsed, maxGuesses }: SnowfallProps) => {
   const fillRatio =
     maxGuesses > 0 ? Math.min(1, Math.max(0, guessesUsed / maxGuesses)) : 0;
   const revealPercent = fillRatio * MAX_SNOW_HEIGHT_PERCENT;
+  const isEmpty = revealPercent <= 0;
+
+  useEffect(() => {
+    wasEmptyRef.current = isEmpty;
+  }, [isEmpty]);
+
+  const handleTransitionEnd = (
+    event: React.TransitionEvent<HTMLDivElement>
+  ) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.propertyName !== "transform") return;
+    if (isEmpty && !wasEmptyRef.current) {
+      setWavePath(buildWavePath());
+    }
+  };
 
   return (
     <div
@@ -156,6 +172,7 @@ export const Snowfall = ({ guessesUsed, maxGuesses }: SnowfallProps) => {
         <FlakeItem key={flake.id} flake={flake} />
       ))}
       <div
+        onTransitionEnd={handleTransitionEnd}
         style={{
           position: "absolute",
           left: 0,
