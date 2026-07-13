@@ -22,7 +22,7 @@ interface WindowSize {
 export const VagudleSprinkles = ({
   keyboardRef,
 }: {
-  keyboardRef: React.RefObject<HTMLDivElement>;
+  keyboardRef: React.RefObject<HTMLDivElement | null>;
 }) => {
   const [strips, setStrips] = useState<StripMeasure>({
     leftWidth: 0,

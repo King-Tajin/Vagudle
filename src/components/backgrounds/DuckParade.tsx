@@ -346,7 +346,7 @@ const CloudInstance = ({ cloud }: { cloud: CloudDef }) => (
 export const DuckParade = ({
   keyboardRef,
 }: {
-  keyboardRef: React.RefObject<HTMLDivElement>;
+  keyboardRef: React.RefObject<HTMLDivElement | null>;
 }) => {
   const [animationData, setAnimationData] = useState<object | null>(null);
   const [aspectRatio, setAspectRatio] = useState(1);
@@ -361,7 +361,7 @@ export const DuckParade = ({
   const directionRef = useRef<Direction>(1);
   const phaseRef = useRef<Phase>("walking");
   const waitUntilRef = useRef<number>(0);
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number | undefined>(undefined);
   const lastTimestampRef = useRef<number | null>(null);
   const xRef = useRef(0);
 

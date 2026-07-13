@@ -11,7 +11,7 @@ type Props = {
   solution: string;
   userStatuses: { [key: string]: CharStatus };
   isRevealing?: boolean;
-  containerRef?: React.RefObject<HTMLDivElement>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
 };
 
 export const Keyboard = ({

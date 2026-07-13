@@ -20,7 +20,7 @@ type Props = {
   backgroundId: BackgroundId;
   isMobile: boolean;
   extraEffects: boolean;
-  keyboardRef: React.RefObject<HTMLDivElement>;
+  keyboardRef: React.RefObject<HTMLDivElement | null>;
   guessesUsed: number;
   maxChallenges: number;
   currentWinStreak: number;

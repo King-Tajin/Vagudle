@@ -1,5 +1,5 @@
 import { Fragment, useState, type ReactNode, type CSSProperties } from "react";
-import { Transition } from "@headlessui/react";
+import { Transition, TransitionChild } from "@headlessui/react";
 import {
   X,
   Gamepad2,
@@ -470,9 +470,9 @@ export const InfoModal = ({
 
   return (
     <>
-      <Transition.Root show={isOpen} as={Fragment}>
+      <Transition show={isOpen} as={Fragment}>
         <div className="fixed inset-0 z-[60] overflow-hidden">
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-200"
             enterFrom="opacity-0"
@@ -492,10 +492,10 @@ export const InfoModal = ({
                 if (e.key === "Enter" || e.key === " ") handleClose();
               }}
             />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="absolute inset-y-0 right-0 flex max-w-full">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="transform transition ease-out duration-300"
               enterFrom="translate-x-full"
@@ -917,10 +917,10 @@ export const InfoModal = ({
                   </p>
                 </div>
               </div>
-            </Transition.Child>
+            </TransitionChild>
           </div>
         </div>
-      </Transition.Root>
+      </Transition>
       <ResetDataModal
         isOpen={isResetModalOpen}
         handleClose={() => setIsResetModalOpen(false)}

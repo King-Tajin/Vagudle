@@ -3,7 +3,7 @@ import { Info } from "lucide-react";
 
 type Props = {
   onClick: () => void;
-  keyboardRef: React.RefObject<HTMLDivElement>;
+  keyboardRef: React.RefObject<HTMLDivElement | null>;
   isMobile: boolean;
 };
 

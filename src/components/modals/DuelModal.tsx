@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Transition } from "@headlessui/react";
+import { Transition, TransitionChild } from "@headlessui/react";
 import {
   Swords,
   BookOpen,
@@ -31,9 +31,9 @@ export const DuelModal = ({
   isActivityMode = false,
 }: Props) => {
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
+    <Transition show={isOpen} as={Fragment}>
       <div className="fixed inset-0 z-[70] flex items-center justify-center px-4">
-        <Transition.Child
+        <TransitionChild
           as={Fragment}
           enter="ease-out duration-200"
           enterFrom="opacity-0"
@@ -46,9 +46,9 @@ export const DuelModal = ({
             className="absolute inset-0 transition-opacity"
             style={{ background: "rgba(0,0,0,0.92)" }}
           />
-        </Transition.Child>
+        </TransitionChild>
 
-        <Transition.Child
+        <TransitionChild
           as={Fragment}
           enter="ease-out duration-250"
           enterFrom="opacity-0 translate-y-4 scale-95"
@@ -261,8 +261,8 @@ export const DuelModal = ({
               )}
             </div>
           </div>
-        </Transition.Child>
+        </TransitionChild>
       </div>
-    </Transition.Root>
+    </Transition>
   );
 };
