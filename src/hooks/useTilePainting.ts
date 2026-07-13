@@ -31,7 +31,11 @@ export const useTilePainting = ({
   setAutoGrayLetters,
 }: Params): Return => {
   const guessesRef = React.useRef(guesses);
-  guessesRef.current = guesses;
+
+  useEffect(() => {
+    guessesRef.current = guesses;
+  });
+
   useEffect(() => {
     if (!autoGray) return;
 

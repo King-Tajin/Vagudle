@@ -2,7 +2,10 @@ import { useEffect, useRef } from "react";
 
 export const useStorageSync = (key: string, onChange: () => void): void => {
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  });
 
   useEffect(() => {
     const handler = (e: StorageEvent) => {

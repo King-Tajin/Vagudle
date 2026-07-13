@@ -363,6 +363,7 @@ export const DuckParade = ({
   const waitUntilRef = useRef<number>(0);
   const rafRef = useRef<number>();
   const lastTimestampRef = useRef<number | null>(null);
+  const xRef = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -450,6 +451,7 @@ export const DuckParade = ({
 
     directionRef.current = 1;
     phaseRef.current = "walking";
+    xRef.current = -formationSpan;
     setDirection(1);
     setX(-formationSpan);
 
@@ -468,40 +470,42 @@ export const DuckParade = ({
           directionRef.current = nextDirection;
           setDirection(nextDirection);
           const width = containerRef.current?.clientWidth ?? window.innerWidth;
-          setX(nextDirection === 1 ? -formationSpan : width);
+          const resetX = nextDirection === 1 ? -formationSpan : width;
+          xRef.current = resetX;
+          setX(resetX);
           phaseRef.current = "walking";
         }
         rafRef.current = requestAnimationFrame(tick);
         return;
       }
 
-      setX((prev) => {
-        const width = containerRef.current?.clientWidth ?? window.innerWidth;
-        const next = prev + WALK_SPEED_PX_PER_SEC * dt * directionRef.current;
+      const width = containerRef.current?.clientWidth ?? window.innerWidth;
+      const next =
+        xRef.current + WALK_SPEED_PX_PER_SEC * dt * directionRef.current;
 
-        const exitedRight = directionRef.current === 1 && next > width;
-        const exitedLeft = directionRef.current === -1 && next < -formationSpan;
+      const exitedRight = directionRef.current === 1 && next > width;
+      const exitedLeft = directionRef.current === -1 && next < -formationSpan;
 
-        if (exitedRight || exitedLeft) {
-          phaseRef.current = "waiting";
-          waitUntilRef.current =
-            timestamp +
-            WAIT_OFFSCREEN_MS_MIN +
-            Math.random() * (WAIT_OFFSCREEN_MS_MAX - WAIT_OFFSCREEN_MS_MIN);
-          setDucks((prev) =>
-            prev.map((duck) => {
-              const palette = randomPalette();
-              return {
-                ...duck,
-                darkColor: palette.dark,
-                lightColor: palette.light,
-              };
-            })
-          );
-        }
+      if (exitedRight || exitedLeft) {
+        phaseRef.current = "waiting";
+        waitUntilRef.current =
+          timestamp +
+          WAIT_OFFSCREEN_MS_MIN +
+          Math.random() * (WAIT_OFFSCREEN_MS_MAX - WAIT_OFFSCREEN_MS_MIN);
+        setDucks((prev) =>
+          prev.map((duck) => {
+            const palette = randomPalette();
+            return {
+              ...duck,
+              darkColor: palette.dark,
+              lightColor: palette.light,
+            };
+          })
+        );
+      }
 
-        return next;
-      });
+      xRef.current = next;
+      setX(next);
 
       rafRef.current = requestAnimationFrame(tick);
     };

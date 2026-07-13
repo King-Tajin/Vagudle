@@ -37,6 +37,8 @@ export const useGameOutcome = ({
   setIsStatsModalOpen,
 }: Params) => {
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
     if (isGameWon) {
       if (restoredRef.current) {
         restoredRef.current = false;
@@ -44,7 +46,7 @@ export const useGameOutcome = ({
       }
       const delayMs = REVEAL_TIME_MS * solution.length;
       if (extraEffectsRef.current) {
-        setTimeout(() => setIsCelebrating(true), delayMs + 250);
+        timeoutId = setTimeout(() => setIsCelebrating(true), delayMs + 250);
       } else {
         const pool =
           isDuelMode || isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
@@ -67,13 +69,15 @@ export const useGameOutcome = ({
       const delay = (solution.length + 1) * REVEAL_TIME_MS;
       if (extraEffectsRef.current && achievementRevealPendingRef.current) {
         achievementRevealPendingRef.current = false;
-        setTimeout(() => setIsRevealingAchievement(true), delay);
+        timeoutId = setTimeout(() => setIsRevealingAchievement(true), delay);
       } else if (isDuelMode) {
-        setTimeout(() => setIsDuelModalOpen(true), delay);
+        timeoutId = setTimeout(() => setIsDuelModalOpen(true), delay);
       } else {
-        setTimeout(() => setIsStatsModalOpen(true), delay);
+        timeoutId = setTimeout(() => setIsStatsModalOpen(true), delay);
       }
     }
+
+    return () => clearTimeout(timeoutId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isGameWon,

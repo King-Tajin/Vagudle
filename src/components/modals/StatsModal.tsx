@@ -350,6 +350,7 @@ export const StatsModal = ({
   }, [isOpen, solution]);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     if (
       isOpen &&
       isGameLost &&
@@ -358,9 +359,10 @@ export const StatsModal = ({
       newlyUnlockedAchievements.length === 0
     ) {
       hasPlayedSoundRef.current = true;
-      setTimeout(() => playSadTrombone(), 200);
+      timeoutId = setTimeout(() => playSadTrombone(), 200);
     }
     if (!isOpen) hasPlayedSoundRef.current = false;
+    return () => clearTimeout(timeoutId);
   }, [isOpen, isGameLost, extraEffects, newlyUnlockedAchievements.length]);
 
   const showingAchievement =

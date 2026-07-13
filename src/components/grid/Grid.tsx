@@ -108,7 +108,10 @@ export const Grid = ({
   const isPainting = useRef(false);
   const selectedBrushRef = useRef<CharStatus | null>(null);
   const completedRowsRef = useRef<HTMLDivElement>(null);
-  selectedBrushRef.current = selectedBrush;
+
+  useEffect(() => {
+    selectedBrushRef.current = selectedBrush;
+  });
 
   useEffect(() => {
     const stop = () => {

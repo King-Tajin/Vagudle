@@ -86,6 +86,9 @@ export const useGameInitialization = ({
   showErrorAlert,
 }: Params) => {
   useEffect(() => {
+    let cancelled = false;
+    let modalTimeoutId: ReturnType<typeof setTimeout> | undefined;
+
     const run = async () => {
       runStorageOptimization();
       pruneOldChallengeStates();
@@ -296,7 +299,9 @@ export const useGameInitialization = ({
           showErrorAlert(CORRECT_WORD_MESSAGE(savedState.solution), {
             persist: true,
           });
-          setTimeout(() => setIsStatsModalOpen(true), 500);
+          modalTimeoutId = setTimeout(() => {
+            if (!cancelled) setIsStatsModalOpen(true);
+          }, 500);
         }
       } else {
         const newSolution = getRandomWord(
@@ -307,11 +312,17 @@ export const useGameInitialization = ({
         setGuesses([]);
         setCellColors({});
         setAutoGrayLetters(new Set());
-        setTimeout(() => setIsInfoModalOpen(true), WELCOME_INFO_MODAL_MS);
+        modalTimeoutId = setTimeout(() => {
+          if (!cancelled) setIsInfoModalOpen(true);
+        }, WELCOME_INFO_MODAL_MS);
       }
       setIsLoading(false);
     };
     void run();
+    return () => {
+      cancelled = true;
+      clearTimeout(modalTimeoutId);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
