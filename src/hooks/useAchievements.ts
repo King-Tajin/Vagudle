@@ -96,20 +96,20 @@ export const computeCloseCallStreak = (
   guessHistory: string[],
   solution: string
 ): boolean => {
-  let streak: string[] = [];
+  let streak = new Set<string>();
 
   for (const guess of guessHistory) {
     const normalized = guess.toLowerCase();
 
     if (isCloseCallGuess(solution, guess)) {
-      if (streak.includes(normalized)) {
-        streak = [normalized];
+      if (streak.has(normalized)) {
+        streak = new Set([normalized]);
       } else {
-        streak.push(normalized);
+        streak.add(normalized);
       }
-      if (streak.length >= 3) return true;
+      if (streak.size >= 3) return true;
     } else {
-      streak = [];
+      streak = new Set();
     }
   }
 

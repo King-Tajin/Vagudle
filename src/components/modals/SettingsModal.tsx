@@ -378,6 +378,7 @@ export const SettingsModal = ({
                         step={1}
                         value={wordLength}
                         onChange={handleSliderChange}
+                        aria-label="Word length"
                         className="absolute inset-0 w-full opacity-0 cursor-pointer"
                         style={{
                           height: 22,

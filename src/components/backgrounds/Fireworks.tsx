@@ -376,7 +376,7 @@ export const Fireworks = ({ extraEffects }: Props) => {
     };
     window.addEventListener("pointerdown", unlockAudio);
     window.addEventListener("keydown", unlockAudio);
-    window.addEventListener("touchstart", unlockAudio);
+    window.addEventListener("touchstart", unlockAudio, { passive: true });
 
     const setupSize = () => {
       canvas.width = window.innerWidth;

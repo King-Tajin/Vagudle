@@ -151,10 +151,12 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
 ];
 
-export const isCompletionistUnlocked = (unlockedIds: string[]): boolean =>
-  ACHIEVEMENTS.filter((a) => a.id !== COMPLETIONIST_ID).every((a) =>
-    unlockedIds.includes(a.id)
+export const isCompletionistUnlocked = (unlockedIds: string[]): boolean => {
+  const unlockedSet = new Set(unlockedIds);
+  return ACHIEVEMENTS.filter((a) => a.id !== COMPLETIONIST_ID).every((a) =>
+    unlockedSet.has(a.id)
   );
+};
 
 export const getEffectiveUnlockedIds = (unlockedIds: string[]): string[] => {
   if (

@@ -171,10 +171,17 @@ const FeedbackTab = () => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest">
+        <span
+          id="feedback-type-label"
+          className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest"
+        >
           FEEDBACK TYPE *
-        </label>
-        <div className="grid grid-cols-2 gap-3">
+        </span>
+        <div
+          role="group"
+          aria-labelledby="feedback-type-label"
+          className="grid grid-cols-2 gap-3"
+        >
           <button
             onClick={() => setFormData({ ...formData, sentiment: "positive" })}
             className="p-3 border-2 transition-all flex flex-col items-center gap-1"
@@ -241,10 +248,14 @@ const FeedbackTab = () => {
       </div>
 
       <div>
-        <label className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest">
+        <label
+          htmlFor="feedback-category"
+          className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest"
+        >
           CATEGORY *
         </label>
         <select
+          id="feedback-category"
           value={formData.category}
           onChange={(e) =>
             setFormData({ ...formData, category: e.target.value })
@@ -266,10 +277,14 @@ const FeedbackTab = () => {
       </div>
 
       <div>
-        <label className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest">
+        <label
+          htmlFor="feedback-email"
+          className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest"
+        >
           EMAIL (OPTIONAL)
         </label>
         <input
+          id="feedback-email"
           type="email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -290,7 +305,10 @@ const FeedbackTab = () => {
 
       <div>
         <div className="flex justify-between items-baseline mb-2">
-          <label className="font-pixel text-xs text-crown-amber tracking-widest">
+          <label
+            htmlFor="feedback-message"
+            className="font-pixel text-xs text-crown-amber tracking-widest"
+          >
             YOUR FEEDBACK *
           </label>
           <span
@@ -309,6 +327,7 @@ const FeedbackTab = () => {
         </div>
         <div className="relative">
           <textarea
+            id="feedback-message"
             value={formData.message}
             onChange={(e) =>
               setFormData({ ...formData, message: e.target.value })
@@ -330,6 +349,7 @@ const FeedbackTab = () => {
             type="button"
             onClick={() => setIsFullscreen(true)}
             title="Expand"
+            aria-label="Expand"
             className="absolute bottom-2 right-2 p-1 transition-opacity opacity-40 hover:opacity-100"
             style={{ color: "#d4af37" }}
           >
@@ -378,6 +398,7 @@ const FeedbackTab = () => {
                     type="button"
                     onClick={() => setIsFullscreen(false)}
                     title="Collapse"
+                    aria-label="Collapse"
                     className="p-1 transition-opacity opacity-60 hover:opacity-100"
                     style={{ color: "#d4af37" }}
                   >
@@ -461,9 +482,15 @@ export const InfoModal = ({
             leaveTo="opacity-0"
           >
             <div
+              role="button"
+              tabIndex={0}
+              aria-label="Close"
               className="absolute inset-0 transition-opacity"
               style={{ background: "rgba(0,0,0,0.75)" }}
               onClick={handleClose}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") handleClose();
+              }}
             />
           </Transition.Child>
 

@@ -526,10 +526,14 @@ export const ChallengeCreatorModal = ({
       </div>
 
       <div>
-        <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+        <label
+          htmlFor="challenge-dictionary"
+          className="font-pixel text-xs text-crown-amber tracking-widest mb-2 block"
+        >
           DICTIONARY
-        </p>
+        </label>
         <select
+          id="challenge-dictionary"
           value={dict}
           onChange={handleDictChange}
           className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"

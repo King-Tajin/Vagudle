@@ -63,6 +63,7 @@ export const AttributionModal = ({
           </p>
           <button
             onClick={() => onHideForeverChange(!isHidden)}
+            aria-label="Hide attribution for this background"
             className="flex-shrink-0 w-14 h-8 transition-all duration-300 ease-in-out pixel-border-sm"
             style={{
               background: isHidden

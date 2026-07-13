@@ -142,7 +142,7 @@ const recolorAnimationData = (
   darkHex: string,
   lightHex: string
 ): object => {
-  const clone = JSON.parse(JSON.stringify(data)) as object;
+  const clone = structuredClone(data);
   recolorNode(clone, hexToNormalizedRgb(darkHex), hexToNormalizedRgb(lightHex));
   return clone;
 };

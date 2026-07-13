@@ -20,6 +20,7 @@ export const getGuessStatuses = (
   const splitGuess = unicodeSplit(guess);
 
   const solutionCharsTaken = splitSolution.map(() => false);
+  const solutionCharSet = new Set(splitSolution);
 
   const statuses = new Array<CharStatus>(guess.length);
 
@@ -34,7 +35,7 @@ export const getGuessStatuses = (
   splitGuess.forEach((letter, i) => {
     if (statuses[i]) return;
 
-    if (!splitSolution.includes(letter)) {
+    if (!solutionCharSet.has(letter)) {
       statuses[i] = "absent";
       return;
     }

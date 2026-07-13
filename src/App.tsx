@@ -110,7 +110,7 @@ function App() {
     (savedGameState?.cellColors as { [key: string]: CharStatus }) ?? {}
   );
   const [autoGrayLetters, setAutoGrayLetters] = useState<Set<string>>(
-    new Set(savedGameState?.autoGrayLetters ?? [])
+    () => new Set(savedGameState?.autoGrayLetters ?? [])
   );
   const [currentGuess, setCurrentGuess] = useState("");
   const [currentRowClass, setCurrentRowClass] = useState("");
