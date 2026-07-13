@@ -20,10 +20,10 @@ export const CurrentRow = ({
   return (
     <div className={`flex justify-center mb-1 ${className}`}>
       {splitGuess.map((letter, i) => (
-        <Cell key={i} value={letter} cellSize={cellSize} />
+        <Cell key={`letter-${i}`} value={letter} cellSize={cellSize} />
       ))}
       {emptyCells.map((_, i) => (
-        <Cell key={i} cellSize={cellSize} />
+        <Cell key={`empty-${i}`} cellSize={cellSize} />
       ))}
     </div>
   );

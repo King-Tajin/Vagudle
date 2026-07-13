@@ -278,13 +278,10 @@ export const AchievementsModal = (props: Props) => {
     if (!isOpen) setPageIndex(0);
   }, [isOpen]);
 
-  useLayoutEffect(() => {
-    if (pageIndex > pages.length - 1) setPageIndex(0);
-  }, [pages, pageIndex]);
-
-  const currentPage = pages[pageIndex] ?? ACHIEVEMENTS;
-  const canPrev = pageIndex > 0;
-  const canNext = pageIndex < pages.length - 1;
+  const safePageIndex = pageIndex > pages.length - 1 ? 0 : pageIndex;
+  const currentPage = pages[safePageIndex] ?? ACHIEVEMENTS;
+  const canPrev = safePageIndex > 0;
+  const canNext = safePageIndex < pages.length - 1;
 
   return (
     <BaseModal
@@ -343,7 +340,7 @@ export const AchievementsModal = (props: Props) => {
         </button>
 
         <span className="font-pixel text-xs text-gray-400 tracking-widest">
-          PAGE {pageIndex + 1}/{pages.length}
+          PAGE {safePageIndex + 1}/{pages.length}
         </span>
 
         <button

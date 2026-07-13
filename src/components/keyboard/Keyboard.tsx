@@ -1,6 +1,6 @@
 import { CharStatus } from "../../lib/statuses";
 import { Key } from "./Key";
-import React, { useEffect } from "react";
+import React, { useEffect, useEffectEvent } from "react";
 import { ENTER_TEXT, DELETE_TEXT } from "../../constants/strings";
 import { localeAwareUpperCase } from "../../lib/words";
 
@@ -35,32 +35,35 @@ export const Keyboard = ({
     }
   };
 
-  useEffect(() => {
-    const listener = (e: KeyboardEvent) => {
-      const active = document.activeElement;
-      const isTyping =
-        active instanceof HTMLInputElement ||
-        active instanceof HTMLTextAreaElement ||
-        active instanceof HTMLSelectElement;
+  const onKeyup = useEffectEvent((e: KeyboardEvent) => {
+    const active = document.activeElement;
+    const isTyping =
+      active instanceof HTMLInputElement ||
+      active instanceof HTMLTextAreaElement ||
+      active instanceof HTMLSelectElement;
 
-      if (isTyping) return;
+    if (isTyping) return;
 
-      if (e.code === "Enter") {
-        onEnter();
-      } else if (e.code === "Backspace") {
-        onDelete();
-      } else {
-        const key = localeAwareUpperCase(e.key);
-        if (key.length === 1 && key >= "A" && key <= "Z") {
-          onChar(key);
-        }
+    if (e.code === "Enter") {
+      onEnter();
+    } else if (e.code === "Backspace") {
+      onDelete();
+    } else {
+      const key = localeAwareUpperCase(e.key);
+      if (key.length === 1 && key >= "A" && key <= "Z") {
+        onChar(key);
       }
-    };
+    }
+  });
+
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => onKeyup(e);
     window.addEventListener("keyup", listener);
     return () => {
       window.removeEventListener("keyup", listener);
     };
-  }, [onEnter, onDelete, onChar]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div

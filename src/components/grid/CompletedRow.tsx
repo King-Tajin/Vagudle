@@ -52,7 +52,7 @@ export const CompletedRow = ({
         <div className="flex">
           {splitGuess.map((letter, i) => (
             <Cell
-              key={i}
+              key={`${rowIndex}-${i}`}
               value={letter}
               status={cellColors[`${rowIndex}-${i}`]}
               position={i}

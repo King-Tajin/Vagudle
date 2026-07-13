@@ -329,6 +329,7 @@ export const Fireworks = ({ extraEffects }: Props) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let active = true;
     let rafId: number;
     let resizeTimeout: ReturnType<typeof setTimeout>;
     let stars: Star[] = [];
@@ -356,9 +357,11 @@ export const Fireworks = ({ extraEffects }: Props) => {
           noiseBuffer = createNoiseBuffer(audioContext);
           loadBurstBuffers(audioContext)
             .then((buffers) => {
+              if (!active) return;
               burstFileBuffers = buffers;
             })
             .catch(() => {
+              if (!active) return;
               burstFileBuffers = [];
             });
         }
@@ -598,6 +601,7 @@ export const Fireworks = ({ extraEffects }: Props) => {
     window.addEventListener("resize", onResize);
 
     return () => {
+      active = false;
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pointerdown", unlockAudio);

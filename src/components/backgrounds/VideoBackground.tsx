@@ -73,8 +73,9 @@ export const VideoBackground = ({
     const load = async () => {
       try {
         const response = await fetch(src);
+        if (cancelled) return;
         if (!response.ok || !response.body) {
-          if (!cancelled) setHasError(true);
+          setHasError(true);
           return;
         }
 

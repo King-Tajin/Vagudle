@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 import { motion } from "framer-motion";
 import Snowflake from "../../assets/icons/snowflake.svg?react";
 
@@ -68,6 +73,22 @@ const buildFlakes = (): Flake[] => {
   }));
 };
 
+const createFlakesStore = () => {
+  let snapshot = buildFlakes();
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => snapshot,
+    subscribe: (onStoreChange: () => void) => {
+      listeners.add(onStoreChange);
+      return () => listeners.delete(onStoreChange);
+    },
+    handleResize: () => {
+      snapshot = buildFlakes();
+      listeners.forEach((listener) => listener());
+    },
+  };
+};
+
 const FlakeItem = ({ flake }: { flake: Flake }) => (
   <motion.div
     style={{
@@ -134,15 +155,18 @@ interface SnowfallProps {
 }
 
 export const Snowfall = ({ guessesUsed, maxGuesses }: SnowfallProps) => {
-  const [flakes, setFlakes] = useState<Flake[]>(() => buildFlakes());
+  const [flakesStore] = useState(() => createFlakesStore());
+  const flakes = useSyncExternalStore(
+    flakesStore.subscribe,
+    flakesStore.getSnapshot
+  );
   const [wavePath, setWavePath] = useState<string>(() => buildWavePath());
   const wasEmptyRef = useRef(true);
 
   useEffect(() => {
-    const onResize = () => setFlakes(buildFlakes());
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+    window.addEventListener("resize", flakesStore.handleResize);
+    return () => window.removeEventListener("resize", flakesStore.handleResize);
+  }, [flakesStore]);
 
   const fillRatio =
     maxGuesses > 0 ? Math.min(1, Math.max(0, guessesUsed / maxGuesses)) : 0;

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useEffectEvent, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import ChestBase from "@/assets/icons/chest-base.svg";
 import ChestDoorLeft from "@/assets/icons/chest-door-left.svg";
@@ -270,6 +270,10 @@ export function AchievementReveal({ onDone }: Props) {
     []
   );
 
+  const notifyDone = useEffectEvent(() => {
+    onDone();
+  });
+
   useEffect(() => {
     setOverlayOn(true);
 
@@ -363,7 +367,7 @@ export function AchievementReveal({ onDone }: Props) {
       timers.push(
         setTimeout(() => {
           setVisible(false);
-          timers.push(setTimeout(onDone, DONE_AFTER_FADE_MS));
+          timers.push(setTimeout(notifyDone, DONE_AFTER_FADE_MS));
         }, HOLD_BEFORE_CLOSE_MS)
       );
     };
@@ -372,7 +376,8 @@ export function AchievementReveal({ onDone }: Props) {
       timers.forEach(clearTimeout);
       intervals.forEach(clearInterval);
     };
-  }, [onDone, shakeData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shakeData]);
 
   return (
     <motion.div
