@@ -152,7 +152,7 @@ export const VideoBackground = ({
 
     document.addEventListener("pointerdown", unlockAudio);
     document.addEventListener("keydown", unlockAudio);
-    document.addEventListener("touchstart", unlockAudio);
+    document.addEventListener("touchstart", unlockAudio, { passive: true });
 
     const onVisibilityChange = () => {
       if (document.hidden) video.pause();

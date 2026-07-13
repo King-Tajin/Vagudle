@@ -106,55 +106,53 @@ const BackgroundDropdown = ({
             minWidth: "100%",
           }}
         >
-          {[...BACKGROUNDS]
-            .sort(
-              (a, b) =>
-                getBgGroupRank(a, unlockedIds) - getBgGroupRank(b, unlockedIds)
-            )
-            .map((bg) => {
-              const unlocked = isBgUnlocked(bg, unlockedIds);
-              const requiredAchievement = bg.requiresAchievementId
-                ? ACHIEVEMENTS.find((a) => a.id === bg.requiresAchievementId)
-                : undefined;
-              const isHiddenLock =
-                !unlocked && (requiredAchievement?.hidden ?? false);
-              const bgLabel = isHiddenLock
-                ? "???"
-                : isMobile
-                ? bg.mobileLabel
-                : bg.desktopLabel;
-              const isSelected = bg.id === currentId;
+          {BACKGROUNDS.toSorted(
+            (a, b) =>
+              getBgGroupRank(a, unlockedIds) - getBgGroupRank(b, unlockedIds)
+          ).map((bg) => {
+            const unlocked = isBgUnlocked(bg, unlockedIds);
+            const requiredAchievement = bg.requiresAchievementId
+              ? ACHIEVEMENTS.find((a) => a.id === bg.requiresAchievementId)
+              : undefined;
+            const isHiddenLock =
+              !unlocked && (requiredAchievement?.hidden ?? false);
+            const bgLabel = isHiddenLock
+              ? "???"
+              : isMobile
+              ? bg.mobileLabel
+              : bg.desktopLabel;
+            const isSelected = bg.id === currentId;
 
-              return (
-                <button
-                  key={bg.id}
-                  onClick={() => {
-                    if (!unlocked) return;
-                    onChange(bg.id);
-                    setOpen(false);
-                  }}
-                  className="w-full text-left font-pixel text-xs tracking-widest px-3 py-2 flex items-center gap-2"
-                  style={{
-                    color: !unlocked
-                      ? "#374151"
-                      : isSelected
-                      ? "#d4af37"
-                      : "#9ca3af",
-                    textDecoration: !unlocked ? "line-through" : "none",
-                    cursor: unlocked ? "pointer" : "default",
-                    background:
-                      isSelected && unlocked
-                        ? "rgba(80,0,170,0.2)"
-                        : "transparent",
-                  }}
-                >
-                  {!unlocked && (
-                    <Lock className="w-2.5 h-2.5 flex-shrink-0 text-gray-700" />
-                  )}
-                  {bgLabel}
-                </button>
-              );
-            })}
+            return (
+              <button
+                key={bg.id}
+                onClick={() => {
+                  if (!unlocked) return;
+                  onChange(bg.id);
+                  setOpen(false);
+                }}
+                className="w-full text-left font-pixel text-xs tracking-widest px-3 py-2 flex items-center gap-2"
+                style={{
+                  color: !unlocked
+                    ? "#374151"
+                    : isSelected
+                    ? "#d4af37"
+                    : "#9ca3af",
+                  textDecoration: !unlocked ? "line-through" : "none",
+                  cursor: unlocked ? "pointer" : "default",
+                  background:
+                    isSelected && unlocked
+                      ? "rgba(80,0,170,0.2)"
+                      : "transparent",
+                }}
+              >
+                {!unlocked && (
+                  <Lock className="w-2.5 h-2.5 flex-shrink-0 text-gray-700" />
+                )}
+                {bgLabel}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
