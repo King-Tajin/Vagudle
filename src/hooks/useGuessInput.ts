@@ -22,7 +22,7 @@ type Params = {
   isGameLost: boolean;
   isChallengeMode: boolean;
   isDuelMode: boolean;
-  revealTimerRef: React.MutableRefObject<ReturnType<typeof setTimeout> | null>;
+  revealTimerRef: React.RefObject<ReturnType<typeof setTimeout> | null>;
   setCurrentGuess: (v: string) => void;
   setCurrentRowClass: (v: string) => void;
   setIsRevealing: (v: boolean) => void;

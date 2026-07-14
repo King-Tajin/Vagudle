@@ -29,8 +29,8 @@ import {
 type Params = {
   challengeParam: string | null;
   duelParam: string | null;
-  restoredGameRef: React.MutableRefObject<boolean>;
-  duelSubmittedRef: React.MutableRefObject<boolean>;
+  restoredGameRef: React.RefObject<boolean>;
+  duelSubmittedRef: React.RefObject<boolean>;
   setIsLoading: (v: boolean) => void;
   setIsMalformedChallenge: (v: boolean) => void;
   setIsMalformedDuel: (v: boolean) => void;

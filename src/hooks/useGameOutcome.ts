@@ -8,9 +8,9 @@ type Params = {
   solution: string;
   isDuelMode: boolean;
   isChallengeMode: boolean;
-  restoredRef: React.MutableRefObject<boolean>;
-  extraEffectsRef: React.MutableRefObject<boolean>;
-  achievementRevealPendingRef: React.MutableRefObject<boolean>;
+  restoredRef: React.RefObject<boolean>;
+  extraEffectsRef: React.RefObject<boolean>;
+  achievementRevealPendingRef: React.RefObject<boolean>;
   showSuccessAlert: (
     message: string,
     options?: { delayMs?: number; onClose?: () => void }

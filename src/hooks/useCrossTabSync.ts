@@ -36,10 +36,10 @@ type Params = {
   challengeConfig: ChallengeConfig | null;
   solution: string;
   hardMode: boolean;
-  restoredGameRef: React.MutableRefObject<boolean>;
-  achievementCheckedRef: React.MutableRefObject<boolean>;
-  duelSubmittedRef: React.MutableRefObject<boolean>;
-  skipNextSolutionResetRef: React.MutableRefObject<boolean>;
+  restoredGameRef: React.RefObject<boolean>;
+  achievementCheckedRef: React.RefObject<boolean>;
+  duelSubmittedRef: React.RefObject<boolean>;
+  skipNextSolutionResetRef: React.RefObject<boolean>;
   setSolution: (v: string) => void;
   setGuesses: (v: string[]) => void;
   setCellColors: React.Dispatch<
@@ -66,9 +66,9 @@ type Params = {
 const markRestoredOutcome = (
   won: boolean,
   lost: boolean,
-  restoredGameRef: React.MutableRefObject<boolean>,
-  achievementCheckedRef: React.MutableRefObject<boolean> | null,
-  duelSubmittedRef: React.MutableRefObject<boolean> | null
+  restoredGameRef: React.RefObject<boolean>,
+  achievementCheckedRef: React.RefObject<boolean> | null,
+  duelSubmittedRef: React.RefObject<boolean> | null
 ) => {
   if (!won && !lost) return;
   restoredGameRef.current = true;

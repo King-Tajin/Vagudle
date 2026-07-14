@@ -10,7 +10,7 @@ type Params = {
   isGameWon: boolean;
   isGameLost: boolean;
   guessCount: number;
-  submittedRef: React.MutableRefObject<boolean>;
+  submittedRef: React.RefObject<boolean>;
 };
 
 export const useDuelResult = ({

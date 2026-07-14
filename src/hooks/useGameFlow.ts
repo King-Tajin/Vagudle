@@ -17,7 +17,7 @@ type Params = {
   isDuelMode: boolean;
   isChallengeMode: boolean;
   maxChallenges: number;
-  revealTimerRef: React.MutableRefObject<ReturnType<typeof setTimeout> | null>;
+  revealTimerRef: React.RefObject<ReturnType<typeof setTimeout> | null>;
   setWordLength: (v: number) => void;
   setSolution: (v: string) => void;
   setGuesses: (v: string[]) => void;
