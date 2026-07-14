@@ -71,6 +71,7 @@ export const BaseModal = ({
             </div>
             {headerExtra}
             <button
+              type="button"
               onClick={handleClose}
               className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
               aria-label="Close"

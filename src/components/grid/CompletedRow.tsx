@@ -40,6 +40,7 @@ export const CompletedRow = ({
       <div className="relative">
         <div className="absolute top-0 right-full mr-2 flex items-center h-full">
           <button
+            type="button"
             onClick={() => onRowReset(rowIndex)}
             className="flex items-center justify-center opacity-50 hover:opacity-100 transition-opacity"
             style={{ width: recycleSize, height: recycleSize }}

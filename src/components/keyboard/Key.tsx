@@ -64,6 +64,7 @@ export const Key = ({
 
   return (
     <button
+      type="button"
       style={styles}
       aria-label={describeLetterStatus(value, status)}
       className={classes}

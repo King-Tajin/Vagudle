@@ -82,6 +82,7 @@ const BackgroundDropdown = ({
   return (
     <div ref={ref} className="relative flex-shrink-0">
       <button
+        type="button"
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-1.5 font-pixel text-xs tracking-widest px-2.5 py-2"
         style={{
@@ -95,7 +96,6 @@ const BackgroundDropdown = ({
         {label}
         <ChevronDown className="w-3 h-3 flex-shrink-0 text-gray-500" />
       </button>
-
       {open && (
         <div
           className="absolute right-0 bottom-full mb-1 z-50"
@@ -125,6 +125,7 @@ const BackgroundDropdown = ({
 
             return (
               <button
+                type="button"
                 key={bg.id}
                 onClick={() => {
                   if (!unlocked) return;
@@ -230,6 +231,7 @@ export const SettingsModal = ({
     <BaseModal title="Settings" isOpen={isOpen} handleClose={handleClose}>
       <div className="flex gap-2 mb-4">
         <button
+          type="button"
           className={tabBase}
           style={activeTab === "settings" ? activeTabStyle : inactiveTabStyle}
           onClick={() => setActiveTab("settings")}
@@ -238,6 +240,7 @@ export const SettingsModal = ({
         </button>
         {!isActivityMode && (
           <button
+            type="button"
             className={tabBase}
             style={
               activeTab === "challenge" ? activeTabStyle : inactiveTabStyle
@@ -248,7 +251,6 @@ export const SettingsModal = ({
           </button>
         )}
       </div>
-
       {activeTab === "settings" && (
         <>
           {errorMessage && (
@@ -445,7 +447,6 @@ export const SettingsModal = ({
           </div>
         </>
       )}
-
       {activeTab === "challenge" && <ChallengeCreatorModal />}
     </BaseModal>
   );

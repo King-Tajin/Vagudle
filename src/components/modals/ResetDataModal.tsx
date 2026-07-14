@@ -96,6 +96,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
 
         <div className="flex gap-3 pt-2">
           <button
+            type="button"
             onClick={handleClose}
             className="flex-1 py-3 font-pixel text-xs tracking-widest transition-all"
             style={{
@@ -107,6 +108,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             CANCEL
           </button>
           <button
+            type="button"
             onClick={handleConfirm}
             disabled={isLocked}
             className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"

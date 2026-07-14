@@ -141,6 +141,7 @@ export const DuelModal = ({
                   </p>
 
                   <button
+                    type="button"
                     onClick={onPlay}
                     className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
                     style={{
@@ -224,6 +225,7 @@ export const DuelModal = ({
 
                   {!isActivityMode && (
                     <button
+                      type="button"
                       onClick={onReturn}
                       disabled={
                         saveStatus === "saving" || saveStatus === "idle"

@@ -275,6 +275,7 @@ export const Navbar = ({
                           tools, and more.
                         </p>
                         <button
+                          type="button"
                           onClick={dismissNudge}
                           className="w-full py-1.5 font-pixel text-[9px] tracking-widest transition-all"
                           style={{
@@ -296,7 +297,6 @@ export const Navbar = ({
 
         <div className="h-1 tajin-accent" />
       </header>
-
       {showConfirm && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center"
@@ -341,6 +341,7 @@ export const Navbar = ({
             )}
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={onConfirm}
                 className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"
                 style={{
@@ -352,6 +353,7 @@ export const Navbar = ({
                 {isDuelMode ? "LEAVE" : isChallengeMode ? "LEAVE" : "ABANDON"}
               </button>
               <button
+                type="button"
                 onClick={() => setShowConfirm(false)}
                 className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"
                 style={{

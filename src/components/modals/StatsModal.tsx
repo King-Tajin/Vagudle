@@ -754,6 +754,7 @@ export const StatsModal = ({
     >
       <div className="flex gap-2 mb-4">
         <button
+          type="button"
           className={tabBase}
           style={activeTab === "normal" ? activeTabStyle : inactiveTabStyle}
           onClick={() => setActiveTab("normal")}
@@ -761,6 +762,7 @@ export const StatsModal = ({
           NORMAL
         </button>
         <button
+          type="button"
           className={tabBase}
           style={activeTab === "hard" ? activeTabStyle : inactiveTabStyle}
           onClick={() => setActiveTab("hard")}
@@ -768,7 +770,6 @@ export const StatsModal = ({
           HARD
         </button>
       </div>
-
       {hasGames ? (
         <>
           <StatBar gameStats={displayStats} />
@@ -794,7 +795,6 @@ export const StatsModal = ({
           </p>
         </div>
       )}
-
       {hasGames && !isActivityMode && (
         <div className="mt-4 flex justify-end">
           <button
@@ -824,7 +824,6 @@ export const StatsModal = ({
           </button>
         </div>
       )}
-
       {(isGameLost || isGameWon) && (
         <>
           <div

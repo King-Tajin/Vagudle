@@ -320,19 +320,18 @@ export const AchievementsModal = (props: Props) => {
           ))}
         </div>
       </div>
-
       <div ref={containerRef} className="space-y-3">
         {currentPage.map((a) => (
           <AchievementRow key={a.id} a={a} ctx={props} />
         ))}
       </div>
-
       <div
         ref={paginationRef}
         className="flex items-center justify-between mt-4 pt-3"
         style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
       >
         <button
+          type="button"
           onClick={() => canPrev && setPageIndex((i) => i - 1)}
           disabled={!canPrev}
           className="p-2 bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-30 disabled:hover:bg-obsidian-700 text-gray-300 transition-colors pixel-border-sm"
@@ -346,6 +345,7 @@ export const AchievementsModal = (props: Props) => {
         </span>
 
         <button
+          type="button"
           onClick={() => canNext && setPageIndex((i) => i + 1)}
           disabled={!canNext}
           className="p-2 bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-30 disabled:hover:bg-obsidian-700 text-gray-300 transition-colors pixel-border-sm"

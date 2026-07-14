@@ -145,6 +145,7 @@ const FeedbackTab = () => {
           Thanks for helping improve Vagudle.
         </p>
         <button
+          type="button"
           onClick={() => {
             setStatus("idle");
             setFormData({
@@ -178,6 +179,7 @@ const FeedbackTab = () => {
           className="grid grid-cols-2 gap-3"
         >
           <button
+            type="button"
             onClick={() => setFormData({ ...formData, sentiment: "positive" })}
             className="p-3 border-2 transition-all flex flex-col items-center gap-1"
             style={{
@@ -209,6 +211,7 @@ const FeedbackTab = () => {
             </span>
           </button>
           <button
+            type="button"
             onClick={() => setFormData({ ...formData, sentiment: "negative" })}
             className="p-3 border-2 transition-all flex flex-col items-center gap-1"
             style={{
@@ -241,7 +244,6 @@ const FeedbackTab = () => {
           </button>
         </div>
       </div>
-
       <div>
         <label
           htmlFor="feedback-category"
@@ -270,7 +272,6 @@ const FeedbackTab = () => {
           <option value="general">General Feedback</option>
         </select>
       </div>
-
       <div>
         <label
           htmlFor="feedback-email"
@@ -297,7 +298,6 @@ const FeedbackTab = () => {
           Only if you want a response
         </p>
       </div>
-
       <div>
         <div className="flex justify-between items-baseline mb-2">
           <label
@@ -420,7 +420,6 @@ const FeedbackTab = () => {
           </div>
         )}
       </div>
-
       {status === "error" && (
         <div
           className="p-3 border-l-4 flex items-start gap-2"
@@ -430,8 +429,8 @@ const FeedbackTab = () => {
           <p className="font-code text-xs text-gray-300">{errorMessage}</p>
         </div>
       )}
-
       <button
+        type="button"
         disabled={status === "submitting"}
         onClick={handleSubmit}
         className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
@@ -520,6 +519,7 @@ export const InfoModal = ({
                     </h3>
                   </div>
                   <button
+                    type="button"
                     onClick={handleClose}
                     className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
                     aria-label="Close"
@@ -536,6 +536,7 @@ export const InfoModal = ({
                     const active = activeTab === tab.id;
                     return (
                       <button
+                        type="button"
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className="flex-1 flex flex-col items-center gap-1 py-3 px-1 transition-colors"
@@ -801,6 +802,7 @@ export const InfoModal = ({
 
                       <div className="flex justify-between gap-3">
                         <button
+                          type="button"
                           onClick={() => setIsResetModalOpen(true)}
                           title="Erases all saved progress, stats, achievements, and settings."
                           className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
@@ -815,6 +817,7 @@ export const InfoModal = ({
                         </button>
 
                         <button
+                          type="button"
                           onClick={onRestoreHiddenAttributions}
                           disabled={!hasHiddenAttributions}
                           title="Hid a video background's attribution button? Bring it back here."

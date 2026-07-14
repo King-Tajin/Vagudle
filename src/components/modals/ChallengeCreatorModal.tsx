@@ -37,6 +37,7 @@ function ButtonGroup<T extends string | number>({
         const active = opt.value === value;
         return (
           <button
+            type="button"
             key={String(opt.value)}
             onClick={() => onChange(opt.value)}
             className="flex items-center justify-center px-3 py-2 font-pixel text-xs tracking-widest transition-all flex-1"
@@ -344,6 +345,7 @@ export const ChallengeCreatorModal = ({
       <div className="space-y-3">
         {onBack && (
           <button
+            type="button"
             onClick={onBack}
             className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
             style={{ color: "#6b7280" }}
@@ -373,6 +375,7 @@ export const ChallengeCreatorModal = ({
       <div className="space-y-3">
         {onBack && (
           <button
+            type="button"
             onClick={onBack}
             className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
             style={{ color: "#6b7280" }}
@@ -414,7 +417,6 @@ export const ChallengeCreatorModal = ({
             </span>
           </div>
         </div>
-
         <div
           className="px-3 py-2"
           style={{
@@ -426,9 +428,9 @@ export const ChallengeCreatorModal = ({
             {generated.url}
           </p>
         </div>
-
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={copyLink}
             className="flex-1 py-2.5 font-pixel text-xs tracking-widest flex items-center justify-center gap-1.5 transition-all"
             style={{
@@ -453,6 +455,7 @@ export const ChallengeCreatorModal = ({
           </button>
 
           <button
+            type="button"
             onClick={handleShare}
             className="flex-1 py-2.5 font-pixel text-xs tracking-widest flex items-center justify-center gap-1.5 transition-all"
             style={{
@@ -477,6 +480,7 @@ export const ChallengeCreatorModal = ({
           </button>
 
           <button
+            type="button"
             onClick={handleEdit}
             className="px-4 py-2.5 font-pixel text-xs tracking-widest transition-all"
             style={{
@@ -504,6 +508,7 @@ export const ChallengeCreatorModal = ({
     <div className="space-y-4">
       {onBack && (
         <button
+          type="button"
           onClick={onBack}
           className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
           style={{ color: "#6b7280" }}
@@ -518,7 +523,6 @@ export const ChallengeCreatorModal = ({
           BACK TO STATS
         </button>
       )}
-
       {generateStatus === "error" && autoFilledWord && (
         <div
           className="p-3"
@@ -532,7 +536,6 @@ export const ChallengeCreatorModal = ({
           </p>
         </div>
       )}
-
       <div
         className="flex gap-2 p-2.5"
         style={{
@@ -547,7 +550,6 @@ export const ChallengeCreatorModal = ({
           popularity of the word.
         </p>
       </div>
-
       <div>
         <label
           htmlFor="challenge-dictionary"
@@ -573,9 +575,7 @@ export const ChallengeCreatorModal = ({
           ))}
         </select>
       </div>
-
       <div className="border-t border-obsidian-700" />
-
       <div>
         <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
           YOUR WORD
@@ -656,9 +656,7 @@ export const ChallengeCreatorModal = ({
           </p>
         )}
       </div>
-
       <div className="border-t border-obsidian-700" />
-
       <div>
         <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
           GUESSES ALLOWED
@@ -672,23 +670,20 @@ export const ChallengeCreatorModal = ({
           }}
         />
       </div>
-
       <div className="border-t border-obsidian-700" />
-
       <p
         className="font-code text-xs leading-snug"
         style={{ color: "rgba(212,175,55,0.6)" }}
       >
         ⚠ Challenge results do not count toward the recipient's stats. ⚠
       </p>
-
       {generateStatus === "error" && !autoFilledWord && (
         <p className="font-code text-xs text-tajin-red">
           Failed to generate link. Check your connection and try again.
         </p>
       )}
-
       <button
+        type="button"
         onClick={generate}
         disabled={wordStatus !== "valid" || generateStatus === "loading"}
         className="w-full py-3 font-pixel text-xs tracking-widest transition-all flex items-center justify-center gap-2"

@@ -40,6 +40,7 @@ export const AttributionButton = ({
 
   return (
     <button
+      type="button"
       onClick={onClick}
       aria-label="Background video attribution"
       className="fixed left-4 z-[55] w-9 h-9 flex items-center justify-center rounded-full bg-obsidian-900/90 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/60 transition-colors"

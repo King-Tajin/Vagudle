@@ -25,6 +25,7 @@ export const title = (
 
 export const returnButton = (onClick: () => void) => (
   <button
+    type="button"
     onClick={onClick}
     className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
     style={{
@@ -39,6 +40,7 @@ export const returnButton = (onClick: () => void) => (
 
 export const retryButton = () => (
   <button
+    type="button"
     onClick={() => window.location.reload()}
     className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
     style={{

@@ -543,7 +543,6 @@ function App() {
         maxChallenges={maxChallenges}
         currentWinStreak={currentWinStreak}
       />
-
       {showAttributionButton && (
         <AttributionButton
           onClick={() => setIsAttributionModalOpen(true)}
@@ -551,7 +550,6 @@ function App() {
           isMobile={isMobile}
         />
       )}
-
       {!isChallengeMode && !isDuelMode && (
         <motion.div
           className="fixed left-0 z-20 flex items-stretch"
@@ -561,6 +559,7 @@ function App() {
           transition={{ type: "spring", stiffness: 280, damping: 28 }}
         >
           <button
+            type="button"
             className="p-2 flex items-center justify-center bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 transition-colors"
             style={{ borderLeft: "none", borderRadius: 0 }}
             onClick={() => setIsAchievementsModalOpen(true)}
@@ -569,6 +568,7 @@ function App() {
             <RibbonIcon className="w-14 h-14" />
           </button>
           <button
+            type="button"
             className="flex items-center justify-center px-1.5 bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 hover:bg-obsidian-700 transition-colors text-crown-gold"
             style={{ borderLeft: "none", borderRadius: "0 6px 6px 0" }}
             onClick={() => setIsTrayOpen((prev) => !prev)}
@@ -582,7 +582,6 @@ function App() {
           </button>
         </motion.div>
       )}
-
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
         setIsStatsModalOpen={setIsStatsModalOpen}
@@ -594,7 +593,6 @@ function App() {
         isInfoModalOpen={isInfoModalOpen}
         isActivityMode={isDiscordActivity}
       />
-
       <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
           <motion.p
@@ -707,7 +705,6 @@ function App() {
 
         <AlertContainer />
       </div>
-
       {isCelebrating && (
         <Suspense fallback={null}>
           <WinCelebration
@@ -726,7 +723,6 @@ function App() {
           />
         </Suspense>
       )}
-
       {isRevealingAchievement && (
         <Suspense fallback={null}>
           <AchievementReveal

@@ -122,6 +122,7 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
               </p>
 
               <button
+                type="button"
                 onClick={onPlay}
                 className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
                 style={{
