@@ -58,17 +58,21 @@ export const VideoBackground = ({
   const [total, setTotal] = useState(0);
   const [indeterminate, setIndeterminate] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [prevSrc, setPrevSrc] = useState(src);
 
-  useEffect(() => {
-    let cancelled = false;
-    let createdUrl: string | null = null;
-
+  if (src !== prevSrc) {
+    setPrevSrc(src);
     setObjectUrl(null);
     setProgress(0);
     setReceived(0);
     setTotal(0);
     setIndeterminate(false);
     setHasError(false);
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    let createdUrl: string | null = null;
 
     const load = async () => {
       try {

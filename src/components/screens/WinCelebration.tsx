@@ -162,6 +162,7 @@ export function WinCelebration({ word, onDone }: Props) {
       [vw * 0.68, vh * 0.25, 1600],
     ];
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setParticles(
       burstPoints.flatMap(([x, y, delay], i) => generateBurst(i, x, y, delay))
     );

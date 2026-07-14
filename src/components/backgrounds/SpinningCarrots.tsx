@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
 import CarrotUrl from "../../assets/icons/carrot.svg";
 import { drawDirtTexture } from "../../lib/dirtTexture";
@@ -85,7 +85,7 @@ export const SpinningCarrots = () => {
     };
   }, []);
 
-  const carrots = useMemo<CarrotParticle[]>(() => {
+  const [carrots] = useState<CarrotParticle[]>(() => {
     const count = Math.max(
       1,
       Math.round(
@@ -110,7 +110,7 @@ export const SpinningCarrots = () => {
         direction: Math.random() < 0.5 ? 1 : -1,
       };
     });
-  }, []);
+  });
 
   return (
     <div

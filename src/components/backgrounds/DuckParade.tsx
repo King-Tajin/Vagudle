@@ -353,7 +353,7 @@ export const DuckParade = ({
   const [hasError, setHasError] = useState(false);
   const [groundHeight, setGroundHeight] = useState(0);
   const [ducks, setDucks] = useState<DuckDef[]>(buildDucks);
-  const clouds = useMemo<CloudDef[]>(buildClouds, []);
+  const [clouds] = useState<CloudDef[]>(buildClouds);
   const containerRef = useRef<HTMLDivElement>(null);
   const groundCanvasRef = useRef<HTMLCanvasElement>(null);
   const [x, setX] = useState(0);
@@ -452,6 +452,7 @@ export const DuckParade = ({
     directionRef.current = 1;
     phaseRef.current = "walking";
     xRef.current = -formationSpan;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDirection(1);
     setX(-formationSpan);
 

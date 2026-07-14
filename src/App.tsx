@@ -206,6 +206,7 @@ function App() {
   }, [solution]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsTrayOpen(true);
     hasAutoClosedTrayRef.current = false;
   }, [solution]);
@@ -251,6 +252,7 @@ function App() {
       guesses,
     });
     if (newly.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
       achievementRevealPendingRef.current = true;
     }

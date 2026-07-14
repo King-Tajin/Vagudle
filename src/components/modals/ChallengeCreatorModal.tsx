@@ -90,6 +90,34 @@ const getDictHints = (word: string, selected: ChallengeDict): DictHint => {
   return { foundIn: null, easierThan };
 };
 
+const computeAutoFillState = (
+  autoFilledWord: string | undefined,
+  dict: ChallengeDict
+): { status: WordStatus; hints: DictHint; generateStatus: GenerateStatus } => {
+  const idle = { foundIn: null, easierThan: null };
+  if (!autoFilledWord)
+    return { status: "idle", hints: idle, generateStatus: "idle" };
+
+  const w = autoFilledWord.toUpperCase().replace(/[^A-Z]/g, "");
+  if (w.length < 4 || w.length > 7) {
+    return { status: "invalid-length", hints: idle, generateStatus: "idle" };
+  }
+
+  if (isWordInDict(w, dict)) {
+    return {
+      status: "valid",
+      hints: getDictHints(w, dict),
+      generateStatus: "loading",
+    };
+  }
+
+  return {
+    status: "invalid-word",
+    hints: getDictHints(w, dict),
+    generateStatus: "idle",
+  };
+};
+
 const shareChallenge = async (generated: Generated, onCopied: () => void) => {
   const { config, url } = generated;
   const text =
@@ -129,16 +157,24 @@ export const ChallengeCreatorModal = ({
 }: Props = {}) => {
   const [dict, setDict] = useState<ChallengeDict>(autoFilledDict ?? "normal");
   const [guesses, setGuesses] = useState<9 | 11>(autoFilledGuesses ?? 11);
-  const [wordInput, setWordInput] = useState(autoFilledWord ?? "");
-  const [wordStatus, setWordStatus] = useState<WordStatus>("idle");
-  const [dictHints, setDictHints] = useState<DictHint>({
-    foundIn: null,
-    easierThan: null,
-  });
+  const [wordInput, setWordInput] = useState(() =>
+    (autoFilledWord ?? "").toUpperCase().replace(/[^A-Z]/g, "")
+  );
+  const [wordStatus, setWordStatus] = useState<WordStatus>(
+    () =>
+      computeAutoFillState(autoFilledWord, autoFilledDict ?? "normal").status
+  );
+  const [dictHints, setDictHints] = useState<DictHint>(
+    () => computeAutoFillState(autoFilledWord, autoFilledDict ?? "normal").hints
+  );
   const [generated, setGenerated] = useState<Generated | null>(null);
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
-  const [generateStatus, setGenerateStatus] = useState<GenerateStatus>("idle");
+  const [generateStatus, setGenerateStatus] = useState<GenerateStatus>(
+    () =>
+      computeAutoFillState(autoFilledWord, autoFilledDict ?? "normal")
+        .generateStatus
+  );
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sharedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -157,45 +193,32 @@ export const ChallengeCreatorModal = ({
     const d = autoFilledDict ?? "normal";
     const g = autoFilledGuesses ?? 11;
 
-    setWordInput(w);
-    setDict(d);
-    setGuesses(g);
-
-    if (w.length < 4 || w.length > 7) {
-      setWordStatus("invalid-length");
+    if (w.length < 4 || w.length > 7 || !isWordInDict(w, d)) {
       return () => {
         cancelled = true;
       };
     }
 
-    if (isWordInDict(w, d)) {
-      setWordStatus("valid");
-      setDictHints(getDictHints(w, d));
-      const config: Omit<ChallengeConfig, "id"> = {
+    const config: Omit<ChallengeConfig, "id"> = {
+      word: w,
+      dict: d,
+      guesses: g,
+      length: w.length,
+    };
+    void encodeChallenge(config).then((result) => {
+      if (cancelled) return;
+      if (!result) {
+        setGenerateStatus("error");
+        return;
+      }
+      const fullConfig: ChallengeConfig = { ...config, id: result.id };
+      setGenerated({
         word: w,
-        dict: d,
-        guesses: g,
-        length: w.length,
-      };
-      setGenerateStatus("loading");
-      void encodeChallenge(config).then((result) => {
-        if (cancelled) return;
-        if (!result) {
-          setGenerateStatus("error");
-          return;
-        }
-        const fullConfig: ChallengeConfig = { ...config, id: result.id };
-        setGenerated({
-          word: w,
-          url: buildChallengeUrl(result.encoded),
-          config: fullConfig,
-        });
-        setGenerateStatus("idle");
+        url: buildChallengeUrl(result.encoded),
+        config: fullConfig,
       });
-    } else {
-      setWordStatus("invalid-word");
-      setDictHints(getDictHints(w, d));
-    }
+      setGenerateStatus("idle");
+    });
 
     return () => {
       cancelled = true;

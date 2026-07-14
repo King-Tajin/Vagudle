@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
+import { createRng, seedFromNumbers } from "../../lib/seededRandom";
 
 const FONT_SIZE = 17;
 const SPREAD = 150;
@@ -10,8 +11,8 @@ const WORD_OPACITY = 0.95;
 const toTitleCase = (w: string) =>
   w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
 
-const pickWord = (pool: string[]) =>
-  toTitleCase(pool[Math.floor(Math.random() * pool.length)]);
+const pickWord = (pool: string[], rng: () => number = Math.random) =>
+  toTitleCase(pool[Math.floor(rng() * pool.length)]);
 
 interface WordSlot {
   id: number;
@@ -25,7 +26,12 @@ interface WordSlot {
 
 let slotId = 0;
 
-const buildSlots = (W: number, H: number, pool: string[]): WordSlot[] => {
+const buildSlots = (
+  W: number,
+  H: number,
+  pool: string[],
+  rng: () => number
+): WordSlot[] => {
   const cols = Math.ceil(W / SPREAD);
   const rows = Math.ceil(H / SPREAD);
   const cellW = 100 / cols;
@@ -34,17 +40,17 @@ const buildSlots = (W: number, H: number, pool: string[]): WordSlot[] => {
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const x = (col + 0.5) * cellW + (Math.random() - 0.5) * cellW * 0.6;
-      const y = (row + 0.5) * cellH + (Math.random() - 0.5) * cellH * 0.6;
+      const x = (col + 0.5) * cellW + (rng() - 0.5) * cellW * 0.6;
+      const y = (row + 0.5) * cellH + (rng() - 0.5) * cellH * 0.6;
 
       slots.push({
         id: slotId++,
         x: Math.max(2, Math.min(98, x)),
         y: Math.max(2, Math.min(98, y)),
-        rotation: (Math.random() - 0.5) * 2 * MAX_ROTATION,
-        word: pickWord(pool),
-        duration: 4 + Math.random() * 4 * WORD_SPEED_MULTIPLIER,
-        initialDelay: Math.random() * 7,
+        rotation: (rng() - 0.5) * 2 * MAX_ROTATION,
+        word: pickWord(pool, rng),
+        duration: 4 + rng() * 4 * WORD_SPEED_MULTIPLIER,
+        initialDelay: rng() * 7,
       });
     }
   }
@@ -97,7 +103,6 @@ const FadingWord = ({ slot, pool }: FadingWordProps) => {
 
 export const SevenLetterWords = () => {
   const [pool, setPool] = useState<string[]>([]);
-  const [slots, setSlots] = useState<WordSlot[]>([]);
   const [size, setSize] = useState({
     W: window.innerWidth,
     H: window.innerHeight,
@@ -128,10 +133,11 @@ export const SevenLetterWords = () => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  useEffect(() => {
-    if (pool.length === 0) return;
-    setSlots(buildSlots(size.W, size.H, pool));
-  }, [pool, size]);
+  const slots = useMemo(() => {
+    if (pool.length === 0) return [];
+    const rng = createRng(seedFromNumbers(size.W, size.H, pool.length));
+    return buildSlots(size.W, size.H, pool, rng);
+  }, [pool, size.W, size.H]);
 
   return (
     <div

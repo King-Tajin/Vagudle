@@ -62,7 +62,6 @@ export const Keyboard = ({
     return () => {
       window.removeEventListener("keyup", listener);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

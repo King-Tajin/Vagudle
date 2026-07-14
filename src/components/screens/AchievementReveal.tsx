@@ -275,6 +275,7 @@ export function AchievementReveal({ onDone }: Props) {
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOverlayOn(true);
 
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -376,7 +377,6 @@ export function AchievementReveal({ onDone }: Props) {
       timers.forEach(clearTimeout);
       intervals.forEach(clearInterval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shakeData]);
 
   return (

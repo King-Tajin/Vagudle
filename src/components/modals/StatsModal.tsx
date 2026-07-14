@@ -344,13 +344,16 @@ export const StatsModal = ({
   const [showChallengeCreator, setShowChallengeCreator] = useState(false);
   const [achievementIdx, setAchievementIdx] = useState(0);
   const hasPlayedSoundRef = useRef(false);
+  const [prevResetKey, setPrevResetKey] = useState(`${isOpen}:${solution}`);
+  const resetKey = `${isOpen}:${solution}`;
 
-  useEffect(() => {
+  if (resetKey !== prevResetKey) {
+    setPrevResetKey(resetKey);
     if (isOpen) {
       setShowChallengeCreator(false);
       setAchievementIdx(0);
     }
-  }, [isOpen, solution]);
+  }
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;

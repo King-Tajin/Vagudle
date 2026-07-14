@@ -12,18 +12,15 @@ export const AttributionButton = ({
   keyboardRef,
   isMobile,
 }: Props) => {
-  const [bottomOffset, setBottomOffset] = useState(16);
+  const [measuredOffset, setMeasuredOffset] = useState(16);
 
   useEffect(() => {
-    if (!isMobile) {
-      setBottomOffset(16);
-      return;
-    }
+    if (!isMobile) return;
 
     const measure = () => {
       const el = keyboardRef.current;
       if (!el) return;
-      setBottomOffset(el.getBoundingClientRect().height + 8);
+      setMeasuredOffset(el.getBoundingClientRect().height + 8);
     };
 
     measure();
@@ -38,6 +35,8 @@ export const AttributionButton = ({
       window.removeEventListener("orientationchange", measure);
     };
   }, [isMobile, keyboardRef]);
+
+  const bottomOffset = isMobile ? measuredOffset : 16;
 
   return (
     <button

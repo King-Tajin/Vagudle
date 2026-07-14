@@ -211,6 +211,12 @@ export const AchievementsModal = (props: Props) => {
   const paginationRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState<Achievement[][]>([ACHIEVEMENTS]);
   const [pageIndex, setPageIndex] = useState(0);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (!isOpen) setPageIndex(0);
+  }
 
   useLayoutEffect(() => {
     if (!isOpen) return;
@@ -272,10 +278,6 @@ export const AchievementsModal = (props: Props) => {
       window.removeEventListener("resize", recompute);
       void fontCheck;
     };
-  }, [isOpen]);
-
-  useLayoutEffect(() => {
-    if (!isOpen) setPageIndex(0);
   }, [isOpen]);
 
   const safePageIndex = pageIndex > pages.length - 1 ? 0 : pageIndex;

@@ -43,13 +43,15 @@ const DATA_CATEGORIES: { title: string; description: string }[] = [
 
 export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
   const [secondsLeft, setSecondsLeft] = useState(COUNTDOWN_SECONDS);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (!isOpen) setSecondsLeft(COUNTDOWN_SECONDS);
+  }
 
   useEffect(() => {
-    if (!isOpen) {
-      setSecondsLeft(COUNTDOWN_SECONDS);
-      return;
-    }
-    if (secondsLeft <= 0) return;
+    if (!isOpen || secondsLeft <= 0) return;
     const timer = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
     return () => clearTimeout(timer);
   }, [isOpen, secondsLeft]);

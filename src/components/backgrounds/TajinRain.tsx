@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { measureKeyboardStrips, StripMeasure } from "../../lib/stripMeasure";
+import { createRng, seedFromNumbers } from "../../lib/seededRandom";
 
 interface TajinParticle {
   id: number;
@@ -21,7 +22,6 @@ export function TajinRain({
     rightWidth: 0,
   });
   const [viewportH, setViewportH] = useState(() => window.innerHeight);
-  const [particles, setParticles] = useState<TajinParticle[]>([]);
 
   useEffect(() => {
     const measure = () => {
@@ -51,25 +51,31 @@ export function TajinRain({
     };
   }, [keyboardRef]);
 
-  useEffect(() => {
+  const particles = useMemo(() => {
     const COUNT = 45;
     const EXP = 2.8;
+    const rng = createRng(
+      seedFromNumbers(
+        strips.leftWidth,
+        strips.rightStart,
+        strips.rightWidth,
+        viewportH
+      )
+    );
     const next: TajinParticle[] = [];
     let id = 0;
 
     const makeParticle = (x: number): TajinParticle => ({
       id: id++,
       startX: x,
-      delay: Math.random() * 6,
-      duration: 3 + Math.random() * 4,
-      type: (["chili", "lime", "salt"] as const)[Math.floor(Math.random() * 3)],
+      delay: rng() * 6,
+      duration: 3 + rng() * 4,
+      type: (["chili", "lime", "salt"] as const)[Math.floor(rng() * 3)],
     });
 
     if (strips.leftWidth > 2) {
       for (let i = 0; i < COUNT; i++) {
-        next.push(
-          makeParticle(Math.pow(Math.random(), EXP) * strips.leftWidth)
-        );
+        next.push(makeParticle(Math.pow(rng(), EXP) * strips.leftWidth));
       }
     }
 
@@ -77,15 +83,14 @@ export function TajinRain({
       for (let i = 0; i < COUNT; i++) {
         next.push(
           makeParticle(
-            strips.rightStart +
-              (1 - Math.pow(Math.random(), EXP)) * strips.rightWidth
+            strips.rightStart + (1 - Math.pow(rng(), EXP)) * strips.rightWidth
           )
         );
       }
     }
 
-    setParticles(next);
-  }, [strips, viewportH]);
+    return next;
+  }, [viewportH, strips.leftWidth, strips.rightStart, strips.rightWidth]);
 
   const getColor = (type: string) => {
     switch (type) {

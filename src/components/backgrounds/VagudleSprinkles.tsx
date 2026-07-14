@@ -3,6 +3,7 @@ import {
   measureKeyboardStrips,
   type StripMeasure,
 } from "../../lib/stripMeasure";
+import { createRng, seedFromNumbers } from "../../lib/seededRandom";
 
 const PARTICLE_SIZE = 35;
 const SPREAD = 1.4;
@@ -74,6 +75,7 @@ export const VagudleSprinkles = ({
   const { W, H } = windowSize;
 
   const sprinkles = useMemo(() => {
+    const rng = createRng(seedFromNumbers(leftWidth, rightWidth, W, H));
     const padding = HALF_DIAG;
     const range = CELL_SIZE - 2 * padding;
     const rows = Math.ceil((H * SPREAD) / CELL_SIZE);
@@ -90,14 +92,14 @@ export const VagudleSprinkles = ({
     const fillStrip = (cols: number, originX: number) => {
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
-          const x = originX + col * CELL_SIZE + padding + Math.random() * range;
-          const y = marginY + row * CELL_SIZE + padding + Math.random() * range;
+          const x = originX + col * CELL_SIZE + padding + rng() * range;
+          const y = marginY + row * CELL_SIZE + padding + rng() * range;
           items.push({
             id: id++,
             x: (x / W) * 100,
             y: (y / H) * 100,
-            rotation: Math.random() * 360,
-            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+            rotation: rng() * 360,
+            color: COLORS[Math.floor(rng() * COLORS.length)],
           });
         }
       }
