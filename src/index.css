@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 @font-face {
   font-family: "Plus Jakarta Sans";
@@ -7,8 +8,6 @@
   font-style: normal;
   font-display: swap;
 }
-
-@config "../tailwind.config.js";
 
 :root {
   --animation-speed: 1000ms;
