@@ -475,16 +475,12 @@ export const InfoModal = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div
-              role="button"
-              tabIndex={0}
+            <button
+              type="button"
               aria-label="Close"
-              className="absolute inset-0 transition-opacity"
+              className="absolute inset-0 w-full h-full m-0 p-0 border-0 transition-opacity"
               style={{ background: "rgba(0,0,0,0.75)" }}
               onClick={handleClose}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") handleClose();
-              }}
             />
           </TransitionChild>
 

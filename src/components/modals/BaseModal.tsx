@@ -47,7 +47,7 @@ export const BaseModal = ({
 
         <DialogPanel
           transition
-          className={`inline-block align-bottom text-left overflow-hidden shadow-xl transform transition-all duration-250 ease-out sm:my-8 sm:align-middle sm:w-full ${maxWidthClass} data-closed:opacity-0 data-closed:translate-y-4 sm:data-closed:translate-y-0 sm:data-closed:scale-95 data-leave:duration-200 data-leave:ease-in`}
+          className={`relative inline-block align-bottom text-left overflow-hidden shadow-xl transform transition-all duration-250 ease-out sm:my-8 sm:align-middle sm:w-full ${maxWidthClass} data-closed:opacity-0 data-closed:translate-y-4 sm:data-closed:translate-y-0 sm:data-closed:scale-95 data-leave:duration-200 data-leave:ease-in`}
           style={{
             background: "#0a0014",
             border: "4px solid",
