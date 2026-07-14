@@ -27,6 +27,9 @@ export default tseslint.config(
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/use-memo": "warn",
       "react/react-in-jsx-scope": "off",
       "react/no-unescaped-entities": "off",
       "no-empty": ["error", { allowEmptyCatch: true }],

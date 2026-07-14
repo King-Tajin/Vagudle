@@ -6,9 +6,8 @@
   font-display: swap;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
 
 :root {
   --animation-speed: 1000ms;
@@ -59,34 +58,38 @@ body {
 
 .pixel-border {
   border: 4px solid #000;
-  box-shadow: inset -4px -4px 0 0 rgba(0, 0, 0, 0.4),
+  box-shadow:
+    inset -4px -4px 0 0 rgba(0, 0, 0, 0.4),
     inset 4px 4px 0 0 rgba(255, 255, 255, 0.1);
 }
 
 .pixel-border-thick {
   border: 6px solid #000;
-  box-shadow: inset -6px -6px 0 0 rgba(0, 0, 0, 0.5),
-    inset 6px 6px 0 0 rgba(255, 255, 255, 0.15), 8px 8px 0 0 rgba(0, 0, 0, 0.8);
+  box-shadow:
+    inset -6px -6px 0 0 rgba(0, 0, 0, 0.5),
+    inset 6px 6px 0 0 rgba(255, 255, 255, 0.15),
+    8px 8px 0 0 rgba(0, 0, 0, 0.8);
 }
 
 .pixel-border-sm {
   border: 3px solid #000;
-  box-shadow: inset -3px -3px 0 0 rgba(0, 0, 0, 0.3),
+  box-shadow:
+    inset -3px -3px 0 0 rgba(0, 0, 0, 0.3),
     inset 3px 3px 0 0 rgba(255, 255, 255, 0.1);
 }
 
 .block-pattern {
-  background-image: linear-gradient(
-      90deg,
-      rgba(255, 215, 0, 0.05) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(90deg, rgba(255, 215, 0, 0.05) 1px, transparent 1px),
     linear-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px);
   background-size: 16px 16px;
 }
 
 .crown-glow {
-  text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffbf00,
+  text-shadow:
+    0 0 10px #ffd700,
+    0 0 20px #ffd700,
+    0 0 30px #ffbf00,
     4px 4px 0 #000;
 }
 
@@ -164,7 +167,8 @@ svg.cursor-pointer:hover {
   border: 1px solid #000;
   box-sizing: border-box;
   image-rendering: pixelated;
-  background: repeating-linear-gradient(
+  background:
+    repeating-linear-gradient(
       90deg,
       rgba(0, 0, 0, 0.4) 0px,
       rgba(0, 0, 0, 0.4) 4px,
@@ -301,7 +305,8 @@ svg.cursor-pointer:hover {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
   }
   50% {
-    box-shadow: 0 0 22px rgba(255, 215, 0, 0.45),
+    box-shadow:
+      0 0 22px rgba(255, 215, 0, 0.45),
       0 0 48px rgba(255, 215, 0, 0.18);
   }
 }
@@ -331,18 +336,17 @@ svg.cursor-pointer:hover {
   animation: shiny-btn-pulse 2.8s ease-in-out infinite;
   border: 2px solid #d4af37;
   cursor: pointer;
-  transition: border-color 0.25s ease, transform 0.15s ease;
+  transition:
+    border-color 0.25s ease,
+    transform 0.15s ease;
 }
 
 .shiny-btn::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-      90deg,
-      rgba(255, 215, 0, 0.04) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(90deg, rgba(255, 215, 0, 0.04) 1px, transparent 1px),
     linear-gradient(rgba(255, 215, 0, 0.04) 1px, transparent 1px);
   background-size: 14px 14px;
   pointer-events: none;

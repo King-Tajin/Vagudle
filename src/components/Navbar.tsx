@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Flame } from "lucide-react";
 import {
   ChartBarIcon,
-  CogIcon,
+  Cog6ToothIcon,
   InformationCircleIcon,
-  RefreshIcon,
-} from "@heroicons/react/outline";
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 import KingTajinIcon from "@/assets/icons/king-tajin.svg?react";
 import { openExternalLink } from "../lib/discord";
 
@@ -110,8 +110,8 @@ export const Navbar = ({
   const leaveLabel = isDuelMode
     ? "Leave Duel"
     : isChallengeMode
-    ? "Leave Challenge"
-    : "New Game";
+      ? "Leave Challenge"
+      : "New Game";
 
   return (
     <div className="navbar">
@@ -197,7 +197,7 @@ export const Navbar = ({
                   whileTap={{ scale: 0.95, rotate: 180 }}
                   aria-label={leaveLabel}
                 >
-                  <RefreshIcon className="h-6 w-6 text-crown-gold" />
+                  <ArrowPathIcon className="h-6 w-6 text-crown-gold" />
                 </motion.button>
               )}
 
@@ -241,7 +241,7 @@ export const Navbar = ({
                       : {}
                   }
                 >
-                  <CogIcon className="h-6 w-6 text-crown-gold" />
+                  <Cog6ToothIcon className="h-6 w-6 text-crown-gold" />
                 </motion.button>
 
                 <AnimatePresence>

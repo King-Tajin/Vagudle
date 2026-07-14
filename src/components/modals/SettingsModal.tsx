@@ -119,8 +119,8 @@ const BackgroundDropdown = ({
             const bgLabel = isHiddenLock
               ? "???"
               : isMobile
-              ? bg.mobileLabel
-              : bg.desktopLabel;
+                ? bg.mobileLabel
+                : bg.desktopLabel;
             const isSelected = bg.id === currentId;
 
             return (
@@ -136,8 +136,8 @@ const BackgroundDropdown = ({
                   color: !unlocked
                     ? "#374151"
                     : isSelected
-                    ? "#d4af37"
-                    : "#9ca3af",
+                      ? "#d4af37"
+                      : "#9ca3af",
                   textDecoration: !unlocked ? "line-through" : "none",
                   cursor: unlocked ? "pointer" : "default",
                   background:

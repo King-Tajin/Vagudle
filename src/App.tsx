@@ -464,8 +464,8 @@ function App() {
     document.title = isDuelMode
       ? "Vagudle - Duel"
       : isChallengeMode
-      ? "Vagudle - Challenge"
-      : "Vagudle";
+        ? "Vagudle - Challenge"
+        : "Vagudle";
     return () => {
       document.title = "Vagudle";
     };

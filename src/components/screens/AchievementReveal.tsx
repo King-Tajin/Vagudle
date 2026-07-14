@@ -494,8 +494,8 @@ export function AchievementReveal({ onDone }: Props) {
                     scale: shakeData.scale,
                   }
                 : opened
-                ? { rotate: 0, x: 0, scale: 1 }
-                : { rotate: 0, x: 0, scale: 1 }
+                  ? { rotate: 0, x: 0, scale: 1 }
+                  : { rotate: 0, x: 0, scale: 1 }
             }
             transition={
               shaking
@@ -522,18 +522,18 @@ export function AchievementReveal({ onDone }: Props) {
                 ribbonPhase === "hidden"
                   ? { opacity: 0, scale: 0.15, rotate: -25, y: 0 }
                   : ribbonPhase === "rising"
-                  ? {
-                      opacity: 1,
-                      scale: RIBBON_RISE_SCALE,
-                      rotate: 6,
-                      y: "-220%",
-                    }
-                  : {
-                      opacity: 1,
-                      scale: RIBBON_SETTLED_SCALE,
-                      rotate: 0,
-                      y: "-200%",
-                    }
+                    ? {
+                        opacity: 1,
+                        scale: RIBBON_RISE_SCALE,
+                        rotate: 6,
+                        y: "-220%",
+                      }
+                    : {
+                        opacity: 1,
+                        scale: RIBBON_SETTLED_SCALE,
+                        rotate: 0,
+                        y: "-200%",
+                      }
               }
               transition={
                 ribbonPhase === "rising"

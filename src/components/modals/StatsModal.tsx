@@ -250,11 +250,14 @@ const playSadTrombone = () => {
     wetGain.gain.setValueAtTime(0.32, ctx.currentTime + totalDur - 0.4);
     wetGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + totalDur + 1.4);
 
-    setTimeout(() => {
-      try {
-        void ctx.close();
-      } catch {}
-    }, (totalDur + 2.5) * 1000);
+    setTimeout(
+      () => {
+        try {
+          void ctx.close();
+        } catch {}
+      },
+      (totalDur + 2.5) * 1000
+    );
   } catch {}
 };
 

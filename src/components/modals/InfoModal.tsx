@@ -35,12 +35,7 @@ type Props = {
 };
 
 type Tab =
-  | "howto"
-  | "features"
-  | "challenges"
-  | "about"
-  | "opensource"
-  | "feedback";
+  "howto" | "features" | "challenges" | "about" | "opensource" | "feedback";
 
 const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
   { id: "howto", label: "HOW TO", icon: <Gamepad2 className="w-3.5 h-3.5" /> },
@@ -317,8 +312,8 @@ const FeedbackTab = () => {
               color: messageAtLimit
                 ? "#f87171"
                 : messageNearLimit
-                ? "#fbbf24"
-                : "#4b5563",
+                  ? "#fbbf24"
+                  : "#4b5563",
             }}
           >
             {(MESSAGE_MAX - formData.message.length).toLocaleString()}{" "}
@@ -387,8 +382,8 @@ const FeedbackTab = () => {
                       color: messageAtLimit
                         ? "#f87171"
                         : messageNearLimit
-                        ? "#fbbf24"
-                        : "#4b5563",
+                          ? "#fbbf24"
+                          : "#4b5563",
                     }}
                   >
                     {(MESSAGE_MAX - formData.message.length).toLocaleString()}{" "}
