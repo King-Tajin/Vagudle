@@ -32,7 +32,7 @@ import {
 
 import { LoadingScreen } from "./components/screens/GameScreens";
 
-import { useAlert } from "./context/AlertContext";
+import { useAlert } from "./context/alert-context";
 import { useTilePainting } from "./hooks/useTilePainting";
 import { useDuelResult } from "./hooks/useDuelResult";
 import { useGameOutcome } from "./hooks/useGameOutcome";

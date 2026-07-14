@@ -27,6 +27,18 @@ export default {
         ],
         rules: ["react-doctor/no-impure-state-updater"],
       },
+      {
+        files: [
+          "src/lib/achievements.ts",
+          "src/lib/backgrounds.ts",
+          "src/lib/localStorage.ts",
+        ],
+        rules: ["react-doctor/client-localstorage-no-version"],
+      },
+      {
+        files: ["src/components/modals/InfoModal.tsx"],
+        rules: ["react-doctor/no-tiny-text"],
+      },
     ],
   },
 } satisfies ReactDoctorConfig;

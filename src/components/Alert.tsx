@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
 import classNames from "classnames";
-import { useAlert } from "../context/AlertContext";
+import { useAlert } from "../context/alert-context";
 
 type Props = {
   isOpen: boolean;

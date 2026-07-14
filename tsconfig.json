@@ -17,5 +17,5 @@
     "jsx": "react-jsx",
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "vite.config.js"]
+  "include": ["src", "vite.config.js", "doctor.config.ts"]
 }
