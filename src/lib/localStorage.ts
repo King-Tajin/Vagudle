@@ -35,13 +35,18 @@ type StoredSettings = {
   extraEffects: boolean;
 };
 
+const prefersReducedMotion = (): boolean =>
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 const defaultSettings: StoredSettings = {
   wordLength: 5,
   showGrayCount: true,
   hardMode: false,
   autoGray: true,
   autoGreen: false,
-  extraEffects: true,
+  extraEffects: !prefersReducedMotion(),
 };
 
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {
