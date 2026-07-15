@@ -18,24 +18,32 @@ import { ACHIEVEMENTS } from "../../lib/achievements";
 
 type Tab = "settings" | "challenge";
 
+export type GameSettingsValues = {
+  showGrayCount: boolean;
+  hardMode: boolean;
+  autoGray: boolean;
+  autoGreen: boolean;
+  extraEffects: boolean;
+  backgroundId: BackgroundId;
+};
+
+export type GameSettingsHandlers = {
+  setShowGrayCount: (value: boolean) => void;
+  setHardMode: (value: boolean) => void;
+  setAutoGray: (value: boolean) => void;
+  setAutoGreen: (value: boolean) => void;
+  setExtraEffects: (value: boolean) => void;
+  setBackgroundId: (value: BackgroundId) => void;
+};
+
 type Props = {
   isOpen: boolean;
   handleClose: () => void;
   wordLength: number;
   hasStarted: boolean;
   onWordLengthChange: (length: number) => void;
-  showGrayCount: boolean;
-  setShowGrayCount: (value: boolean) => void;
-  hardMode: boolean;
-  setHardMode: (value: boolean) => void;
-  autoGray: boolean;
-  setAutoGray: (value: boolean) => void;
-  autoGreen: boolean;
-  setAutoGreen: (value: boolean) => void;
-  extraEffects: boolean;
-  setExtraEffects: (value: boolean) => void;
-  backgroundId: BackgroundId;
-  setBackgroundId: (value: BackgroundId) => void;
+  settings: GameSettingsValues;
+  settingsHandlers: GameSettingsHandlers;
   unlockedAchievementIds: string[];
   isMobile?: boolean;
   challengeConfig?: ChallengeConfig | DuelConfig | null;
@@ -178,18 +186,8 @@ export const SettingsModal = ({
   wordLength,
   hasStarted,
   onWordLengthChange,
-  showGrayCount,
-  setShowGrayCount,
-  hardMode,
-  setHardMode,
-  autoGray,
-  setAutoGray,
-  autoGreen,
-  setAutoGreen,
-  extraEffects,
-  setExtraEffects,
-  backgroundId,
-  setBackgroundId,
+  settings,
+  settingsHandlers,
   unlockedAchievementIds,
   isMobile = false,
   challengeConfig,
@@ -224,7 +222,7 @@ export const SettingsModal = ({
       showError("Finish or start a new game before changing difficulty!");
       return;
     }
-    setHardMode(value);
+    settingsHandlers.setHardMode(value);
   };
 
   return (
@@ -357,18 +355,10 @@ export const SettingsModal = ({
                         }}
                       />
                       <div
-                        className="absolute top-1/2 transition-all duration-150 pointer-events-none"
+                        className="absolute top-1/2 transition-all duration-150 pointer-events-none w-[22px] h-[22px] rounded-full bg-[linear-gradient(180deg,#5000aa_0%,#28007c_100%)] border-2 border-[#7020cc] shadow-[0_0_8px_rgba(80,0,170,0.6)] z-[3]"
                         style={{
                           left: `${((wordLength - 4) / 3) * 100}%`,
                           transform: "translate(-50%, -50%)",
-                          width: 22,
-                          height: 22,
-                          borderRadius: "50%",
-                          background:
-                            "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
-                          border: "2px solid #7020cc",
-                          boxShadow: "0 0 8px rgba(80,0,170,0.6)",
-                          zIndex: 3,
                         }}
                       />
                       <input
@@ -394,7 +384,7 @@ export const SettingsModal = ({
 
                 <SettingsToggle
                   settingName="Hard Mode"
-                  flag={hardMode}
+                  flag={settings.hardMode}
                   handleFlag={handleHardModeChange}
                   description="Only 9 tries to guess the uncommon English word."
                 />
@@ -403,20 +393,20 @@ export const SettingsModal = ({
 
             <SettingsToggle
               settingName="Show Gray Count"
-              flag={showGrayCount}
-              handleFlag={setShowGrayCount}
+              flag={settings.showGrayCount}
+              handleFlag={settingsHandlers.setShowGrayCount}
               description="Show the number of gray (absent) letters next to each guess."
             />
             <SettingsToggle
               settingName="Auto Gray"
-              flag={autoGray}
-              handleFlag={setAutoGray}
+              flag={settings.autoGray}
+              handleFlag={settingsHandlers.setAutoGray}
               description="Fully-gray rows auto-gray matching letters everywhere. Auto-grayed cells are protected and persist through resets."
             />
             <SettingsToggle
               settingName="Auto Green"
-              flag={autoGreen}
-              handleFlag={setAutoGreen}
+              flag={settings.autoGreen}
+              handleFlag={settingsHandlers.setAutoGreen}
               description="Painting a cell green auto-greens the same letter in that column. Changing a green cell clears those auto-greens."
             />
 
@@ -431,17 +421,17 @@ export const SettingsModal = ({
                 </p>
               </div>
               <BackgroundDropdown
-                currentId={backgroundId}
+                currentId={settings.backgroundId}
                 unlockedIds={unlockedAchievementIds}
                 isMobile={isMobile}
-                onChange={setBackgroundId}
+                onChange={settingsHandlers.setBackgroundId}
               />
             </div>
 
             <SettingsToggle
               settingName="Extra Sounds & Animations"
-              flag={extraEffects}
-              handleFlag={setExtraEffects}
+              flag={settings.extraEffects}
+              handleFlag={settingsHandlers.setExtraEffects}
               description="Toggles win fireworks, a loss trombone, an achievement chest reveal, and video background audio."
             />
           </div>

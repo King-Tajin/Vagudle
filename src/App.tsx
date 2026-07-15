@@ -54,6 +54,7 @@ import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
+import type { GameMode } from "./lib/gameMode";
 
 import {
   HARD_MODE_MAX_CHALLENGES,
@@ -207,17 +208,6 @@ function App() {
     setSolution(newSolution);
   };
 
-  useEffect(() => {
-    if (
-      isMobileRef.current &&
-      guesses.length === 1 &&
-      !hasAutoClosedTrayRef.current
-    ) {
-      hasAutoClosedTrayRef.current = true;
-      setIsTrayOpen(false);
-    }
-  }, [guesses.length]);
-
   const announceAchievement = (achievement: Achievement) => {
     const bg = BACKGROUNDS.find(
       (b) => b.requiresAchievementId === achievement.id
@@ -229,8 +219,14 @@ function App() {
     );
   };
 
-  const isChallengeMode = challengeConfig !== null;
-  const isDuelMode = duelConfig !== null;
+  const gameMode: GameMode =
+    duelConfig !== null
+      ? "duel"
+      : challengeConfig !== null
+        ? "challenge"
+        : "normal";
+  const isChallengeMode = gameMode === "challenge";
+  const isDuelMode = gameMode === "duel";
 
   useEffect(() => {
     if (
@@ -361,6 +357,9 @@ function App() {
     setCellColors,
     showErrorAlert,
     recordStats,
+    isMobileRef,
+    hasAutoClosedTrayRef,
+    setIsTrayOpen,
     onGuessSubmit: (word) => {
       if (isChallengeMode || isDuelMode) return;
       const newly = recordGuess(word, solution, guesses);
@@ -581,8 +580,7 @@ function App() {
         setIsSettingsModalOpen={setIsSettingsModalOpen}
         handleNewGame={handleNewGameWithFail}
         hasActiveGame={hasActiveGame}
-        isChallengeMode={isChallengeMode}
-        isDuelMode={isDuelMode}
+        gameMode={gameMode}
         isInfoModalOpen={isInfoModalOpen}
         isActivityMode={isDiscordActivity}
       />
@@ -637,8 +635,7 @@ function App() {
           hardMode={hardMode}
           extraEffects={extraEffects}
           setExtraEffects={setExtraEffects}
-          isDuelMode={isDuelMode}
-          isChallengeMode={isChallengeMode}
+          gameMode={gameMode}
           isActivityMode={isDiscordActivity}
           isMobile={isMobile}
           isGameWon={isGameWon}

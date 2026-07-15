@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import KingTajinIcon from "@/assets/icons/king-tajin.svg?react";
 import { openExternalLink } from "../lib/discord";
+import type { GameMode } from "../lib/gameMode";
 
 const SETTINGS_NUDGE_KEY = "vagudle-settings-nudge-dismissed";
 
@@ -18,8 +19,7 @@ type Props = {
   setIsSettingsModalOpen: (value: boolean) => void;
   handleNewGame: () => void;
   hasActiveGame: boolean;
-  isChallengeMode?: boolean;
-  isDuelMode?: boolean;
+  gameMode?: GameMode;
   isInfoModalOpen: boolean;
   isActivityMode?: boolean;
 };
@@ -30,8 +30,7 @@ export const Navbar = ({
   setIsSettingsModalOpen,
   handleNewGame,
   hasActiveGame,
-  isChallengeMode = false,
-  isDuelMode = false,
+  gameMode = "normal",
   isInfoModalOpen,
   isActivityMode = false,
 }: Props) => {
@@ -107,11 +106,12 @@ export const Navbar = ({
     handleNewGame();
   };
 
-  const leaveLabel = isDuelMode
-    ? "Leave Duel"
-    : isChallengeMode
-      ? "Leave Challenge"
-      : "New Game";
+  const leaveLabel =
+    gameMode === "duel"
+      ? "Leave Duel"
+      : gameMode === "challenge"
+        ? "Leave Challenge"
+        : "New Game";
 
   return (
     <div className="navbar">
@@ -309,7 +309,7 @@ export const Navbar = ({
               border: "2px solid rgba(255,215,0,0.4)",
             }}
           >
-            {isDuelMode ? (
+            {gameMode === "duel" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
                   LEAVE DUEL?
@@ -319,7 +319,7 @@ export const Navbar = ({
                   return to this link any time.
                 </p>
               </>
-            ) : isChallengeMode ? (
+            ) : gameMode === "challenge" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
                   LEAVE CHALLENGE?
@@ -350,7 +350,7 @@ export const Navbar = ({
                   color: "#f87171",
                 }}
               >
-                {isDuelMode ? "LEAVE" : isChallengeMode ? "LEAVE" : "ABANDON"}
+                {gameMode === "normal" ? "ABANDON" : "LEAVE"}
               </button>
               <button
                 type="button"

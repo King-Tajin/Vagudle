@@ -47,7 +47,6 @@ type Props = {
   challengeConfig?: ChallengeConfig | null;
   handleReturnToNormal?: () => void;
   extraEffects?: boolean;
-  isDuelMode?: boolean;
   handleDuelReturn?: () => void;
   duelConfig?: import("../../lib/duel").DuelConfig | null;
   isActivityMode?: boolean;
@@ -341,7 +340,6 @@ export const StatsModal = ({
   challengeConfig,
   handleReturnToNormal,
   extraEffects = true,
-  isDuelMode = false,
   handleDuelReturn,
   duelConfig,
   isActivityMode = false,
@@ -383,7 +381,7 @@ export const StatsModal = ({
   }, [isOpen, isGameLost, extraEffects, newlyUnlockedAchievements.length]);
 
   const showingAchievement =
-    !isDuelMode &&
+    !duelConfig &&
     !challengeConfig &&
     !showChallengeCreator &&
     newlyUnlockedAchievements.length > 0 &&
@@ -539,7 +537,7 @@ export const StatsModal = ({
     );
   }
 
-  if (isDuelMode) {
+  if (duelConfig) {
     const score = isGameLost ? "X" : guesses.length;
     return (
       <BaseModal title="Duel Result" isOpen={isOpen} handleClose={handleClose}>

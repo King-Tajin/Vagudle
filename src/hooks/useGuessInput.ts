@@ -29,6 +29,9 @@ type Params = {
   setGuesses: (v: string[]) => void;
   setIsGameWon: (v: boolean) => void;
   setIsGameLost: (v: boolean) => void;
+  isMobileRef: React.RefObject<boolean>;
+  hasAutoClosedTrayRef: React.RefObject<boolean>;
+  setIsTrayOpen: (v: boolean) => void;
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
@@ -62,6 +65,9 @@ export const useGuessInput = ({
   setGuesses,
   setIsGameWon,
   setIsGameLost,
+  isMobileRef,
+  hasAutoClosedTrayRef,
+  setIsTrayOpen,
   setCellColors,
   showErrorAlert,
   recordStats,
@@ -120,6 +126,15 @@ export const useGuessInput = ({
     ) {
       setGuesses([...guesses, currentGuess]);
       setCurrentGuess("");
+
+      if (
+        isMobileRef.current &&
+        guesses.length === 0 &&
+        !hasAutoClosedTrayRef.current
+      ) {
+        hasAutoClosedTrayRef.current = true;
+        setIsTrayOpen(false);
+      }
 
       if (!isChallengeMode && !isDuelMode) onGuessSubmit?.(currentGuess);
 

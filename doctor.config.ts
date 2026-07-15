@@ -3,11 +3,7 @@ import type { ReactDoctorConfig } from "react-doctor/api";
 // noinspection JSUnusedGlobalSymbols
 export default {
   ignore: {
-    rules: [
-      "react-doctor/no-giant-component",
-      "deslop/unused-file",
-      "react-doctor/no-tiny-text",
-    ],
+    rules: ["react-doctor/no-giant-component", "deslop/unused-file"],
     overrides: [
       {
         files: ["src/components/backgrounds/TajinRain.tsx"],
@@ -55,6 +51,16 @@ export default {
         // overrides manual paint; auto-green fills only the newest row).
         files: ["src/hooks/useTilePainting.ts"],
         rules: ["react-doctor/no-pass-data-to-parent"],
+      },
+      {
+        // These booleans are independent, freely-combinable settings/state,
+        // not mutually-exclusive modes, so no enum split applies here.
+        files: [
+          "src/components/modals/SettingsModal.tsx",
+          "src/components/modals/StatsModal.tsx",
+          "src/components/screens/GameModals.tsx",
+        ],
+        rules: ["react-doctor/no-many-boolean-props"],
       },
     ],
   },

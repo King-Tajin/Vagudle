@@ -13,6 +13,7 @@ import type { ChallengeConfig } from "../../lib/challenge";
 import type { DuelConfig, DuelSaveStatus } from "../../lib/duel";
 import type { BackgroundId, BackgroundDef } from "../../lib/backgrounds";
 import type { Achievement } from "../../lib/achievements";
+import type { GameMode } from "../../lib/gameMode";
 
 type Props = {
   solution: string;
@@ -22,8 +23,7 @@ type Props = {
   hardMode: boolean;
   extraEffects: boolean;
   setExtraEffects: (value: boolean) => void;
-  isDuelMode: boolean;
-  isChallengeMode: boolean;
+  gameMode: GameMode;
   isActivityMode: boolean;
   isMobile: boolean;
   isGameWon: boolean;
@@ -79,8 +79,7 @@ export const GameModals = ({
   hardMode,
   extraEffects,
   setExtraEffects,
-  isDuelMode,
-  isChallengeMode,
+  gameMode,
   isActivityMode,
   isMobile,
   isGameWon,
@@ -152,17 +151,18 @@ export const GameModals = ({
           numberOfGuessesMade={guesses.length}
           handleNewGame={() => handleNewGame()}
           hardMode={hardMode}
-          challengeConfig={isChallengeMode ? challengeConfig : null}
+          challengeConfig={gameMode === "challenge" ? challengeConfig : null}
           handleReturnToNormal={
-            isChallengeMode ? handleReturnToNormal : undefined
+            gameMode === "challenge" ? handleReturnToNormal : undefined
           }
           extraEffects={extraEffects}
-          isDuelMode={isDuelMode}
           handleDuelReturn={
-            isDuelMode && !isActivityMode ? handleReturnToNormal : undefined
+            gameMode === "duel" && !isActivityMode
+              ? handleReturnToNormal
+              : undefined
           }
           isActivityMode={isActivityMode}
-          duelConfig={isDuelMode ? duelConfig : null}
+          duelConfig={gameMode === "duel" ? duelConfig : null}
           newlyUnlockedAchievements={newlyUnlockedAchievements}
           onAchievementsViewed={onAchievementsViewed}
           setBackgroundId={setBackgroundId}
@@ -173,33 +173,41 @@ export const GameModals = ({
           wordLength={wordLength}
           hasStarted={guesses.length > 0}
           onWordLengthChange={handleWordLengthChange}
-          showGrayCount={showGrayCount}
-          setShowGrayCount={setShowGrayCount}
-          hardMode={hardMode}
-          setHardMode={handleHardModeChange}
-          autoGray={autoGray}
-          setAutoGray={handleSetAutoGray}
-          autoGreen={autoGreen}
-          setAutoGreen={setAutoGreen}
-          extraEffects={extraEffects}
-          setExtraEffects={setExtraEffects}
-          backgroundId={backgroundId}
-          setBackgroundId={setBackgroundId}
+          settings={{
+            showGrayCount,
+            hardMode,
+            autoGray,
+            autoGreen,
+            extraEffects,
+            backgroundId,
+          }}
+          settingsHandlers={{
+            setShowGrayCount,
+            setHardMode: handleHardModeChange,
+            setAutoGray: handleSetAutoGray,
+            setAutoGreen,
+            setExtraEffects,
+            setBackgroundId,
+          }}
           unlockedAchievementIds={unlockedIds}
           isMobile={isMobile}
           challengeConfig={
-            isDuelMode ? duelConfig : isChallengeMode ? challengeConfig : null
+            gameMode === "duel"
+              ? duelConfig
+              : gameMode === "challenge"
+                ? challengeConfig
+                : null
           }
           isActivityMode={isActivityMode}
         />
-        {isChallengeMode && challengeConfig && (
+        {gameMode === "challenge" && challengeConfig && (
           <ChallengeAcceptModal
             isOpen={isChallengeModalOpen}
             onPlay={handlePlayChallenge}
             config={challengeConfig}
           />
         )}
-        {isDuelMode && duelConfig && (
+        {gameMode === "duel" && duelConfig && (
           <DuelModal
             isOpen={isDuelModalOpen}
             mode={isGameWon || isGameLost ? "complete" : "accept"}

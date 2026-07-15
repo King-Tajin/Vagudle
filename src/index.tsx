@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { LazyMotion, domAnimation } from "framer-motion";
+import { LazyMotion, domAnimation, MotionConfig } from "framer-motion";
 import "./index.css";
 import App from "./App";
 import { AlertProvider } from "./context/AlertContext";
@@ -11,9 +11,11 @@ async function bootstrap() {
   createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <LazyMotion features={domAnimation} strict>
-        <AlertProvider>
-          <App />
-        </AlertProvider>
+        <MotionConfig reducedMotion="user">
+          <AlertProvider>
+            <App />
+          </AlertProvider>
+        </MotionConfig>
       </LazyMotion>
     </React.StrictMode>
   );
