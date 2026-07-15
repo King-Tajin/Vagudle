@@ -70,6 +70,13 @@ type WordStatus = "idle" | "valid" | "invalid-word" | "invalid-length";
 type Generated = { word: string; url: string; config: ChallengeConfig };
 type GenerateStatus = "idle" | "loading" | "error";
 
+const WORD_STATUS_BORDER_COLOR: Record<WordStatus, string> = {
+  idle: "rgba(255,255,255,0.1)",
+  valid: "#4a7c3f",
+  "invalid-word": "#dc3232",
+  "invalid-length": "#dc3232",
+};
+
 interface DictHint {
   foundIn: ChallengeDict | null;
   easierThan: ChallengeDict | null;
@@ -385,13 +392,6 @@ export const ChallengeCreatorModal = ({
     dispatchGeneration({ type: "reset" });
   };
 
-  const borderColor: Record<WordStatus, string> = {
-    idle: "rgba(255,255,255,0.1)",
-    valid: "#4a7c3f",
-    "invalid-word": "#dc3232",
-    "invalid-length": "#dc3232",
-  };
-
   if (generateStatus === "loading" && autoFilledWord && !generated) {
     return (
       <div className="space-y-3">
@@ -644,7 +644,7 @@ export const ChallengeCreatorModal = ({
             className="w-full border-2 font-pixel text-sm p-2 pr-8 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber tracking-widest uppercase"
             style={{
               background: "#0a0014",
-              borderColor: borderColor[wordStatus],
+              borderColor: WORD_STATUS_BORDER_COLOR[wordStatus],
               color: wordStatus === "valid" ? "#4ade80" : "#d1d5db",
               letterSpacing: "0.15em",
             }}

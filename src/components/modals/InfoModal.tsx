@@ -61,6 +61,12 @@ const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
 const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
 
+const BADGE_STYLES: Record<"green" | "yellow" | "gray", CSSProperties> = {
+  green: { background: "#22c55e", borderColor: "#22c55e" },
+  yellow: { background: "#eab308", borderColor: "#eab308" },
+  gray: { background: "#64748b", borderColor: "#64748b" },
+};
+
 const Badge = ({
   color,
   n,
@@ -68,15 +74,10 @@ const Badge = ({
   color: "green" | "yellow" | "gray";
   n: number;
 }) => {
-  const styles: Record<string, CSSProperties> = {
-    green: { background: "#22c55e", borderColor: "#22c55e" },
-    yellow: { background: "#eab308", borderColor: "#eab308" },
-    gray: { background: "#64748b", borderColor: "#64748b" },
-  };
   return (
     <div
       className="border-2 flex items-center justify-center font-bold rounded text-white text-xs"
-      style={{ width: 22, height: 22, fontSize: 11, ...styles[color] }}
+      style={{ width: 22, height: 22, fontSize: 11, ...BADGE_STYLES[color] }}
     >
       {n}
     </div>

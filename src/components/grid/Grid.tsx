@@ -203,6 +203,7 @@ export const Grid = ({
             {BRUSHES.map(({ status, Icon, border, bg }) => (
               <button
                 key={status}
+                type="button"
                 onClick={() =>
                   setSelectedBrush(selectedBrush === status ? null : status)
                 }
@@ -233,6 +234,7 @@ export const Grid = ({
               }}
             />
             <button
+              type="button"
               onClick={() => setShowResetConfirm(true)}
               className="flex items-center justify-center rounded transition-all"
               style={{
@@ -272,6 +274,7 @@ export const Grid = ({
             </p>
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={() => {
                   setShowResetConfirm(false);
                   onFullReset();
@@ -286,6 +289,7 @@ export const Grid = ({
                 RESET
               </button>
               <button
+                type="button"
                 autoFocus
                 onClick={() => setShowResetConfirm(false)}
                 className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"

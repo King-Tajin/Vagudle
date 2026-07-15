@@ -8,6 +8,10 @@ import {
 import { getRandomWord } from "../lib/words";
 import React from "react";
 
+const handleReturnToNormal = () => {
+  window.location.href = window.location.origin + window.location.pathname;
+};
+
 type Params = {
   wordLength: number;
   hardMode: boolean;
@@ -26,7 +30,6 @@ type Params = {
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
-  setAutoGrayLetters: React.Dispatch<React.SetStateAction<Set<string>>>;
   setIsGameWon: (v: boolean) => void;
   setIsGameLost: (v: boolean) => void;
   setIsStatsModalOpen: (v: boolean) => void;
@@ -60,7 +63,6 @@ export const useGameFlow = ({
   setCurrentGuess,
   setCurrentRowClass,
   setCellColors,
-  setAutoGrayLetters,
   setIsGameWon,
   setIsGameLost,
   setIsStatsModalOpen,
@@ -88,14 +90,9 @@ export const useGameFlow = ({
     setCurrentGuess("");
     setCurrentRowClass("");
     setCellColors({});
-    setAutoGrayLetters(new Set());
     setIsGameWon(false);
     setIsGameLost(false);
     setIsStatsModalOpen(false);
-  };
-
-  const handleReturnToNormal = () => {
-    window.location.href = window.location.origin + window.location.pathname;
   };
 
   const hasActiveGame = guesses.length > 0 && !isGameWon && !isGameLost;

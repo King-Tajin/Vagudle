@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense } from "react";
+import React, { useState, useEffect, useRef, useMemo, Suspense } from "react";
 import { m } from "framer-motion";
 import RibbonIcon from "./assets/icons/ribon.svg?react";
 
@@ -45,6 +45,7 @@ import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
+import { computeFullyGrayLetters } from "./lib/rowAnalysis";
 import {
   loadGameStateFromLocalStorage,
   loadSettingsFromLocalStorage,
@@ -110,9 +111,6 @@ function App() {
   const [cellColors, setCellColors] = useState<{ [key: string]: CharStatus }>(
     (savedGameState?.cellColors as { [key: string]: CharStatus }) ?? {}
   );
-  const [autoGrayLetters, setAutoGrayLetters] = useState<Set<string>>(
-    () => new Set(savedGameState?.autoGrayLetters ?? [])
-  );
   const [currentGuess, setCurrentGuess] = useState("");
   const [currentRowClass, setCurrentRowClass] = useState("");
   const [isGameWon, setIsGameWon] = useState(false);
@@ -165,6 +163,12 @@ function App() {
     loadBackgroundId(window.innerWidth < 640)
   );
 
+  const autoGrayLetters = useMemo(
+    () =>
+      autoGray ? computeFullyGrayLetters(solution, guesses) : new Set<string>(),
+    [autoGray, solution, guesses]
+  );
+
   const {
     hiddenAttributionIds,
     setHiddenAttributionIds,
@@ -188,29 +192,20 @@ function App() {
   const keyboardRef = useRef<HTMLDivElement>(null);
   const achievementCheckedRef = useRef(false);
   const achievementRevealPendingRef = useRef(false);
-  const skipNextSolutionResetRef = useRef(false);
   const hasAutoClosedTrayRef = useRef(false);
   const extraEffectsRef = useRef(extraEffects);
   useEffect(() => {
     extraEffectsRef.current = extraEffects;
   }, [extraEffects]);
 
-  useEffect(() => {
-    if (skipNextSolutionResetRef.current) {
-      skipNextSolutionResetRef.current = false;
-      return;
-    }
+  const startNewGame = (newSolution: string) => {
     achievementCheckedRef.current = false;
     resetWinRecord();
     setNewlyUnlockedAchievements([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [solution]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsTrayOpen(true);
     hasAutoClosedTrayRef.current = false;
-  }, [solution]);
+    setIsTrayOpen(true);
+    setSolution(newSolution);
+  };
 
   useEffect(() => {
     if (
@@ -275,7 +270,6 @@ function App() {
       autoGreen,
       cellColors,
       setCellColors,
-      setAutoGrayLetters,
     });
 
   const maxChallenges =
@@ -335,12 +329,11 @@ function App() {
     maxChallenges,
     revealTimerRef,
     setWordLength,
-    setSolution,
+    setSolution: startNewGame,
     setGuesses,
     setCurrentGuess,
     setCurrentRowClass,
     setCellColors,
-    setAutoGrayLetters,
     setIsGameWon,
     setIsGameLost,
     setIsStatsModalOpen,
@@ -398,7 +391,6 @@ function App() {
     setSolution,
     setGuesses,
     setCellColors,
-    setAutoGrayLetters,
     setIsGameWon,
     setIsGameLost,
     setIsChallengeModalOpen,
@@ -438,11 +430,10 @@ function App() {
     restoredGameRef,
     achievementCheckedRef,
     duelSubmittedRef,
-    skipNextSolutionResetRef,
+    onNewGameSynced: startNewGame,
     setSolution,
     setGuesses,
     setCellColors,
-    setAutoGrayLetters,
     setIsGameWon,
     setIsGameLost,
     setCurrentGuess,
@@ -686,7 +677,7 @@ function App() {
           handleHardModeChange={(value: boolean) => {
             setHardMode(value);
             if (guesses.length === 0)
-              setSolution(getRandomWord(wordLength, value));
+              startNewGame(getRandomWord(wordLength, value));
           }}
           handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
           isInfoModalOpen={isInfoModalOpen}

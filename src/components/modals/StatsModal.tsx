@@ -56,6 +56,17 @@ type Props = {
   setBackgroundId?: (id: BackgroundId) => void;
 };
 
+const TAB_ACTIVE_STYLE = {
+  background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
+  border: "2px solid #5000aa",
+  color: "#fff",
+};
+const TAB_INACTIVE_STYLE = {
+  background: "rgba(255,255,255,0.03)",
+  border: "2px solid rgba(255,255,255,0.1)",
+  color: "#6b7280",
+};
+
 const playSadTrombone = () => {
   try {
     const AudioContextClass =
@@ -402,16 +413,6 @@ export const StatsModal = ({
 
   const tabBase =
     "flex-1 py-2 font-pixel text-xs tracking-widest transition-all";
-  const activeTabStyle = {
-    background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
-    border: "2px solid #5000aa",
-    color: "#fff",
-  };
-  const inactiveTabStyle = {
-    background: "rgba(255,255,255,0.03)",
-    border: "2px solid rgba(255,255,255,0.1)",
-    color: "#6b7280",
-  };
 
   if (showingAchievement) {
     const a = newlyUnlockedAchievements[achievementIdx];
@@ -756,7 +757,7 @@ export const StatsModal = ({
         <button
           type="button"
           className={tabBase}
-          style={activeTab === "normal" ? activeTabStyle : inactiveTabStyle}
+          style={activeTab === "normal" ? TAB_ACTIVE_STYLE : TAB_INACTIVE_STYLE}
           onClick={() => setActiveTab("normal")}
         >
           NORMAL
@@ -764,7 +765,7 @@ export const StatsModal = ({
         <button
           type="button"
           className={tabBase}
-          style={activeTab === "hard" ? activeTabStyle : inactiveTabStyle}
+          style={activeTab === "hard" ? TAB_ACTIVE_STYLE : TAB_INACTIVE_STYLE}
           onClick={() => setActiveTab("hard")}
         >
           HARD

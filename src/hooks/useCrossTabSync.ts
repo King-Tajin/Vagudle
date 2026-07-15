@@ -39,13 +39,12 @@ type Params = {
   restoredGameRef: React.RefObject<boolean>;
   achievementCheckedRef: React.RefObject<boolean>;
   duelSubmittedRef: React.RefObject<boolean>;
-  skipNextSolutionResetRef: React.RefObject<boolean>;
+  onNewGameSynced: (solution: string) => void;
   setSolution: (v: string) => void;
   setGuesses: (v: string[]) => void;
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
-  setAutoGrayLetters: React.Dispatch<React.SetStateAction<Set<string>>>;
   setIsGameWon: (v: boolean) => void;
   setIsGameLost: (v: boolean) => void;
   setCurrentGuess: (v: string) => void;
@@ -88,11 +87,10 @@ export const useCrossTabSync = ({
   restoredGameRef,
   achievementCheckedRef,
   duelSubmittedRef,
-  skipNextSolutionResetRef,
+  onNewGameSynced,
   setSolution,
   setGuesses,
   setCellColors,
-  setAutoGrayLetters,
   setIsGameWon,
   setIsGameLost,
   setCurrentGuess,
@@ -160,7 +158,6 @@ export const useCrossTabSync = ({
         achievementCheckedRef,
         null
       );
-      if (isNewPuzzle) skipNextSolutionResetRef.current = true;
     }
     if (isNewPuzzle) {
       setCurrentGuess("");
@@ -168,10 +165,13 @@ export const useCrossTabSync = ({
       setIsRevealing(false);
     }
 
-    setSolution(saved.solution);
+    if (isNewPuzzle && !alreadyDecided) {
+      onNewGameSynced(saved.solution);
+    } else {
+      setSolution(saved.solution);
+    }
     setGuesses(saved.guesses);
     setCellColors((saved.cellColors as { [key: string]: CharStatus }) ?? {});
-    setAutoGrayLetters(new Set(saved.autoGrayLetters ?? []));
     setIsGameWon(won);
     setIsGameLost(lost);
   });
@@ -192,7 +192,6 @@ export const useCrossTabSync = ({
 
       setGuesses(saved.guesses);
       setCellColors(saved.cellColors as { [key: string]: CharStatus });
-      setAutoGrayLetters(new Set(saved.autoGrayLetters));
       setIsGameWon(won);
       setIsGameLost(lost);
     }
@@ -214,7 +213,6 @@ export const useCrossTabSync = ({
 
       setGuesses(saved.guesses);
       setCellColors(saved.cellColors as { [key: string]: CharStatus });
-      setAutoGrayLetters(new Set(saved.autoGrayLetters));
       setIsGameWon(won);
       setIsGameLost(lost);
     }

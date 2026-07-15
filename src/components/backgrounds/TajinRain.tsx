@@ -11,6 +11,17 @@ interface TajinParticle {
   type: "chili" | "lime" | "salt";
 }
 
+const getParticleColor = (type: string) => {
+  switch (type) {
+    case "chili":
+      return "#C41E3A";
+    case "lime":
+      return "#A4C639";
+    default:
+      return "#FFD700";
+  }
+};
+
 export function TajinRain({
   keyboardRef,
 }: {
@@ -92,17 +103,6 @@ export function TajinRain({
     return next;
   }, [viewportH, strips.leftWidth, strips.rightStart, strips.rightWidth]);
 
-  const getColor = (type: string) => {
-    switch (type) {
-      case "chili":
-        return "#C41E3A";
-      case "lime":
-        return "#A4C639";
-      default:
-        return "#FFD700";
-    }
-  };
-
   if (particles.length === 0) return null;
 
   return (
@@ -119,7 +119,7 @@ export function TajinRain({
             top: -8,
             width: 8,
             height: 8,
-            background: getColor(p.type),
+            background: getParticleColor(p.type),
           }}
           animate={{
             y: ["0px", `${viewportH + 20}px`],

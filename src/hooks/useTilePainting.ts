@@ -11,7 +11,6 @@ type Params = {
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
-  setAutoGrayLetters: React.Dispatch<React.SetStateAction<Set<string>>>;
 };
 
 type Return = {
@@ -28,7 +27,6 @@ export const useTilePainting = ({
   autoGreen,
   cellColors,
   setCellColors,
-  setAutoGrayLetters,
 }: Params): Return => {
   const guessesRef = React.useRef(guesses);
 
@@ -40,12 +38,6 @@ export const useTilePainting = ({
     if (!autoGray) return;
 
     const fullyGrayLetters = computeFullyGrayLetters(solution, guesses);
-
-    setAutoGrayLetters((prev) => {
-      const prevKey = Array.from(prev).sort().join(",");
-      const nextKey = Array.from(fullyGrayLetters).sort().join(",");
-      return prevKey === nextKey ? prev : new Set(fullyGrayLetters);
-    });
 
     setCellColors((prev) => {
       const next = { ...prev };
@@ -78,7 +70,7 @@ export const useTilePainting = ({
 
       return changed ? next : prev;
     });
-  }, [autoGray, guesses, solution, setAutoGrayLetters, setCellColors]);
+  }, [autoGray, guesses, solution, setCellColors]);
 
   useEffect(() => {
     if (!autoGreen || guesses.length === 0) return;
@@ -177,7 +169,6 @@ export const useTilePainting = ({
   };
 
   const clearAutoGray = () => {
-    setAutoGrayLetters(new Set());
     setCellColors((prev) => {
       const next = { ...prev };
       Object.keys(next).forEach((k) => {

@@ -47,7 +47,6 @@ type Params = {
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
   >;
-  setAutoGrayLetters: React.Dispatch<React.SetStateAction<Set<string>>>;
   setIsGameWon: (v: boolean) => void;
   setIsGameLost: (v: boolean) => void;
   setIsChallengeModalOpen: (v: boolean) => void;
@@ -76,7 +75,6 @@ export const useGameInitialization = ({
   setSolution,
   setGuesses,
   setCellColors,
-  setAutoGrayLetters,
   setIsGameWon,
   setIsGameLost,
   setIsChallengeModalOpen,
@@ -117,12 +115,10 @@ export const useGameInitialization = ({
         if (!savedDuel) {
           setGuesses([]);
           setCellColors({});
-          setAutoGrayLetters(new Set());
           return false;
         }
         setGuesses(savedDuel.guesses);
         setCellColors(savedDuel.cellColors as { [key: string]: CharStatus });
-        setAutoGrayLetters(new Set(savedDuel.autoGrayLetters));
         const won = savedDuel.guesses.some(
           (g) => g.toUpperCase() === wordUpper
         );
@@ -213,7 +209,6 @@ export const useGameInitialization = ({
           setCellColors(
             savedChallenge.cellColors as { [key: string]: CharStatus }
           );
-          setAutoGrayLetters(new Set(savedChallenge.autoGrayLetters));
           const won = savedChallenge.guesses.some(
             (g) => g.toUpperCase() === wordUpper
           );
@@ -229,7 +224,6 @@ export const useGameInitialization = ({
         } else {
           setGuesses([]);
           setCellColors({});
-          setAutoGrayLetters(new Set());
         }
         setIsChallengeModalOpen(!alreadyFinished);
         setIsLoading(false);
@@ -289,7 +283,6 @@ export const useGameInitialization = ({
         setCellColors(
           (savedState.cellColors as { [key: string]: CharStatus }) ?? {}
         );
-        setAutoGrayLetters(new Set(savedState.autoGrayLetters ?? []));
         if (gameWasWon) {
           restoredGameRef.current = true;
           setIsGameWon(true);
@@ -311,7 +304,6 @@ export const useGameInitialization = ({
         setSolution(newSolution);
         setGuesses([]);
         setCellColors({});
-        setAutoGrayLetters(new Set());
         modalTimeoutId = setTimeout(() => {
           if (!cancelled) setIsInfoModalOpen(true);
         }, WELCOME_INFO_MODAL_MS);

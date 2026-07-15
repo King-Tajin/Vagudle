@@ -3,7 +3,11 @@ import type { ReactDoctorConfig } from "react-doctor/api";
 // noinspection JSUnusedGlobalSymbols
 export default {
   ignore: {
-    rules: ["react-doctor/no-giant-component", "deslop/unused-file"],
+    rules: [
+      "react-doctor/no-giant-component",
+      "deslop/unused-file",
+      "react-doctor/no-tiny-text",
+    ],
     overrides: [
       {
         files: ["src/components/backgrounds/TajinRain.tsx"],
@@ -45,6 +49,12 @@ export default {
           "src/components/screens/WinCelebration.tsx",
         ],
         rules: ["react-doctor/no-array-index-as-key"],
+      },
+      {
+        // setCellColors here reads the cellColors own prior state (auto-gray
+        // overrides manual paint; auto-green fills only the newest row).
+        files: ["src/hooks/useTilePainting.ts"],
+        rules: ["react-doctor/no-pass-data-to-parent"],
       },
     ],
   },
