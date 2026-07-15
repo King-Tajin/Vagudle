@@ -108,6 +108,17 @@ export const Grid = ({
   const isPainting = useRef(false);
   const selectedBrushRef = useRef<CharStatus | null>(null);
   const completedRowsRef = useRef<HTMLDivElement>(null);
+  const resetDialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = resetDialogRef.current;
+    if (!dialog) return;
+    if (showResetConfirm) {
+      if (!dialog.open) dialog.showModal();
+    } else if (dialog.open) {
+      dialog.close();
+    }
+  }, [showResetConfirm]);
 
   useEffect(() => {
     selectedBrushRef.current = selectedBrush;
@@ -238,63 +249,56 @@ export const Grid = ({
             </button>
           </div>
 
-          {showResetConfirm && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center"
-              style={{ background: "rgba(0,0,0,0.7)" }}
+          <dialog
+            ref={resetDialogRef}
+            aria-labelledby="reset-dialog-title"
+            onClose={() => setShowResetConfirm(false)}
+            className="native-confirm-dialog mx-4 p-5 max-w-sm w-full"
+            style={{
+              background: "#111",
+              border: "2px solid rgba(255,215,0,0.4)",
+            }}
+          >
+            <p
+              id="reset-dialog-title"
+              className="font-pixel text-xs text-crown-amber tracking-widest mb-2"
             >
-              <div
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="reset-dialog-title"
-                className="mx-4 p-5 max-w-sm w-full"
+              RESET ALL COLORS?
+            </p>
+            <p className="font-code text-sm text-gray-300 mb-5">
+              {autoGray
+                ? "This will clear all painted cells. Auto-grayed cells will remain."
+                : "This will clear all painted cells."}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowResetConfirm(false);
+                  onFullReset();
+                }}
+                className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"
                 style={{
-                  background: "#111",
-                  border: "2px solid rgba(255,215,0,0.4)",
+                  background: "rgba(220,50,50,0.15)",
+                  border: "1px solid rgba(220,50,50,0.5)",
+                  color: "#f87171",
                 }}
               >
-                <p
-                  id="reset-dialog-title"
-                  className="font-pixel text-xs text-crown-amber tracking-widest mb-2"
-                >
-                  RESET ALL COLORS?
-                </p>
-                <p className="font-code text-sm text-gray-300 mb-5">
-                  {autoGray
-                    ? "This will clear all painted cells. Auto-grayed cells will remain."
-                    : "This will clear all painted cells."}
-                </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      setShowResetConfirm(false);
-                      onFullReset();
-                    }}
-                    className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"
-                    style={{
-                      background: "rgba(220,50,50,0.15)",
-                      border: "1px solid rgba(220,50,50,0.5)",
-                      color: "#f87171",
-                    }}
-                  >
-                    RESET
-                  </button>
-                  <button
-                    autoFocus
-                    onClick={() => setShowResetConfirm(false)}
-                    className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"
-                    style={{
-                      background: "rgba(255,215,0,0.08)",
-                      border: "1px solid rgba(255,215,0,0.3)",
-                      color: "#fbbf24",
-                    }}
-                  >
-                    CANCEL
-                  </button>
-                </div>
-              </div>
+                RESET
+              </button>
+              <button
+                autoFocus
+                onClick={() => setShowResetConfirm(false)}
+                className="flex-1 py-2 font-pixel text-xs tracking-widest transition-colors"
+                style={{
+                  background: "rgba(255,215,0,0.08)",
+                  border: "1px solid rgba(255,215,0,0.3)",
+                  color: "#fbbf24",
+                }}
+              >
+                CANCEL
+              </button>
             </div>
-          )}
+          </dialog>
         </>
       )}
 

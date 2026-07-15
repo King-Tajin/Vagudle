@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Navbar } from "../Navbar";
 
 export const emptyNavbar = (isActivityMode = false) => (
@@ -14,13 +14,13 @@ export const emptyNavbar = (isActivityMode = false) => (
 );
 
 export const title = (
-  <motion.p
+  <m.p
     initial={{ opacity: 0, y: -10 }}
     animate={{ opacity: 1, y: 0 }}
     className="font-pixel text-center text-4xl text-crown-gold crown-glow tracking-widest"
   >
     VAGUDLE
-  </motion.p>
+  </m.p>
 );
 
 export const returnButton = (onClick: () => void) => (

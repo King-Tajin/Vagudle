@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useReducer, useRef } from "react";
 import {
   Copy,
   Check,
@@ -119,6 +119,54 @@ const computeAutoFillState = (
   };
 };
 
+type GenerationState = {
+  generated: Generated | null;
+  status: GenerateStatus;
+  copied: boolean;
+  shared: boolean;
+};
+
+type GenerationAction =
+  | { type: "reset" }
+  | { type: "start" }
+  | { type: "success"; generated: Generated }
+  | { type: "error" }
+  | { type: "copied" }
+  | { type: "hideCopied" }
+  | { type: "shared" }
+  | { type: "hideShared" };
+
+const generationReducer = (
+  state: GenerationState,
+  action: GenerationAction
+): GenerationState => {
+  switch (action.type) {
+    case "reset":
+      return { generated: null, status: "idle", copied: false, shared: false };
+    case "start":
+      return { ...state, status: "loading" };
+    case "success":
+      return {
+        generated: action.generated,
+        status: "idle",
+        copied: false,
+        shared: false,
+      };
+    case "error":
+      return { ...state, status: "error" };
+    case "copied":
+      return { ...state, copied: true };
+    case "hideCopied":
+      return { ...state, copied: false };
+    case "shared":
+      return { ...state, shared: true };
+    case "hideShared":
+      return { ...state, shared: false };
+    default:
+      return state;
+  }
+};
+
 const shareChallenge = async (generated: Generated, onCopied: () => void) => {
   const { config, url } = generated;
   const text =
@@ -168,14 +216,18 @@ export const ChallengeCreatorModal = ({
   const [dictHints, setDictHints] = useState<DictHint>(
     () => computeAutoFillState(autoFilledWord, autoFilledDict ?? "normal").hints
   );
-  const [generated, setGenerated] = useState<Generated | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [shared, setShared] = useState(false);
-  const [generateStatus, setGenerateStatus] = useState<GenerateStatus>(
-    () =>
-      computeAutoFillState(autoFilledWord, autoFilledDict ?? "normal")
-        .generateStatus
+  const [generationState, dispatchGeneration] = useReducer(
+    generationReducer,
+    undefined,
+    (): GenerationState => ({
+      generated: null,
+      status: computeAutoFillState(autoFilledWord, autoFilledDict ?? "normal")
+        .generateStatus,
+      copied: false,
+      shared: false,
+    })
   );
+  const { generated, status: generateStatus, copied, shared } = generationState;
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sharedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -209,16 +261,18 @@ export const ChallengeCreatorModal = ({
     void encodeChallenge(config).then((result) => {
       if (cancelled) return;
       if (!result) {
-        setGenerateStatus("error");
+        dispatchGeneration({ type: "error" });
         return;
       }
       const fullConfig: ChallengeConfig = { ...config, id: result.id };
-      setGenerated({
-        word: w,
-        url: buildChallengeUrl(result.encoded),
-        config: fullConfig,
+      dispatchGeneration({
+        type: "success",
+        generated: {
+          word: w,
+          url: buildChallengeUrl(result.encoded),
+          config: fullConfig,
+        },
       });
-      setGenerateStatus("idle");
     });
 
     return () => {
@@ -253,20 +307,14 @@ export const ChallengeCreatorModal = ({
   const handleDictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const next = e.target.value as ChallengeDict;
     setDict(next);
-    setGenerated(null);
-    setGenerateStatus("idle");
-    setCopied(false);
-    setShared(false);
+    dispatchGeneration({ type: "reset" });
     if (cleanInput.length > 0) validateWord(cleanInput, next);
   };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^a-zA-Z]/g, "");
     setWordInput(raw);
-    setGenerated(null);
-    setGenerateStatus("idle");
-    setCopied(false);
-    setShared(false);
+    dispatchGeneration({ type: "reset" });
     validateWord(raw);
   };
 
@@ -285,7 +333,7 @@ export const ChallengeCreatorModal = ({
       validateWord(cleanInput, dict, true);
       return;
     }
-    setGenerateStatus("loading");
+    dispatchGeneration({ type: "start" });
     const config: Omit<ChallengeConfig, "id"> = {
       word: cleanInput,
       dict,
@@ -294,43 +342,47 @@ export const ChallengeCreatorModal = ({
     };
     const result = await encodeChallenge(config);
     if (!result) {
-      setGenerateStatus("error");
+      dispatchGeneration({ type: "error" });
       return;
     }
     const fullConfig: ChallengeConfig = { ...config, id: result.id };
-    setGenerated({
-      word: cleanInput,
-      url: buildChallengeUrl(result.encoded),
-      config: fullConfig,
+    dispatchGeneration({
+      type: "success",
+      generated: {
+        word: cleanInput,
+        url: buildChallengeUrl(result.encoded),
+        config: fullConfig,
+      },
     });
-    setGenerateStatus("idle");
-    setCopied(false);
-    setShared(false);
   };
 
   const copyLink = async () => {
     if (!generated) return;
     try {
       await navigator.clipboard.writeText(generated.url);
-      setCopied(true);
+      dispatchGeneration({ type: "copied" });
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
-      copiedTimerRef.current = setTimeout(() => setCopied(false), 2500);
+      copiedTimerRef.current = setTimeout(
+        () => dispatchGeneration({ type: "hideCopied" }),
+        2500
+      );
     } catch {}
   };
 
   const handleShare = async () => {
     if (!generated) return;
     await shareChallenge(generated, () => {
-      setShared(true);
+      dispatchGeneration({ type: "shared" });
       if (sharedTimerRef.current) clearTimeout(sharedTimerRef.current);
-      sharedTimerRef.current = setTimeout(() => setShared(false), 2500);
+      sharedTimerRef.current = setTimeout(
+        () => dispatchGeneration({ type: "hideShared" }),
+        2500
+      );
     });
   };
 
   const handleEdit = () => {
-    setGenerated(null);
-    setCopied(false);
-    setShared(false);
+    dispatchGeneration({ type: "reset" });
   };
 
   const borderColor: Record<WordStatus, string> = {
@@ -666,7 +718,7 @@ export const ChallengeCreatorModal = ({
           value={guesses}
           onChange={(v) => {
             setGuesses(v);
-            setGenerated(null);
+            dispatchGeneration({ type: "reset" });
           }}
         />
       </div>

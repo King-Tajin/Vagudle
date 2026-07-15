@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import { isDiscordActivity } from "../../lib/discord";
 import { emptyNavbar, title, returnButton, retryButton } from "./screenHelpers";
@@ -15,7 +15,7 @@ export const MalformedChallengeScreen = ({
     {emptyNavbar()}
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
       {title}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -33,7 +33,7 @@ export const MalformedChallengeScreen = ({
           sender to share it again.
         </p>
         {returnButton(handleReturnToNormal)}
-      </motion.div>
+      </m.div>
     </div>
   </div>
 );
@@ -44,7 +44,7 @@ export const MalformedDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
     {emptyNavbar(isDiscordActivity)}
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
       {title}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -62,7 +62,7 @@ export const MalformedDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
           link.
         </p>
         {!isDiscordActivity && returnButton(handleReturnToNormal)}
-      </motion.div>
+      </m.div>
     </div>
   </div>
 );
@@ -73,7 +73,7 @@ export const ExpiredDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
     {emptyNavbar(isDiscordActivity)}
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
       {title}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -91,7 +91,7 @@ export const ExpiredDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
           Ask for a new duel to be created.
         </p>
         {!isDiscordActivity && returnButton(handleReturnToNormal)}
-      </motion.div>
+      </m.div>
     </div>
   </div>
 );
@@ -102,7 +102,7 @@ export const ActivityNotFoundScreen = () => (
     {emptyNavbar(true)}
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
       {title}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -119,7 +119,7 @@ export const ActivityNotFoundScreen = () => (
           This duel has expired. Activity duels are only valid for 24 hours. Ask
           for a new duel to be sent in Discord.
         </p>
-      </motion.div>
+      </m.div>
     </div>
   </div>
 );
@@ -130,7 +130,7 @@ export const ActivityWrongPlayerScreen = () => (
     {emptyNavbar(true)}
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
       {title}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -147,7 +147,7 @@ export const ActivityWrongPlayerScreen = () => (
           This duel was not sent to your Discord account. Make sure you are
           logged in as the right user.
         </p>
-      </motion.div>
+      </m.div>
     </div>
   </div>
 );
@@ -158,7 +158,7 @@ export const ActivityServerErrorScreen = () => (
     {emptyNavbar(true)}
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
       {title}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -178,7 +178,7 @@ export const ActivityServerErrorScreen = () => (
           If this keeps happening, check the browser console for details.
         </p>
         {retryButton()}
-      </motion.div>
+      </m.div>
     </div>
   </div>
 );

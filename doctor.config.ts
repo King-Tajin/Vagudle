@@ -10,10 +10,7 @@ export default {
         rules: ["react-doctor/insecure-crypto-risk"],
       },
       {
-        files: [
-          "src/components/screens/AchievementReveal.tsx",
-          "src/hooks/useGameOutcome.ts",
-        ],
+        files: ["src/components/screens/AchievementReveal.tsx"],
         rules: ["react-doctor/effect-needs-cleanup"],
       },
       {
@@ -38,6 +35,16 @@ export default {
       {
         files: ["src/components/modals/InfoModal.tsx"],
         rules: ["react-doctor/no-tiny-text"],
+      },
+      {
+        files: [
+          "src/components/grid/CompletedRow.tsx",
+          "src/components/grid/Grid.tsx",
+          "src/components/grid/GridRows.tsx",
+          "src/components/stats/Histogram.tsx",
+          "src/components/screens/WinCelebration.tsx",
+        ],
+        rules: ["react-doctor/no-array-index-as-key"],
       },
     ],
   },

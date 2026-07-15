@@ -16,6 +16,7 @@ export type AlertContextValue = {
   showSuccess: (message: string, options?: ShowOptions) => void;
   showError: (message: string, options?: ShowOptions) => void;
   dismiss: () => void;
+  cancel: () => void;
 };
 
 export const AlertContext = createContext<AlertContextValue | null>({
@@ -25,6 +26,7 @@ export const AlertContext = createContext<AlertContextValue | null>({
   showSuccess: () => null,
   showError: () => null,
   dismiss: () => null,
+  cancel: () => null,
 });
 AlertContext.displayName = "AlertContext";
 

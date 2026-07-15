@@ -62,6 +62,17 @@ export const AlertProvider = ({ children }: Props) => {
     setIsVisible(false);
   }, [setIsVisible]);
 
+  const cancel = useCallback(() => {
+    if (delayTimerRef.current) {
+      clearTimeout(delayTimerRef.current);
+      delayTimerRef.current = null;
+    }
+    if (durationTimerRef.current) {
+      clearTimeout(durationTimerRef.current);
+      durationTimerRef.current = null;
+    }
+  }, []);
+
   const value = useMemo(
     () => ({
       status,
@@ -70,8 +81,9 @@ export const AlertProvider = ({ children }: Props) => {
       showError,
       showSuccess,
       dismiss,
+      cancel,
     }),
-    [status, message, isVisible, showError, showSuccess, dismiss]
+    [status, message, isVisible, showError, showSuccess, dismiss, cancel]
   );
 
   return (

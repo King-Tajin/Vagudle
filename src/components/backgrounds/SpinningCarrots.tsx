@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
+import { m, useMotionValue, useAnimationFrame } from "framer-motion";
 import CarrotUrl from "../../assets/icons/carrot.svg";
 import { drawDirtTexture } from "../../lib/dirtTexture";
 
@@ -42,7 +42,7 @@ const CarrotItem = ({ c }: { c: CarrotParticle }) => {
         height: CARROT_SIZE,
       }}
     >
-      <motion.img
+      <m.img
         src={CarrotUrl}
         alt=""
         style={{

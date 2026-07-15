@@ -4,7 +4,7 @@ import React, {
   useRef,
   useSyncExternalStore,
 } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Snowflake from "../../assets/icons/snowflake.svg?react";
 
 const SKY_COLOR = "#122341";
@@ -90,7 +90,7 @@ const createFlakesStore = () => {
 };
 
 const FlakeItem = ({ flake }: { flake: Flake }) => (
-  <motion.div
+  <m.div
     style={{
       position: "absolute",
       left: `${flake.x}%`,
@@ -106,7 +106,7 @@ const FlakeItem = ({ flake }: { flake: Flake }) => (
       ease: "linear",
     }}
   >
-    <motion.div
+    <m.div
       style={{ width: "100%", height: "100%", opacity: flake.opacity }}
       animate={{
         x: [-flake.swayAmplitude, flake.swayAmplitude, -flake.swayAmplitude],
@@ -126,8 +126,8 @@ const FlakeItem = ({ flake }: { flake: Flake }) => (
       }}
     >
       <Snowflake style={{ width: "100%", height: "100%" }} />
-    </motion.div>
-  </motion.div>
+    </m.div>
+  </m.div>
 );
 
 const buildWavePath = (): string => {

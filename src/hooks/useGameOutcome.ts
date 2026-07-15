@@ -15,6 +15,7 @@ type Params = {
     message: string,
     options?: { delayMs?: number; onClose?: () => void }
   ) => void;
+  cancelAlert: () => void;
   setIsCelebrating: (value: boolean) => void;
   setIsRevealingAchievement: (value: boolean) => void;
   setIsDuelModalOpen: (value: boolean) => void;
@@ -31,6 +32,7 @@ export const useGameOutcome = ({
   extraEffectsRef,
   achievementRevealPendingRef,
   showSuccessAlert,
+  cancelAlert,
   setIsCelebrating,
   setIsRevealingAchievement,
   setIsDuelModalOpen,
@@ -77,12 +79,16 @@ export const useGameOutcome = ({
       }
     }
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId);
+      cancelAlert();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isGameWon,
     isGameLost,
     showSuccessAlert,
+    cancelAlert,
     solution,
     isChallengeMode,
     isDuelMode,

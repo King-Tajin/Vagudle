@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import RibbonIcon from "./assets/icons/ribon.svg?react";
 
 import { Grid } from "./components/grid/Grid";
@@ -87,6 +87,7 @@ function App() {
     showError: showErrorAlert,
     showSuccess: showSuccessAlert,
     dismiss: dismissAlert,
+    cancel: cancelAlert,
   } = useAlert();
 
   const isMobile = useIsMobile();
@@ -309,6 +310,7 @@ function App() {
     extraEffectsRef,
     achievementRevealPendingRef,
     showSuccessAlert,
+    cancelAlert,
     setIsCelebrating,
     setIsRevealingAchievement,
     setIsDuelModalOpen,
@@ -551,7 +553,7 @@ function App() {
         />
       )}
       {!isChallengeMode && !isDuelMode && (
-        <motion.div
+        <m.div
           className="fixed left-0 z-20 flex items-stretch"
           style={{ top: "4.5rem" }}
           initial={false}
@@ -580,7 +582,7 @@ function App() {
               {isTrayOpen ? "‹" : "›"}
             </span>
           </button>
-        </motion.div>
+        </m.div>
       )}
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
@@ -595,13 +597,13 @@ function App() {
       />
       <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="font-pixel text-center text-4xl text-crown-gold crown-glow tracking-widest mb-4"
           >
             VAGUDLE
-          </motion.p>
+          </m.p>
 
           <GameBanner
             isChallengeMode={isChallengeMode}

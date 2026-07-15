@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import VagudleIcon from "@/assets/icons/vagudle.svg?react";
 
 const PURPLES = [
@@ -176,7 +176,7 @@ export function WinCelebration({ word, onDone }: Props) {
   }, [onDone]);
 
   return (
-    <motion.div
+    <m.div
       className="fixed inset-0"
       style={{ zIndex: 200, pointerEvents: "none" }}
       animate={{ opacity: visible ? 1 : 0 }}
@@ -195,7 +195,7 @@ export function WinCelebration({ word, onDone }: Props) {
       />
 
       {particles.map((p) => (
-        <motion.div
+        <m.div
           key={p.id}
           style={{
             position: "absolute",
@@ -236,7 +236,7 @@ export function WinCelebration({ word, onDone }: Props) {
           gap: 16,
         }}
       >
-        <motion.p
+        <m.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15, duration: 0.5, ease: "easeIn" }}
@@ -244,10 +244,10 @@ export function WinCelebration({ word, onDone }: Props) {
           style={{ fontSize: "clamp(36px, 9vw, 64px)" }}
         >
           YOU WIN!
-        </motion.p>
+        </m.p>
         <div style={{ display: "flex" }}>
           {letterData.map(({ letter }, i) => (
-            <motion.div
+            <m.div
               key={i}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -276,10 +276,10 @@ export function WinCelebration({ word, onDone }: Props) {
               }}
             >
               {letter}
-            </motion.div>
+            </m.div>
           ))}
         </div>
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5, ease: "easeIn" }}
@@ -290,8 +290,8 @@ export function WinCelebration({ word, onDone }: Props) {
           }}
         >
           <VagudleIcon style={{ width: "100%", height: "100%" }} />
-        </motion.div>
+        </m.div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Flame } from "lucide-react";
 import {
   ChartBarIcon,
@@ -118,7 +118,7 @@ export const Navbar = ({
       <header className="sticky top-0 z-50 bg-obsidian-900/95 backdrop-blur-sm border-b-4 border-crown-gold">
         <div ref={headerWrapperRef} className="max-w-7xl mx-auto px-5">
           <div ref={navbarContentRef} className="navbar-content">
-            <motion.button
+            <m.button
               onClick={() => setIsInfoModalOpen(true)}
               className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
               whileHover={{ scale: 1.05 }}
@@ -126,10 +126,10 @@ export const Navbar = ({
               aria-label="How to play"
             >
               <InformationCircleIcon className="h-6 w-6 text-crown-gold" />
-            </motion.button>
+            </m.button>
 
             {isActivityMode ? (
-              <motion.button
+              <m.button
                 type="button"
                 onClick={() => openExternalLink("https://King-Tajin.dev")}
                 className="flex items-center gap-3 select-none"
@@ -155,9 +155,9 @@ export const Navbar = ({
                     WEB GAMES
                   </p>
                 </div>
-              </motion.button>
+              </m.button>
             ) : (
-              <motion.a
+              <m.a
                 href="https://King-Tajin.dev"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -184,12 +184,12 @@ export const Navbar = ({
                     WEB GAMES
                   </p>
                 </div>
-              </motion.a>
+              </m.a>
             )}
 
             <div className="right-icons">
               {!isActivityMode && (
-                <motion.button
+                <m.button
                   title={leaveLabel}
                   onClick={onNewGameClick}
                   className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
@@ -198,11 +198,11 @@ export const Navbar = ({
                   aria-label={leaveLabel}
                 >
                   <ArrowPathIcon className="h-6 w-6 text-crown-gold" />
-                </motion.button>
+                </m.button>
               )}
 
               {!isActivityMode && (
-                <motion.button
+                <m.button
                   onClick={() => setIsStatsModalOpen(true)}
                   className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   whileHover={{ scale: 1.05 }}
@@ -210,11 +210,11 @@ export const Navbar = ({
                   aria-label="Statistics"
                 >
                   <ChartBarIcon className="h-6 w-6 text-crown-gold" />
-                </motion.button>
+                </m.button>
               )}
 
               <div className="relative">
-                <motion.button
+                <m.button
                   ref={settingsRef}
                   onClick={onSettingsClick}
                   className={
@@ -242,11 +242,11 @@ export const Navbar = ({
                   }
                 >
                   <Cog6ToothIcon className="h-6 w-6 text-crown-gold" />
-                </motion.button>
+                </m.button>
 
                 <AnimatePresence>
                   {showNudge && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, y: -6, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -4, scale: 0.95 }}
@@ -287,7 +287,7 @@ export const Navbar = ({
                           DISMISS
                         </button>
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>

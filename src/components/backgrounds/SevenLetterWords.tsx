@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { createRng, seedFromNumbers } from "../../lib/seededRandom";
 
 const FONT_SIZE = 17;
@@ -71,7 +71,7 @@ const FadingWord = ({ slot, pool }: FadingWordProps) => {
   };
 
   return (
-    <motion.span
+    <m.span
       key={state.cycle}
       style={{
         position: "absolute",
@@ -97,7 +97,7 @@ const FadingWord = ({ slot, pool }: FadingWordProps) => {
       onAnimationComplete={nextWord}
     >
       {state.word}
-    </motion.span>
+    </m.span>
   );
 };
 

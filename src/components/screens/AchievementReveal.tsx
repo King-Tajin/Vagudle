@@ -1,5 +1,5 @@
 import React, { useEffect, useEffectEvent, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import ChestBase from "@/assets/icons/chest-base.svg";
 import ChestDoorLeft from "@/assets/icons/chest-door-left.svg";
 import ChestDoorRight from "@/assets/icons/chest-door-right.svg";
@@ -380,7 +380,7 @@ export function AchievementReveal({ onDone }: Props) {
   }, [shakeData]);
 
   return (
-    <motion.div
+    <m.div
       className="fixed inset-0"
       style={{ zIndex: 200, pointerEvents: "none" }}
       initial={{ opacity: 1 }}
@@ -399,7 +399,7 @@ export function AchievementReveal({ onDone }: Props) {
         }}
       />
 
-      <motion.div
+      <m.div
         className="absolute inset-0"
         style={{ background: "#fff" }}
         initial={{ opacity: 0 }}
@@ -410,13 +410,13 @@ export function AchievementReveal({ onDone }: Props) {
         }}
       />
 
-      <motion.div
+      <m.div
         className="absolute inset-0 flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: overlayOn ? 1 : 0 }}
         transition={{ duration: OVERLAY_FADE_MS / 1000, ease: "easeInOut" }}
       >
-        <motion.div
+        <m.div
           className="absolute rounded-full"
           style={{
             left: "50%",
@@ -442,7 +442,7 @@ export function AchievementReveal({ onDone }: Props) {
         />
 
         {rays.map((angle, i) => (
-          <motion.div
+          <m.div
             key={i}
             className="absolute"
             style={{
@@ -479,7 +479,7 @@ export function AchievementReveal({ onDone }: Props) {
           className="relative flex flex-col items-center"
           style={{ zIndex: 3 }}
         >
-          <motion.div
+          <m.div
             style={{
               position: "relative",
               width: CHEST_WRAP_SIZE,
@@ -507,7 +507,7 @@ export function AchievementReveal({ onDone }: Props) {
                 : { duration: 0.3, ease: [0.2, 1.6, 0.3, 1] }
             }
           >
-            <motion.div
+            <m.div
               className="absolute"
               style={{
                 left: "50%",
@@ -545,7 +545,7 @@ export function AchievementReveal({ onDone }: Props) {
               }
             >
               <RibbonIcon style={{ width: "100%", height: "auto" }} />
-            </motion.div>
+            </m.div>
 
             <div
               className="absolute"
@@ -567,7 +567,7 @@ export function AchievementReveal({ onDone }: Props) {
                   height: "100%",
                 }}
               />
-              <motion.img
+              <m.img
                 src={ChestDoorLeft}
                 alt=""
                 style={{
@@ -584,7 +584,7 @@ export function AchievementReveal({ onDone }: Props) {
                   ease: [0.3, 1.35, 0.35, 1],
                 }}
               />
-              <motion.img
+              <m.img
                 src={ChestDoorRight}
                 alt=""
                 style={{
@@ -604,7 +604,7 @@ export function AchievementReveal({ onDone }: Props) {
             </div>
 
             {dust.map((d) => (
-              <motion.div
+              <m.div
                 key={d.id}
                 className="absolute rounded-full"
                 style={{
@@ -622,9 +622,9 @@ export function AchievementReveal({ onDone }: Props) {
                 }}
               />
             ))}
-          </motion.div>
+          </m.div>
 
-          <motion.p
+          <m.p
             className="font-royal font-bold text-crown-gold crown-glow tracking-wider text-center"
             style={{
               marginTop: 20,
@@ -639,14 +639,14 @@ export function AchievementReveal({ onDone }: Props) {
             transition={{ duration: TEXT_FADE_IN_MS / 1000, ease: "easeOut" }}
           >
             Achievement Unlocked!
-          </motion.p>
+          </m.p>
         </div>
 
         {particles.map((p) => {
           const dx = Math.cos(p.angle) * p.distance;
           const dy = Math.sin(p.angle) * p.distance - PARTICLE_RISE_PX;
           return (
-            <motion.div
+            <m.div
               key={p.id}
               className="absolute rounded-full"
               style={{
@@ -671,7 +671,7 @@ export function AchievementReveal({ onDone }: Props) {
             />
           );
         })}
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

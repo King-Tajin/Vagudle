@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import { isDiscordActivity } from "../../lib/discord";
 import { emptyNavbar, title } from "./screenHelpers";
@@ -9,7 +9,7 @@ export const LoadingScreen = () => (
     {emptyNavbar(isDiscordActivity)}
     <div className="flex flex-col items-center justify-center flex-1 gap-6">
       {title}
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
@@ -17,7 +17,7 @@ export const LoadingScreen = () => (
       >
         <div className="flex gap-1.5">
           {[0, 1, 2].map((i) => (
-            <motion.div
+            <m.div
               key={i}
               className="w-2 h-2"
               style={{ background: "#d4af37" }}
@@ -33,7 +33,7 @@ export const LoadingScreen = () => (
         <p className="font-pixel text-xs text-crown-amber tracking-widest">
           LOADING WORDS...
         </p>
-      </motion.div>
+      </m.div>
     </div>
   </div>
 );

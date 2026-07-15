@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { BookOpen, Hash, Target, Swords } from "lucide-react";
 import { DICT_LABELS } from "../lib/challenge";
 import type { ChallengeConfig } from "../lib/challenge";
@@ -19,7 +19,7 @@ export const GameBanner = ({
 }: Props) => (
   <>
     {isChallengeMode && challengeConfig && (
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -50,11 +50,11 @@ export const GameBanner = ({
             {challengeConfig.guesses} guesses
           </span>
         </div>
-      </motion.div>
+      </m.div>
     )}
 
     {isDuelMode && duelConfig && (
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -90,7 +90,7 @@ export const GameBanner = ({
             24h
           </span>
         </div>
-      </motion.div>
+      </m.div>
     )}
   </>
 );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { measureKeyboardStrips, StripMeasure } from "../../lib/stripMeasure";
 import { createRng, seedFromNumbers } from "../../lib/seededRandom";
 
@@ -111,7 +111,7 @@ export function TajinRain({
       style={{ zIndex: 0 }}
     >
       {particles.map((p) => (
-        <motion.div
+        <m.div
           key={p.id}
           style={{
             position: "absolute",

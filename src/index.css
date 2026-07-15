@@ -379,3 +379,14 @@ svg.cursor-pointer:hover {
 .shiny-btn-crown {
   animation: shiny-btn-crown 2.8s ease-in-out infinite;
 }
+
+.native-confirm-dialog {
+  border: none;
+  margin: auto;
+  background: transparent;
+  max-height: none;
+}
+
+.native-confirm-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
