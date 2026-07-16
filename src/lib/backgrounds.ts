@@ -1,4 +1,5 @@
 import { COMPLETIONIST_ID } from "./achievements";
+import { migrateLegacyStorageKey } from "./localStorage";
 
 export type BackgroundId =
   | "sprinkles"
@@ -191,9 +192,11 @@ export const BACKGROUNDS: BackgroundDef[] = [
   },
 ];
 
-export const BG_KEY = "vagudle-bg-theme";
+export const BG_KEY = "vagudle-bg-theme:v1";
+const LEGACY_BG_KEY = "vagudle-bg-theme";
 
 export const loadBackgroundId = (isMobile: boolean): BackgroundId => {
+  migrateLegacyStorageKey(LEGACY_BG_KEY, BG_KEY);
   try {
     const stored = localStorage.getItem(BG_KEY);
     if (stored && BACKGROUNDS.some((b) => b.id === stored))
@@ -208,9 +211,14 @@ export const saveBackgroundId = (id: BackgroundId): void => {
   } catch {}
 };
 
-export const ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden";
+export const ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden:v1";
+const LEGACY_ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden";
 
 export const loadHiddenAttributionIds = (): BackgroundId[] => {
+  migrateLegacyStorageKey(
+    LEGACY_ATTRIBUTION_HIDDEN_KEY,
+    ATTRIBUTION_HIDDEN_KEY
+  );
   try {
     const stored = localStorage.getItem(ATTRIBUTION_HIDDEN_KEY);
     if (!stored) return [];

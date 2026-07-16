@@ -168,10 +168,15 @@ export const getEffectiveUnlockedIds = (unlockedIds: string[]): string[] => {
   return unlockedIds;
 };
 
-export const ACHIEVEMENTS_KEY = "vagudle-achievements";
-export const WORD_CONNOISSEUR_KEY = "vagudle-word-connoisseur";
+import { migrateLegacyStorageKey } from "./localStorage";
+
+export const ACHIEVEMENTS_KEY = "vagudle-achievements:v1";
+const LEGACY_ACHIEVEMENTS_KEY = "vagudle-achievements";
+export const WORD_CONNOISSEUR_KEY = "vagudle-word-connoisseur:v1";
+const LEGACY_WORD_CONNOISSEUR_KEY = "vagudle-word-connoisseur";
 
 export const loadWordConnoisseurList = (): string[] => {
+  migrateLegacyStorageKey(LEGACY_WORD_CONNOISSEUR_KEY, WORD_CONNOISSEUR_KEY);
   try {
     const stored = localStorage.getItem(WORD_CONNOISSEUR_KEY);
     return stored ? (JSON.parse(stored) as string[]) : [];
@@ -193,6 +198,7 @@ export const deleteWordConnoisseurList = (): void => {
 };
 
 export const loadAchievementProgress = (): AchievementProgress => {
+  migrateLegacyStorageKey(LEGACY_ACHIEVEMENTS_KEY, ACHIEVEMENTS_KEY);
   try {
     const stored = localStorage.getItem(ACHIEVEMENTS_KEY);
     if (stored) {

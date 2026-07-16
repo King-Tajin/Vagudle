@@ -1,4 +1,15 @@
-export const gameStateKey = "gameState";
+export const migrateLegacyStorageKey = (legacyKey: string, newKey: string) => {
+  try {
+    if (localStorage.getItem(newKey) !== null) return;
+    const legacyValue = localStorage.getItem(legacyKey);
+    if (legacyValue === null) return;
+    localStorage.setItem(newKey, legacyValue);
+    localStorage.removeItem(legacyKey);
+  } catch {}
+};
+
+export const gameStateKey = "gameState:v1";
+const legacyGameStateKey = "gameState";
 
 type StoredGameState = {
   guesses: string[];
@@ -15,6 +26,7 @@ export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
 };
 
 export const loadGameStateFromLocalStorage = (): StoredGameState | null => {
+  migrateLegacyStorageKey(legacyGameStateKey, gameStateKey);
   try {
     const state = localStorage.getItem(gameStateKey);
     return state ? (JSON.parse(state) as StoredGameState) : null;
@@ -24,7 +36,8 @@ export const loadGameStateFromLocalStorage = (): StoredGameState | null => {
   }
 };
 
-export const settingsKey = "settings";
+export const settingsKey = "settings:v1";
+const legacySettingsKey = "settings";
 
 type StoredSettings = {
   wordLength: number;
@@ -56,6 +69,7 @@ export const saveSettingsToLocalStorage = (settings: StoredSettings) => {
 };
 
 export const loadSettingsFromLocalStorage = (): StoredSettings => {
+  migrateLegacyStorageKey(legacySettingsKey, settingsKey);
   try {
     const stored = localStorage.getItem(settingsKey);
     return stored
@@ -70,8 +84,10 @@ export const loadSettingsFromLocalStorage = (): StoredSettings => {
   }
 };
 
-export const normalStatKey = "gameStats";
-export const hardStatKey = "gameStatsHard";
+export const normalStatKey = "gameStats:v1";
+export const hardStatKey = "gameStatsHard:v1";
+const legacyNormalStatKey = "gameStats";
+const legacyHardStatKey = "gameStatsHard";
 
 export type GameStats = {
   winDistribution: number[];
@@ -97,6 +113,10 @@ export const saveStatsToLocalStorage = (
 export const loadStatsFromLocalStorage = (
   hardMode: boolean
 ): GameStats | null => {
+  migrateLegacyStorageKey(
+    hardMode ? legacyHardStatKey : legacyNormalStatKey,
+    hardMode ? hardStatKey : normalStatKey
+  );
   try {
     const stats = localStorage.getItem(hardMode ? hardStatKey : normalStatKey);
     return stats ? (JSON.parse(stats) as GameStats) : null;

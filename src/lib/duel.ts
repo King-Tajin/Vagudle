@@ -21,8 +21,8 @@ export type DuelGameState = {
 
 export type DuelSaveStatus = "idle" | "saving" | "saved" | "failed";
 
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-const MAX_DUEL_ENTRIES = 500;
+const ONE_DAY_MS = 24 * 60 * 60 * 1000 + 5000;
+const MAX_DUEL_ENTRIES = 85;
 
 export const pruneOldDuelStates = (): void => {
   const now = Date.now();

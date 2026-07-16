@@ -15,8 +15,8 @@ export type ChallengeGameState = {
   savedAt?: number;
 };
 
-const TWO_YEARS_MS = 2 * 365 * 24 * 60 * 60 * 1000;
-const MAX_CHALLENGE_ENTRIES = 2750;
+const TWO_YEARS_MS = 2.5 * 365 * 24 * 60 * 60 * 1000;
+const MAX_CHALLENGE_ENTRIES = 975;
 
 export const pruneOldChallengeStates = (): void => {
   const now = Date.now();

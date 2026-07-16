@@ -1,4 +1,4 @@
-const QUOTA_BYTES = 5 * 1024 * 1024;
+const QUOTA_BYTES = 0.92 * 1024 * 1024;
 const PRUNE_THRESHOLD = 0.95;
 const PRUNE_TARGET = 0.9;
 
