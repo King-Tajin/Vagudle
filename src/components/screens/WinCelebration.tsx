@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { m } from "framer-motion";
+import cn from "classnames";
 import VagudleIcon from "@/assets/icons/vagudle.svg?react";
+import "./WinCelebration.css";
 
 const PURPLES = [
   "#a855f7",
@@ -15,6 +17,7 @@ const PURPLES = [
 
 const FADE_OUT_AT_MS = 5000;
 const CELEBRATION_DURATION_MS = 6000;
+const ENTRANCE_ANIMATION_MS = 3150;
 
 type Particle = {
   id: string;
@@ -127,6 +130,7 @@ type Props = {
 export function WinCelebration({ word, onDone }: Props) {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [visible, setVisible] = useState(true);
+  const [isEntranceAnimating, setIsEntranceAnimating] = useState(true);
 
   const cellSize = Math.min(
     72,
@@ -167,9 +171,14 @@ export function WinCelebration({ word, onDone }: Props) {
       burstPoints.flatMap(([x, y, delay], i) => generateBurst(i, x, y, delay))
     );
 
+    const entranceTimer = setTimeout(
+      () => setIsEntranceAnimating(false),
+      ENTRANCE_ANIMATION_MS
+    );
     const fadeTimer = setTimeout(() => setVisible(false), FADE_OUT_AT_MS);
     const doneTimer = setTimeout(onDone, CELEBRATION_DURATION_MS);
     return () => {
+      clearTimeout(entranceTimer);
       clearTimeout(fadeTimer);
       clearTimeout(doneTimer);
     };
@@ -182,31 +191,26 @@ export function WinCelebration({ word, onDone }: Props) {
       animate={{ opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.55, ease: "easeInOut" }}
     >
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "#0A0A0A",
-          backgroundImage: `
-            linear-gradient(90deg, rgba(255,215,0,0.03) 1px, transparent 1px),
-            linear-gradient(rgba(255,215,0,0.03) 1px, transparent 1px)
-          `,
-          backgroundSize: "16px 16px",
-        }}
-      />
+      <div className="absolute inset-0 win-celebration-bg" />
 
       {particles.map((p) => (
         <m.div
           key={p.id}
-          style={{
-            position: "absolute",
-            left: p.originX,
-            top: p.originY,
-            width: p.size,
-            height: p.size,
-            background: p.color,
-            borderRadius: p.shape === "circle" ? "50%" : 2,
-            willChange: "transform, opacity",
-          }}
+          className={cn(
+            "win-celebration-particle",
+            p.shape === "circle"
+              ? "win-celebration-particle--circle"
+              : "win-celebration-particle--square",
+            isEntranceAnimating && "win-celebration-entrance-animating"
+          )}
+          style={
+            {
+              "--particle-x": `${p.originX}px`,
+              "--particle-y": `${p.originY}px`,
+              "--particle-size": `${p.size}px`,
+              "--particle-color": p.color,
+            } as React.CSSProperties
+          }
           initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
           animate={{
             x: p.dx,
@@ -224,28 +228,16 @@ export function WinCelebration({ word, onDone }: Props) {
         />
       ))}
 
-      <div
-        className="absolute"
-        style={{
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 16,
-        }}
-      >
+      <div className="absolute win-celebration-center">
         <m.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15, duration: 0.5, ease: "easeIn" }}
-          className="font-royal font-bold text-crown-gold crown-glow tracking-wider"
-          style={{ fontSize: "clamp(36px, 9vw, 64px)" }}
+          className="font-royal font-bold text-crown-gold crown-glow tracking-wider win-celebration-title"
         >
           YOU WIN!
         </m.p>
-        <div style={{ display: "flex" }}>
+        <div className="win-celebration-letters">
           {letterData.map(({ letter }, i) => (
             <m.div
               key={i}
@@ -256,24 +248,16 @@ export function WinCelebration({ word, onDone }: Props) {
                 delay: 0.2 + i * 0.1,
                 ease: "easeIn",
               }}
-              style={{
-                width: cellSize,
-                height: cellSize,
-                margin: "0 3px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#22c55e",
-                border: "2px solid #22c55e",
-                borderRadius: 4,
-                boxShadow: "0 4px 0 #15803d, 0 6px 16px rgba(0,0,0,0.6)",
-                color: "white",
-                fontWeight: "bold",
-                fontSize,
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                flexShrink: 0,
-                willChange: "transform, opacity",
-              }}
+              className={cn(
+                "win-celebration-letter-cell",
+                isEntranceAnimating && "win-celebration-entrance-animating"
+              )}
+              style={
+                {
+                  "--cell-size": `${cellSize}px`,
+                  "--cell-font-size": `${fontSize}px`,
+                } as React.CSSProperties
+              }
             >
               {letter}
             </m.div>
@@ -283,13 +267,9 @@ export function WinCelebration({ word, onDone }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5, ease: "easeIn" }}
-          style={{
-            width: "clamp(160px, 42vw, 320px)",
-            height: "auto",
-            marginTop: 16,
-          }}
+          className="win-celebration-logo"
         >
-          <VagudleIcon style={{ width: "100%", height: "100%" }} />
+          <VagudleIcon />
         </m.div>
       </div>
     </m.div>
