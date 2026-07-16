@@ -244,6 +244,7 @@ function App() {
       guesses,
     });
     if (newly.length > 0) {
+      // Depends on the side-effecting recordWin() result, so it can't be derived during render.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
       achievementRevealPendingRef.current = true;

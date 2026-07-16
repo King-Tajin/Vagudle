@@ -285,6 +285,7 @@ export const ChallengeCreatorModal = ({
     return () => {
       cancelled = true;
     };
+    // Autofill should only run once on mount, not re-run if the URL params change later.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

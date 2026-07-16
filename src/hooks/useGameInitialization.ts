@@ -315,6 +315,7 @@ export const useGameInitialization = ({
       cancelled = true;
       clearTimeout(modalTimeoutId);
     };
+    // Game initialization should only run once on mount, not re-run on prop changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

@@ -7,6 +7,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 // noinspection JSCheckFunctionSignatures
 export default tseslint.config(
   { ignores: ["dist", "node_modules", ".wrangler"] },
+  { linterOptions: { reportUnusedDisableDirectives: "warn" } },
   {
     extends: [
       js.configs.recommended,

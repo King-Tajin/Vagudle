@@ -215,9 +215,9 @@ export const Grid = ({
                     selectedBrush === status ? border : "rgba(255,255,255,0.15)"
                   }`,
                   background:
-                    selectedBrush === status ? bg : "rgba(10,10,20,0.72)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
+                    selectedBrush === status ? bg : "rgba(10,10,20,0.71)",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
                 }}
                 aria-label={`${status} brush`}
                 aria-pressed={selectedBrush === status}
@@ -241,9 +241,9 @@ export const Grid = ({
                 width: 52,
                 height: 52,
                 border: "2px solid rgba(255,255,255,0.15)",
-                background: "rgba(10,10,20,0.72)",
-                backdropFilter: "blur(16px)",
-                WebkitBackdropFilter: "blur(16px)",
+                background: "rgba(10,10,20,0.71)",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
               }}
               aria-label="Reset all colors"
             >

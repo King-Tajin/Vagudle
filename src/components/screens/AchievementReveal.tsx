@@ -275,6 +275,7 @@ export function AchievementReveal({ onDone }: Props) {
   });
 
   useEffect(() => {
+    // Must be set after mount, not during render, so the overlay actually transitions in.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setOverlayOn(true);
 

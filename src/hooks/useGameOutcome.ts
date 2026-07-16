@@ -83,6 +83,7 @@ export const useGameOutcome = ({
       clearTimeout(timeoutId);
       cancelAlert();
     };
+    // Omitted refs and state setters are stable and don't need to be listed as deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isGameWon,

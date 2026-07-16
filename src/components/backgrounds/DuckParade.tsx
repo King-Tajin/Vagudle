@@ -452,6 +452,7 @@ export const DuckParade = ({
     directionRef.current = 1;
     phaseRef.current = "walking";
     xRef.current = -formationSpan;
+    // State mirrors the refs driving the animation loop so it can't be derived during render.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setDirection(1);
     setX(-formationSpan);
