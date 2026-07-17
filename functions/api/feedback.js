@@ -50,12 +50,12 @@ export async function onRequestPost(context) {
       );
     }
 
-    if (!context.env.FEEDBACK_KV) {
+    if (!context.env.FEEDBACK_AND_STATS_KV) {
       return json(
         {
           success: false,
           error:
-            "Storage not configured. Please bind FEEDBACK_KV in Cloudflare settings.",
+            "Storage not configured. Please bind FEEDBACK_AND_STATS_KV in Cloudflare settings.",
         },
         500
       );
@@ -82,7 +82,7 @@ export async function onRequestPost(context) {
       tags: [],
     };
 
-    await context.env.FEEDBACK_KV.put(
+    await context.env.FEEDBACK_AND_STATS_KV.put(
       feedbackId,
       JSON.stringify(feedbackRecord),
       {
@@ -97,7 +97,7 @@ export async function onRequestPost(context) {
 
     const dateKey = new Date().toISOString().split("T")[0];
     const indexItemKey = `index:${dateKey}:${feedbackId}`;
-    await context.env.FEEDBACK_KV.put(indexItemKey, feedbackId);
+    await context.env.FEEDBACK_AND_STATS_KV.put(indexItemKey, feedbackId);
 
     return json({
       success: true,

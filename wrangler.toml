@@ -7,11 +7,11 @@ FIREBASE_PROJECT_ID = "vagudle"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "vagudle-duels"
-database_id = "e32fb5db-fd30-498a-a8b9-46c2c0103489"
+database_name = "vagudle-data"
+database_id = "035d8b7e-e796-467a-8c7c-29a0230d4f6c"
 
 [[kv_namespaces]]
-binding = "FEEDBACK_KV"
+binding = "FEEDBACK_AND_STATS_KV"
 id = "331edf8aaa9e445ba3784228b101cd04"
 
 [[ratelimits]]

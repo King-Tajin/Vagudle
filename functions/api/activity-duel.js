@@ -11,7 +11,7 @@ export async function onRequestPost(context) {
     const rateLimited = await checkRateLimit(context);
     if (rateLimited) return rateLimited;
 
-    const kv = context.env.FEEDBACK_KV;
+    const kv = context.env.FEEDBACK_AND_STATS_KV;
     if (!kv) {
       return json({ error: "Storage not configured." }, 500);
     }
