@@ -59,28 +59,6 @@ const emptyStats: GameStats = {
   successRate: 0,
 };
 
-const CLOUD_SYNCED_AT_KEY = "vagudle-cloud-synced-at:v1";
-
-export const getSyncedCloudUpdatedAt = (): string | null => {
-  try {
-    return localStorage.getItem(CLOUD_SYNCED_AT_KEY);
-  } catch {
-    return null;
-  }
-};
-
-export const setSyncedCloudUpdatedAt = (updatedAt: string): void => {
-  try {
-    localStorage.setItem(CLOUD_SYNCED_AT_KEY, updatedAt);
-  } catch {}
-};
-
-export const clearSyncedCloudUpdatedAt = (): void => {
-  try {
-    localStorage.removeItem(CLOUD_SYNCED_AT_KEY);
-  } catch {}
-};
-
 export const getIdTokenForCurrentUser = async (): Promise<string | null> => {
   const user = auth.currentUser;
   if (!user) return null;
@@ -101,6 +79,21 @@ export const buildCloudSavePayloadFromLocalStorage = (
   settings: JSON.stringify(loadSettingsFromLocalStorage()),
   backgroundId: loadBackgroundId(isMobile),
 });
+
+export const cloudSaveMatchesLocal = (
+  cloudSave: CloudSave,
+  isMobile: boolean
+): boolean => {
+  const local = buildCloudSavePayloadFromLocalStorage(isMobile);
+  return (
+    cloudSave.achievements === local.achievements &&
+    cloudSave.wordConnoisseur === local.wordConnoisseur &&
+    cloudSave.statsNormal === local.statsNormal &&
+    cloudSave.statsHard === local.statsHard &&
+    cloudSave.settings === local.settings &&
+    (cloudSave.backgroundId ?? null) === (local.backgroundId ?? null)
+  );
+};
 
 export const getLocalMaxUpdatedAt = (): string | null => {
   const timestamps = [
@@ -192,12 +185,10 @@ export const resolveCloudSaveConflict = async (
 
   const idToken = await getIdTokenForCurrentUser();
   if (!idToken) return null;
-  const updatedAt = await pushCloudSave(
+  return pushCloudSave(
     idToken,
     buildCloudSavePayloadFromLocalStorage(isMobile)
   );
-  if (updatedAt) setSyncedCloudUpdatedAt(updatedAt);
-  return updatedAt;
 };
 
 export const pushCloudSave = async (

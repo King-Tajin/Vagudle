@@ -6,9 +6,7 @@ import {
   getLocalMaxUpdatedAt,
   pullCloudSave,
   pushCloudSave,
-  getSyncedCloudUpdatedAt,
-  setSyncedCloudUpdatedAt,
-  clearSyncedCloudUpdatedAt,
+  cloudSaveMatchesLocal,
   type CloudSave,
 } from "../lib/cloudSync";
 
@@ -31,7 +29,6 @@ export const useCloudSync = (isMobile: boolean) => {
     if (!user) {
       resolvedUidRef.current = null;
       lastPushedAtRef.current = null;
-      clearSyncedCloudUpdatedAt();
       return;
     }
     if (resolvedUidRef.current === user.uid) return;
@@ -45,7 +42,7 @@ export const useCloudSync = (isMobile: boolean) => {
       }
       const result = await pullCloudSave(idToken);
       if (result.status === "found") {
-        if (getSyncedCloudUpdatedAt() === result.save.updatedAt) {
+        if (cloudSaveMatchesLocal(result.save, isMobile)) {
           lastPushedAtRef.current = getLocalMaxUpdatedAt();
           setCloudUpdatedAt(result.save.updatedAt);
           setIsUpToDate(true);
@@ -60,7 +57,6 @@ export const useCloudSync = (isMobile: boolean) => {
         );
         if (updatedAt) {
           lastPushedAtRef.current = getLocalMaxUpdatedAt();
-          setSyncedCloudUpdatedAt(updatedAt);
           setCloudUpdatedAt(updatedAt);
           setIsUpToDate(true);
           setSyncError(null);
@@ -94,7 +90,6 @@ export const useCloudSync = (isMobile: boolean) => {
           );
           if (updatedAt) {
             lastPushedAtRef.current = latest;
-            setSyncedCloudUpdatedAt(updatedAt);
             setCloudUpdatedAt(updatedAt);
             setIsUpToDate(true);
             setSyncError(null);
