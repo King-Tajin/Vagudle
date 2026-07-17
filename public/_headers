@@ -1,5 +1,11 @@
 /*
   Content-Security-Policy: frame-ancestors 'self' https://*.discordsays.com
 
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
 /backgrounds/*
   Cache-Control: public, max-age=31536000, immutable
