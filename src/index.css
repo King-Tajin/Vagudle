@@ -149,6 +149,19 @@ svg.cursor-pointer:hover {
   transform: scale(1.2);
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+  transition: transform var(--animation-speed-fast) ease;
+}
+
+button:not(:disabled):not(.keyboard-key):hover {
+  transform: scale(1.06);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 .jiggle {
   animation: jiggle linear;
   animation-duration: var(--animation-speed-fast);
@@ -354,7 +367,7 @@ svg.cursor-pointer:hover {
 
 .shiny-btn:hover {
   border-color: #ffd700;
-  transform: translateY(-1px);
+  transform: translateY(-1px) scale(1.06);
 }
 
 .shiny-btn:active {
