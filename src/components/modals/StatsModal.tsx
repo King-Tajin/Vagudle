@@ -773,7 +773,12 @@ export const StatsModal = ({
         <>
           <StatBar gameStats={displayStats} />
           <p className="font-pixel text-xs text-gray-500 tracking-widest mt-4 mb-3">
-            {GUESS_DISTRIBUTION_TEXT.toUpperCase()}
+            {GUESS_DISTRIBUTION_TEXT.toUpperCase()} -{" "}
+            {displayStats.totalGames - displayStats.gamesFailed} GAME
+            {displayStats.totalGames - displayStats.gamesFailed === 1
+              ? ""
+              : "S"}{" "}
+            WON
           </p>
           <Histogram
             gameStats={displayStats}
