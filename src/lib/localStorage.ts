@@ -8,6 +8,28 @@ export const migrateLegacyStorageKey = (legacyKey: string, newKey: string) => {
   } catch {}
 };
 
+const updatedAtKey = (key: string) => `${key}:updatedAt`;
+
+export const stampUpdatedAt = (key: string) => {
+  try {
+    localStorage.setItem(updatedAtKey(key), new Date().toISOString());
+  } catch {}
+};
+
+export const clearUpdatedAt = (key: string) => {
+  try {
+    localStorage.removeItem(updatedAtKey(key));
+  } catch {}
+};
+
+export const getUpdatedAt = (key: string): string | null => {
+  try {
+    return localStorage.getItem(updatedAtKey(key));
+  } catch {
+    return null;
+  }
+};
+
 export const gameStateKey = "gameState:v1";
 const legacyGameStateKey = "gameState";
 
@@ -39,7 +61,7 @@ export const loadGameStateFromLocalStorage = (): StoredGameState | null => {
 export const settingsKey = "settings:v1";
 const legacySettingsKey = "settings";
 
-type StoredSettings = {
+export type StoredSettings = {
   wordLength: number;
   showGrayCount: boolean;
   hardMode: boolean;
@@ -65,8 +87,12 @@ const defaultSettings: StoredSettings = {
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {
   try {
     localStorage.setItem(settingsKey, JSON.stringify(settings));
+    stampUpdatedAt(settingsKey);
   } catch {}
 };
+
+export const getSettingsUpdatedAt = (): string | null =>
+  getUpdatedAt(settingsKey);
 
 export const loadSettingsFromLocalStorage = (): StoredSettings => {
   migrateLegacyStorageKey(legacySettingsKey, settingsKey);
@@ -103,12 +129,14 @@ export const saveStatsToLocalStorage = (
   hardMode: boolean
 ) => {
   try {
-    localStorage.setItem(
-      hardMode ? hardStatKey : normalStatKey,
-      JSON.stringify(gameStats)
-    );
+    const key = hardMode ? hardStatKey : normalStatKey;
+    localStorage.setItem(key, JSON.stringify(gameStats));
+    stampUpdatedAt(key);
   } catch {}
 };
+
+export const getStatsUpdatedAt = (hardMode: boolean): string | null =>
+  getUpdatedAt(hardMode ? hardStatKey : normalStatKey);
 
 export const loadStatsFromLocalStorage = (
   hardMode: boolean

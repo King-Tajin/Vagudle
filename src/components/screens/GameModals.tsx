@@ -23,6 +23,8 @@ type Props = {
   hardMode: boolean;
   extraEffects: boolean;
   setExtraEffects: (value: boolean) => void;
+  cloudUpdatedAt: string | null;
+  isCloudUpToDate: boolean;
   gameMode: GameMode;
   isActivityMode: boolean;
   isMobile: boolean;
@@ -79,6 +81,8 @@ export const GameModals = ({
   hardMode,
   extraEffects,
   setExtraEffects,
+  cloudUpdatedAt,
+  isCloudUpToDate,
   gameMode,
   isActivityMode,
   isMobile,
@@ -199,6 +203,8 @@ export const GameModals = ({
                 : null
           }
           isActivityMode={isActivityMode}
+          cloudUpdatedAt={cloudUpdatedAt}
+          isCloudUpToDate={isCloudUpToDate}
         />
         {gameMode === "challenge" && challengeConfig && (
           <ChallengeAcceptModal

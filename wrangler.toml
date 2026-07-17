@@ -2,6 +2,9 @@ name = "vagudle"
 compatibility_date = "2026-05-14"
 pages_build_output_dir = "dist"
 
+[vars]
+FIREBASE_PROJECT_ID = "vagudle"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "vagudle-duels"

@@ -1,5 +1,10 @@
 import { COMPLETIONIST_ID } from "./achievements";
-import { migrateLegacyStorageKey } from "./localStorage";
+import {
+  migrateLegacyStorageKey,
+  stampUpdatedAt,
+  clearUpdatedAt,
+  getUpdatedAt,
+} from "./localStorage";
 
 export type BackgroundId =
   | "sprinkles"
@@ -208,8 +213,11 @@ export const loadBackgroundId = (isMobile: boolean): BackgroundId => {
 export const saveBackgroundId = (id: BackgroundId): void => {
   try {
     localStorage.setItem(BG_KEY, id);
+    stampUpdatedAt(BG_KEY);
   } catch {}
 };
+
+export const getBackgroundUpdatedAt = (): string | null => getUpdatedAt(BG_KEY);
 
 export const ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden:v1";
 const LEGACY_ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden";
@@ -236,6 +244,7 @@ export const hideAttributionForever = (id: BackgroundId): void => {
         ATTRIBUTION_HIDDEN_KEY,
         JSON.stringify([...hidden, id])
       );
+      stampUpdatedAt(ATTRIBUTION_HIDDEN_KEY);
     }
   } catch {}
 };
@@ -247,11 +256,13 @@ export const unhideAttribution = (id: BackgroundId): void => {
       ATTRIBUTION_HIDDEN_KEY,
       JSON.stringify(hidden.filter((hiddenId) => hiddenId !== id))
     );
+    stampUpdatedAt(ATTRIBUTION_HIDDEN_KEY);
   } catch {}
 };
 
 export const clearHiddenAttributions = (): void => {
   try {
     localStorage.removeItem(ATTRIBUTION_HIDDEN_KEY);
+    clearUpdatedAt(ATTRIBUTION_HIDDEN_KEY);
   } catch {}
 };

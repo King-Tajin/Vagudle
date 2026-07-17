@@ -28,6 +28,7 @@ import {
   ActivityNotFoundScreen,
   ActivityWrongPlayerScreen,
   ActivityServerErrorScreen,
+  CloudSaveConflictModal,
 } from "./lazyComponents";
 
 import { LoadingScreen } from "./components/screens/GameScreens";
@@ -42,6 +43,8 @@ import { useGuessInput } from "./hooks/useGuessInput";
 import { useSaveGameState } from "./hooks/useSaveGameState";
 import { useCrossTabSync } from "./hooks/useCrossTabSync";
 import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
+import { completeEmailLinkSignIn } from "./hooks/useCloudAuth";
+import { useCloudSync } from "./hooks/useCloudSync";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
@@ -97,6 +100,17 @@ function App() {
   useEffect(() => {
     isMobileRef.current = isMobile;
   }, [isMobile]);
+
+  const {
+    pendingCloudSave,
+    cloudUpdatedAt,
+    isUpToDate,
+    resolvePendingCloudSave,
+  } = useCloudSync(isMobile);
+
+  useEffect(() => {
+    void completeEmailLinkSignIn();
+  }, []);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -636,6 +650,8 @@ function App() {
           hardMode={hardMode}
           extraEffects={extraEffects}
           setExtraEffects={setExtraEffects}
+          cloudUpdatedAt={cloudUpdatedAt}
+          isCloudUpToDate={isUpToDate}
           gameMode={gameMode}
           isActivityMode={isDiscordActivity}
           isMobile={isMobile}
@@ -696,6 +712,15 @@ function App() {
 
         <AlertContainer />
       </div>
+      {pendingCloudSave && (
+        <Suspense fallback={null}>
+          <CloudSaveConflictModal
+            cloudSave={pendingCloudSave}
+            isMobile={isMobile}
+            onResolved={resolvePendingCloudSave}
+          />
+        </Suspense>
+      )}
       {isCelebrating && (
         <Suspense fallback={null}>
           <WinCelebration

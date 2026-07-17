@@ -168,7 +168,12 @@ export const getEffectiveUnlockedIds = (unlockedIds: string[]): string[] => {
   return unlockedIds;
 };
 
-import { migrateLegacyStorageKey } from "./localStorage";
+import {
+  migrateLegacyStorageKey,
+  stampUpdatedAt,
+  clearUpdatedAt,
+  getUpdatedAt,
+} from "./localStorage";
 
 export const ACHIEVEMENTS_KEY = "vagudle-achievements:v1";
 const LEGACY_ACHIEVEMENTS_KEY = "vagudle-achievements";
@@ -188,12 +193,17 @@ export const loadWordConnoisseurList = (): string[] => {
 export const saveWordConnoisseurList = (words: string[]): void => {
   try {
     localStorage.setItem(WORD_CONNOISSEUR_KEY, JSON.stringify(words));
+    stampUpdatedAt(WORD_CONNOISSEUR_KEY);
   } catch {}
 };
+
+export const getWordConnoisseurUpdatedAt = (): string | null =>
+  getUpdatedAt(WORD_CONNOISSEUR_KEY);
 
 export const deleteWordConnoisseurList = (): void => {
   try {
     localStorage.removeItem(WORD_CONNOISSEUR_KEY);
+    clearUpdatedAt(WORD_CONNOISSEUR_KEY);
   } catch {}
 };
 
@@ -212,5 +222,9 @@ export const loadAchievementProgress = (): AchievementProgress => {
 export const saveAchievementProgress = (p: AchievementProgress): void => {
   try {
     localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(p));
+    stampUpdatedAt(ACHIEVEMENTS_KEY);
   } catch {}
 };
+
+export const getAchievementProgressUpdatedAt = (): string | null =>
+  getUpdatedAt(ACHIEVEMENTS_KEY);

@@ -21,6 +21,7 @@
     "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.5.2",
     "classnames": "^2.5.1",
+    "firebase": "^12.16.0",
     "framer-motion": "^12.42.2",
     "lottie-web": "^5.13.0",
     "lucide-react": "^1.24.0",
@@ -71,5 +72,9 @@
     "public/**/*.{html,json}": "prettier --write",
     "public/**/*.svg": "svgo",
     ".github/**/*.md": "prettier --write"
+  },
+  "allowScripts": {
+    "@firebase/util@1.15.1": true,
+    "protobufjs@7.6.5": true
   }
 }
