@@ -1,6 +1,6 @@
 VAGUDLE PRIVACY POLICY
 
-Last updated: June 2026
+Last updated: July 2026
 
 Vagudle (https://vagudle.king-tajin.dev) is operated by Roland Shikoski.
 
@@ -14,7 +14,37 @@ LOCAL STORAGE
 
 Your game state, settings, and progress are stored locally in your browser
 using localStorage. This data never leaves your device and is not accessible
-to us.
+to us, unless you choose to sign in for cloud save as described below.
+
+---
+
+CLOUD SAVE ACCOUNTS
+
+Signing in is optional. If you choose to sign in, you can sync your
+achievements, statistics, settings, and selected background across devices.
+
+Sign-in is handled by Firebase Authentication, a service provided by Google.
+You can sign in with:
+
+  - Google
+  - GitHub
+  - A sign-in link sent to your email address
+
+When you sign in, we store the following in a database to power cloud save:
+
+  - Your account identifier, issued by Firebase
+  - Your email address and/or display name, depending on the sign-in method
+    you use
+  - Your achievement progress, word statistics, settings, and selected
+    background
+
+This data is retained until you request deletion. To request deletion of
+your cloud save or account data, contact us at the email addresses above.
+
+Your browser may also store a local sign-in session (using localStorage or
+IndexedDB, not cookies) so you stay signed in between visits. If you sign
+in with Google or GitHub, that sign-in is also subject to the provider's own
+privacy policy. We never receive your password from these providers.
 
 ---
 
