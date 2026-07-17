@@ -30,6 +30,18 @@ export const getUpdatedAt = (key: string): string | null => {
   }
 };
 
+export const dispatchStorageSync = (key: string) => {
+  try {
+    window.dispatchEvent(
+      new StorageEvent("storage", {
+        key,
+        newValue: localStorage.getItem(key),
+        storageArea: localStorage,
+      })
+    );
+  } catch {}
+};
+
 export const gameStateKey = "gameState:v1";
 const legacyGameStateKey = "gameState";
 

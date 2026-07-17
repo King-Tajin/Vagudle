@@ -5,6 +5,7 @@ import {
   AchievementProgress,
   ACHIEVEMENTS,
   ACHIEVEMENTS_KEY,
+  WORD_CONNOISSEUR_KEY,
   COMPLETIONIST_ID,
   isCompletionistUnlocked,
   getEffectiveUnlockedIds,
@@ -116,19 +117,28 @@ export const computeCloseCallStreak = (
   return false;
 };
 
+const computeUniqueWordCount = (p: AchievementProgress): number => {
+  if (p.unlockedIds.includes("word_connoisseur")) return 200;
+  return loadWordConnoisseurList().length;
+};
+
 export const useAchievements = () => {
   const [progress, setProgress] = useState<AchievementProgress>(() =>
     loadAchievementProgress()
   );
-  const [uniqueWordCount, setUniqueWordCount] = useState<number>(() => {
-    const p = loadAchievementProgress();
-    if (p.unlockedIds.includes("word_connoisseur")) return 200;
-    return loadWordConnoisseurList().length;
-  });
+  const [uniqueWordCount, setUniqueWordCount] = useState<number>(() =>
+    computeUniqueWordCount(loadAchievementProgress())
+  );
   const hasRecordedWinRef = useRef(false);
 
   useStorageSync(ACHIEVEMENTS_KEY, () => {
-    setProgress(loadAchievementProgress());
+    const p = loadAchievementProgress();
+    setProgress(p);
+    setUniqueWordCount(computeUniqueWordCount(p));
+  });
+
+  useStorageSync(WORD_CONNOISSEUR_KEY, () => {
+    setUniqueWordCount(computeUniqueWordCount(loadAchievementProgress()));
   });
 
   const resetWinRecord = () => {

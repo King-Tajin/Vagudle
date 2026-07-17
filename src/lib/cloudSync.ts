@@ -6,6 +6,10 @@ import {
   saveStatsToLocalStorage,
   getSettingsUpdatedAt,
   getStatsUpdatedAt,
+  dispatchStorageSync,
+  settingsKey,
+  normalStatKey,
+  hardStatKey,
   type GameStats,
   type StoredSettings,
 } from "./localStorage";
@@ -16,12 +20,15 @@ import {
   saveWordConnoisseurList,
   getAchievementProgressUpdatedAt,
   getWordConnoisseurUpdatedAt,
+  ACHIEVEMENTS_KEY,
+  WORD_CONNOISSEUR_KEY,
   type AchievementProgress,
 } from "./achievements";
 import {
   loadBackgroundId,
   saveBackgroundId,
   getBackgroundUpdatedAt,
+  BG_KEY,
   type BackgroundId,
 } from "./backgrounds";
 
@@ -127,9 +134,12 @@ export const resolveCloudSaveConflict = async (
   saveAchievementProgress(
     mergeAchievementProgress(localAchievements, cloudAchievements)
   );
+  dispatchStorageSync(ACHIEVEMENTS_KEY);
+
   saveWordConnoisseurList(
     mergeWordConnoisseurLists(localWordConnoisseur, cloudWordConnoisseur)
   );
+  dispatchStorageSync(WORD_CONNOISSEUR_KEY);
 
   if (pick === "cloud") {
     try {
@@ -137,20 +147,24 @@ export const resolveCloudSaveConflict = async (
         JSON.parse(cloudSave.statsNormal) as GameStats,
         false
       );
+      dispatchStorageSync(normalStatKey);
     } catch {}
     try {
       saveStatsToLocalStorage(
         JSON.parse(cloudSave.statsHard) as GameStats,
         true
       );
+      dispatchStorageSync(hardStatKey);
     } catch {}
     try {
       saveSettingsToLocalStorage(
         JSON.parse(cloudSave.settings) as StoredSettings
       );
+      dispatchStorageSync(settingsKey);
     } catch {}
     if (cloudSave.backgroundId) {
       saveBackgroundId(cloudSave.backgroundId as BackgroundId);
+      dispatchStorageSync(BG_KEY);
     }
   }
 
