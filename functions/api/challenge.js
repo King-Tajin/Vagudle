@@ -7,6 +7,7 @@ import {
   decode,
   VALID_DICTS,
   VALID_GUESSES,
+  checkRateLimit,
 } from "../_shared/api.js";
 
 const generateId = () =>
@@ -28,6 +29,9 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
+    const rateLimited = await checkRateLimit(context);
+    if (rateLimited) return rateLimited;
+
     const key = context.env.CHALLENGE_KEY;
     if (!key)
       return json({ success: false, error: "Server misconfiguration." }, 500);
@@ -55,6 +59,9 @@ export async function onRequestPost(context) {
 
 export async function onRequestGet(context) {
   try {
+    const rateLimited = await checkRateLimit(context);
+    if (rateLimited) return rateLimited;
+
     const key = context.env.CHALLENGE_KEY;
     if (!key)
       return json({ success: false, error: "Server misconfiguration." }, 500);

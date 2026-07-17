@@ -1,6 +1,11 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, VALID_GUESSES } from "../_shared/api.js";
+import {
+  CORS_HEADERS,
+  json,
+  VALID_GUESSES,
+  checkRateLimit,
+} from "../_shared/api.js";
 
 const MAX_GUESSES = Math.max(...VALID_GUESSES);
 
@@ -30,6 +35,9 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
+    const rateLimited = await checkRateLimit(context);
+    if (rateLimited) return rateLimited;
+
     const db = context.env.DB;
     if (!db) {
       return json({ success: false, error: "Storage not configured." }, 500);

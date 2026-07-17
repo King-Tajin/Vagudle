@@ -6,6 +6,7 @@ import {
   decode,
   ONE_DAY_MS,
   validateDuelParsed,
+  checkRateLimit,
 } from "../_shared/api.js";
 
 const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/duel";
@@ -34,6 +35,9 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
+    const rateLimited = await checkRateLimit(context);
+    if (rateLimited) return rateLimited;
+
     const key = context.env.CHALLENGE_KEY;
     if (!key)
       return json({ success: false, error: "Server misconfiguration." }, 500);

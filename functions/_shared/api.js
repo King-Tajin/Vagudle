@@ -10,6 +10,22 @@ export const json = (data, status = 200) =>
     headers: { "Content-Type": "application/json", ...CORS_HEADERS },
   });
 
+export const checkRateLimit = async (context) => {
+  const limiter = context.env.RATE_LIMITER;
+  if (!limiter) return null;
+
+  const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
+  const path = new URL(context.request.url).pathname;
+
+  const { success } = await limiter.limit({ key: `${ip}:${path}` });
+  if (success) return null;
+
+  return json(
+    { success: false, error: "Too many requests. Please slow down." },
+    429
+  );
+};
+
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 

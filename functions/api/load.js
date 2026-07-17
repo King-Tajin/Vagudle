@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json } from "../_shared/api.js";
+import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
 import {
   verifyFirebaseIdToken,
   getBearerToken,
@@ -12,6 +12,9 @@ export async function onRequestOptions() {
 
 export async function onRequestGet(context) {
   try {
+    const rateLimited = await checkRateLimit(context);
+    if (rateLimited) return rateLimited;
+
     const projectId = context.env.FIREBASE_PROJECT_ID;
     if (!projectId)
       return json({ success: false, error: "Server misconfiguration." }, 500);

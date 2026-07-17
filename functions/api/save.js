@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json } from "../_shared/api.js";
+import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
 import {
   verifyFirebaseIdToken,
   getBearerToken,
@@ -34,6 +34,9 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
+    const rateLimited = await checkRateLimit(context);
+    if (rateLimited) return rateLimited;
+
     const projectId = context.env.FIREBASE_PROJECT_ID;
     if (!projectId)
       return json({ success: false, error: "Server misconfiguration." }, 500);
@@ -79,16 +82,16 @@ export async function onRequestPost(context) {
     await db
       .prepare(
         `INSERT INTO player_saves
-           (uid, achievements, word_connoisseur, stats_normal, stats_hard, settings, background_id, updated_at)
+         (uid, achievements, word_connoisseur, stats_normal, stats_hard, settings, background_id, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-         ON CONFLICT(uid) DO UPDATE SET
-           achievements = excluded.achievements,
-           word_connoisseur = excluded.word_connoisseur,
-           stats_normal = excluded.stats_normal,
-           stats_hard = excluded.stats_hard,
-           settings = excluded.settings,
-           background_id = excluded.background_id,
-           updated_at = excluded.updated_at`
+           ON CONFLICT(uid) DO UPDATE SET
+          achievements = excluded.achievements,
+                                 word_connoisseur = excluded.word_connoisseur,
+                                 stats_normal = excluded.stats_normal,
+                                 stats_hard = excluded.stats_hard,
+                                 settings = excluded.settings,
+                                 background_id = excluded.background_id,
+                                 updated_at = excluded.updated_at`
       )
       .bind(
         uid,

@@ -13,3 +13,8 @@ database_id = "e32fb5db-fd30-498a-a8b9-46c2c0103489"
 [[kv_namespaces]]
 binding = "FEEDBACK_KV"
 id = "331edf8aaa9e445ba3784228b101cd04"
+
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 40, period = 60 }

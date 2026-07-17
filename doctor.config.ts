@@ -76,6 +76,12 @@ export default {
         files: ["**/src/components/backgrounds/Fireworks.tsx"],
         rules: ["react-doctor/no-fetch-in-effect"],
       },
+      {
+        // Auth-only config; no Firestore/Storage SDK client-side, and data
+        // access goes through server-verified /api/save and /api/load.
+        files: ["**/dist/assets/*.js"],
+        rules: ["react-doctor/artifact-baas-authority-surface"],
+      },
     ],
   },
 } satisfies ReactDoctorConfig;
