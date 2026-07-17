@@ -4,12 +4,15 @@ import {
   saveSettingsToLocalStorage,
   loadStatsFromLocalStorage,
   saveStatsToLocalStorage,
+  loadGameStateFromLocalStorage,
+  saveGameStateToLocalStorage,
   getUpdatedAt,
   cloudSyncKey,
   dispatchStorageSync,
   settingsKey,
   normalStatKey,
   hardStatKey,
+  gameStateKey,
   type GameStats,
   type StoredSettings,
 } from "./localStorage";
@@ -28,6 +31,7 @@ import {
   BG_KEY,
   type BackgroundId,
 } from "./backgrounds";
+import { getRandomWord } from "./words";
 
 export type CloudSavePayload = {
   achievements: string;
@@ -159,10 +163,37 @@ export const resolveCloudSaveConflict = async (
       dispatchStorageSync(hardStatKey);
     } catch {}
     try {
-      saveSettingsToLocalStorage(
-        JSON.parse(cloudSave.settings) as StoredSettings
-      );
+      const cloudSettings = JSON.parse(cloudSave.settings) as StoredSettings;
+      const localSettings = loadSettingsFromLocalStorage();
+      const hasActiveGuesses =
+        (loadGameStateFromLocalStorage()?.guesses.length ?? 0) > 0;
+      const nextSettings = hasActiveGuesses
+        ? {
+            ...cloudSettings,
+            wordLength: localSettings.wordLength,
+            hardMode: localSettings.hardMode,
+          }
+        : cloudSettings;
+      saveSettingsToLocalStorage(nextSettings);
       dispatchStorageSync(settingsKey);
+
+      const puzzleSettingsChanged =
+        nextSettings.wordLength !== localSettings.wordLength ||
+        nextSettings.hardMode !== localSettings.hardMode;
+
+      if (!hasActiveGuesses && puzzleSettingsChanged) {
+        saveGameStateToLocalStorage({
+          guesses: [],
+          solution: getRandomWord(
+            nextSettings.wordLength,
+            nextSettings.hardMode
+          ),
+          cellColors: {},
+          autoGrayLetters: [],
+          hardMode: nextSettings.hardMode,
+        });
+        dispatchStorageSync(gameStateKey);
+      }
     } catch {}
     if (cloudSave.backgroundId) {
       saveBackgroundId(cloudSave.backgroundId as BackgroundId);
