@@ -79,19 +79,29 @@ export async function onRequestPost(context) {
 
     const updatedAt = new Date().toISOString();
 
-    await db
+    const row = await db
       .prepare(
         `INSERT INTO player_saves
-         (uid, achievements, word_connoisseur, stats_normal, stats_hard, settings, background_id, updated_at)
+           (uid, achievements, word_connoisseur, stats_normal, stats_hard, settings, background_id, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-           ON CONFLICT(uid) DO UPDATE SET
-          achievements = excluded.achievements,
-                                 word_connoisseur = excluded.word_connoisseur,
-                                 stats_normal = excluded.stats_normal,
-                                 stats_hard = excluded.stats_hard,
-                                 settings = excluded.settings,
-                                 background_id = excluded.background_id,
-                                 updated_at = excluded.updated_at`
+         ON CONFLICT(uid) DO UPDATE SET
+           achievements = excluded.achievements,
+           word_connoisseur = excluded.word_connoisseur,
+           stats_normal = excluded.stats_normal,
+           stats_hard = excluded.stats_hard,
+           settings = excluded.settings,
+           background_id = excluded.background_id,
+           updated_at = CASE
+             WHEN player_saves.achievements IS excluded.achievements
+              AND player_saves.word_connoisseur IS excluded.word_connoisseur
+              AND player_saves.stats_normal IS excluded.stats_normal
+              AND player_saves.stats_hard IS excluded.stats_hard
+              AND player_saves.settings IS excluded.settings
+              AND player_saves.background_id IS excluded.background_id
+             THEN player_saves.updated_at
+             ELSE excluded.updated_at
+           END
+         RETURNING updated_at`
       )
       .bind(
         uid,
@@ -103,9 +113,9 @@ export async function onRequestPost(context) {
         backgroundId ?? null,
         updatedAt
       )
-      .run();
+      .first();
 
-    return json({ success: true, updatedAt });
+    return json({ success: true, updatedAt: row?.updated_at ?? updatedAt });
   } catch (error) {
     console.error("Save error:", error);
     return json({ success: false, error: "Failed to save." }, 500);

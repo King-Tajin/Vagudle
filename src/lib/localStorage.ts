@@ -42,6 +42,8 @@ export const dispatchStorageSync = (key: string) => {
   } catch {}
 };
 
+export const cloudSyncKey = "vagudle-cloud-sync:v1";
+
 export const gameStateKey = "gameState:v1";
 const legacyGameStateKey = "gameState";
 
@@ -99,12 +101,9 @@ const defaultSettings: StoredSettings = {
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {
   try {
     localStorage.setItem(settingsKey, JSON.stringify(settings));
-    stampUpdatedAt(settingsKey);
+    stampUpdatedAt(cloudSyncKey);
   } catch {}
 };
-
-export const getSettingsUpdatedAt = (): string | null =>
-  getUpdatedAt(settingsKey);
 
 export const loadSettingsFromLocalStorage = (): StoredSettings => {
   migrateLegacyStorageKey(legacySettingsKey, settingsKey);
@@ -143,12 +142,9 @@ export const saveStatsToLocalStorage = (
   try {
     const key = hardMode ? hardStatKey : normalStatKey;
     localStorage.setItem(key, JSON.stringify(gameStats));
-    stampUpdatedAt(key);
+    stampUpdatedAt(cloudSyncKey);
   } catch {}
 };
-
-export const getStatsUpdatedAt = (hardMode: boolean): string | null =>
-  getUpdatedAt(hardMode ? hardStatKey : normalStatKey);
 
 export const loadStatsFromLocalStorage = (
   hardMode: boolean

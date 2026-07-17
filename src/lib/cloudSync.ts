@@ -4,8 +4,8 @@ import {
   saveSettingsToLocalStorage,
   loadStatsFromLocalStorage,
   saveStatsToLocalStorage,
-  getSettingsUpdatedAt,
-  getStatsUpdatedAt,
+  getUpdatedAt,
+  cloudSyncKey,
   dispatchStorageSync,
   settingsKey,
   normalStatKey,
@@ -18,8 +18,6 @@ import {
   saveAchievementProgress,
   loadWordConnoisseurList,
   saveWordConnoisseurList,
-  getAchievementProgressUpdatedAt,
-  getWordConnoisseurUpdatedAt,
   ACHIEVEMENTS_KEY,
   WORD_CONNOISSEUR_KEY,
   type AchievementProgress,
@@ -27,7 +25,6 @@ import {
 import {
   loadBackgroundId,
   saveBackgroundId,
-  getBackgroundUpdatedAt,
   BG_KEY,
   type BackgroundId,
 } from "./backgrounds";
@@ -95,18 +92,8 @@ export const cloudSaveMatchesLocal = (
   );
 };
 
-export const getLocalMaxUpdatedAt = (): string | null => {
-  const timestamps = [
-    getSettingsUpdatedAt(),
-    getStatsUpdatedAt(false),
-    getStatsUpdatedAt(true),
-    getAchievementProgressUpdatedAt(),
-    getWordConnoisseurUpdatedAt(),
-    getBackgroundUpdatedAt(),
-  ].filter((t): t is string => t !== null);
-  if (timestamps.length === 0) return null;
-  return timestamps.reduce((latest, t) => (t > latest ? t : latest));
-};
+export const getLocalMaxUpdatedAt = (): string | null =>
+  getUpdatedAt(cloudSyncKey);
 
 const mergeAchievementProgress = (
   a: AchievementProgress,

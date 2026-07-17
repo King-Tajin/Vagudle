@@ -3,7 +3,7 @@ import {
   migrateLegacyStorageKey,
   stampUpdatedAt,
   clearUpdatedAt,
-  getUpdatedAt,
+  cloudSyncKey,
 } from "./localStorage";
 
 export type BackgroundId =
@@ -213,11 +213,9 @@ export const loadBackgroundId = (isMobile: boolean): BackgroundId => {
 export const saveBackgroundId = (id: BackgroundId): void => {
   try {
     localStorage.setItem(BG_KEY, id);
-    stampUpdatedAt(BG_KEY);
+    stampUpdatedAt(cloudSyncKey);
   } catch {}
 };
-
-export const getBackgroundUpdatedAt = (): string | null => getUpdatedAt(BG_KEY);
 
 export const ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden:v1";
 const LEGACY_ATTRIBUTION_HIDDEN_KEY = "vagudle-attribution-hidden";
