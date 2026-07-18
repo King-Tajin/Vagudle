@@ -30,6 +30,7 @@ import {
 } from "../../lib/challenge";
 import type { Achievement } from "../../lib/achievements";
 import { BACKGROUNDS, type BackgroundId } from "../../lib/backgrounds";
+import type { DuelConfig } from "../../lib/duel";
 
 type Props = {
   isOpen: boolean;
@@ -48,7 +49,7 @@ type Props = {
   handleReturnToNormal?: () => void;
   extraEffects?: boolean;
   handleDuelReturn?: () => void;
-  duelConfig?: import("../../lib/duel").DuelConfig | null;
+  duelConfig?: DuelConfig | null;
   isActivityMode?: boolean;
   newlyUnlockedAchievements?: Achievement[];
   onAchievementsViewed?: () => void;

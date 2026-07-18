@@ -79,7 +79,7 @@ const _fetchActivityDuel = async (
   for (let i = 0; i < DUEL_FETCH_RETRY_DELAYS.length; i++) {
     const delay = DUEL_FETCH_RETRY_DELAYS[i];
     if (delay > 0) {
-      console.log(
+      console.warn(
         `[Discord] /api/activity-duel not found, retrying in ${delay}ms (attempt ${
           i + 1
         }/${DUEL_FETCH_RETRY_DELAYS.length - 1})...`
@@ -135,7 +135,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    console.log(
+    console.warn(
       "[Discord] Authorizing, clientId:",
       clientId,
       "channelId:",
@@ -152,7 +152,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
         scope: ["identify"],
       });
       code = result.code;
-      console.log("[Discord] Authorized successfully");
+      console.warn("[Discord] Authorized successfully");
     } catch (err) {
       _logErr("authorize failed", err);
       return { ok: false, reason: "server_error" };
@@ -177,12 +177,12 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    console.log("[Discord] Token exchange succeeded, authenticating...");
+    console.warn("[Discord] Token exchange succeeded, authenticating...");
 
     let auth: Awaited<ReturnType<typeof _sdk.commands.authenticate>>;
     try {
       auth = await _sdk.commands.authenticate({ access_token });
-      console.log("[Discord] Authenticated as user:", auth.user.id);
+      console.warn("[Discord] Authenticated as user:", auth.user.id);
     } catch (err) {
       _logErr("authenticate failed", err);
       return { ok: false, reason: "server_error" };

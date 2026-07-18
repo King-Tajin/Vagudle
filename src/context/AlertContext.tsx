@@ -1,6 +1,10 @@
 import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { ALERT_TIME_MS } from "../constants/settings";
-import { AlertContext, type AlertStatus, type ShowOptions } from "./alert-context";
+import {
+  AlertContext,
+  type AlertStatus,
+  type ShowOptions,
+} from "./alert-context";
 
 type Props = {
   children?: ReactNode;

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { m } from "framer-motion";
-import { measureKeyboardStrips, type StripMeasure } from "../../lib/stripMeasure";
+import {
+  measureKeyboardStrips,
+  type StripMeasure,
+} from "../../lib/stripMeasure";
 import { createRng, seedFromNumbers } from "../../lib/seededRandom";
 
 interface TajinParticle {
