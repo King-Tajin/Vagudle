@@ -145,7 +145,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: COMPLETIONIST_ID,
     title: "Completionist",
-    description: "Unlock every other achievement",
+    description: "Unlock all other achievements",
     hidden: false,
     check: () => false,
   },

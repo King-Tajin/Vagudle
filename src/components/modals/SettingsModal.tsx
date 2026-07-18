@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BookOpen, ChevronDown, Hash, Lock, Mail, Target } from "lucide-react";
+import {
+  AlertTriangle,
+  BookOpen,
+  ChevronDown,
+  Hash,
+  Lock,
+  Mail,
+  ShieldCheck,
+  Target,
+} from "lucide-react";
 import GoogleIcon from "../../assets/icons/google.svg?react";
 import GithubIcon from "../../assets/icons/github.svg?react";
 import DiscordIcon from "../../assets/icons/discord.svg?react";
@@ -208,6 +217,25 @@ const CloudSaveSection = ({
       <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none mb-2">
         CLOUD SAVE
       </p>
+      <div className="flex items-start gap-1.5 mb-2">
+        <AlertTriangle
+          className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-crown-amber"
+          aria-hidden="true"
+        />
+        <p className="font-code text-xs text-gray-500 leading-snug">
+          Cloud save does not save games currently in progress.
+        </p>
+      </div>
+      <div className="flex items-start gap-1.5 mb-2">
+        <ShieldCheck
+          className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-tajin-lime"
+          aria-hidden="true"
+        />
+        <p className="font-code text-xs text-gray-500 leading-snug">
+          Your data is never sold. Emails are only kept in case you need
+          support.
+        </p>
+      </div>
       {authLoading ? (
         <p className="font-code text-xs text-gray-500">
           Checking sign-in status...

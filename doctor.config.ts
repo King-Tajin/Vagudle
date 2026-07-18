@@ -2,10 +2,11 @@ import type { ReactDoctorConfig } from "react-doctor/api";
 
 // noinspection JSUnusedGlobalSymbols
 export default {
+  rules: {
+    "react-doctor/no-giant-component": "off",
+    "deslop/unused-file": "off",
+  },
   ignore: {
-    // no-giant-component flags large but cohesive orchestrator screens on purpose.
-    // deslop/unused-file false-flags Pages Functions, which are routed by file path, not imported.
-    rules: ["react-doctor/no-giant-component", "deslop/unused-file"],
     overrides: [
       {
         // Uses a seeded PRNG for decorative particle placement, not anything security-sensitive.
