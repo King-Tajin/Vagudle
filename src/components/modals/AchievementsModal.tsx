@@ -7,7 +7,7 @@ import {
   SquareCheckBig,
 } from "lucide-react";
 import { BaseModal } from "./BaseModal";
-import { ACHIEVEMENTS, Achievement } from "../../lib/achievements";
+import { ACHIEVEMENTS, type Achievement } from "../../lib/achievements";
 import { BACKGROUNDS } from "../../lib/backgrounds";
 
 type Props = {

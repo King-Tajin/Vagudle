@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import { REVEAL_TIME_MS } from "../constants/settings";
 import { WIN_MESSAGES, CHALLENGE_WIN_MESSAGES } from "../constants/strings";
 

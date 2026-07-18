@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import type { DuelSaveStatus } from "../lib/duel";
 import { submitDuelResult, submitActivityDuelResult } from "../lib/duel";
 

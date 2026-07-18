@@ -1,4 +1,4 @@
-import { GameStats } from "../../lib/localStorage";
+import { type GameStats } from "../../lib/localStorage";
 import {
   TOTAL_TRIES_TEXT,
   SUCCESS_RATE_TEXT,

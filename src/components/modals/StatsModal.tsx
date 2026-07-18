@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import RibbonIcon from "../../assets/icons/ribon.svg?react";
 import { StatBar } from "../stats/StatBar";
 import { Histogram } from "../stats/Histogram";
-import { GameStats } from "../../lib/localStorage";
+import { type GameStats } from "../../lib/localStorage";
 import { shareStatus, shareStats } from "../../lib/share";
 import { BaseModal } from "./BaseModal";
 import { ChallengeCreatorModal } from "./ChallengeCreatorModal";

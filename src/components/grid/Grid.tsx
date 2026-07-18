@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NORMAL_MODE_MAX_CHALLENGES } from "../../constants/settings";
-import { CharStatus } from "../../lib/statuses";
+import { type CharStatus } from "../../lib/statuses";
 import { CompletedRow } from "./CompletedRow";
 import { CurrentRow, EmptyRow } from "./GridRows";
 import GreenBrushIcon from "@/assets/icons/green-brush.svg?react";

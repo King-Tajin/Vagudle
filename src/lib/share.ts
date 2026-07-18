@@ -1,7 +1,7 @@
 import { getGuessStatuses } from "./statuses";
 import { unicodeSplit } from "./words";
 import { GAME_TITLE } from "../constants/strings";
-import { GameStats } from "./localStorage";
+import { type GameStats } from "./localStorage";
 import { UAParser } from "ua-parser-js";
 
 const parser = new UAParser();

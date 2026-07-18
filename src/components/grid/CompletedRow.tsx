@@ -1,4 +1,4 @@
-import { getGuessStatuses, CharStatus } from "../../lib/statuses";
+import { getGuessStatuses, type CharStatus } from "../../lib/statuses";
 import { Cell } from "./Cell";
 import { unicodeSplit } from "../../lib/words";
 import RecycleIcon from "@/assets/icons/recycle.svg?react";

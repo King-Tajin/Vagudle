@@ -1,4 +1,4 @@
-import { CharStatus } from "../../lib/statuses";
+import { type CharStatus } from "../../lib/statuses";
 import { Key } from "./Key";
 import React, { useEffect, useEffectEvent } from "react";
 import { ENTER_TEXT, DELETE_TEXT } from "../../constants/strings";

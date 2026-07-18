@@ -11,7 +11,7 @@ import {
   CORRECT_WORD_MESSAGE,
 } from "../constants/strings";
 import { REVEAL_TIME_MS } from "../constants/settings";
-import React from "react";
+import type React from "react";
 
 type Params = {
   currentGuess: string;

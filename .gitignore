@@ -20,3 +20,4 @@ yarn-error.log*
 /.dev.vars
 /.wrangler/
 .eslintcache
+/--cache-location/

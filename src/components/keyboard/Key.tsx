@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import classnames from "classnames";
-import { CharStatus, describeLetterStatus } from "../../lib/statuses";
+import { type CharStatus, describeLetterStatus } from "../../lib/statuses";
 import { REVEAL_TIME_MS } from "../../constants/settings";
 
 type Props = {

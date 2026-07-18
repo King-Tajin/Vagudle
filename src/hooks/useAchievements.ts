@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import {
-  Achievement,
-  AchievementContext,
-  AchievementProgress,
+  type Achievement,
+  type AchievementContext,
+  type AchievementProgress,
   ACHIEVEMENTS,
   ACHIEVEMENTS_KEY,
   WORD_CONNOISSEUR_KEY,

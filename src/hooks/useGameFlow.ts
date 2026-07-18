@@ -6,7 +6,7 @@ import {
   saveStatsToLocalStorage,
 } from "../lib/stats";
 import { getRandomWord } from "../lib/words";
-import React from "react";
+import type React from "react";
 
 const handleReturnToNormal = () => {
   window.location.href = window.location.origin + window.location.pathname;

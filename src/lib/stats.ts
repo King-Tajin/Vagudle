@@ -3,7 +3,7 @@ import {
   NORMAL_MODE_MAX_CHALLENGES,
 } from "../constants/settings";
 import {
-  GameStats,
+  type GameStats,
   loadStatsFromLocalStorage,
   saveStatsToLocalStorage,
 } from "./localStorage";
