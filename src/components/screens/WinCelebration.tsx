@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { m } from "framer-motion";
 import cn from "classnames";
 import VagudleIcon from "@/assets/icons/vagudle.svg?react";

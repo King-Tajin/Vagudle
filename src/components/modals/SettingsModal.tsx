@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BookOpen, ChevronDown, Hash, Lock, Mail, Target } from "lucide-react";
+import GoogleIcon from "../../assets/icons/google.svg?react";
+import GithubIcon from "../../assets/icons/github.svg?react";
+import DiscordIcon from "../../assets/icons/discord.svg?react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { ChallengeCreatorModal } from "./ChallengeCreatorModal";
@@ -172,38 +175,6 @@ const BackgroundDropdown = ({
   );
 };
 
-const GoogleIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0" aria-hidden="true">
-    <path
-      fill="#4285F4"
-      d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
-    />
-    <path
-      fill="#34A853"
-      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.07.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"
-    />
-    <path
-      fill="#FBBC05"
-      d="M5.27 14.28A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.56.37-2.28V6.63H1.29A11.98 11.98 0 0 0 0 12c0 1.94.47 3.77 1.29 5.37l3.98-3.09z"
-    />
-    <path
-      fill="#EA4335"
-      d="M12 4.77c1.76 0 3.34.6 4.58 1.79l3.43-3.43C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.63l3.98 3.09C6.22 6.88 8.87 4.77 12 4.77z"
-    />
-  </svg>
-);
-
-const GithubIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className="w-4 h-4 flex-shrink-0"
-    aria-hidden="true"
-  >
-    <path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.07-.02-2.1-3.34.75-4.04-1.65-4.04-1.65-.55-1.43-1.34-1.81-1.34-1.81-1.09-.77.08-.76.08-.76 1.2.09 1.84 1.26 1.84 1.26 1.07 1.87 2.81 1.33 3.5 1.02.11-.79.42-1.33.76-1.64-2.67-.31-5.47-1.37-5.47-6.1 0-1.35.47-2.45 1.24-3.31-.12-.31-.54-1.57.12-3.27 0 0 1.01-.33 3.3 1.26a11.2 11.2 0 0 1 6.01 0c2.29-1.59 3.3-1.26 3.3-1.26.66 1.7.24 2.96.12 3.27.77.86 1.24 1.96 1.24 3.31 0 4.74-2.81 5.78-5.49 6.08.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.57 22.34 24 17.74 24 12.3 24 5.5 18.63 0 12 0z" />
-  </svg>
-);
-
 const providerButtonStyle = {
   background: "rgba(255,255,255,0.05)",
   border: "2px solid #3a3a4a",
@@ -213,9 +184,11 @@ const providerButtonStyle = {
 const CloudSaveSection = ({
   cloudUpdatedAt,
   isCloudUpToDate,
+  isActivityMode,
 }: {
   cloudUpdatedAt: string | null;
   isCloudUpToDate: boolean;
+  isActivityMode: boolean;
 }) => {
   const {
     user,
@@ -224,6 +197,7 @@ const CloudSaveSection = ({
     emailLinkSent,
     signInWithGoogle,
     signInWithGithub,
+    signInWithDiscord,
     sendEmailLink,
     signOutUser,
   } = useCloudAuth();
@@ -280,7 +254,7 @@ const CloudSaveSection = ({
             className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
             style={providerButtonStyle}
           >
-            <GoogleIcon />
+            <GoogleIcon className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
             CONTINUE WITH GOOGLE
           </button>
           <button
@@ -289,9 +263,23 @@ const CloudSaveSection = ({
             className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
             style={providerButtonStyle}
           >
-            <GithubIcon />
+            <GithubIcon className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
             CONTINUE WITH GITHUB
           </button>
+          {!isActivityMode && (
+            <button
+              type="button"
+              onClick={signInWithDiscord}
+              className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+              style={providerButtonStyle}
+            >
+              <DiscordIcon
+                className="w-4 h-4 flex-shrink-0"
+                aria-hidden="true"
+              />
+              CONTINUE WITH DISCORD
+            </button>
+          )}
           <div className="flex gap-2 pt-1">
             <input
               type="email"
@@ -610,6 +598,7 @@ export const SettingsModal = ({
               <CloudSaveSection
                 cloudUpdatedAt={cloudUpdatedAt}
                 isCloudUpToDate={isCloudUpToDate}
+                isActivityMode={isActivityMode}
               />
             </div>
           )}

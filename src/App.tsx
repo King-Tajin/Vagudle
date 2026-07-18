@@ -43,7 +43,10 @@ import { useGuessInput } from "./hooks/useGuessInput";
 import { useSaveGameState } from "./hooks/useSaveGameState";
 import { useCrossTabSync } from "./hooks/useCrossTabSync";
 import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
-import { completeEmailLinkSignIn } from "./hooks/useCloudAuth";
+import {
+  completeEmailLinkSignIn,
+  completeDiscordSignIn,
+} from "./hooks/useCloudAuth";
 import { useCloudSync } from "./hooks/useCloudSync";
 
 import { getRandomWord } from "./lib/words";
@@ -110,6 +113,7 @@ function App() {
 
   useEffect(() => {
     void completeEmailLinkSignIn();
+    void completeDiscordSignIn();
   }, []);
 
   const [isLoading, setIsLoading] = useState(true);

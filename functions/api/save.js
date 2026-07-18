@@ -1,10 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
 import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
-import {
-  verifyFirebaseIdToken,
-  getBearerToken,
-} from "../_shared/firebaseAuth.js";
+import { verifyCloudSaveToken, getBearerToken } from "../_shared/cloudAuth.js";
 
 const MAX_FIELD_LENGTH = 100_000;
 
@@ -23,6 +20,13 @@ const isJsonString = (value) => {
   }
 };
 
+const DISCORD_UID_PREFIX = "discord:";
+
+const discordIdFromUid = (uid) =>
+  uid.startsWith(DISCORD_UID_PREFIX)
+    ? uid.slice(DISCORD_UID_PREFIX.length)
+    : null;
+
 const isValidBackgroundId = (value) =>
   value === null ||
   value === undefined ||
@@ -37,10 +41,6 @@ export async function onRequestPost(context) {
     const rateLimited = await checkRateLimit(context);
     if (rateLimited) return rateLimited;
 
-    const projectId = context.env.FIREBASE_PROJECT_ID;
-    if (!projectId)
-      return json({ success: false, error: "Server misconfiguration." }, 500);
-
     const db = context.env.DB;
     if (!db)
       return json({ success: false, error: "Database not configured." }, 500);
@@ -49,13 +49,10 @@ export async function onRequestPost(context) {
     if (!token)
       return json({ success: false, error: "Missing auth token." }, 401);
 
-    let uid;
-    try {
-      ({ uid } = await verifyFirebaseIdToken(token, projectId));
-    } catch (error) {
-      console.error("Save auth error:", error);
+    const authResult = await verifyCloudSaveToken(context.request, context.env);
+    if (!authResult)
       return json({ success: false, error: "Invalid auth token." }, 401);
-    }
+    const { uid } = authResult;
 
     const body = await context.request.json();
     const {
@@ -77,14 +74,16 @@ export async function onRequestPost(context) {
     )
       return json({ success: false, error: "Invalid save data." }, 400);
 
+    const discordId = discordIdFromUid(uid);
     const updatedAt = new Date().toISOString();
 
     const row = await db
       .prepare(
         `INSERT INTO player_saves
-           (uid, achievements, word_connoisseur, stats_normal, stats_hard, settings, background_id, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+           (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, settings, background_id, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(uid) DO UPDATE SET
+           discord_id = excluded.discord_id,
            achievements = excluded.achievements,
            word_connoisseur = excluded.word_connoisseur,
            stats_normal = excluded.stats_normal,
@@ -105,6 +104,7 @@ export async function onRequestPost(context) {
       )
       .bind(
         uid,
+        discordId,
         achievements,
         wordConnoisseur,
         statsNormal,

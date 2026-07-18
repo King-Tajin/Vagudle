@@ -62,7 +62,8 @@
     "react-doctor": "0.7.8",
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
-    "typescript-eslint": "^8.63.0"
+    "typescript-eslint": "^8.63.0",
+    "wrangler": "^4.112.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",
@@ -75,6 +76,9 @@
   },
   "allowScripts": {
     "@firebase/util@1.15.1": true,
-    "protobufjs@7.6.5": true
+    "protobufjs@7.6.5": true,
+    "esbuild@0.28.1": true,
+    "sharp@0.34.5": true,
+    "workerd@1.20260714.1": true
   }
 }

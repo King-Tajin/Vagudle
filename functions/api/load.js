@@ -1,10 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
 import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
-import {
-  verifyFirebaseIdToken,
-  getBearerToken,
-} from "../_shared/firebaseAuth.js";
+import { verifyCloudSaveToken, getBearerToken } from "../_shared/cloudAuth.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -15,10 +12,6 @@ export async function onRequestGet(context) {
     const rateLimited = await checkRateLimit(context);
     if (rateLimited) return rateLimited;
 
-    const projectId = context.env.FIREBASE_PROJECT_ID;
-    if (!projectId)
-      return json({ success: false, error: "Server misconfiguration." }, 500);
-
     const db = context.env.DB;
     if (!db)
       return json({ success: false, error: "Database not configured." }, 500);
@@ -27,13 +20,10 @@ export async function onRequestGet(context) {
     if (!token)
       return json({ success: false, error: "Missing auth token." }, 401);
 
-    let uid;
-    try {
-      ({ uid } = await verifyFirebaseIdToken(token, projectId));
-    } catch (error) {
-      console.error("Load auth error:", error);
+    const authResult = await verifyCloudSaveToken(context.request, context.env);
+    if (!authResult)
       return json({ success: false, error: "Invalid auth token." }, 401);
-    }
+    const { uid } = authResult;
 
     const row = await db
       .prepare(`SELECT * FROM player_saves WHERE uid = ?`)
