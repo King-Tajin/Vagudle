@@ -17,4 +17,9 @@ id = "331edf8aaa9e445ba3784228b101cd04"
 [[ratelimits]]
 name = "RATE_LIMITER"
 namespace_id = "1001"
-simple = { limit = 40, period = 60 }
+simple = { limit = 12, period = 60 }
+
+[[ratelimits]]
+name = "ACTIVITY_RATE_LIMITER"
+namespace_id = "1002"
+simple = { limit = 48, period = 10 }

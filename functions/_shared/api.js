@@ -12,8 +12,7 @@ export const json = (data, status = 200) =>
     headers: { "Content-Type": "application/json", ...CORS_HEADERS },
   });
 
-export const checkRateLimit = async (context) => {
-  const limiter = context.env.RATE_LIMITER;
+const runRateLimit = async (context, limiter) => {
   if (!limiter) return null;
 
   const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
@@ -27,6 +26,12 @@ export const checkRateLimit = async (context) => {
     429
   );
 };
+
+export const checkRateLimit = async (context) =>
+  runRateLimit(context, context.env.RATE_LIMITER);
+
+export const checkActivityRateLimit = async (context) =>
+  runRateLimit(context, context.env.ACTIVITY_RATE_LIMITER);
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();

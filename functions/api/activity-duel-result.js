@@ -4,7 +4,7 @@ import {
   CORS_HEADERS,
   json,
   VALID_GUESSES,
-  checkRateLimit,
+  checkActivityRateLimit,
 } from "../_shared/api.js";
 
 const MAX_GUESSES = Math.max(...VALID_GUESSES);
@@ -35,7 +35,7 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
+    const rateLimited = await checkActivityRateLimit(context);
     if (rateLimited) return rateLimited;
 
     const db = context.env.DB;

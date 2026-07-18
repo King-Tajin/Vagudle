@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
+import { CORS_HEADERS, json, checkActivityRateLimit } from "../_shared/api.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -8,7 +8,7 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
+    const rateLimited = await checkActivityRateLimit(context);
     if (rateLimited) return rateLimited;
 
     const kv = context.env.FEEDBACK_AND_STATS_KV;
