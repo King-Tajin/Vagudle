@@ -240,6 +240,23 @@ export const pushCloudSave = async (
   }
 };
 
+export const deleteCloudSave = async (idToken: string): Promise<boolean> => {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res = await fetch("/api/delete-account", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${idToken}` },
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    const data = (await res.json()) as { success: boolean };
+    return data.success;
+  } catch {
+    return false;
+  }
+};
+
 export const pullCloudSave = async (
   idToken: string
 ): Promise<PullCloudSaveResult> => {

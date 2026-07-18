@@ -6,6 +6,8 @@ import {
   sendSignInLinkToEmail,
   isSignInWithEmailLink,
   signInWithEmailLink,
+  deleteUser,
+  reauthenticateWithPopup,
   type User,
 } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from "../lib/firebase";
@@ -26,6 +28,11 @@ export type CloudAuthUser = {
   displayName: string | null;
   providerId: string;
 };
+
+export type DeleteAccountResult =
+  | { status: "success" }
+  | { status: "needs_reauth"; providerId: string }
+  | { status: "error"; message: string };
 
 const toCloudAuthUser = (user: User): CloudAuthUser => ({
   uid: user.uid,
@@ -149,6 +156,64 @@ export const useCloudAuth = () => {
     }
   }, []);
 
+  const deleteAccount = useCallback(async (): Promise<DeleteAccountResult> => {
+    if (firebaseUser) {
+      try {
+        await deleteUser(firebaseUser);
+        return { status: "success" };
+      } catch (error) {
+        const code = (error as { code?: string })?.code;
+        if (code === "auth/requires-recent-login") {
+          const providerId =
+            firebaseUser.providerData[0]?.providerId ?? "unknown";
+          return { status: "needs_reauth", providerId };
+        }
+        return {
+          status: "error",
+          message: "Couldn't delete your account. Please try again.",
+        };
+      }
+    }
+    if (discordSession) {
+      clearDiscordSession();
+      setDiscordSession(null);
+      return { status: "success" };
+    }
+    return { status: "error", message: "No signed-in account found." };
+  }, [firebaseUser, discordSession]);
+
+  const reauthenticateAndDeleteAccount =
+    useCallback(async (): Promise<DeleteAccountResult> => {
+      if (!firebaseUser)
+        return { status: "error", message: "No signed-in account found." };
+
+      const providerId = firebaseUser.providerData[0]?.providerId;
+      const provider =
+        providerId === "google.com"
+          ? googleProvider
+          : providerId === "github.com"
+            ? githubProvider
+            : null;
+
+      if (!provider)
+        return {
+          status: "error",
+          message:
+            "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.",
+        };
+
+      try {
+        await reauthenticateWithPopup(firebaseUser, provider);
+        await deleteUser(firebaseUser);
+        return { status: "success" };
+      } catch {
+        return {
+          status: "error",
+          message: "Re-authorization failed. Please try again.",
+        };
+      }
+    }, [firebaseUser]);
+
   const user = firebaseUser
     ? toCloudAuthUser(firebaseUser)
     : discordSession
@@ -165,5 +230,7 @@ export const useCloudAuth = () => {
     signInWithDiscord,
     sendEmailLink,
     signOutUser,
+    deleteAccount,
+    reauthenticateAndDeleteAccount,
   };
 };

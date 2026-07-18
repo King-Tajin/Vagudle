@@ -78,6 +78,12 @@ export default {
         rules: ["react-doctor/no-fetch-in-effect"],
       },
       {
+        // Setters only fire after real async work (storage reads, network
+        // calls, decoding) — there's no synchronous value to derive instead.
+        files: ["**/src/hooks/useGameInitialization.ts"],
+        rules: ["react-doctor/no-pass-live-state-to-parent"],
+      },
+      {
         // Auth-only config; no Firestore/Storage SDK client-side, and data
         // access goes through server-verified /api/save and /api/load.
         files: ["**/dist/assets/*.js"],
