@@ -33,6 +33,9 @@ export const checkRateLimit = async (context) =>
 export const checkActivityRateLimit = async (context) =>
   runRateLimit(context, context.env.ACTIVITY_RATE_LIMITER);
 
+export const checkFeedbackRateLimit = async (context) =>
+  runRateLimit(context, context.env.FEEDBACK_RATE_LIMITER);
+
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 

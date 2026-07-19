@@ -11,27 +11,27 @@
     "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
     "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
-    "check": "npm run format:check && npm run lint && npm run typecheck && react-doctor --verbose"
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && react-doctor --verbose"
   },
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.5.0",
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
-    "@tailwindcss/postcss": "^4.3.2",
+    "@tailwindcss/postcss": "^4.3.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "autoprefixer": "^10.5.2",
+    "autoprefixer": "^10.5.4",
     "classnames": "^2.5.1",
     "firebase": "^12.16.0",
     "framer-motion": "^12.42.2",
     "lottie-web": "^5.13.0",
-    "lucide-react": "^1.24.0",
+    "lucide-react": "^1.25.0",
     "postcss": "^8.5.19",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "svgo": "^4.0.2",
-    "tailwindcss": "^4.3.2",
+    "tailwindcss": "^4.3.3",
     "ua-parser-js": "^2.0.10",
-    "vite": "^8.1.4",
+    "vite": "^8.1.5",
     "vite-plugin-svgr": "^5.2.0"
   },
   "browserslist": {
@@ -49,7 +49,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "@types/node": "^26.1.1",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/ua-parser-js": "^0.7.39",
     "eslint": "^9.39.5",
@@ -57,12 +57,12 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.7.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.1.0",
     "prettier": "^3.9.5",
-    "react-doctor": "^0.8.0",
+    "react-doctor": "^0.8.1",
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
-    "typescript-eslint": "^8.63.0",
+    "typescript-eslint": "^8.64.0",
     "wrangler": "^4.112.0"
   },
   "lint-staged": {
@@ -80,5 +80,6 @@
     "esbuild@0.28.1": true,
     "sharp@0.34.5": true,
     "workerd@1.20260714.1": true
-  }
+  },
+  "packageManager": "pnpm@11.15.0+sha512.266f8957a30d2be6e9468e5e66bcdedd35a794175f71b067ba8504d686cce1d0c0f429b33c323c3c569ad4891e667574a49ff71d1b89a22cc66f13c65818c578"
 }

@@ -35,30 +35,28 @@ The keyboard updates as you paint, so confirmed, present, and eliminated letters
 ```bash
 git clone https://github.com/King-Tajin/Vagudle
 cd Vagudle
-npm install
-npm run start
+pnpm install
+pnpm start
 ```
 
 To expose to your local network:
 
 ```bash
-npm run start -- --host
+pnpm start -- --host
 ```
 
 ### Challenge Links (optional)
 
 Challenge links run through a Cloudflare Pages Function that requires [Wrangler](https://developers.cloudflare.com/workers/wrangler) to work locally. Without it, the rest of the game works normally but challenge links will fail.
 
-```bash
-npm install -g wrangler
-```
+Wrangler is already included as a dev dependency, so no extra install step is needed.
 
 Copy `.dev.vars.example` to `.dev.vars`. It contains a placeholder `CHALLENGE_KEY` that you can replace with any non-empty string of your choosing.
 
-Then instead of `npm run start`, run:
+Then instead of `pnpm start`, run:
 
 ```bash
-npx wrangler pages dev -- npm run start
+pnpm exec wrangler pages dev -- pnpm start
 ```
 
 ### Duels (external app required)
