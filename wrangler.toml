@@ -14,17 +14,20 @@ database_id = "035d8b7e-e796-467a-8c7c-29a0230d4f6c"
 binding = "FEEDBACK_AND_STATS_KV"
 id = "331edf8aaa9e445ba3784228b101cd04"
 
-[[ratelimits]]
+[[unsafe.bindings]]
 name = "RATE_LIMITER"
+type = "ratelimit"
 namespace_id = "1001"
 simple = { limit = 12, period = 60 }
 
-[[ratelimits]]
+[[unsafe.bindings]]
 name = "ACTIVITY_RATE_LIMITER"
+type = "ratelimit"
 namespace_id = "1002"
 simple = { limit = 48, period = 10 }
 
-[[ratelimits]]
+[[unsafe.bindings]]
 name = "FEEDBACK_RATE_LIMITER"
+type = "ratelimit"
 namespace_id = "1003"
 simple = { limit = 2, period = 60 }

@@ -1,6 +1,17 @@
+minimumReleaseAge: 2160
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - 'semver@6.3.1'
+
 allowBuilds:
   '@firebase/util': true
   esbuild: true
   protobufjs: true
   sharp: true
   workerd: true
+
+minimumReleaseAgeExclude:
+  - deslop-js@0.8.1
+  - lint-staged@17.1.0
+  - oxlint-plugin-react-doctor@0.8.1
+  - react-doctor@0.8.1
