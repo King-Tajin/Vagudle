@@ -8,7 +8,7 @@ import {
 
 export type BackgroundId =
   | "sprinkles"
-  | "tajin"
+  | "flakes"
   | "pulsing_purple"
   | "carrots"
   | "escalating_fire"
@@ -53,8 +53,8 @@ export const BACKGROUNDS: BackgroundDef[] = [
     kind: "css",
   },
   {
-    id: "tajin",
-    desktopLabel: "TAJIN RAIN",
+    id: "flakes",
+    desktopLabel: "FLAKE RAIN",
     mobileLabel: "GRID",
     kind: "css",
   },
@@ -207,7 +207,7 @@ export const loadBackgroundId = (isMobile: boolean): BackgroundId => {
     if (stored && BACKGROUNDS.some((b) => b.id === stored))
       return stored as BackgroundId;
   } catch {}
-  return isMobile ? "tajin" : "sprinkles";
+  return isMobile ? "flakes" : "sprinkles";
 };
 
 export const saveBackgroundId = (id: BackgroundId): void => {

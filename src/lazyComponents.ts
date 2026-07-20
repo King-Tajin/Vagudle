@@ -5,9 +5,9 @@ export const InfoModal = lazy(() =>
     default: m.InfoModal,
   }))
 );
-export const TajinRain = lazy(() =>
-  import("./components/backgrounds/TajinRain").then((m) => ({
-    default: m.TajinRain,
+export const FlakeRain = lazy(() =>
+  import("./components/backgrounds/FlakeRain").then((m) => ({
+    default: m.FlakeRain,
   }))
 );
 export const StatsModal = lazy(() =>

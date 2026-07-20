@@ -10,7 +10,7 @@ export default {
     overrides: [
       {
         // Uses a seeded PRNG for decorative particle placement, not anything security-sensitive.
-        files: ["**/src/components/backgrounds/TajinRain.tsx"],
+        files: ["**/src/components/backgrounds/FlakeRain.tsx"],
         rules: ["react-doctor/insecure-crypto-risk"],
       },
       {

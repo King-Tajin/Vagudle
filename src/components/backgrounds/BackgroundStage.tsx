@@ -3,7 +3,7 @@ import { BackgroundGrid } from "./BackgroundGrid";
 import { VagudleSprinkles } from "./VagudleSprinkles";
 import { BACKGROUNDS, type BackgroundId } from "../../lib/backgrounds";
 import {
-  TajinRain,
+  FlakeRain,
   SevenLetterWords,
   VideoBackground,
   SpinningCarrots,
@@ -67,14 +67,14 @@ export const BackgroundStage = ({
       ) : (
         <VagudleSprinkles keyboardRef={keyboardRef} />
       );
-    case "tajin":
+    case "flakes":
       return isMobile ? (
         <BackgroundGrid />
       ) : (
         <>
           <BackgroundGrid />
           <Suspense fallback={null}>
-            <TajinRain keyboardRef={keyboardRef} />
+            <FlakeRain keyboardRef={keyboardRef} />
           </Suspense>
         </>
       );

@@ -6,7 +6,7 @@ import {
 } from "../../lib/stripMeasure";
 import { createRng, seedFromNumbers } from "../../lib/seededRandom";
 
-interface TajinParticle {
+interface FlakeParticle {
   id: number;
   startX: number;
   delay: number;
@@ -25,7 +25,7 @@ const getParticleColor = (type: string) => {
   }
 };
 
-export function TajinRain({
+export function FlakeRain({
   keyboardRef,
 }: {
   keyboardRef: React.RefObject<HTMLDivElement | null>;
@@ -76,10 +76,10 @@ export function TajinRain({
         viewportH
       )
     );
-    const next: TajinParticle[] = [];
+    const next: FlakeParticle[] = [];
     let id = 0;
 
-    const makeParticle = (x: number): TajinParticle => ({
+    const makeParticle = (x: number): FlakeParticle => ({
       id: id++,
       startX: x,
       delay: rng() * 6,
