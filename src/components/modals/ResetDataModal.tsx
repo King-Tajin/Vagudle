@@ -157,7 +157,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
               border: "1px solid rgba(196,30,58,0.4)",
             }}
           >
-            <ShieldAlert className="w-4 h-4 text-tajin-red shrink-0 mt-0.5" />
+            <ShieldAlert className="w-4 h-4 text-spice-red shrink-0 mt-0.5" />
             <p className="font-code text-xs text-gray-300 leading-snug">
               For your security, deleting your account requires a recent
               sign-in. Authorize deletion to sign in again with{" "}
@@ -166,7 +166,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             </p>
           </div>
           {deleteError && (
-            <p className="font-code text-xs text-tajin-red">{deleteError}</p>
+            <p className="font-code text-xs text-spice-red">{deleteError}</p>
           )}
           <div className="flex gap-3 pt-2">
             <button
@@ -213,7 +213,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             border: "1px solid rgba(196,30,58,0.4)",
           }}
         >
-          <AlertTriangle className="w-4 h-4 text-tajin-red shrink-0 mt-0.5" />
+          <AlertTriangle className="w-4 h-4 text-spice-red shrink-0 mt-0.5" />
           <p className="font-code text-xs text-gray-300 leading-snug">
             This permanently erases everything Vagudle has saved in this
             browser. It cannot be undone.
@@ -250,7 +250,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
         )}
 
         {deleteError && (
-          <p className="font-code text-xs text-tajin-red">{deleteError}</p>
+          <p className="font-code text-xs text-spice-red">{deleteError}</p>
         )}
 
         <div className="flex gap-3 pt-2">

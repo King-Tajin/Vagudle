@@ -138,7 +138,7 @@ const FeedbackTab = () => {
   if (status === "success") {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12 text-center">
-        <CheckCircle className="w-14 h-14 text-tajin-lime mb-4" />
+        <CheckCircle className="w-14 h-14 text-spice-lime mb-4" />
         <h2 className="font-pixel text-sm text-crown-gold mb-2 tracking-widest">
           FEEDBACK RECEIVED!
         </h2>
@@ -355,7 +355,7 @@ const FeedbackTab = () => {
 
         {isFullscreen && (
           <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center"
+            className="fixed inset-0 z-9999 flex items-center justify-center"
             style={{ background: "rgba(0,0,0,0.6)" }}
             onClick={() => setIsFullscreen(false)}
           >
@@ -466,7 +466,7 @@ export const InfoModal = ({
   return (
     <>
       <Transition show={isOpen} as={Fragment}>
-        <div className="fixed inset-0 z-[60] overflow-hidden">
+        <div className="fixed inset-0 z-60 overflow-hidden">
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-200"
@@ -802,7 +802,7 @@ export const InfoModal = ({
                           type="button"
                           onClick={() => setIsResetModalOpen(true)}
                           title="Erases all saved progress, stats, achievements, and settings."
-                          className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
+                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
                           style={{
                             background: "rgba(255,255,255,0.04)",
                             border: "2px solid rgba(255,255,255,0.12)",
@@ -818,7 +818,7 @@ export const InfoModal = ({
                           onClick={onRestoreHiddenAttributions}
                           disabled={!hasHiddenAttributions}
                           title="Hid a video background's attribution button? Bring it back here."
-                          className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
+                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
                           style={{
                             background: hasHiddenAttributions
                               ? "rgba(255,255,255,0.04)"

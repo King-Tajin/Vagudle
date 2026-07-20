@@ -49,7 +49,7 @@ const HeaderProgressRing = ({
 
   return (
     <div
-      className="relative flex items-center justify-center flex-shrink-0"
+      className="relative flex items-center justify-center shrink-0"
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} className="-rotate-90">
@@ -130,9 +130,9 @@ const AchievementRow = ({
         opacity: isUnlocked ? 1 : 0.55,
       }}
     >
-      <div className="flex-shrink-0 mt-0.5">
+      <div className="shrink-0 mt-0.5">
         {isUnlocked ? (
-          <SquareCheckBig className="w-7 h-7 text-tajin-lime" />
+          <SquareCheckBig className="w-7 h-7 text-spice-lime" />
         ) : (
           <Lock className="w-5 h-5 text-gray-600" />
         )}
@@ -192,7 +192,7 @@ const AchievementRow = ({
               border: "1px solid rgba(255,215,0,0.2)",
             }}
           >
-            <Award className="w-3.5 h-3.5 text-crown-amber flex-shrink-0" />
+            <Award className="w-3.5 h-3.5 text-crown-amber shrink-0" />
             <span className="font-pixel text-[10px] text-crown-amber tracking-widest">
               {isHiddenLocked ? "UNLOCKS: ???" : `UNLOCKS: ${bg.desktopLabel}`}
             </span>

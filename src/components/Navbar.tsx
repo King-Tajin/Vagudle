@@ -120,7 +120,7 @@ export const Navbar = ({
           <div ref={navbarContentRef} className="navbar-content">
             <m.button
               onClick={() => setIsInfoModalOpen(true)}
-              className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+              className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label="How to play"
@@ -139,7 +139,7 @@ export const Navbar = ({
                   <div className="w-10 h-10 bg-obsidian-700 border-2 border-crown-gold flex items-center justify-center">
                     <KingTajinIcon className="w-6 h-6 text-crown-gold float-animation" />
                   </div>
-                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-tajin-red" />
+                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-spice-red" />
                 </div>
                 <div>
                   <h1
@@ -168,7 +168,7 @@ export const Navbar = ({
                   <div className="w-10 h-10 bg-obsidian-700 border-2 border-crown-gold flex items-center justify-center">
                     <KingTajinIcon className="w-6 h-6 text-crown-gold float-animation" />
                   </div>
-                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-tajin-red" />
+                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-spice-red" />
                 </div>
                 <div>
                   <h1
@@ -192,7 +192,7 @@ export const Navbar = ({
                 <m.button
                   title={leaveLabel}
                   onClick={onNewGameClick}
-                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95, rotate: 180 }}
                   aria-label={leaveLabel}
@@ -204,7 +204,7 @@ export const Navbar = ({
               {!isActivityMode && (
                 <m.button
                   onClick={() => setIsStatsModalOpen(true)}
-                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Statistics"
@@ -219,8 +219,8 @@ export const Navbar = ({
                   onClick={onSettingsClick}
                   className={
                     showNudge
-                      ? "p-2 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2"
-                      : "p-2 hover:bg-obsidian-700 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                      ? "p-2 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2"
+                      : "p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   }
                   style={
                     showNudge
@@ -295,7 +295,7 @@ export const Navbar = ({
           </div>
         </div>
 
-        <div className="h-1 tajin-accent" />
+        <div className="h-1 pixel-stripe-accent" />
       </header>
       {showConfirm && (
         <div

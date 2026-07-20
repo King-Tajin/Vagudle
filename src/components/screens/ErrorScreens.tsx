@@ -25,7 +25,7 @@ export const MalformedChallengeScreen = ({
           border: "2px solid rgba(220,50,50,0.4)",
         }}
       >
-        <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+        <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
           INVALID CHALLENGE LINK
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
@@ -54,7 +54,7 @@ export const MalformedDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
           border: "2px solid rgba(220,50,50,0.4)",
         }}
       >
-        <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+        <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
           INVALID DUEL LINK
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
@@ -83,7 +83,7 @@ export const ExpiredDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
           border: "2px solid rgba(220,50,50,0.4)",
         }}
       >
-        <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+        <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
           DUEL EXPIRED
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
@@ -112,7 +112,7 @@ export const ActivityNotFoundScreen = () => (
           border: "2px solid rgba(220,50,50,0.4)",
         }}
       >
-        <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+        <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
           DUEL EXPIRED
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
@@ -140,7 +140,7 @@ export const ActivityWrongPlayerScreen = () => (
           border: "2px solid rgba(220,50,50,0.4)",
         }}
       >
-        <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+        <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
           WRONG ACCOUNT
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
@@ -168,7 +168,7 @@ export const ActivityServerErrorScreen = () => (
           border: "2px solid rgba(220,50,50,0.4)",
         }}
       >
-        <p className="font-pixel text-xs text-tajin-red tracking-widest mb-2">
+        <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
           SOMETHING WENT WRONG
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-1">

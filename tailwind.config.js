@@ -17,7 +17,7 @@ module.exports = {
           600: "#2A2A2A",
           500: "#3D3D3D",
         },
-        tajin: {
+        spice: {
           red: "#C41E3A",
           lime: "#A4C639",
           chili: "#E23D28",

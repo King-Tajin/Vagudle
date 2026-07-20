@@ -584,7 +584,7 @@ export const ChallengeCreatorModal = ({
             border: "1px solid rgba(220,50,50,0.3)",
           }}
         >
-          <p className="font-code text-xs text-tajin-red">
+          <p className="font-code text-xs text-spice-red">
             Could not auto-generate link. Edit the settings below or try again.
           </p>
         </div>
@@ -596,7 +596,7 @@ export const ChallengeCreatorModal = ({
           border: "1px solid rgba(255,215,0,0.18)",
         }}
       >
-        <Info className="w-3.5 h-3.5 text-crown-amber flex-shrink-0 mt-0.5" />
+        <Info className="w-3.5 h-3.5 text-crown-amber shrink-0 mt-0.5" />
         <p className="font-code text-xs text-gray-400 leading-relaxed">
           <span className="text-crown-amber">NOTE:</span> The chosen dictionary
           has little effect on gameplay. It simply lets the player know the
@@ -655,19 +655,19 @@ export const ChallengeCreatorModal = ({
           )}
           {(wordStatus === "invalid-word" ||
             wordStatus === "invalid-length") && (
-            <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-tajin-red" />
+            <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-spice-red" />
           )}
         </div>
 
         {wordStatus === "invalid-length" && (
-          <p className="font-code text-xs text-tajin-red mt-1">
+          <p className="font-code text-xs text-spice-red mt-1">
             Word must be 4–7 letters.
           </p>
         )}
 
         {wordStatus === "invalid-word" && (
           <>
-            <p className="font-code text-xs text-tajin-red mt-1">
+            <p className="font-code text-xs text-spice-red mt-1">
               "{cleanInput}" isn't in the {DICT_LABELS[dict].toLowerCase()}{" "}
               dictionary.
             </p>
@@ -731,7 +731,7 @@ export const ChallengeCreatorModal = ({
         ⚠ Challenge results do not count toward the recipient's stats. ⚠
       </p>
       {generateStatus === "error" && !autoFilledWord && (
-        <p className="font-code text-xs text-tajin-red">
+        <p className="font-code text-xs text-spice-red">
           Failed to generate link. Check your connection and try again.
         </p>
       )}

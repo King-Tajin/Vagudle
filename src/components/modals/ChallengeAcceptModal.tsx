@@ -16,7 +16,7 @@ type Props = {
 export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
   return (
     <Transition show={isOpen} as={Fragment}>
-      <div className="fixed inset-0 z-[70] flex items-center justify-center px-4">
+      <div className="fixed inset-0 z-70 flex items-center justify-center px-4">
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-200"
@@ -72,7 +72,7 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
                 }}
               >
                 <div className="flex items-center gap-3">
-                  <Hash className="w-4 h-4 text-crown-amber flex-shrink-0" />
+                  <Hash className="w-4 h-4 text-crown-amber shrink-0" />
                   <div>
                     <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
                       WORD LENGTH
@@ -84,7 +84,7 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <BookOpen className="w-4 h-4 text-crown-amber flex-shrink-0" />
+                  <BookOpen className="w-4 h-4 text-crown-amber shrink-0" />
                   <div>
                     <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
                       DICTIONARY
@@ -99,7 +99,7 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Target className="w-4 h-4 text-crown-amber flex-shrink-0" />
+                  <Target className="w-4 h-4 text-crown-amber shrink-0" />
                   <div>
                     <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
                       GUESSES

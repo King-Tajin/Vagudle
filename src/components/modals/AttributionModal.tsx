@@ -65,7 +65,7 @@ export const AttributionModal = ({
             type="button"
             onClick={() => onHideForeverChange(!isHidden)}
             aria-label="Hide attribution for this background"
-            className="flex-shrink-0 w-14 h-8 transition-all duration-300 ease-in-out pixel-border-sm"
+            className="shrink-0 w-14 h-8 transition-all duration-300 ease-in-out pixel-border-sm"
             style={{
               background: isHidden
                 ? "linear-gradient(180deg, #5000aa 0%, #28007c 100%)"
@@ -79,7 +79,7 @@ export const AttributionModal = ({
             aria-pressed={isHidden}
           >
             <span
-              className="w-5 h-5 flex-shrink-0 transition-colors duration-300"
+              className="w-5 h-5 shrink-0 transition-colors duration-300"
               style={{ background: isHidden ? "#d4af37" : "#555570" }}
             />
           </button>

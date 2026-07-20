@@ -144,7 +144,7 @@ export const CloudSaveConflictModal = ({
         />
       </div>
       {error && (
-        <p className="font-code text-xs text-tajin-red mb-3">{error}</p>
+        <p className="font-code text-xs text-spice-red mb-3">{error}</p>
       )}
       <div className="grid grid-cols-2 gap-2">
         <button

@@ -104,7 +104,7 @@ const BackgroundDropdown = ({
   }, [open]);
 
   return (
-    <div ref={ref} className="relative flex-shrink-0">
+    <div ref={ref} className="relative shrink-0">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -118,7 +118,7 @@ const BackgroundDropdown = ({
         }}
       >
         {label}
-        <ChevronDown className="w-3 h-3 flex-shrink-0 text-gray-500" />
+        <ChevronDown className="w-3 h-3 shrink-0 text-gray-500" />
       </button>
       {open && (
         <div
@@ -172,7 +172,7 @@ const BackgroundDropdown = ({
                 }}
               >
                 {!unlocked && (
-                  <Lock className="w-2.5 h-2.5 flex-shrink-0 text-gray-700" />
+                  <Lock className="w-2.5 h-2.5 shrink-0 text-gray-700" />
                 )}
                 {bgLabel}
               </button>
@@ -219,7 +219,7 @@ const CloudSaveSection = ({
       </p>
       <div className="flex items-start gap-1.5 mb-2">
         <AlertTriangle
-          className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-crown-amber"
+          className="w-3.5 h-3.5 shrink-0 mt-0.5 text-crown-amber"
           aria-hidden="true"
         />
         <p className="font-code text-xs text-gray-500 leading-snug">
@@ -228,7 +228,7 @@ const CloudSaveSection = ({
       </div>
       <div className="flex items-start gap-1.5 mb-2">
         <ShieldCheck
-          className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-tajin-lime"
+          className="w-3.5 h-3.5 shrink-0 mt-0.5 text-spice-lime"
           aria-hidden="true"
         />
         <p className="font-code text-xs text-gray-500 leading-snug">
@@ -244,13 +244,13 @@ const CloudSaveSection = ({
         <div className="space-y-2">
           <p className="font-code text-xs text-gray-300">
             Signed in as{" "}
-            <span className="text-tajin-lime">
+            <span className="text-spice-lime">
               {user.email ?? user.displayName ?? user.uid}
             </span>
           </p>
           <p className="font-code text-xs text-gray-500">
             {isCloudUpToDate ? (
-              <span className="text-tajin-lime">Up to date</span>
+              <span className="text-spice-lime">Up to date</span>
             ) : (
               "Syncing..."
             )}
@@ -267,7 +267,7 @@ const CloudSaveSection = ({
             SIGN OUT
           </button>
           {actionError && (
-            <p className="font-code text-xs text-tajin-red">{actionError}</p>
+            <p className="font-code text-xs text-spice-red">{actionError}</p>
           )}
         </div>
       ) : (
@@ -282,7 +282,7 @@ const CloudSaveSection = ({
             className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
             style={providerButtonStyle}
           >
-            <GoogleIcon className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            <GoogleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
             CONTINUE WITH GOOGLE
           </button>
           <button
@@ -291,7 +291,7 @@ const CloudSaveSection = ({
             className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
             style={providerButtonStyle}
           >
-            <GithubIcon className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
             CONTINUE WITH GITHUB
           </button>
           {!isActivityMode && (
@@ -301,10 +301,7 @@ const CloudSaveSection = ({
               className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
               style={providerButtonStyle}
             >
-              <DiscordIcon
-                className="w-4 h-4 flex-shrink-0"
-                aria-hidden="true"
-              />
+              <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
               CONTINUE WITH DISCORD
             </button>
           )}
@@ -324,20 +321,20 @@ const CloudSaveSection = ({
             <button
               type="button"
               onClick={() => email && sendEmailLink(email)}
-              className="flex-shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2"
+              className="shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2"
               style={providerButtonStyle}
             >
-              <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+              <Mail className="w-3.5 h-3.5 shrink-0" />
               SEND LINK
             </button>
           </div>
           {emailLinkSent && (
-            <p className="font-code text-xs text-tajin-lime">
+            <p className="font-code text-xs text-spice-lime">
               Check your email for a sign-in link.
             </p>
           )}
           {actionError && (
-            <p className="font-code text-xs text-tajin-red">{actionError}</p>
+            <p className="font-code text-xs text-spice-red">{actionError}</p>
           )}
         </div>
       )}
@@ -439,7 +436,7 @@ export const SettingsModal = ({
                 border: "1px solid rgba(220,50,50,0.4)",
               }}
             >
-              <span className="font-code text-xs text-tajin-red">
+              <span className="font-code text-xs text-spice-red">
                 {errorMessage}
               </span>
             </div>
@@ -460,13 +457,13 @@ export const SettingsModal = ({
                     }}
                   >
                     <div className="flex items-center gap-2">
-                      <Hash className="w-3.5 h-3.5 text-crown-amber flex-shrink-0" />
+                      <Hash className="w-3.5 h-3.5 text-crown-amber shrink-0" />
                       <span className="font-code text-xs text-gray-300">
                         {challengeConfig.length} letters
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <BookOpen className="w-3.5 h-3.5 text-crown-amber flex-shrink-0" />
+                      <BookOpen className="w-3.5 h-3.5 text-crown-amber shrink-0" />
                       <span className="font-code text-xs text-gray-300">
                         {DICT_LABELS[challengeConfig.dict]} dictionary —{" "}
                         <span className="text-gray-500">
@@ -475,7 +472,7 @@ export const SettingsModal = ({
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Target className="w-3.5 h-3.5 text-crown-amber flex-shrink-0" />
+                      <Target className="w-3.5 h-3.5 text-crown-amber shrink-0" />
                       <span className="font-code text-xs text-gray-300">
                         {challengeConfig.guesses} guesses allowed
                       </span>
@@ -498,7 +495,7 @@ export const SettingsModal = ({
                           Can be changed before your first guess:
                         </p>
                       </div>
-                      <span className="font-pixel text-2xl text-tajin-lime w-10 text-center tabular-nums">
+                      <span className="font-pixel text-2xl text-spice-lime w-10 text-center tabular-nums">
                         {wordLength}
                       </span>
                     </div>
@@ -538,7 +535,7 @@ export const SettingsModal = ({
                           }}
                         />
                         <div
-                          className="absolute top-1/2 transition-all duration-150 pointer-events-none w-[22px] h-[22px] rounded-full bg-[linear-gradient(180deg,#5000aa_0%,#28007c_100%)] border-2 border-[#7020cc] shadow-[0_0_8px_rgba(80,0,170,0.6)] z-[3]"
+                          className="absolute top-1/2 transition-all duration-150 pointer-events-none w-5.5 h-5.5 rounded-full bg-[linear-gradient(180deg,#5000aa_0%,#28007c_100%)] border-2 border-[#7020cc] shadow-[0_0_8px_rgba(80,0,170,0.6)] z-3"
                           style={{
                             left: `${((wordLength - 4) / 3) * 100}%`,
                             transform: "translate(-50%, -50%)",

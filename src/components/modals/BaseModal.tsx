@@ -29,7 +29,7 @@ export const BaseModal = ({
     <Dialog
       open={isOpen}
       onClose={handleClose}
-      className="fixed z-[60] inset-0 overflow-y-auto"
+      className="fixed z-60 inset-0 overflow-y-auto"
     >
       <div className="flex items-center justify-center min-h-screen py-10 px-4 text-center sm:block sm:p-0">
         <DialogBackdrop

@@ -8,6 +8,7 @@ import { AlertContainer } from "./components/Alert";
 import { Navbar } from "./components/Navbar";
 import { BackgroundStage } from "./components/backgrounds/BackgroundStage";
 import { GameBanner } from "./components/GameBanner";
+import { DisclaimerBanner } from "./components/DisclaimerBanner";
 import { AttributionButton } from "./components/AttributionButton";
 import { GameModals } from "./components/screens/GameModals";
 import { useAchievements } from "./hooks/useAchievements";
@@ -545,6 +546,7 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
+      <DisclaimerBanner />
       <BackgroundStage
         backgroundId={backgroundId}
         isMobile={isMobile}

@@ -444,7 +444,7 @@ export const StatsModal = ({
                 border: "1px solid rgba(255,215,0,0.25)",
               }}
             >
-              <RibbonIcon className="w-3.5 h-3.5 flex-shrink-0" />
+              <RibbonIcon className="w-3.5 h-3.5 shrink-0" />
               <span className="font-pixel text-[9px] text-crown-amber tracking-widest">
                 BACKGROUND UNLOCKED: {bgUnlock.desktopLabel}
               </span>
@@ -553,7 +553,7 @@ export const StatsModal = ({
             DUEL
           </p>
           <div className="flex items-center gap-2">
-            <Hash className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+            <Hash className="w-3.5 h-3.5 text-gray-400 shrink-0" />
             <span className="font-code text-xs text-gray-300">
               {duelConfig?.length ?? solution.length} letters
             </span>
@@ -561,7 +561,7 @@ export const StatsModal = ({
           {duelConfig && (
             <>
               <div className="flex items-center gap-2">
-                <BookOpen className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 <span className="font-code text-xs text-gray-300">
                   {DICT_LABELS[duelConfig.dict]} dictionary —{" "}
                   <span className="text-gray-500">
@@ -570,7 +570,7 @@ export const StatsModal = ({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Target className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                <Target className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 <span className="font-code text-xs text-gray-300">
                   {duelConfig.guesses} guesses allowed
                 </span>
@@ -581,7 +581,7 @@ export const StatsModal = ({
 
         {isGameWon && (
           <div className="text-center py-3">
-            <p className="font-pixel text-xs text-tajin-lime tracking-widest">
+            <p className="font-pixel text-xs text-spice-lime tracking-widest">
               DUEL COMPLETE!
             </p>
             <p className="font-code text-sm text-gray-300 mt-1">
@@ -592,7 +592,7 @@ export const StatsModal = ({
         )}
         {isGameLost && (
           <div className="text-center py-3">
-            <p className="font-pixel text-xs text-tajin-red tracking-widest">
+            <p className="font-pixel text-xs text-spice-red tracking-widest">
               DUEL FAILED
             </p>
             <p className="font-code text-sm text-gray-400 mt-1">
@@ -648,13 +648,13 @@ export const StatsModal = ({
             CUSTOM CHALLENGE
           </p>
           <div className="flex items-center gap-2">
-            <Hash className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+            <Hash className="w-3.5 h-3.5 text-gray-400 shrink-0" />
             <span className="font-code text-xs text-gray-300">
               {challengeConfig.length} letters
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <BookOpen className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+            <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0" />
             <span className="font-code text-xs text-gray-300">
               {DICT_LABELS[challengeConfig.dict]} dictionary —{" "}
               <span className="text-gray-500">
@@ -663,7 +663,7 @@ export const StatsModal = ({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Target className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+            <Target className="w-3.5 h-3.5 text-gray-400 shrink-0" />
             <span className="font-code text-xs text-gray-300">
               {challengeConfig.guesses} guesses allowed
             </span>
@@ -672,7 +672,7 @@ export const StatsModal = ({
 
         {isGameWon && (
           <div className="text-center py-3">
-            <p className="font-pixel text-xs text-tajin-lime tracking-widest">
+            <p className="font-pixel text-xs text-spice-lime tracking-widest">
               CHALLENGE COMPLETE!
             </p>
             <p className="font-code text-sm text-gray-300 mt-1">
@@ -686,7 +686,7 @@ export const StatsModal = ({
         )}
         {isGameLost && (
           <div className="text-center py-3">
-            <p className="font-pixel text-xs text-tajin-red tracking-widest">
+            <p className="font-pixel text-xs text-spice-red tracking-widest">
               CHALLENGE FAILED
             </p>
             <p className="font-code text-sm text-gray-400 mt-1">
