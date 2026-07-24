@@ -57,13 +57,13 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.7.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.1.1",
+    "lint-staged": "^17.2.0",
     "prettier": "^3.9.6",
     "react-doctor": "^0.8.3",
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.65.0",
-    "wrangler": "^4.113.0"
+    "wrangler": "^4.114.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",
@@ -74,12 +74,5 @@
     "public/**/*.svg": "svgo",
     ".github/**/*.md": "prettier --write"
   },
-  "allowScripts": {
-    "@firebase/util@1.15.1": true,
-    "protobufjs@7.6.5": true,
-    "esbuild@0.28.1": true,
-    "sharp@0.34.5": true,
-    "workerd@1.20260714.1": true
-  },
-  "packageManager": "pnpm@11.15.0+sha512.266f8957a30d2be6e9468e5e66bcdedd35a794175f71b067ba8504d686cce1d0c0f429b33c323c3c569ad4891e667574a49ff71d1b89a22cc66f13c65818c578"
+  "packageManager": "pnpm@11.16.0"
 }

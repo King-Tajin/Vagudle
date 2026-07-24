@@ -11,7 +11,7 @@ allowBuilds:
   workerd: true
 
 minimumReleaseAgeExclude:
-  - deslop-js@0.8.1
-  - lint-staged@17.1.0
-  - oxlint-plugin-react-doctor@0.8.1
-  - react-doctor@0.8.1
+  - oxlint-plugin-react-doctor
+  - react-doctor
+  - wrangler
+  - miniflare
