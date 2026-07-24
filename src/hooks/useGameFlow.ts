@@ -20,6 +20,7 @@ type Params = {
   isGameLost: boolean;
   isDuelMode: boolean;
   isChallengeMode: boolean;
+  isDailyMode: boolean;
   maxChallenges: number;
   revealTimerRef: React.RefObject<ReturnType<typeof setTimeout> | null>;
   setWordLength: (v: number) => void;
@@ -55,6 +56,7 @@ export const useGameFlow = ({
   isGameLost,
   isDuelMode,
   isChallengeMode,
+  isDailyMode,
   maxChallenges,
   revealTimerRef,
   setWordLength,
@@ -98,7 +100,7 @@ export const useGameFlow = ({
   const hasActiveGame = guesses.length > 0 && !isGameWon && !isGameLost;
 
   const handleNewGameWithFail = () => {
-    if (isDuelMode || isChallengeMode) {
+    if (isDuelMode || isChallengeMode || isDailyMode) {
       handleReturnToNormal();
       return;
     }

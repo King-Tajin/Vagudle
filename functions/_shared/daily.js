@@ -1,0 +1,19 @@
+// noinspection JSUnusedGlobalSymbols
+
+export const DAILY_ROTATION = [
+  { length: 4, hardMode: false },
+  { length: 4, hardMode: true },
+  { length: 5, hardMode: false },
+  { length: 5, hardMode: true },
+  { length: 4, hardMode: false },
+  { length: 5, hardMode: true },
+  { length: 4, hardMode: true },
+];
+
+export const getUtcDateString = (date = new Date()) =>
+  date.toISOString().slice(0, 10);
+
+export const getRotationForDate = (dateString) => {
+  const dayOfWeek = new Date(`${dateString}T00:00:00Z`).getUTCDay();
+  return DAILY_ROTATION[dayOfWeek];
+};

@@ -1,1 +1,1 @@
-export type GameMode = "normal" | "challenge" | "duel";
+export type GameMode = "normal" | "challenge" | "duel" | "daily";

@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import type { CharStatus } from "../lib/statuses";
 import type { ChallengeConfig } from "../lib/challenge";
 import type { DuelConfig } from "../lib/duel";
+import type { DailyConfig } from "../lib/daily";
 import {
   saveGameStateToLocalStorage,
   saveSettingsToLocalStorage,
 } from "../lib/localStorage";
 import { saveChallengeState } from "../lib/challenge";
 import { saveDuelState } from "../lib/duel";
+import { saveDailyProgress } from "../lib/daily";
 
 type Params = {
   isLoading: boolean;
@@ -25,6 +27,8 @@ type Params = {
   duelConfig: DuelConfig | null;
   isChallengeMode: boolean;
   challengeConfig: ChallengeConfig | null;
+  isDailyMode: boolean;
+  dailyConfig: DailyConfig | null;
 };
 
 export const useSaveGameState = ({
@@ -43,6 +47,8 @@ export const useSaveGameState = ({
   duelConfig,
   isChallengeMode,
   challengeConfig,
+  isDailyMode,
+  dailyConfig,
 }: Params) => {
   useEffect(() => {
     if (isLoading) return;
@@ -79,6 +85,8 @@ export const useSaveGameState = ({
         cellColors,
         autoGrayLetters: Array.from(autoGrayLetters),
       });
+    } else if (isDailyMode && dailyConfig) {
+      saveDailyProgress(dailyConfig.date, { guesses, cellColors });
     } else {
       saveGameStateToLocalStorage({
         guesses,
@@ -97,6 +105,8 @@ export const useSaveGameState = ({
     duelConfig,
     isChallengeMode,
     challengeConfig,
+    isDailyMode,
+    dailyConfig,
     solution,
     hardMode,
   ]);

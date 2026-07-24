@@ -66,6 +66,27 @@ export const shareStatus = async (
   );
 };
 
+export const shareDailyResult = async (
+  solution: string,
+  guesses: string[],
+  lost: boolean,
+  dailyNumber: number,
+  maxChallenges: number,
+  handleShareToClipboard: () => void
+) => {
+  const score = lost ? "X" : guesses.length;
+  const header = `${GAME_TITLE} Daily #${dailyNumber} — ${score}/${maxChallenges}`;
+  const textToShare =
+    `${header}\n${window.location.origin}${window.location.pathname}\n` +
+    generateEmojiGrid(solution, guesses, EMOJI_TILES);
+
+  await doShare(
+    { title: `${GAME_TITLE} Daily #${dailyNumber}`, text: textToShare },
+    textToShare,
+    handleShareToClipboard
+  );
+};
+
 export const generateEmojiGrid = (
   solution: string,
   guesses: string[],

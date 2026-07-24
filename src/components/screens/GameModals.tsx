@@ -5,15 +5,21 @@ import {
   SettingsModal,
   ChallengeAcceptModal,
   DuelModal,
+  DailyModal,
   AttributionModal,
   AchievementsModal,
 } from "../../lazyComponents";
 import type { GameStats } from "../../lib/localStorage";
 import type { ChallengeConfig } from "../../lib/challenge";
 import type { DuelConfig, DuelSaveStatus } from "../../lib/duel";
+import type { DailyConfig, DailyStats } from "../../lib/daily";
 import type { BackgroundId, BackgroundDef } from "../../lib/backgrounds";
 import type { Achievement } from "../../lib/achievements";
 import type { GameMode } from "../../lib/gameMode";
+import {
+  HARD_MODE_MAX_CHALLENGES,
+  NORMAL_MODE_MAX_CHALLENGES,
+} from "../../constants/settings";
 
 type Props = {
   solution: string;
@@ -34,6 +40,14 @@ type Props = {
   challengeConfig: ChallengeConfig | null;
   duelConfig: DuelConfig | null;
   duelSaveStatus: DuelSaveStatus;
+  dailyConfig: DailyConfig | null;
+  dailyStats: DailyStats;
+  dailyNumber: number;
+  dailyModalMode: "loading" | "error" | "play" | "complete";
+  isDailyModalOpen: boolean;
+  handlePlayDaily: () => void;
+  handleShareDaily: () => void;
+  handleCloseDaily: () => void;
   showGrayCount: boolean;
   setShowGrayCount: (value: boolean) => void;
   autoGray: boolean;
@@ -92,6 +106,14 @@ export const GameModals = ({
   challengeConfig,
   duelConfig,
   duelSaveStatus,
+  dailyConfig,
+  dailyStats,
+  dailyNumber,
+  dailyModalMode,
+  isDailyModalOpen,
+  handlePlayDaily,
+  handleShareDaily,
+  handleCloseDaily,
   showGrayCount,
   setShowGrayCount,
   autoGray,
@@ -200,7 +222,17 @@ export const GameModals = ({
               ? duelConfig
               : gameMode === "challenge"
                 ? challengeConfig
-                : null
+                : gameMode === "daily" && dailyConfig
+                  ? {
+                      id: "daily",
+                      word: dailyConfig.word,
+                      length: dailyConfig.wordLength,
+                      dict: dailyConfig.hardMode ? "hard" : "normal",
+                      guesses: dailyConfig.hardMode
+                        ? HARD_MODE_MAX_CHALLENGES
+                        : NORMAL_MODE_MAX_CHALLENGES,
+                    }
+                  : null
           }
           isActivityMode={isActivityMode}
           cloudUpdatedAt={cloudUpdatedAt}
@@ -224,6 +256,23 @@ export const GameModals = ({
             isActivityMode={isActivityMode}
           />
         )}
+        <DailyModal
+          isOpen={isDailyModalOpen}
+          mode={dailyModalMode}
+          config={dailyConfig}
+          dailyNumber={dailyNumber}
+          dailyStats={dailyStats}
+          isGameWon={isGameWon}
+          guessCount={guesses.length}
+          maxGuesses={
+            dailyConfig?.hardMode
+              ? HARD_MODE_MAX_CHALLENGES
+              : NORMAL_MODE_MAX_CHALLENGES
+          }
+          onPlay={handlePlayDaily}
+          onShare={handleShareDaily}
+          onClose={handleCloseDaily}
+        />
         {currentBackground?.attribution && (
           <AttributionModal
             isOpen={isAttributionModalOpen}

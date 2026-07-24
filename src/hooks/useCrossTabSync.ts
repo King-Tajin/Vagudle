@@ -32,6 +32,7 @@ type Params = {
   isMobile: boolean;
   isDuelMode: boolean;
   isChallengeMode: boolean;
+  isDailyMode: boolean;
   duelConfig: DuelConfig | null;
   challengeConfig: ChallengeConfig | null;
   solution: string;
@@ -80,6 +81,7 @@ export const useCrossTabSync = ({
   isMobile,
   isDuelMode,
   isChallengeMode,
+  isDailyMode,
   duelConfig,
   challengeConfig,
   solution,
@@ -136,7 +138,7 @@ export const useCrossTabSync = ({
   );
 
   useStorageSync(gameStateKey, () => {
-    if (isLoading || isDuelMode || isChallengeMode) return;
+    if (isLoading || isDuelMode || isChallengeMode || isDailyMode) return;
     const saved = loadGameStateFromLocalStorage();
     if (!saved) return;
 

@@ -35,6 +35,11 @@ export const DuelModal = lazy(() =>
     default: m.DuelModal,
   }))
 );
+export const DailyModal = lazy(() =>
+  import("./components/modals/DailyModal").then((m) => ({
+    default: m.DailyModal,
+  }))
+);
 export const WinCelebration = lazy(() =>
   import("./components/screens/WinCelebration").then((m) => ({
     default: m.WinCelebration,

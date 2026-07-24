@@ -59,6 +59,20 @@ import {
 } from "./lib/localStorage";
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
+import { shareDailyResult } from "./lib/share";
+import {
+  fetchDailyConfig,
+  getDailyNumber,
+  loadDailyProgress,
+  saveDailyResult,
+  loadDailyResult,
+  clearDailyProgress,
+  recordDailyStats,
+  loadDailyStats,
+  pruneOldDailyEntries,
+  type DailyConfig,
+  type DailyResult,
+} from "./lib/daily";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
 import type { GameMode } from "./lib/gameMode";
@@ -115,6 +129,7 @@ function App() {
   useEffect(() => {
     void completeEmailLinkSignIn();
     void completeDiscordSignIn();
+    pruneOldDailyEntries();
   }, []);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -152,6 +167,14 @@ function App() {
   const [isActivityWrongPlayer, setIsActivityWrongPlayer] = useState(false);
   const [isActivityServerError, setIsActivityServerError] = useState(false);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
+  const [dailyConfig, setDailyConfig] = useState<DailyConfig | null>(null);
+  const [isDailyActive, setIsDailyActive] = useState(false);
+  const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
+  const [dailyModalMode, setDailyModalMode] = useState<
+    "loading" | "error" | "play" | "complete"
+  >("loading");
+  const [dailyResult, setDailyResult] = useState<DailyResult | null>(null);
+  const [dailyStats, setDailyStats] = useState(() => loadDailyStats());
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -243,9 +266,13 @@ function App() {
       ? "duel"
       : challengeConfig !== null
         ? "challenge"
-        : "normal";
+        : isDailyActive
+          ? "daily"
+          : "normal";
   const isChallengeMode = gameMode === "challenge";
   const isDuelMode = gameMode === "duel";
+  const isDailyMode = gameMode === "daily";
+  const dailyNumber = dailyConfig ? getDailyNumber(dailyConfig.date) : 0;
 
   useEffect(() => {
     if (
@@ -291,7 +318,13 @@ function App() {
   const maxChallenges =
     duelConfig?.guesses ??
     challengeConfig?.guesses ??
-    (hardMode ? HARD_MODE_MAX_CHALLENGES : NORMAL_MODE_MAX_CHALLENGES);
+    (isDailyMode && dailyConfig
+      ? dailyConfig.hardMode
+        ? HARD_MODE_MAX_CHALLENGES
+        : NORMAL_MODE_MAX_CHALLENGES
+      : hardMode
+        ? HARD_MODE_MAX_CHALLENGES
+        : NORMAL_MODE_MAX_CHALLENGES);
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
 
   const handleSetAutoGray = (value: boolean) => {
@@ -316,6 +349,7 @@ function App() {
     solution,
     isDuelMode,
     isChallengeMode,
+    isDailyMode,
     restoredRef: restoredGameRef,
     extraEffectsRef,
     achievementRevealPendingRef,
@@ -325,6 +359,7 @@ function App() {
     setIsRevealingAchievement,
     setIsDuelModalOpen,
     setIsStatsModalOpen,
+    setIsDailyModalOpen,
   });
 
   const {
@@ -342,6 +377,7 @@ function App() {
     isGameLost,
     isDuelMode,
     isChallengeMode,
+    isDailyMode,
     maxChallenges,
     revealTimerRef,
     setWordLength,
@@ -367,6 +403,7 @@ function App() {
     isGameLost,
     isChallengeMode,
     isDuelMode,
+    isDailyMode,
     revealTimerRef,
     setCurrentGuess,
     setCurrentRowClass,
@@ -388,6 +425,22 @@ function App() {
         achievementRevealPendingRef.current = true;
         newly.forEach(announceAchievement);
       }
+    },
+    onDailyComplete: (won, guessCount) => {
+      if (!dailyConfig) return;
+      const result: DailyResult = {
+        date: dailyConfig.date,
+        won,
+        guessCount,
+        maxGuesses: maxChallenges,
+        wordLength: dailyConfig.wordLength,
+        completedAt: Date.now(),
+      };
+      saveDailyResult(result);
+      setDailyResult(result);
+      setDailyStats(recordDailyStats(dailyConfig.date, won));
+      clearDailyProgress(dailyConfig.date);
+      setDailyModalMode("complete");
     },
   });
 
@@ -435,6 +488,8 @@ function App() {
     duelConfig,
     isChallengeMode,
     challengeConfig,
+    isDailyMode,
+    dailyConfig,
   });
 
   useCrossTabSync({
@@ -442,6 +497,7 @@ function App() {
     isMobile,
     isDuelMode,
     isChallengeMode,
+    isDailyMode,
     duelConfig,
     challengeConfig,
     solution,
@@ -479,11 +535,13 @@ function App() {
       ? "Vagudle - Duel"
       : isChallengeMode
         ? "Vagudle - Challenge"
-        : "Vagudle";
+        : isDailyMode
+          ? "Vagudle - Daily"
+          : "Vagudle";
     return () => {
       document.title = "Vagudle";
     };
-  }, [isChallengeMode, isDuelMode]);
+  }, [isChallengeMode, isDuelMode, isDailyMode]);
 
   useEffect(() => {
     if (!DISCOURAGE_INAPP_BROWSERS) return;
@@ -500,6 +558,83 @@ function App() {
       cancelled = true;
     };
   }, [showErrorAlert]);
+
+  const handleOpenDaily = async () => {
+    setIsDailyModalOpen(true);
+    setDailyModalMode("loading");
+    const config = await fetchDailyConfig();
+    if (!config) {
+      setDailyModalMode("error");
+      return;
+    }
+    setDailyConfig(config);
+
+    const existingResult = loadDailyResult(config.date);
+    if (existingResult) {
+      setDailyResult(existingResult);
+      setDailyModalMode("complete");
+      return;
+    }
+    setDailyModalMode("play");
+  };
+
+  const handlePlayDaily = () => {
+    if (!dailyConfig) return;
+    const dailyMaxChallenges = dailyConfig.hardMode
+      ? HARD_MODE_MAX_CHALLENGES
+      : NORMAL_MODE_MAX_CHALLENGES;
+    const progress = loadDailyProgress(dailyConfig.date);
+    const restoredGuesses = progress?.guesses ?? [];
+    const won = restoredGuesses.some(
+      (guess) => guess.toUpperCase() === dailyConfig.word
+    );
+    const lost = !won && restoredGuesses.length >= dailyMaxChallenges;
+
+    dismissAlert();
+    setIsDailyActive(true);
+    setSolution(dailyConfig.word);
+    setGuesses(restoredGuesses);
+    setCellColors(
+      (progress?.cellColors as { [key: string]: CharStatus }) ?? {}
+    );
+    setCurrentGuess("");
+    setCurrentRowClass("");
+    setIsGameWon(won);
+    setIsGameLost(lost);
+    setIsDailyModalOpen(false);
+
+    if (won || lost) {
+      const result: DailyResult = {
+        date: dailyConfig.date,
+        won,
+        guessCount: restoredGuesses.length,
+        maxGuesses: dailyMaxChallenges,
+        wordLength: dailyConfig.wordLength,
+        completedAt: Date.now(),
+      };
+      saveDailyResult(result);
+      setDailyResult(result);
+      setDailyStats(recordDailyStats(dailyConfig.date, won));
+      clearDailyProgress(dailyConfig.date);
+    }
+  };
+
+  const handleShareDaily = () => {
+    if (!dailyConfig) return;
+    void shareDailyResult(
+      dailyConfig.word,
+      guesses,
+      isGameLost,
+      dailyNumber,
+      dailyResult?.maxGuesses ?? maxChallenges,
+      () => showSuccessAlert(GAME_COPIED_MESSAGE)
+    );
+  };
+
+  const handleCloseDaily = () => {
+    setIsDailyModalOpen(false);
+    if (isDailyMode) handleReturnToNormal();
+  };
 
   if (isLoading) return <LoadingScreen />;
 
@@ -604,6 +739,7 @@ function App() {
         gameMode={gameMode}
         isInfoModalOpen={isInfoModalOpen}
         isActivityMode={isDiscordActivity}
+        onOpenDaily={handleOpenDaily}
       />
       <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
@@ -620,6 +756,9 @@ function App() {
             challengeConfig={challengeConfig}
             isDuelMode={isDuelMode}
             duelConfig={duelConfig}
+            isDailyMode={isDailyMode}
+            dailyConfig={dailyConfig}
+            dailyNumber={dailyNumber}
           />
 
           <Grid
@@ -667,6 +806,14 @@ function App() {
           challengeConfig={challengeConfig}
           duelConfig={duelConfig}
           duelSaveStatus={duelSaveStatus}
+          dailyConfig={dailyConfig}
+          dailyStats={dailyStats}
+          dailyNumber={dailyNumber}
+          dailyModalMode={dailyModalMode}
+          isDailyModalOpen={isDailyModalOpen}
+          handlePlayDaily={handlePlayDaily}
+          handleShareDaily={handleShareDaily}
+          handleCloseDaily={handleCloseDaily}
           showGrayCount={showGrayCount}
           setShowGrayCount={setShowGrayCount}
           autoGray={autoGray}
@@ -738,6 +885,8 @@ function App() {
                 setIsRevealingAchievement(true);
               } else if (isDuelMode) {
                 setIsDuelModalOpen(true);
+              } else if (isDailyMode) {
+                setIsDailyModalOpen(true);
               } else {
                 setIsStatsModalOpen(true);
               }
@@ -751,6 +900,7 @@ function App() {
             onDone={() => {
               setIsRevealingAchievement(false);
               if (isDuelMode) setIsDuelModalOpen(true);
+              else if (isDailyMode) setIsDailyModalOpen(true);
               else setIsStatsModalOpen(true);
             }}
           />

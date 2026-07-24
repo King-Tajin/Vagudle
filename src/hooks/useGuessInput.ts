@@ -22,6 +22,7 @@ type Params = {
   isGameLost: boolean;
   isChallengeMode: boolean;
   isDuelMode: boolean;
+  isDailyMode: boolean;
   revealTimerRef: React.RefObject<ReturnType<typeof setTimeout> | null>;
   setCurrentGuess: (v: string) => void;
   setCurrentRowClass: (v: string) => void;
@@ -41,6 +42,7 @@ type Params = {
   ) => void;
   recordStats: (count: number) => void;
   onGuessSubmit?: (word: string) => void;
+  onDailyComplete?: (won: boolean, guessCount: number) => void;
 };
 
 type Return = {
@@ -58,6 +60,7 @@ export const useGuessInput = ({
   isGameLost,
   isChallengeMode,
   isDuelMode,
+  isDailyMode,
   revealTimerRef,
   setCurrentGuess,
   setCurrentRowClass,
@@ -72,6 +75,7 @@ export const useGuessInput = ({
   showErrorAlert,
   recordStats,
   onGuessSubmit,
+  onDailyComplete,
 }: Params): Return => {
   const clearCurrentRowClass = () => setCurrentRowClass("");
 
@@ -148,12 +152,16 @@ export const useGuessInput = ({
           return next;
         });
 
-        if (!isChallengeMode && !isDuelMode) recordStats(guesses.length);
+        if (!isChallengeMode && !isDuelMode && !isDailyMode)
+          recordStats(guesses.length);
+        if (isDailyMode) onDailyComplete?.(true, guesses.length + 1);
         return setIsGameWon(true);
       }
 
       if (guesses.length === maxChallenges - 1) {
-        if (!isChallengeMode && !isDuelMode) recordStats(guesses.length + 1);
+        if (!isChallengeMode && !isDuelMode && !isDailyMode)
+          recordStats(guesses.length + 1);
+        if (isDailyMode) onDailyComplete?.(false, guesses.length + 1);
         setIsGameLost(true);
         if (!isChallengeMode && !isDuelMode) {
           showErrorAlert(CORRECT_WORD_MESSAGE(solution), {

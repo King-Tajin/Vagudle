@@ -1,13 +1,12 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { Flame } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import {
   ChartBarIcon,
   Cog6ToothIcon,
   InformationCircleIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
-import KingTajinIcon from "@/assets/icons/king-tajin.svg?react";
 import { openExternalLink } from "../lib/discord";
 import type { GameMode } from "../lib/gameMode";
 
@@ -22,6 +21,7 @@ type Props = {
   gameMode?: GameMode;
   isInfoModalOpen: boolean;
   isActivityMode?: boolean;
+  onOpenDaily?: () => void;
 };
 
 export const Navbar = ({
@@ -33,6 +33,7 @@ export const Navbar = ({
   gameMode = "normal",
   isInfoModalOpen,
   isActivityMode = false,
+  onOpenDaily,
 }: Props) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showNudge, setShowNudge] = useState(false);
@@ -111,7 +112,9 @@ export const Navbar = ({
       ? "Leave Duel"
       : gameMode === "challenge"
         ? "Leave Challenge"
-        : "New Game";
+        : gameMode === "daily"
+          ? "Leave Daily"
+          : "New Game";
 
   return (
     <div className="navbar">
@@ -135,24 +138,18 @@ export const Navbar = ({
                 className="flex items-center gap-3 select-none"
                 whileHover={{ scale: 1.02 }}
               >
-                <div className="relative">
-                  <div className="w-10 h-10 bg-obsidian-700 border-2 border-crown-gold flex items-center justify-center">
-                    <KingTajinIcon className="w-6 h-6 text-crown-gold float-animation" />
-                  </div>
-                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-spice-red" />
-                </div>
                 <div>
                   <h1
                     ref={brandTitleRef}
                     className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    King-Tajin
+                    Yellow Skipper
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap"
                   >
-                    WEB GAMES
+                    Games
                   </p>
                 </div>
               </m.button>
@@ -164,24 +161,18 @@ export const Navbar = ({
                 className="flex items-center gap-3 select-none"
                 whileHover={{ scale: 1.02 }}
               >
-                <div className="relative">
-                  <div className="w-10 h-10 bg-obsidian-700 border-2 border-crown-gold flex items-center justify-center">
-                    <KingTajinIcon className="w-6 h-6 text-crown-gold float-animation" />
-                  </div>
-                  <Flame className="absolute -top-1 -right-1 w-4 h-4 text-spice-red" />
-                </div>
                 <div>
                   <h1
                     ref={brandTitleRef}
                     className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    King-Tajin
+                    Yellow Skipper
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap"
                   >
-                    WEB GAMES
+                    Games
                   </p>
                 </div>
               </m.a>
@@ -198,6 +189,19 @@ export const Navbar = ({
                   aria-label={leaveLabel}
                 >
                   <ArrowPathIcon className="h-6 w-6 text-crown-gold" />
+                </m.button>
+              )}
+
+              {!isActivityMode && gameMode === "normal" && onOpenDaily && (
+                <m.button
+                  onClick={onOpenDaily}
+                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Daily word"
+                  title="Daily"
+                >
+                  <CalendarDays className="h-6 w-6 text-crown-gold" />
                 </m.button>
               )}
 
@@ -317,6 +321,16 @@ export const Navbar = ({
                 <p className="font-code text-sm text-gray-300 mb-5">
                   Your progress for this duel is saved for 24 hours. You can
                   return to this link any time.
+                </p>
+              </>
+            ) : gameMode === "daily" ? (
+              <>
+                <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+                  LEAVE DAILY?
+                </p>
+                <p className="font-code text-sm text-gray-300 mb-5">
+                  Your progress on today's daily is saved. You still only get
+                  one attempt, so come back and finish it before the reset.
                 </p>
               </>
             ) : gameMode === "challenge" ? (

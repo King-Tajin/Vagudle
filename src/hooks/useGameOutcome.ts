@@ -9,6 +9,7 @@ type Params = {
   solution: string;
   isDuelMode: boolean;
   isChallengeMode: boolean;
+  isDailyMode: boolean;
   restoredRef: React.RefObject<boolean>;
   extraEffectsRef: React.RefObject<boolean>;
   achievementRevealPendingRef: React.RefObject<boolean>;
@@ -21,6 +22,7 @@ type Params = {
   setIsRevealingAchievement: (value: boolean) => void;
   setIsDuelModalOpen: (value: boolean) => void;
   setIsStatsModalOpen: (value: boolean) => void;
+  setIsDailyModalOpen: (value: boolean) => void;
 };
 
 export const useGameOutcome = ({
@@ -29,6 +31,7 @@ export const useGameOutcome = ({
   solution,
   isDuelMode,
   isChallengeMode,
+  isDailyMode,
   restoredRef,
   extraEffectsRef,
   achievementRevealPendingRef,
@@ -38,6 +41,7 @@ export const useGameOutcome = ({
   setIsRevealingAchievement,
   setIsDuelModalOpen,
   setIsStatsModalOpen,
+  setIsDailyModalOpen,
 }: Params) => {
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -52,12 +56,15 @@ export const useGameOutcome = ({
         timeoutId = setTimeout(() => setIsCelebrating(true), delayMs + 250);
       } else {
         const pool =
-          isDuelMode || isChallengeMode ? CHALLENGE_WIN_MESSAGES : WIN_MESSAGES;
+          isDuelMode || isChallengeMode || isDailyMode
+            ? CHALLENGE_WIN_MESSAGES
+            : WIN_MESSAGES;
         const winMessage = pool[Math.floor(Math.random() * pool.length)];
         showSuccessAlert(winMessage, {
           delayMs,
           onClose: () => {
             if (isDuelMode) setIsDuelModalOpen(true);
+            else if (isDailyMode) setIsDailyModalOpen(true);
             else setIsStatsModalOpen(true);
           },
         });
@@ -75,6 +82,8 @@ export const useGameOutcome = ({
         timeoutId = setTimeout(() => setIsRevealingAchievement(true), delay);
       } else if (isDuelMode) {
         timeoutId = setTimeout(() => setIsDuelModalOpen(true), delay);
+      } else if (isDailyMode) {
+        timeoutId = setTimeout(() => setIsDailyModalOpen(true), delay);
       } else {
         timeoutId = setTimeout(() => setIsStatsModalOpen(true), delay);
       }
@@ -94,5 +103,6 @@ export const useGameOutcome = ({
     solution,
     isChallengeMode,
     isDuelMode,
+    isDailyMode,
   ]);
 };
