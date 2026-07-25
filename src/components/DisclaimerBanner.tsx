@@ -1,16 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
 const DISMISSED_KEY = "king-tajin-disclaimer-dismissed";
 
 export const DisclaimerBanner = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const dismissed = localStorage.getItem(DISMISSED_KEY);
-    if (!dismissed) setIsVisible(true);
-  }, []);
+  const [isVisible, setIsVisible] = useState(
+    () => !localStorage.getItem(DISMISSED_KEY)
+  );
 
   const handleDismiss = () => {
     localStorage.setItem(DISMISSED_KEY, "true");
@@ -40,8 +37,8 @@ export const DisclaimerBanner = () => {
               <span className="text-crown-gold font-pixel text-[16px] tracking-widest mr-2 align-middle">
                 DISCLAIMER
               </span>
-              "King-Tajin" is just the developer's personal gamertag and a nod
-              to being a fan of the Tajín brand. This site and its creator are{" "}
+              "King-Tajin" is just the developer's personal gamertag. This site
+              and its creator are{" "}
               <span className="text-gray-200">
                 not affiliated with, sponsored by, or endorsed by Industrias
                 Tajín, S.A. de C.V.

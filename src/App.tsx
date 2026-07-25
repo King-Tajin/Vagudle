@@ -675,11 +675,18 @@ function App() {
   const handleOpenLeaderboard = async () => {
     const idToken = await getIdTokenForCurrentUser();
     setLeaderboardIdToken(idToken ?? null);
+    setIsDailyModalOpen(false);
     setIsLeaderboardModalOpen(true);
   };
 
   const handleCloseLeaderboard = () => {
     setIsLeaderboardModalOpen(false);
+    if (isDailyMode) setIsDailyModalOpen(true);
+  };
+
+  const handleOpenSettingsFromLeaderboard = () => {
+    setIsLeaderboardModalOpen(false);
+    setIsSettingsModalOpen(true);
   };
 
   if (isLoading) return <LoadingScreen />;
@@ -860,10 +867,10 @@ function App() {
           handlePlayDaily={handlePlayDaily}
           handleShareDaily={handleShareDaily}
           handleCloseDaily={handleCloseDaily}
-          isSignedIn={!!user}
           isLeaderboardModalOpen={isLeaderboardModalOpen}
           handleOpenLeaderboard={handleOpenLeaderboard}
           handleCloseLeaderboard={handleCloseLeaderboard}
+          handleOpenSettingsFromLeaderboard={handleOpenSettingsFromLeaderboard}
           leaderboardIdToken={leaderboardIdToken}
           showGrayCount={showGrayCount}
           setShowGrayCount={setShowGrayCount}
@@ -903,7 +910,10 @@ function App() {
           isStatsModalOpen={isStatsModalOpen}
           handleCloseStats={() => setIsStatsModalOpen(false)}
           isSettingsModalOpen={isSettingsModalOpen}
-          handleCloseSettings={() => setIsSettingsModalOpen(false)}
+          handleCloseSettings={() => {
+            setIsSettingsModalOpen(false);
+            if (isDailyMode) setIsDailyModalOpen(true);
+          }}
           isChallengeModalOpen={isChallengeModalOpen}
           handlePlayChallenge={() => setIsChallengeModalOpen(false)}
           isDuelModalOpen={isDuelModalOpen}

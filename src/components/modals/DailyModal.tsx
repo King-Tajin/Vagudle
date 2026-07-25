@@ -22,7 +22,6 @@ type Props = {
   isGameWon: boolean;
   guessCount: number;
   maxGuesses: number;
-  isSignedIn: boolean;
   onPlay: () => void;
   onShare: () => void;
   onClose: () => void;
@@ -64,7 +63,6 @@ export const DailyModal = ({
   isGameWon,
   guessCount,
   maxGuesses,
-  isSignedIn,
   onPlay,
   onShare,
   onClose,
@@ -228,6 +226,16 @@ export const DailyModal = ({
                     <CalendarDays className="w-3.5 h-3.5" />
                     PLAY TODAY'S DAILY
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={onOpenLeaderboard}
+                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-all"
+                    style={{ color: "#d4af37" }}
+                  >
+                    <Trophy className="w-3.5 h-3.5" />
+                    VIEW LEADERBOARD
+                  </button>
                 </>
               )}
 
@@ -312,17 +320,15 @@ export const DailyModal = ({
                     SHARE RESULT
                   </button>
 
-                  {isSignedIn && (
-                    <button
-                      type="button"
-                      onClick={onOpenLeaderboard}
-                      className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-all"
-                      style={{ color: "#d4af37" }}
-                    >
-                      <Trophy className="w-3.5 h-3.5" />
-                      VIEW LEADERBOARD
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={onOpenLeaderboard}
+                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-all"
+                    style={{ color: "#d4af37" }}
+                  >
+                    <Trophy className="w-3.5 h-3.5" />
+                    VIEW LEADERBOARD
+                  </button>
 
                   <button
                     type="button"

@@ -49,10 +49,10 @@ type Props = {
   handlePlayDaily: () => void;
   handleShareDaily: () => void;
   handleCloseDaily: () => void;
-  isSignedIn: boolean;
   isLeaderboardModalOpen: boolean;
   handleOpenLeaderboard: () => void;
   handleCloseLeaderboard: () => void;
+  handleOpenSettingsFromLeaderboard: () => void;
   leaderboardIdToken: string | null;
   showGrayCount: boolean;
   setShowGrayCount: (value: boolean) => void;
@@ -120,10 +120,10 @@ export const GameModals = ({
   handlePlayDaily,
   handleShareDaily,
   handleCloseDaily,
-  isSignedIn,
   isLeaderboardModalOpen,
   handleOpenLeaderboard,
   handleCloseLeaderboard,
+  handleOpenSettingsFromLeaderboard,
   leaderboardIdToken,
   showGrayCount,
   setShowGrayCount,
@@ -280,7 +280,6 @@ export const GameModals = ({
               ? HARD_MODE_MAX_CHALLENGES
               : NORMAL_MODE_MAX_CHALLENGES
           }
-          isSignedIn={isSignedIn}
           onPlay={handlePlayDaily}
           onShare={handleShareDaily}
           onClose={handleCloseDaily}
@@ -290,6 +289,7 @@ export const GameModals = ({
           isOpen={isLeaderboardModalOpen}
           handleClose={handleCloseLeaderboard}
           idToken={leaderboardIdToken}
+          onOpenSettings={handleOpenSettingsFromLeaderboard}
         />
         {currentBackground?.attribution && (
           <AttributionModal

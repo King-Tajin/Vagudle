@@ -16,6 +16,7 @@ type Props = {
   isOpen: boolean;
   handleClose: () => void;
   idToken: string | null;
+  onOpenSettings: () => void;
 };
 
 const formatCooldown = (canChangeAt: string): string => {
@@ -92,7 +93,12 @@ const LeaderboardRow = ({
   </div>
 );
 
-export const LeaderboardModal = ({ isOpen, handleClose, idToken }: Props) => {
+export const LeaderboardModal = ({
+  isOpen,
+  handleClose,
+  idToken,
+  onOpenSettings,
+}: Props) => {
   const [status, setStatus] = useState<"loading" | "error" | "loaded">(
     "loading"
   );
@@ -107,17 +113,15 @@ export const LeaderboardModal = ({ isOpen, handleClose, idToken }: Props) => {
 
   useEffect(() => {
     if (!isOpen) return;
-    if (!idToken) {
-      setStatus("error");
-      return;
-    }
     let cancelled = false;
-    setStatus("loading");
-    setSubmitError(null);
-    void Promise.all([
-      fetchDailyLeaderboard(idToken),
-      fetchUsernameStatus(idToken),
-    ]).then(([leaderboard, username]) => {
+
+    const loadLeaderboard = async () => {
+      setStatus("loading");
+      setSubmitError(null);
+      const [leaderboard, username] = await Promise.all([
+        fetchDailyLeaderboard(idToken),
+        idToken ? fetchUsernameStatus(idToken) : Promise.resolve(null),
+      ]);
       if (cancelled) return;
       if (!leaderboard) {
         setStatus("error");
@@ -125,10 +129,12 @@ export const LeaderboardModal = ({ isOpen, handleClose, idToken }: Props) => {
       }
       setData(leaderboard);
       setUsernameStatus(username);
-      setIsEditing(!username?.username);
+      setIsEditing(!!idToken && !username?.username);
       setInputValue(username?.username ?? "");
       setStatus("loaded");
-    });
+    };
+
+    void loadLeaderboard();
     return () => {
       cancelled = true;
     };
@@ -195,7 +201,28 @@ export const LeaderboardModal = ({ isOpen, handleClose, idToken }: Props) => {
 
       {status === "loaded" && data && (
         <div className="space-y-2">
-          {usernameStatus && (
+          {!idToken && (
+            <div
+              className="mb-2 p-3"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <p className="font-code text-sm text-gray-300 text-center leading-relaxed">
+                Sign in to save your name and appear on the leaderboard.
+              </p>
+              <button
+                type="button"
+                onClick={onOpenSettings}
+                className="w-full mt-3 py-2 font-pixel text-[10px] tracking-widest text-crown-amber hover:brightness-110 transition-all"
+              >
+                GO TO SETTINGS
+              </button>
+            </div>
+          )}
+
+          {idToken && usernameStatus && (
             <div
               className="mb-2 p-3"
               style={{

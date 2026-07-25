@@ -127,7 +127,8 @@ export async function onRequestPost(context) {
           .includes("unique")
       )
         return json({ success: false, error: "taken" }, 409);
-      throw error;
+      console.error("Username update error:", error);
+      return json({ success: false, error: "Failed to update username." }, 500);
     }
 
     return json({
