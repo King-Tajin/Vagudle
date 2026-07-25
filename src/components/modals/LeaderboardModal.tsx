@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { Loader, Trophy, Pencil } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import {
@@ -93,45 +93,135 @@ const LeaderboardRow = ({
   </div>
 );
 
+type LeaderboardState = {
+  status: "loading" | "error" | "loaded";
+  data: DailyLeaderboardResponse | null;
+  usernameStatus: UsernameStatus | null;
+  isEditing: boolean;
+  inputValue: string;
+  isSubmitting: boolean;
+  submitError: string | null;
+};
+
+const initialLeaderboardState: LeaderboardState = {
+  status: "loading",
+  data: null,
+  usernameStatus: null,
+  isEditing: false,
+  inputValue: "",
+  isSubmitting: false,
+  submitError: null,
+};
+
+type LeaderboardAction =
+  | { type: "loadStart" }
+  | {
+      type: "loadSuccess";
+      data: DailyLeaderboardResponse;
+      usernameStatus: UsernameStatus | null;
+      isEditing: boolean;
+      inputValue: string;
+    }
+  | { type: "loadError" }
+  | { type: "submitStart" }
+  | {
+      type: "submitSuccess";
+      usernameStatus: UsernameStatus;
+      inputValue: string;
+    }
+  | { type: "refreshData"; data: DailyLeaderboardResponse }
+  | { type: "submitError"; message: string }
+  | { type: "setInputValue"; value: string }
+  | { type: "startEditing" }
+  | { type: "cancelEditing"; inputValue: string };
+
+function leaderboardReducer(
+  state: LeaderboardState,
+  action: LeaderboardAction
+): LeaderboardState {
+  switch (action.type) {
+    case "loadStart":
+      return { ...state, status: "loading", submitError: null };
+    case "loadSuccess":
+      return {
+        ...state,
+        status: "loaded",
+        data: action.data,
+        usernameStatus: action.usernameStatus,
+        isEditing: action.isEditing,
+        inputValue: action.inputValue,
+      };
+    case "loadError":
+      return { ...state, status: "error" };
+    case "submitStart":
+      return { ...state, isSubmitting: true, submitError: null };
+    case "submitSuccess":
+      return {
+        ...state,
+        isSubmitting: false,
+        usernameStatus: action.usernameStatus,
+        inputValue: action.inputValue,
+        isEditing: false,
+      };
+    case "refreshData":
+      return { ...state, data: action.data };
+    case "submitError":
+      return { ...state, isSubmitting: false, submitError: action.message };
+    case "setInputValue":
+      return { ...state, inputValue: action.value };
+    case "startEditing":
+      return { ...state, isEditing: true };
+    case "cancelEditing":
+      return {
+        ...state,
+        isEditing: false,
+        inputValue: action.inputValue,
+        submitError: null,
+      };
+  }
+}
+
 export const LeaderboardModal = ({
   isOpen,
   handleClose,
   idToken,
   onOpenSettings,
 }: Props) => {
-  const [status, setStatus] = useState<"loading" | "error" | "loaded">(
-    "loading"
-  );
-  const [data, setData] = useState<DailyLeaderboardResponse | null>(null);
-  const [usernameStatus, setUsernameStatus] = useState<UsernameStatus | null>(
-    null
-  );
-  const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [
+    {
+      status,
+      data,
+      usernameStatus,
+      isEditing,
+      inputValue,
+      isSubmitting,
+      submitError,
+    },
+    dispatch,
+  ] = useReducer(leaderboardReducer, initialLeaderboardState);
 
   useEffect(() => {
     if (!isOpen) return;
     let cancelled = false;
 
     const loadLeaderboard = async () => {
-      setStatus("loading");
-      setSubmitError(null);
+      dispatch({ type: "loadStart" });
       const [leaderboard, username] = await Promise.all([
         fetchDailyLeaderboard(idToken),
         idToken ? fetchUsernameStatus(idToken) : Promise.resolve(null),
       ]);
       if (cancelled) return;
       if (!leaderboard) {
-        setStatus("error");
+        dispatch({ type: "loadError" });
         return;
       }
-      setData(leaderboard);
-      setUsernameStatus(username);
-      setIsEditing(!!idToken && !username?.username);
-      setInputValue(username?.username ?? "");
-      setStatus("loaded");
+      dispatch({
+        type: "loadSuccess",
+        data: leaderboard,
+        usernameStatus: username,
+        isEditing: !!idToken && !username?.username,
+        inputValue: username?.username ?? "",
+      });
     };
 
     void loadLeaderboard();
@@ -144,36 +234,50 @@ export const LeaderboardModal = ({
     if (!idToken || isSubmitting) return;
     const trimmed = inputValue.trim().replace(/\s+/g, " ");
     if (!USERNAME_PATTERN.test(trimmed)) {
-      setSubmitError("3-20 characters: letters, numbers, spaces, - or _");
+      dispatch({
+        type: "submitError",
+        message: "3-20 characters: letters, numbers, spaces, - or _",
+      });
       return;
     }
 
-    setIsSubmitting(true);
-    setSubmitError(null);
+    dispatch({ type: "submitStart" });
     const outcome = await updateUsername(idToken, trimmed);
-    setIsSubmitting(false);
 
     if (outcome.status === "updated") {
-      setUsernameStatus({
-        username: outcome.username,
-        canChangeAt: outcome.canChangeAt,
+      dispatch({
+        type: "submitSuccess",
+        usernameStatus: {
+          username: outcome.username,
+          canChangeAt: outcome.canChangeAt,
+        },
+        inputValue: outcome.username,
       });
-      setInputValue(outcome.username);
-      setIsEditing(false);
       const refreshed = await fetchDailyLeaderboard(idToken);
-      if (refreshed) setData(refreshed);
+      if (refreshed) dispatch({ type: "refreshData", data: refreshed });
       return;
     }
 
     if (outcome.status === "invalid")
-      setSubmitError("3-20 characters: letters, numbers, spaces, - or _");
+      dispatch({
+        type: "submitError",
+        message: "3-20 characters: letters, numbers, spaces, - or _",
+      });
     else if (outcome.status === "taken")
-      setSubmitError("That username is already taken.");
+      dispatch({
+        type: "submitError",
+        message: "That username is already taken.",
+      });
     else if (outcome.status === "rate_limited")
-      setSubmitError(
-        `You can change your name again in ${formatCooldown(outcome.retryAt)}.`
-      );
-    else setSubmitError("Something went wrong. Please try again.");
+      dispatch({
+        type: "submitError",
+        message: `You can change your name again in ${formatCooldown(outcome.retryAt)}.`,
+      });
+    else
+      dispatch({
+        type: "submitError",
+        message: "Something went wrong. Please try again.",
+      });
   };
 
   return (
@@ -252,9 +356,15 @@ export const LeaderboardModal = ({
                     <input
                       type="text"
                       value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "setInputValue",
+                          value: e.target.value,
+                        })
+                      }
                       maxLength={20}
                       placeholder="Your leaderboard name"
+                      aria-label="Leaderboard username"
                       className="flex-1 min-w-0 px-2.5 py-1.5 font-code text-sm bg-obsidian-800 text-white border border-obsidian-600 focus:outline-none focus:border-crown-amber"
                     />
                     <button
@@ -268,11 +378,12 @@ export const LeaderboardModal = ({
                     {usernameStatus.username && (
                       <button
                         type="button"
-                        onClick={() => {
-                          setIsEditing(false);
-                          setInputValue(usernameStatus.username ?? "");
-                          setSubmitError(null);
-                        }}
+                        onClick={() =>
+                          dispatch({
+                            type: "cancelEditing",
+                            inputValue: usernameStatus.username ?? "",
+                          })
+                        }
                         className="px-3 py-1.5 font-pixel text-[10px] tracking-wider text-gray-400 hover:text-gray-200 transition-colors"
                       >
                         CANCEL
@@ -301,7 +412,7 @@ export const LeaderboardModal = ({
                   ) : (
                     <button
                       type="button"
-                      onClick={() => setIsEditing(true)}
+                      onClick={() => dispatch({ type: "startEditing" })}
                       className="flex items-center gap-1 font-pixel text-[9px] text-gray-400 hover:text-crown-amber tracking-widest transition-colors shrink-0"
                     >
                       <Pencil className="w-3 h-3" />

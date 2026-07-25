@@ -34,13 +34,17 @@ export const useCloudSync = (isMobile: boolean) => {
     if (resolvedUidRef.current === user.uid) return;
     resolvedUidRef.current = user.uid;
 
+    let ignore = false;
+
     void (async () => {
       const idToken = await getIdTokenForCurrentUser();
+      if (ignore) return;
       if (!idToken) {
         setSyncError("Couldn't verify sign-in for cloud sync.");
         return;
       }
       const result = await pullCloudSave(idToken);
+      if (ignore) return;
       if (result.status === "found") {
         if (cloudSaveMatchesLocal(result.save, isMobile)) {
           lastPushedAtRef.current = getLocalMaxUpdatedAt();
@@ -55,6 +59,7 @@ export const useCloudSync = (isMobile: boolean) => {
           idToken,
           buildCloudSavePayloadFromLocalStorage(isMobile)
         );
+        if (ignore) return;
         if (updatedAt) {
           lastPushedAtRef.current = getLocalMaxUpdatedAt();
           setCloudUpdatedAt(updatedAt);
@@ -67,6 +72,10 @@ export const useCloudSync = (isMobile: boolean) => {
         setSyncError("Couldn't reach cloud save.");
       }
     })();
+
+    return () => {
+      ignore = true;
+    };
   }, [user, isMobile]);
 
   useEffect(() => {

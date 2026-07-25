@@ -74,6 +74,7 @@ export const decodeDuel = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
+    if (!res.ok) return null;
     const data = (await res.json()) as {
       success: boolean;
       expired: boolean;
@@ -136,6 +137,7 @@ export const submitDuelResult = async (
       body: JSON.stringify({ token, won, guessesUsed }),
       signal: controller.signal,
     });
+    if (!res.ok) return false;
     const data = (await res.json()) as { success: boolean };
     return data.success;
   } catch {
@@ -165,6 +167,7 @@ export const submitActivityDuelResult = async (
       }),
       signal: controller.signal,
     });
+    if (!res.ok) return false;
     const data = (await res.json()) as { success: boolean };
     return data.success;
   } catch {

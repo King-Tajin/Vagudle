@@ -312,6 +312,7 @@ const CloudSaveSection = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              aria-label="Email address"
               className="flex-1 min-w-0 border-2 font-code text-xs p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber"
               style={{
                 background: "#0a0014",

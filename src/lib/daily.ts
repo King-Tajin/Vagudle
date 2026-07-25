@@ -53,6 +53,7 @@ export const fetchDailyConfig = async (): Promise<DailyConfig | null> => {
   const timeout = setTimeout(() => controller.abort(), 10000);
   try {
     const res = await fetch("/api/daily", { signal: controller.signal });
+    if (!res.ok) return null;
     const data = (await res.json()) as
       | {
           success: true;
@@ -236,6 +237,7 @@ export const fetchDailyLeaderboard = async (
       headers: idToken ? { Authorization: `Bearer ${idToken}` } : {},
       signal: controller.signal,
     });
+    if (!res.ok) return null;
     const data = (await res.json()) as
       | {
           success: true;

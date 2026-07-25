@@ -630,7 +630,10 @@ export const ChallengeCreatorModal = ({
       </div>
       <div className="border-t border-obsidian-700" />
       <div>
-        <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
+        <p
+          id="challenge-word-label"
+          className="font-pixel text-xs text-crown-amber tracking-widest mb-2"
+        >
           YOUR WORD
         </p>
         <div className="relative">
@@ -642,6 +645,7 @@ export const ChallengeCreatorModal = ({
             onKeyDown={handleKeyDown}
             maxLength={7}
             placeholder="Type a word (4–7 letters)..."
+            aria-labelledby="challenge-word-label"
             className="w-full border-2 font-pixel text-sm p-2 pr-8 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber tracking-widest uppercase"
             style={{
               background: "#0a0014",

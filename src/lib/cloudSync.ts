@@ -230,6 +230,7 @@ export const pushCloudSave = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
+    if (!res.ok) return null;
     const data = (await res.json()) as {
       success: boolean;
       updatedAt?: string;
@@ -250,6 +251,7 @@ export const deleteCloudSave = async (idToken: string): Promise<boolean> => {
       signal: controller.signal,
     });
     clearTimeout(timeout);
+    if (!res.ok) return false;
     const data = (await res.json()) as { success: boolean };
     return data.success;
   } catch {

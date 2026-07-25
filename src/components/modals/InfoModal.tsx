@@ -1,4 +1,10 @@
-import { Fragment, useState, type ReactNode, type CSSProperties } from "react";
+import {
+  Fragment,
+  useRef,
+  useState,
+  type ReactNode,
+  type CSSProperties,
+} from "react";
 import { Transition, TransitionChild } from "@headlessui/react";
 import {
   X,
@@ -97,18 +103,22 @@ const FeedbackTab = () => {
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const messageRemaining = MESSAGE_MAX - formData.message.length;
   const messageNearLimit = messageRemaining <= 500;
   const messageAtLimit = messageRemaining <= 0;
 
   const handleSubmit = async () => {
+    if (isSubmittingRef.current) return;
+
     if (!formData.sentiment || !formData.category || !formData.message) {
       setStatus("error");
       setErrorMessage("Please fill in all required fields.");
       return;
     }
 
+    isSubmittingRef.current = true;
     setStatus("submitting");
     setErrorMessage("");
 
@@ -132,6 +142,8 @@ const FeedbackTab = () => {
     } catch {
       setStatus("error");
       setErrorMessage("Failed to send feedback. Please try again.");
+    } finally {
+      isSubmittingRef.current = false;
     }
   };
 
@@ -373,7 +385,10 @@ const FeedbackTab = () => {
                 className="flex items-center justify-between px-4 py-3 border-b"
                 style={{ borderColor: "rgba(255,255,255,0.1)" }}
               >
-                <span className="font-pixel text-xs text-crown-amber tracking-widest">
+                <span
+                  id="feedback-message-fullscreen-label"
+                  className="font-pixel text-xs text-crown-amber tracking-widest"
+                >
                   YOUR FEEDBACK
                 </span>
                 <div className="flex items-center gap-3">
@@ -409,6 +424,7 @@ const FeedbackTab = () => {
                 }
                 onKeyDown={(e) => e.stopPropagation()}
                 placeholder="Tell us what's on your mind..."
+                aria-labelledby="feedback-message-fullscreen-label"
                 maxLength={MESSAGE_MAX}
                 autoFocus
                 className="flex-1 w-full font-code text-sm p-4 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber resize-none"

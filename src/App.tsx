@@ -1,4 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo, Suspense } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useReducer,
+  useCallback,
+  Suspense,
+} from "react";
 import { m } from "framer-motion";
 import RibbonIcon from "./assets/icons/ribon.svg?react";
 
@@ -110,6 +118,72 @@ const useIsMobile = () => {
   return isMobile;
 };
 
+type GameRoundState = {
+  solution: string;
+  guesses: string[];
+  cellColors: { [key: string]: CharStatus };
+  currentGuess: string;
+  currentRowClass: string;
+  isGameWon: boolean;
+  isGameLost: boolean;
+  isRevealing: boolean;
+  isCelebrating: boolean;
+};
+
+type GameRoundAction =
+  | { field: "solution"; value: React.SetStateAction<string> }
+  | { field: "guesses"; value: React.SetStateAction<string[]> }
+  | {
+      field: "cellColors";
+      value: React.SetStateAction<{ [key: string]: CharStatus }>;
+    }
+  | { field: "currentGuess"; value: React.SetStateAction<string> }
+  | { field: "currentRowClass"; value: React.SetStateAction<string> }
+  | { field: "isGameWon"; value: React.SetStateAction<boolean> }
+  | { field: "isGameLost"; value: React.SetStateAction<boolean> }
+  | { field: "isRevealing"; value: React.SetStateAction<boolean> }
+  | { field: "isCelebrating"; value: React.SetStateAction<boolean> };
+
+function applyGameRoundField<K extends keyof GameRoundState>(
+  state: GameRoundState,
+  field: K,
+  value: React.SetStateAction<GameRoundState[K]>
+): GameRoundState {
+  const nextValue =
+    typeof value === "function"
+      ? (value as (prev: GameRoundState[K]) => GameRoundState[K])(state[field])
+      : value;
+  return Object.is(nextValue, state[field])
+    ? state
+    : { ...state, [field]: nextValue };
+}
+
+function gameRoundReducer(
+  state: GameRoundState,
+  action: GameRoundAction
+): GameRoundState {
+  switch (action.field) {
+    case "solution":
+      return applyGameRoundField(state, "solution", action.value);
+    case "guesses":
+      return applyGameRoundField(state, "guesses", action.value);
+    case "cellColors":
+      return applyGameRoundField(state, "cellColors", action.value);
+    case "currentGuess":
+      return applyGameRoundField(state, "currentGuess", action.value);
+    case "currentRowClass":
+      return applyGameRoundField(state, "currentRowClass", action.value);
+    case "isGameWon":
+      return applyGameRoundField(state, "isGameWon", action.value);
+    case "isGameLost":
+      return applyGameRoundField(state, "isGameLost", action.value);
+    case "isRevealing":
+      return applyGameRoundField(state, "isRevealing", action.value);
+    case "isCelebrating":
+      return applyGameRoundField(state, "isCelebrating", action.value);
+  }
+}
+
 function App() {
   const {
     showError: showErrorAlert,
@@ -145,19 +219,74 @@ function App() {
     savedSettings: loadSettingsFromLocalStorage(),
   }));
 
-  const [solution, setSolution] = useState(savedGameState?.solution ?? "");
-  const [guesses, setGuesses] = useState<string[]>(
-    savedGameState?.guesses ?? []
+  const [gameRoundState, dispatchGameRound] = useReducer(gameRoundReducer, {
+    solution: savedGameState?.solution ?? "",
+    guesses: savedGameState?.guesses ?? [],
+    cellColors:
+      (savedGameState?.cellColors as { [key: string]: CharStatus }) ?? {},
+    currentGuess: "",
+    currentRowClass: "",
+    isGameWon: false,
+    isGameLost: false,
+    isRevealing: false,
+    isCelebrating: false,
+  });
+  const {
+    solution,
+    guesses,
+    cellColors,
+    currentGuess,
+    currentRowClass,
+    isGameWon,
+    isGameLost,
+    isRevealing,
+    isCelebrating,
+  } = gameRoundState;
+  const setSolution = useCallback(
+    (value: React.SetStateAction<string>) =>
+      dispatchGameRound({ field: "solution", value }),
+    []
   );
-  const [cellColors, setCellColors] = useState<{ [key: string]: CharStatus }>(
-    (savedGameState?.cellColors as { [key: string]: CharStatus }) ?? {}
+  const setGuesses = useCallback(
+    (value: React.SetStateAction<string[]>) =>
+      dispatchGameRound({ field: "guesses", value }),
+    []
   );
-  const [currentGuess, setCurrentGuess] = useState("");
-  const [currentRowClass, setCurrentRowClass] = useState("");
-  const [isGameWon, setIsGameWon] = useState(false);
-  const [isGameLost, setIsGameLost] = useState(false);
-  const [isRevealing, setIsRevealing] = useState(false);
-  const [isCelebrating, setIsCelebrating] = useState(false);
+  const setCellColors = useCallback(
+    (value: React.SetStateAction<{ [key: string]: CharStatus }>) =>
+      dispatchGameRound({ field: "cellColors", value }),
+    []
+  );
+  const setCurrentGuess = useCallback(
+    (value: React.SetStateAction<string>) =>
+      dispatchGameRound({ field: "currentGuess", value }),
+    []
+  );
+  const setCurrentRowClass = useCallback(
+    (value: React.SetStateAction<string>) =>
+      dispatchGameRound({ field: "currentRowClass", value }),
+    []
+  );
+  const setIsGameWon = useCallback(
+    (value: React.SetStateAction<boolean>) =>
+      dispatchGameRound({ field: "isGameWon", value }),
+    []
+  );
+  const setIsGameLost = useCallback(
+    (value: React.SetStateAction<boolean>) =>
+      dispatchGameRound({ field: "isGameLost", value }),
+    []
+  );
+  const setIsRevealing = useCallback(
+    (value: React.SetStateAction<boolean>) =>
+      dispatchGameRound({ field: "isRevealing", value }),
+    []
+  );
+  const setIsCelebrating = useCallback(
+    (value: React.SetStateAction<boolean>) =>
+      dispatchGameRound({ field: "isCelebrating", value }),
+    []
+  );
   const [isRevealingAchievement, setIsRevealingAchievement] = useState(false);
   const [challengeConfig, setChallengeConfig] =
     useState<ChallengeConfig | null>(null);

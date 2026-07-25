@@ -89,6 +89,18 @@ export default {
         files: ["**/dist/assets/*.js"],
         rules: ["react-doctor/artifact-baas-authority-surface"],
       },
+      {
+        // Non-2xx responses carry structured error bodies (taken/rate_limited)
+        // that must be parsed, so an ok-check would break legitimate handling.
+        files: ["**/src/lib/username.ts"],
+        rules: ["react-doctor/no-fetch-response-used-without-status-check"],
+      },
+      {
+        // Every setter after an await is already guarded by the local
+        // canceled flag set in the effect's cleanup.
+        files: ["**/src/components/backgrounds/VideoBackground.tsx"],
+        rules: ["react-doctor/no-set-state-after-await-in-effect"],
+      },
     ],
   },
 } satisfies ReactDoctorConfig;

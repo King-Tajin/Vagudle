@@ -67,6 +67,7 @@ export const encodeChallenge = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
+    if (!res.ok) return null;
     const data = (await res.json()) as {
       success: boolean;
       encoded: string;
@@ -92,6 +93,7 @@ export const decodeChallenge = async (
       }
     );
     clearTimeout(timeout);
+    if (!res.ok) return null;
     const data = (await res.json()) as {
       success: boolean;
       config: ChallengeConfig;

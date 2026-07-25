@@ -35,10 +35,13 @@ export const useDuelResult = ({
     if (submittedRef.current) return;
     submittedRef.current = true;
 
+    let cancelled = false;
+
     const submit = async () => {
       setSaveStatus("saving");
       for (let attempt = 0; attempt < 3; attempt++) {
         if (attempt > 0) await new Promise((r) => setTimeout(r, 2000));
+        if (cancelled) return;
         let ok: boolean;
         if (duelToken) {
           ok = await submitDuelResult(duelToken, isGameWon, guessCount);
@@ -52,15 +55,20 @@ export const useDuelResult = ({
         } else {
           break;
         }
+        if (cancelled) return;
         if (ok) {
           setSaveStatus("saved");
           return;
         }
       }
-      setSaveStatus("failed");
+      if (!cancelled) setSaveStatus("failed");
     };
 
     void submit();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     isGameWon,
     isGameLost,
