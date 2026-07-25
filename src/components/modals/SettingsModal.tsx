@@ -64,6 +64,7 @@ type Props = {
   isActivityMode?: boolean;
   cloudUpdatedAt?: string | null;
   isCloudUpToDate?: boolean;
+  jumpToAccountKey?: number;
 };
 
 const isBgUnlocked = (bg: BackgroundDef, unlockedIds: string[]) =>
@@ -368,11 +369,22 @@ export const SettingsModal = ({
   isActivityMode = false,
   cloudUpdatedAt = null,
   isCloudUpToDate = true,
+  jumpToAccountKey = 0,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>("settings");
   const [settingsPage, setSettingsPage] = useState<1 | 2>(1);
   const [errorMessage, setErrorMessage] = useState("");
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [prevJumpToAccountKey, setPrevJumpToAccountKey] =
+    useState(jumpToAccountKey);
+
+  if (jumpToAccountKey !== prevJumpToAccountKey) {
+    setPrevJumpToAccountKey(jumpToAccountKey);
+    if (jumpToAccountKey > 0) {
+      setActiveTab("settings");
+      setSettingsPage(2);
+    }
+  }
 
   useEffect(() => {
     return () => {

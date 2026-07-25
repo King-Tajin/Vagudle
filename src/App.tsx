@@ -188,6 +188,7 @@ function App() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
   const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
   const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
   const [isAttributionModalOpen, setIsAttributionModalOpen] = useState(false);
@@ -686,6 +687,7 @@ function App() {
 
   const handleOpenSettingsFromLeaderboard = () => {
     setIsLeaderboardModalOpen(false);
+    setSettingsAccountJumpKey((key) => key + 1);
     setIsSettingsModalOpen(true);
   };
 
@@ -860,6 +862,7 @@ function App() {
           duelConfig={duelConfig}
           duelSaveStatus={duelSaveStatus}
           dailyConfig={dailyConfig}
+          dailyResult={dailyResult}
           dailyStats={dailyStats}
           dailyNumber={dailyNumber}
           dailyModalMode={dailyModalMode}
@@ -914,6 +917,7 @@ function App() {
             setIsSettingsModalOpen(false);
             if (isDailyMode) setIsDailyModalOpen(true);
           }}
+          settingsAccountJumpKey={settingsAccountJumpKey}
           isChallengeModalOpen={isChallengeModalOpen}
           handlePlayChallenge={() => setIsChallengeModalOpen(false)}
           isDuelModalOpen={isDuelModalOpen}

@@ -6,12 +6,12 @@
   "scripts": {
     "start": "vite",
     "build": "vite build && node scripts/optimize-dist.mjs",
-    "preview": "vite preview",
     "typecheck": "node ./node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
     "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
-    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && react-doctor --verbose"
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && react-doctor --verbose",
+    "doctor": "npx react-doctor@latest --verbose"
   },
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.5.0",
@@ -59,7 +59,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.2.0",
     "prettier": "^3.9.6",
-    "react-doctor": "^0.8.3",
+    "react-doctor": "^0.9.1",
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.65.0",

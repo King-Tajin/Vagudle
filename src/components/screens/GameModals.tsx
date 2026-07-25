@@ -13,7 +13,7 @@ import {
 import type { GameStats } from "../../lib/localStorage";
 import type { ChallengeConfig } from "../../lib/challenge";
 import type { DuelConfig, DuelSaveStatus } from "../../lib/duel";
-import type { DailyConfig, DailyStats } from "../../lib/daily";
+import type { DailyConfig, DailyResult, DailyStats } from "../../lib/daily";
 import type { BackgroundId, BackgroundDef } from "../../lib/backgrounds";
 import type { Achievement } from "../../lib/achievements";
 import type { GameMode } from "../../lib/gameMode";
@@ -42,6 +42,7 @@ type Props = {
   duelConfig: DuelConfig | null;
   duelSaveStatus: DuelSaveStatus;
   dailyConfig: DailyConfig | null;
+  dailyResult: DailyResult | null;
   dailyStats: DailyStats;
   dailyNumber: number;
   dailyModalMode: "loading" | "error" | "play" | "complete";
@@ -83,6 +84,7 @@ type Props = {
   handleCloseStats: () => void;
   isSettingsModalOpen: boolean;
   handleCloseSettings: () => void;
+  settingsAccountJumpKey: number;
   isChallengeModalOpen: boolean;
   handlePlayChallenge: () => void;
   isDuelModalOpen: boolean;
@@ -113,6 +115,7 @@ export const GameModals = ({
   duelConfig,
   duelSaveStatus,
   dailyConfig,
+  dailyResult,
   dailyStats,
   dailyNumber,
   dailyModalMode,
@@ -154,6 +157,7 @@ export const GameModals = ({
   handleCloseStats,
   isSettingsModalOpen,
   handleCloseSettings,
+  settingsAccountJumpKey,
   isChallengeModalOpen,
   handlePlayChallenge,
   isDuelModalOpen,
@@ -248,6 +252,7 @@ export const GameModals = ({
           isActivityMode={isActivityMode}
           cloudUpdatedAt={cloudUpdatedAt}
           isCloudUpToDate={isCloudUpToDate}
+          jumpToAccountKey={settingsAccountJumpKey}
         />
         {gameMode === "challenge" && challengeConfig && (
           <ChallengeAcceptModal
@@ -273,12 +278,13 @@ export const GameModals = ({
           config={dailyConfig}
           dailyNumber={dailyNumber}
           dailyStats={dailyStats}
-          isGameWon={isGameWon}
-          guessCount={guesses.length}
+          isGameWon={dailyResult?.won ?? isGameWon}
+          guessCount={dailyResult?.guessCount ?? guesses.length}
           maxGuesses={
-            dailyConfig?.hardMode
+            dailyResult?.maxGuesses ??
+            (dailyConfig?.hardMode
               ? HARD_MODE_MAX_CHALLENGES
-              : NORMAL_MODE_MAX_CHALLENGES
+              : NORMAL_MODE_MAX_CHALLENGES)
           }
           onPlay={handlePlayDaily}
           onShare={handleShareDaily}

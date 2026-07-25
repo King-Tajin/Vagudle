@@ -231,7 +231,17 @@ export const DailyModal = ({
                     type="button"
                     onClick={onOpenLeaderboard}
                     className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-all"
-                    style={{ color: "#d4af37" }}
+                    style={{
+                      background: "rgba(212,175,55,0.08)",
+                      border: "2px solid rgba(212,175,55,0.4)",
+                      color: "#d4af37",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.filter = "brightness(1.15)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.filter = "brightness(1)";
+                    }}
                   >
                     <Trophy className="w-3.5 h-3.5" />
                     VIEW LEADERBOARD
@@ -324,7 +334,17 @@ export const DailyModal = ({
                     type="button"
                     onClick={onOpenLeaderboard}
                     className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-all"
-                    style={{ color: "#d4af37" }}
+                    style={{
+                      background: "rgba(212,175,55,0.08)",
+                      border: "2px solid rgba(212,175,55,0.4)",
+                      color: "#d4af37",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.filter = "brightness(1.15)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.filter = "brightness(1)";
+                    }}
                   >
                     <Trophy className="w-3.5 h-3.5" />
                     VIEW LEADERBOARD

@@ -215,7 +215,18 @@ export const LeaderboardModal = ({
               <button
                 type="button"
                 onClick={onOpenSettings}
-                className="w-full mt-3 py-2 font-pixel text-[10px] tracking-widest text-crown-amber hover:brightness-110 transition-all"
+                className="w-full mt-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
+                style={{
+                  background: "rgba(212,175,55,0.08)",
+                  border: "2px solid rgba(212,175,55,0.4)",
+                  color: "#d4af37",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.filter = "brightness(1.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.filter = "brightness(1)";
+                }}
               >
                 GO TO SETTINGS
               </button>
