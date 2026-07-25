@@ -38,38 +38,42 @@ export const useCloudSync = (isMobile: boolean) => {
 
     void (async () => {
       const idToken = await getIdTokenForCurrentUser();
-      if (ignore) return;
-      if (!idToken) {
-        setSyncError("Couldn't verify sign-in for cloud sync.");
+      if (ignore || !idToken) {
+        if (!ignore) {
+          setSyncError("Couldn't verify sign-in for cloud sync.");
+        }
         return;
       }
+
       const result = await pullCloudSave(idToken);
-      if (ignore) return;
-      if (result.status === "found") {
-        if (cloudSaveMatchesLocal(result.save, isMobile)) {
-          lastPushedAtRef.current = getLocalMaxUpdatedAt();
-          setCloudUpdatedAt(result.save.updatedAt);
-          setIsUpToDate(true);
-        } else {
-          setPendingCloudSave(result.save);
-          setCloudUpdatedAt(result.save.updatedAt);
-        }
-      } else if (result.status === "not_found") {
-        const updatedAt = await pushCloudSave(
-          idToken,
-          buildCloudSavePayloadFromLocalStorage(isMobile)
-        );
-        if (ignore) return;
-        if (updatedAt) {
+      if (!ignore) {
+        if (result.status === "found") {
+          if (cloudSaveMatchesLocal(result.save, isMobile)) {
+            lastPushedAtRef.current = getLocalMaxUpdatedAt();
+            setCloudUpdatedAt(result.save.updatedAt);
+            setIsUpToDate(true);
+          } else {
+            setPendingCloudSave(result.save);
+            setCloudUpdatedAt(result.save.updatedAt);
+          }
+        } else if (result.status === "not_found") {
+          const updatedAt = await pushCloudSave(
+            idToken,
+            buildCloudSavePayloadFromLocalStorage(isMobile)
+          );
+          if (ignore || !updatedAt) {
+            if (!ignore) {
+              setSyncError("Couldn't create your cloud save.");
+            }
+            return;
+          }
           lastPushedAtRef.current = getLocalMaxUpdatedAt();
           setCloudUpdatedAt(updatedAt);
           setIsUpToDate(true);
           setSyncError(null);
         } else {
-          setSyncError("Couldn't create your cloud save.");
+          setSyncError("Couldn't reach cloud save.");
         }
-      } else {
-        setSyncError("Couldn't reach cloud save.");
       }
     })();
 

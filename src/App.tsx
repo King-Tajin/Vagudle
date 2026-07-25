@@ -149,10 +149,7 @@ function applyGameRoundField<K extends keyof GameRoundState>(
   field: K,
   value: React.SetStateAction<GameRoundState[K]>
 ): GameRoundState {
-  const nextValue =
-    typeof value === "function"
-      ? (value as (prev: GameRoundState[K]) => GameRoundState[K])(state[field])
-      : value;
+  const nextValue = typeof value === "function" ? value(state[field]) : value;
   return Object.is(nextValue, state[field])
     ? state
     : { ...state, [field]: nextValue };

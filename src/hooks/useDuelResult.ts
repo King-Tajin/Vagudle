@@ -38,6 +38,7 @@ export const useDuelResult = ({
     let cancelled = false;
 
     const submit = async () => {
+      if (cancelled) return;
       setSaveStatus("saving");
       for (let attempt = 0; attempt < 3; attempt++) {
         if (attempt > 0) await new Promise((r) => setTimeout(r, 2000));
