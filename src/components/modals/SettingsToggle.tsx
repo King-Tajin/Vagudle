@@ -27,7 +27,7 @@ export const SettingsToggle = ({
         type="button"
         onClick={() => handleFlag(!flag)}
         aria-label={settingName}
-        className="shrink-0 w-14 h-8 transition-all duration-300 ease-in-out pixel-border-sm"
+        className="shrink-0 w-14 h-8 transition-colors duration-300 ease-in-out pixel-border-sm"
         style={{
           background: flag
             ? "linear-gradient(180deg, #5000aa 0%, #28007c 100%)"

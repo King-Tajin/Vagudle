@@ -411,7 +411,7 @@ export const StatsModal = ({
   const presetGuesses: 9 | 11 = hardMode ? 9 : 11;
 
   const tabBase =
-    "flex-1 py-2 font-pixel text-xs tracking-widest transition-all";
+    "flex-1 py-2 font-pixel text-xs tracking-widest transition-colors";
 
   if (showingAchievement) {
     const a = newlyUnlockedAchievements[achievementIdx];
@@ -459,7 +459,7 @@ export const StatsModal = ({
         >
           <button
             type="button"
-            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
             style={{
               background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
               border: "2px solid #5000aa",
@@ -479,7 +479,7 @@ export const StatsModal = ({
           {bgUnlock && (
             <button
               type="button"
-              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
               style={{
                 background: "rgba(255,215,0,0.1)",
                 border: "2px solid rgba(255,215,0,0.4)",
@@ -498,7 +498,7 @@ export const StatsModal = ({
           )}
           <button
             type="button"
-            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+            className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "2px solid rgba(255,255,255,0.12)",
@@ -605,7 +605,7 @@ export const StatsModal = ({
           <div className="mt-3">
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
               style={{
                 background: "rgba(255,255,255,0.04)",
                 border: "2px solid rgba(255,255,255,0.12)",
@@ -700,7 +700,7 @@ export const StatsModal = ({
           {handleReturnToNormal && (
             <button
               type="button"
-              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
               style={{
                 background: "rgba(255,255,255,0.04)",
                 border: "2px solid rgba(255,255,255,0.12)",
@@ -721,7 +721,7 @@ export const StatsModal = ({
           {!isActivityMode && (
             <button
               type="button"
-              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+              className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
               style={{
                 background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
                 border: "2px solid #5000aa",
@@ -804,7 +804,7 @@ export const StatsModal = ({
         <div className="mt-4 flex justify-end">
           <button
             type="button"
-            className="flex items-center gap-1.5 px-3 py-2 font-pixel text-xs tracking-wider transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 font-pixel text-xs tracking-wider transition-colors"
             style={{
               background: "rgba(255,215,0,0.06)",
               border: "1px solid rgba(255,215,0,0.25)",
@@ -837,7 +837,7 @@ export const StatsModal = ({
             {!isActivityMode && (
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+                className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
                 style={{
                   background:
                     "linear-gradient(180deg, #3a7d44 0%, #2d6135 100%)",
@@ -859,7 +859,7 @@ export const StatsModal = ({
             {!isActivityMode && (
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+                className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
                 style={{
                   background:
                     "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
@@ -891,7 +891,7 @@ export const StatsModal = ({
 
           <button
             type="button"
-            className="mt-3 w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+            className="mt-3 w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
             style={{
               background: "rgba(255,215,0,0.06)",
               border: "2px solid rgba(255,215,0,0.35)",

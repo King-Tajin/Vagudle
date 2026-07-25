@@ -207,7 +207,7 @@ export const Grid = ({
                 onClick={() =>
                   setSelectedBrush(selectedBrush === status ? null : status)
                 }
-                className="flex items-center justify-center rounded transition-all"
+                className="flex items-center justify-center rounded transition-colors"
                 style={{
                   width: 52,
                   height: 52,
@@ -236,7 +236,7 @@ export const Grid = ({
             <button
               type="button"
               onClick={() => setShowResetConfirm(true)}
-              className="flex items-center justify-center rounded transition-all"
+              className="flex items-center justify-center rounded transition-colors"
               style={{
                 width: 52,
                 height: 52,

@@ -281,7 +281,7 @@ export const Navbar = ({
                         <button
                           type="button"
                           onClick={dismissNudge}
-                          className="w-full py-1.5 font-pixel text-[9px] tracking-widest transition-all"
+                          className="w-full py-1.5 font-pixel text-[9px] tracking-widest transition-colors"
                           style={{
                             background: "rgba(255,215,0,0.07)",
                             border: "1px solid rgba(255,215,0,0.25)",

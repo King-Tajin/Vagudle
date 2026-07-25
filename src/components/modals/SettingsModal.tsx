@@ -343,7 +343,8 @@ const CloudSaveSection = ({
   );
 };
 
-const tabBase = "flex-1 py-2 font-pixel text-xs tracking-widest transition-all";
+const tabBase =
+  "flex-1 py-2 font-pixel text-xs tracking-widest transition-colors";
 const activeTabStyle = {
   background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
   border: "2px solid #5000aa",
@@ -537,7 +538,7 @@ export const SettingsModal = ({
                           />
                         ))}
                         <div
-                          className="absolute inset-y-0 left-0 transition-all duration-150"
+                          className="absolute inset-y-0 left-0 transition-[width] duration-150"
                           style={{
                             width: `${((wordLength - 4) / 3) * 100}%`,
                             background:
@@ -547,7 +548,7 @@ export const SettingsModal = ({
                           }}
                         />
                         <div
-                          className="absolute top-1/2 transition-all duration-150 pointer-events-none w-5.5 h-5.5 rounded-full bg-[linear-gradient(180deg,#5000aa_0%,#28007c_100%)] border-2 border-[#7020cc] shadow-[0_0_8px_rgba(80,0,170,0.6)] z-3"
+                          className="absolute top-1/2 transition-[left] duration-150 pointer-events-none w-5.5 h-5.5 rounded-full bg-[linear-gradient(180deg,#5000aa_0%,#28007c_100%)] border-2 border-[#7020cc] shadow-[0_0_8px_rgba(80,0,170,0.6)] z-3"
                           style={{
                             left: `${((wordLength - 4) / 3) * 100}%`,
                             transform: "translate(-50%, -50%)",

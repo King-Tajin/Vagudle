@@ -65,7 +65,7 @@ export const AttributionModal = ({
             type="button"
             onClick={() => onHideForeverChange(!isHidden)}
             aria-label="Hide attribution for this background"
-            className="shrink-0 w-14 h-8 transition-all duration-300 ease-in-out pixel-border-sm"
+            className="shrink-0 w-14 h-8 transition-colors duration-300 ease-in-out pixel-border-sm"
             style={{
               background: isHidden
                 ? "linear-gradient(180deg, #5000aa 0%, #28007c 100%)"
@@ -88,7 +88,7 @@ export const AttributionModal = ({
         <button
           type="button"
           onClick={handleClose}
-          className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+          className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-[filter]"
           style={{
             background: "linear-gradient(180deg, #d4af37 0%, #b8860b 100%)",
             border: "2px solid #d4af37",

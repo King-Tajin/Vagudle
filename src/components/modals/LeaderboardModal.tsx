@@ -215,7 +215,7 @@ export const LeaderboardModal = ({
               <button
                 type="button"
                 onClick={onOpenSettings}
-                className="w-full mt-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
+                className="w-full mt-3 py-2 font-pixel text-[10px] tracking-widest transition-[filter]"
                 style={{
                   background: "rgba(212,175,55,0.08)",
                   border: "2px solid rgba(212,175,55,0.4)",
@@ -321,7 +321,7 @@ export const LeaderboardModal = ({
 
           {data.top.map((entry, i) => (
             <LeaderboardRow
-              key={`${entry.username}-${i}`}
+              key={entry.username}
               rank={i + 1}
               username={entry.username}
               wins={entry.wins}

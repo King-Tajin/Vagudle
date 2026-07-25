@@ -133,7 +133,7 @@ export const DailyModal = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-full py-3 font-pixel text-xs tracking-widest transition-all"
+                    className="w-full py-3 font-pixel text-xs tracking-widest transition-colors"
                     style={{
                       background: "rgba(255,255,255,0.04)",
                       border: "2px solid rgba(255,255,255,0.12)",
@@ -209,7 +209,7 @@ export const DailyModal = ({
                   <button
                     type="button"
                     onClick={onPlay}
-                    className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+                    className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
                     style={{
                       background:
                         "linear-gradient(180deg, #d4af37 0%, #b8860b 100%)",
@@ -230,7 +230,7 @@ export const DailyModal = ({
                   <button
                     type="button"
                     onClick={onOpenLeaderboard}
-                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-colors"
                     style={{
                       background: "rgba(212,175,55,0.08)",
                       border: "2px solid rgba(212,175,55,0.4)",
@@ -312,7 +312,7 @@ export const DailyModal = ({
                   <button
                     type="button"
                     onClick={onShare}
-                    className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
                     style={{
                       background:
                         "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
@@ -333,7 +333,7 @@ export const DailyModal = ({
                   <button
                     type="button"
                     onClick={onOpenLeaderboard}
-                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-colors"
                     style={{
                       background: "rgba(212,175,55,0.08)",
                       border: "2px solid rgba(212,175,55,0.4)",
@@ -353,7 +353,7 @@ export const DailyModal = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
                     style={{
                       background: "rgba(255,255,255,0.04)",
                       border: "2px solid rgba(255,255,255,0.12)",

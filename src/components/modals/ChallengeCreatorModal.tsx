@@ -40,7 +40,7 @@ function ButtonGroup<T extends string | number>({
             type="button"
             key={String(opt.value)}
             onClick={() => onChange(opt.value)}
-            className="flex items-center justify-center px-3 py-2 font-pixel text-xs tracking-widest transition-all flex-1"
+            className="flex items-center justify-center px-3 py-2 font-pixel text-xs tracking-widest transition-colors flex-1"
             style={{
               background: active
                 ? "linear-gradient(180deg, #5000aa 0%, #28007c 100%)"
@@ -400,7 +400,7 @@ export const ChallengeCreatorModal = ({
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
+            className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-colors"
             style={{ color: "#6b7280" }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = "#9ca3af";
@@ -430,7 +430,7 @@ export const ChallengeCreatorModal = ({
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
+            className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-colors"
             style={{ color: "#6b7280" }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = "#9ca3af";
@@ -485,7 +485,7 @@ export const ChallengeCreatorModal = ({
           <button
             type="button"
             onClick={copyLink}
-            className="flex-1 py-2.5 font-pixel text-xs tracking-widest flex items-center justify-center gap-1.5 transition-all"
+            className="flex-1 py-2.5 font-pixel text-xs tracking-widest flex items-center justify-center gap-1.5 transition-colors"
             style={{
               background: copied
                 ? "rgba(74,124,63,0.2)"
@@ -510,7 +510,7 @@ export const ChallengeCreatorModal = ({
           <button
             type="button"
             onClick={handleShare}
-            className="flex-1 py-2.5 font-pixel text-xs tracking-widest flex items-center justify-center gap-1.5 transition-all"
+            className="flex-1 py-2.5 font-pixel text-xs tracking-widest flex items-center justify-center gap-1.5 transition-colors"
             style={{
               background: shared
                 ? "rgba(74,124,63,0.2)"
@@ -535,7 +535,7 @@ export const ChallengeCreatorModal = ({
           <button
             type="button"
             onClick={handleEdit}
-            className="px-4 py-2.5 font-pixel text-xs tracking-widest transition-all"
+            className="px-4 py-2.5 font-pixel text-xs tracking-widest transition-colors"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "2px solid rgba(255,255,255,0.1)",
@@ -563,7 +563,7 @@ export const ChallengeCreatorModal = ({
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-all"
+          className="flex items-center gap-1.5 font-pixel text-xs tracking-widest transition-colors"
           style={{ color: "#6b7280" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.color = "#9ca3af";
@@ -739,7 +739,7 @@ export const ChallengeCreatorModal = ({
         type="button"
         onClick={generate}
         disabled={wordStatus !== "valid" || generateStatus === "loading"}
-        className="w-full py-3 font-pixel text-xs tracking-widest transition-all flex items-center justify-center gap-2"
+        className="w-full py-3 font-pixel text-xs tracking-widest transition-colors flex items-center justify-center gap-2"
         style={{
           background:
             wordStatus === "valid"

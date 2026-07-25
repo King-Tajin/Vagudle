@@ -143,7 +143,7 @@ export const DuelModal = ({
                   <button
                     type="button"
                     onClick={onPlay}
-                    className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+                    className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-[filter]"
                     style={{
                       background:
                         "linear-gradient(180deg, #d4af37 0%, #b8860b 100%)",
@@ -230,7 +230,7 @@ export const DuelModal = ({
                       disabled={
                         saveStatus === "saving" || saveStatus === "idle"
                       }
-                      className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+                      className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
                       style={{
                         background:
                           saveStatus === "saving" || saveStatus === "idle"

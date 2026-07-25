@@ -33,9 +33,6 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 export const DAILY_PATH = "/daily";
 
-export const getUtcDateString = (date: Date = new Date()): string =>
-  date.toISOString().slice(0, 10);
-
 export const msUntilNextUtcMidnight = (date: Date = new Date()): number => {
   const next = Date.UTC(
     date.getUTCFullYear(),

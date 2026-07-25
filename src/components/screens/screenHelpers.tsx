@@ -27,7 +27,7 @@ export const returnButton = (onClick: () => void) => (
   <button
     type="button"
     onClick={onClick}
-    className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
+    className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
     style={{
       background: "rgba(255,215,0,0.08)",
       border: "1px solid rgba(255,215,0,0.3)",
@@ -42,7 +42,7 @@ export const retryButton = () => (
   <button
     type="button"
     onClick={() => window.location.reload()}
-    className="font-pixel text-xs tracking-widest px-4 py-2 transition-all"
+    className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
     style={{
       background: "rgba(255,215,0,0.08)",
       border: "1px solid rgba(255,215,0,0.3)",

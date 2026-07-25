@@ -27,7 +27,7 @@ const Progress = ({
           style={{ background: "rgba(255,255,255,0.06)" }}
         >
           <div
-            className="absolute left-0 top-0 h-full transition-all duration-500"
+            className="absolute left-0 top-0 h-full transition-[width] duration-500"
             style={{
               width: size > 0 ? `${size}%` : "3px",
               background: isCurrentDayStatRow

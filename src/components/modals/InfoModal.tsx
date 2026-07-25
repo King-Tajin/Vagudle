@@ -182,7 +182,7 @@ const FeedbackTab = () => {
           <button
             type="button"
             onClick={() => setFormData({ ...formData, sentiment: "positive" })}
-            className="p-3 border-2 transition-all flex flex-col items-center gap-1"
+            className="p-3 border-2 transition-colors flex flex-col items-center gap-1"
             style={{
               background:
                 formData.sentiment === "positive"
@@ -214,7 +214,7 @@ const FeedbackTab = () => {
           <button
             type="button"
             onClick={() => setFormData({ ...formData, sentiment: "negative" })}
-            className="p-3 border-2 transition-all flex flex-col items-center gap-1"
+            className="p-3 border-2 transition-colors flex flex-col items-center gap-1"
             style={{
               background:
                 formData.sentiment === "negative"
@@ -434,7 +434,7 @@ const FeedbackTab = () => {
         type="button"
         disabled={status === "submitting"}
         onClick={handleSubmit}
-        className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+        className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
         style={{
           background:
             status === "submitting"
@@ -802,7 +802,7 @@ export const InfoModal = ({
                           type="button"
                           onClick={() => setIsResetModalOpen(true)}
                           title="Erases all saved progress, stats, achievements, and settings."
-                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
+                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-colors"
                           style={{
                             background: "rgba(255,255,255,0.04)",
                             border: "2px solid rgba(255,255,255,0.12)",
@@ -818,7 +818,7 @@ export const InfoModal = ({
                           onClick={onRestoreHiddenAttributions}
                           disabled={!hasHiddenAttributions}
                           title="Hid a video background's attribution button? Bring it back here."
-                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-all"
+                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 font-pixel text-[10px] tracking-widest transition-colors"
                           style={{
                             background: hasHiddenAttributions
                               ? "rgba(255,255,255,0.04)"

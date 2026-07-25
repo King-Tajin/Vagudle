@@ -172,7 +172,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             <button
               type="button"
               onClick={handleCancelReauth}
-              className="flex-1 py-3 font-pixel text-xs tracking-widest transition-all"
+              className="flex-1 py-3 font-pixel text-xs tracking-widest transition-colors"
               style={{
                 background: "rgba(255,255,255,0.04)",
                 border: "2px solid rgba(255,255,255,0.12)",
@@ -184,7 +184,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             <button
               type="button"
               onClick={handleAuthorizeReauth}
-              className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+              className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
               style={{
                 background: "linear-gradient(180deg, #dc3232 0%, #8c1f1f 100%)",
                 border: "2px solid #dc3232",
@@ -257,7 +257,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
           <button
             type="button"
             onClick={handleClose}
-            className="flex-1 py-3 font-pixel text-xs tracking-widest transition-all"
+            className="flex-1 py-3 font-pixel text-xs tracking-widest transition-colors"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "2px solid rgba(255,255,255,0.12)",
@@ -270,7 +270,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             type="button"
             onClick={handleConfirm}
             disabled={isLocked || isDeleting}
-            className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-all"
+            className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
             style={{
               background:
                 isLocked || isDeleting
