@@ -20,6 +20,17 @@ import {
 } from "../lib/duel";
 import { isDiscordActivity, bootActivity } from "../lib/discord";
 import { runStorageOptimization } from "../lib/storageOptimizer";
+import {
+  fetchDailyConfig,
+  loadDailyResult,
+  loadDailyProgress,
+  saveDailyResult,
+  recordDailyStats,
+  clearDailyProgress,
+  type DailyConfig,
+  type DailyResult,
+  type DailyStats,
+} from "../lib/daily";
 import { CORRECT_WORD_MESSAGE } from "../constants/strings";
 import {
   HARD_MODE_MAX_CHALLENGES,
@@ -30,6 +41,7 @@ import {
 type Params = {
   challengeParam: string | null;
   duelParam: string | null;
+  isDailyRoute: boolean;
   restoredGameRef: React.RefObject<boolean>;
   duelSubmittedRef: React.RefObject<boolean>;
   setIsLoading: (v: boolean) => void;
@@ -54,12 +66,20 @@ type Params = {
   setIsDuelModalOpen: (v: boolean) => void;
   setIsInfoModalOpen: (v: boolean) => void;
   setIsStatsModalOpen: (v: boolean) => void;
+  setIsDailyActive: (v: boolean) => void;
+  setDailyConfig: (v: DailyConfig) => void;
+  setDailyResult: (v: DailyResult) => void;
+  setDailyStats: (v: DailyStats) => void;
+  setIsDailyModalOpen: (v: boolean) => void;
+  setDailyModalMode: (v: "loading" | "error" | "play" | "complete") => void;
+  onDailyRestoredComplete?: (won: boolean) => void;
   showErrorAlert: (message: string, options?: { persist?: boolean }) => void;
 };
 
 export const useGameInitialization = ({
   challengeParam,
   duelParam,
+  isDailyRoute,
   restoredGameRef,
   duelSubmittedRef,
   setIsLoading,
@@ -82,6 +102,13 @@ export const useGameInitialization = ({
   setIsDuelModalOpen,
   setIsInfoModalOpen,
   setIsStatsModalOpen,
+  setIsDailyActive,
+  setDailyConfig,
+  setDailyResult,
+  setDailyStats,
+  setIsDailyModalOpen,
+  setDailyModalMode,
+  onDailyRestoredComplete,
   showErrorAlert,
 }: Params) => {
   useEffect(() => {
@@ -265,6 +292,74 @@ export const useGameInitialization = ({
         setIsDuelModalOpen(!alreadyFinished);
         setIsLoading(false);
         return;
+      }
+
+      let resumedActiveDaily = false;
+
+      if (isDailyRoute) {
+        const config = await fetchDailyConfig();
+        if (!config) {
+          setDailyModalMode("error");
+          setIsDailyModalOpen(true);
+        } else {
+          setDailyConfig(config);
+
+          const existingResult = loadDailyResult(config.date);
+          if (existingResult) {
+            setDailyResult(existingResult);
+            setDailyModalMode("complete");
+            setIsDailyModalOpen(true);
+          } else {
+            const progress = loadDailyProgress(config.date);
+            if (progress) {
+              const dailyMaxChallenges = config.hardMode
+                ? HARD_MODE_MAX_CHALLENGES
+                : NORMAL_MODE_MAX_CHALLENGES;
+              const restoredGuesses = progress.guesses ?? [];
+              const wordUpper = config.word.toUpperCase();
+              const won = restoredGuesses.some(
+                (guess) => guess.toUpperCase() === wordUpper
+              );
+              const lost = !won && restoredGuesses.length >= dailyMaxChallenges;
+
+              resumedActiveDaily = true;
+              setIsDailyActive(true);
+              setSolution(wordUpper);
+              setGuesses(restoredGuesses);
+              setCellColors(
+                progress.cellColors as { [key: string]: CharStatus }
+              );
+              setIsGameWon(won);
+              setIsGameLost(lost);
+
+              if (won || lost) {
+                const result: DailyResult = {
+                  date: config.date,
+                  won,
+                  guessCount: restoredGuesses.length,
+                  maxGuesses: dailyMaxChallenges,
+                  wordLength: config.wordLength,
+                  completedAt: Date.now(),
+                };
+                saveDailyResult(result);
+                setDailyResult(result);
+                setDailyStats(recordDailyStats(config.date, won));
+                clearDailyProgress(config.date);
+                setDailyModalMode("complete");
+                setIsDailyModalOpen(true);
+                onDailyRestoredComplete?.(won);
+              }
+            } else {
+              setDailyModalMode("play");
+              setIsDailyModalOpen(true);
+            }
+          }
+        }
+
+        if (resumedActiveDaily) {
+          setIsLoading(false);
+          return;
+        }
       }
 
       const elapsed = Date.now() - loadStart;

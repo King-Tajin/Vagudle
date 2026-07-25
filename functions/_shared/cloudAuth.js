@@ -10,18 +10,24 @@ export const verifyCloudSaveToken = async (request, env) => {
 
   if (env.FIREBASE_PROJECT_ID) {
     try {
-      const { uid } = await verifyFirebaseIdToken(
+      const { uid, payload } = await verifyFirebaseIdToken(
         token,
         env.FIREBASE_PROJECT_ID
       );
-      return { uid };
+      const username = typeof payload.name === "string" ? payload.name : null;
+      return { uid, username };
     } catch {}
   }
 
   if (env.DISCORD_SESSION_KEY) {
     try {
       const payload = await decode(token, env.DISCORD_SESSION_KEY);
-      if (isValidDiscordSession(payload)) return { uid: payload.uid };
+      if (isValidDiscordSession(payload))
+        return {
+          uid: payload.uid,
+          username:
+            typeof payload.username === "string" ? payload.username : null,
+        };
     } catch {}
   }
 

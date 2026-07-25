@@ -6,10 +6,14 @@ import {
   saveStatsToLocalStorage,
 } from "../lib/stats";
 import { getRandomWord } from "../lib/words";
+import { DAILY_PATH } from "../lib/daily";
 import type React from "react";
 
 const handleReturnToNormal = () => {
-  window.location.href = window.location.origin + window.location.pathname;
+  const isOnDailyRoute = window.location.pathname === DAILY_PATH;
+  window.location.href = isOnDailyRoute
+    ? `${window.location.origin}/`
+    : window.location.origin + window.location.pathname;
 };
 
 type Params = {

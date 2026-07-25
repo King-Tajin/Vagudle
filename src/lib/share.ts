@@ -2,6 +2,7 @@ import { getGuessStatuses } from "./statuses";
 import { unicodeSplit } from "./words";
 import { GAME_TITLE } from "../constants/strings";
 import { type GameStats } from "./localStorage";
+import { DAILY_PATH } from "./daily";
 import { UAParser } from "ua-parser-js";
 
 const parser = new UAParser();
@@ -77,7 +78,7 @@ export const shareDailyResult = async (
   const score = lost ? "X" : guesses.length;
   const header = `${GAME_TITLE} Daily #${dailyNumber} — ${score}/${maxChallenges}`;
   const textToShare =
-    `${header}\n${window.location.origin}${window.location.pathname}\n` +
+    `${header}\n${window.location.origin}${DAILY_PATH}\n` +
     generateEmojiGrid(solution, guesses, EMOJI_TILES);
 
   await doShare(

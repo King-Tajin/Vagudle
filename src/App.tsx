@@ -47,8 +47,10 @@ import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 import {
   completeEmailLinkSignIn,
   completeDiscordSignIn,
+  useCloudAuth,
 } from "./hooks/useCloudAuth";
 import { useCloudSync } from "./hooks/useCloudSync";
+import { getIdTokenForCurrentUser } from "./lib/cloudSync";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
@@ -70,6 +72,8 @@ import {
   recordDailyStats,
   loadDailyStats,
   pruneOldDailyEntries,
+  submitDailyResult,
+  DAILY_PATH,
   type DailyConfig,
   type DailyResult,
 } from "./lib/daily";
@@ -94,6 +98,7 @@ const challengeParam = new URLSearchParams(window.location.search).get(
   "challenge"
 );
 const duelParam = new URLSearchParams(window.location.search).get("duel");
+const isDailyRoute = window.location.pathname === DAILY_PATH;
 
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
@@ -125,6 +130,7 @@ function App() {
     isUpToDate,
     resolvePendingCloudSave,
   } = useCloudSync(isMobile);
+  const { user } = useCloudAuth();
 
   useEffect(() => {
     void completeEmailLinkSignIn();
@@ -175,6 +181,10 @@ function App() {
   >("loading");
   const [dailyResult, setDailyResult] = useState<DailyResult | null>(null);
   const [dailyStats, setDailyStats] = useState(() => loadDailyStats());
+  const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
+  const [leaderboardIdToken, setLeaderboardIdToken] = useState<string | null>(
+    null
+  );
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -248,6 +258,13 @@ function App() {
     hasAutoClosedTrayRef.current = false;
     setIsTrayOpen(true);
     setSolution(newSolution);
+  };
+
+  const submitDailyToLeaderboard = async (won: boolean) => {
+    if (!user) return;
+    const idToken = await getIdTokenForCurrentUser();
+    if (!idToken) return;
+    void submitDailyResult(idToken, won);
   };
 
   const announceAchievement = (achievement: Achievement) => {
@@ -441,12 +458,14 @@ function App() {
       setDailyStats(recordDailyStats(dailyConfig.date, won));
       clearDailyProgress(dailyConfig.date);
       setDailyModalMode("complete");
+      void submitDailyToLeaderboard(won);
     },
   });
 
   useGameInitialization({
     challengeParam,
     duelParam,
+    isDailyRoute,
     restoredGameRef,
     duelSubmittedRef,
     setIsLoading,
@@ -469,6 +488,15 @@ function App() {
     setIsDuelModalOpen,
     setIsInfoModalOpen,
     setIsStatsModalOpen,
+    setIsDailyActive,
+    setDailyConfig,
+    setDailyResult,
+    setDailyStats,
+    setIsDailyModalOpen,
+    setDailyModalMode,
+    onDailyRestoredComplete: (won) => {
+      void submitDailyToLeaderboard(won);
+    },
     showErrorAlert,
   });
 
@@ -560,6 +588,9 @@ function App() {
   }, [showErrorAlert]);
 
   const handleOpenDaily = async () => {
+    if (window.location.pathname !== DAILY_PATH) {
+      window.history.pushState({}, "", DAILY_PATH);
+    }
     setIsDailyModalOpen(true);
     setDailyModalMode("loading");
     const config = await fetchDailyConfig();
@@ -616,6 +647,7 @@ function App() {
       setDailyResult(result);
       setDailyStats(recordDailyStats(dailyConfig.date, won));
       clearDailyProgress(dailyConfig.date);
+      void submitDailyToLeaderboard(won);
     }
   };
 
@@ -633,7 +665,21 @@ function App() {
 
   const handleCloseDaily = () => {
     setIsDailyModalOpen(false);
-    if (isDailyMode) handleReturnToNormal();
+    if (isDailyMode) {
+      handleReturnToNormal();
+    } else if (window.location.pathname === DAILY_PATH) {
+      window.history.pushState({}, "", "/");
+    }
+  };
+
+  const handleOpenLeaderboard = async () => {
+    const idToken = await getIdTokenForCurrentUser();
+    setLeaderboardIdToken(idToken ?? null);
+    setIsLeaderboardModalOpen(true);
+  };
+
+  const handleCloseLeaderboard = () => {
+    setIsLeaderboardModalOpen(false);
   };
 
   if (isLoading) return <LoadingScreen />;
@@ -814,6 +860,11 @@ function App() {
           handlePlayDaily={handlePlayDaily}
           handleShareDaily={handleShareDaily}
           handleCloseDaily={handleCloseDaily}
+          isSignedIn={!!user}
+          isLeaderboardModalOpen={isLeaderboardModalOpen}
+          handleOpenLeaderboard={handleOpenLeaderboard}
+          handleCloseLeaderboard={handleCloseLeaderboard}
+          leaderboardIdToken={leaderboardIdToken}
           showGrayCount={showGrayCount}
           setShowGrayCount={setShowGrayCount}
           autoGray={autoGray}

@@ -65,7 +65,8 @@ const getRotationForDate = (dateString) => {
 
 const main = () => {
   const args = parseArgs();
-  const start = args.start || addUtcDays(new Date().toISOString().slice(0, 10), 1);
+  const start =
+    args.start || addUtcDays(new Date().toISOString().slice(0, 10), 1);
   const days = Number(args.days || 1096);
   const outFile = args.out
     ? path.resolve(process.cwd(), args.out)
@@ -102,7 +103,9 @@ const main = () => {
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, lines.join("\n") + "\n", "utf8");
 
-  console.log(`Generated ${lines.length} daily words from ${start} to ${addUtcDays(start, days - 1)}`);
+  console.log(
+    `Generated ${lines.length} daily words from ${start} to ${addUtcDays(start, days - 1)}`
+  );
   console.log(`Written to ${outFile}`);
   console.log("First 5:", preview.slice(0, 5));
   console.log("Last 5:", preview.slice(-5));

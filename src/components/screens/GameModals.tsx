@@ -6,6 +6,7 @@ import {
   ChallengeAcceptModal,
   DuelModal,
   DailyModal,
+  LeaderboardModal,
   AttributionModal,
   AchievementsModal,
 } from "../../lazyComponents";
@@ -48,6 +49,11 @@ type Props = {
   handlePlayDaily: () => void;
   handleShareDaily: () => void;
   handleCloseDaily: () => void;
+  isSignedIn: boolean;
+  isLeaderboardModalOpen: boolean;
+  handleOpenLeaderboard: () => void;
+  handleCloseLeaderboard: () => void;
+  leaderboardIdToken: string | null;
   showGrayCount: boolean;
   setShowGrayCount: (value: boolean) => void;
   autoGray: boolean;
@@ -114,6 +120,11 @@ export const GameModals = ({
   handlePlayDaily,
   handleShareDaily,
   handleCloseDaily,
+  isSignedIn,
+  isLeaderboardModalOpen,
+  handleOpenLeaderboard,
+  handleCloseLeaderboard,
+  leaderboardIdToken,
   showGrayCount,
   setShowGrayCount,
   autoGray,
@@ -269,9 +280,16 @@ export const GameModals = ({
               ? HARD_MODE_MAX_CHALLENGES
               : NORMAL_MODE_MAX_CHALLENGES
           }
+          isSignedIn={isSignedIn}
           onPlay={handlePlayDaily}
           onShare={handleShareDaily}
           onClose={handleCloseDaily}
+          onOpenLeaderboard={handleOpenLeaderboard}
+        />
+        <LeaderboardModal
+          isOpen={isLeaderboardModalOpen}
+          handleClose={handleCloseLeaderboard}
+          idToken={leaderboardIdToken}
         />
         {currentBackground?.attribution && (
           <AttributionModal

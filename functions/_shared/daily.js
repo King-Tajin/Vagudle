@@ -17,3 +17,9 @@ export const getRotationForDate = (dateString) => {
   const dayOfWeek = new Date(`${dateString}T00:00:00Z`).getUTCDay();
   return DAILY_ROTATION[dayOfWeek];
 };
+
+export const getPreviousUtcDateString = (dateString) => {
+  const d = new Date(`${dateString}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString().slice(0, 10);
+};

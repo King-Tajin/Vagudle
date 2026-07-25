@@ -31,6 +31,8 @@ export type DailyStats = {
 const DAILY_ORIGIN_DATE = "2026-08-01";
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
+export const DAILY_PATH = "/daily";
+
 export const getUtcDateString = (date: Date = new Date()): string =>
   date.toISOString().slice(0, 10);
 
@@ -180,6 +182,77 @@ const isDayAfter = (previousDate: string, date: string): boolean => {
   const previous = new Date(`${previousDate}T00:00:00Z`).getTime();
   const current = new Date(`${date}T00:00:00Z`).getTime();
   return current - previous === ONE_DAY_MS;
+};
+
+export type DailyLeaderboardEntry = {
+  username: string;
+  wins: number;
+  losses: number;
+  currentStreak: number;
+  bestStreak: number;
+};
+
+export type DailyLeaderboardSelf = DailyLeaderboardEntry & { rank: number };
+
+export type DailyLeaderboardResponse = {
+  top: DailyLeaderboardEntry[];
+  self: DailyLeaderboardSelf | null;
+};
+
+export type SubmitDailyResultOutcome =
+  "recorded" | "already_submitted" | "no_display_name" | "error";
+
+export const submitDailyResult = async (
+  idToken: string,
+  won: boolean
+): Promise<SubmitDailyResultOutcome> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch("/api/daily-result", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ won }),
+      signal: controller.signal,
+    });
+    if (res.status === 409) return "already_submitted";
+    if (res.status === 422) return "no_display_name";
+    const data = (await res.json()) as { success: boolean };
+    return data.success ? "recorded" : "error";
+  } catch {
+    return "error";
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+export const fetchDailyLeaderboard = async (
+  idToken: string | null
+): Promise<DailyLeaderboardResponse | null> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch("/api/daily-leaderboard", {
+      headers: idToken ? { Authorization: `Bearer ${idToken}` } : {},
+      signal: controller.signal,
+    });
+    const data = (await res.json()) as
+      | {
+          success: true;
+          top: DailyLeaderboardEntry[];
+          self: DailyLeaderboardSelf | null;
+        }
+      | { success: false; error: string };
+    if (!data.success) return null;
+    return { top: data.top, self: data.self };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
 };
 
 export const recordDailyStats = (date: string, won: boolean): DailyStats => {
