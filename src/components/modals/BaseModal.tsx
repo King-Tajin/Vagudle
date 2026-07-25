@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { X } from "lucide-react";
-import CrownIcon from "@/assets/icons/crown.svg?react";
+import HatIcon from "@/assets/icons/propeller-hat.svg?react";
 
 type Props = {
   title: string;
@@ -61,7 +61,7 @@ export const BaseModal = ({
             style={{ background: "rgba(10,0,20,0.97)" }}
           >
             <div className="flex items-center gap-3">
-              <CrownIcon className="w-10 h-10 text-crown-gold" />
+              <HatIcon className="w-10 h-10 text-crown-gold" />
               <DialogTitle
                 as="h3"
                 className="font-pixel text-sm text-crown-amber tracking-widest"

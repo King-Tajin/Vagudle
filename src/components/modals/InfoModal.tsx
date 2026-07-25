@@ -17,7 +17,7 @@ import {
   RotateCcw,
   Trash2,
 } from "lucide-react";
-import CrownIcon from "@/assets/icons/crown.svg?react";
+import HatIcon from "@/assets/icons/propeller-hat.svg?react";
 
 import { ActivityLink } from "../ActivityLink";
 import { Cell } from "../grid/Cell";
@@ -510,7 +510,7 @@ export const InfoModal = ({
                   style={{ background: "rgba(10,0,20,0.97)" }}
                 >
                   <div className="flex items-center gap-3">
-                    <CrownIcon className="w-10 h-10 text-crown-gold" />
+                    <HatIcon className="w-10 h-10 text-crown-gold" />
                     <h3 className="font-pixel text-sm text-crown-amber tracking-widest">
                       INFORMATION
                     </h3>
@@ -849,7 +849,7 @@ export const InfoModal = ({
                       >
                         <div className="shiny-btn-shimmer absolute inset-y-0" />
                         <div className="relative z-10 flex flex-col items-center gap-2 py-5 px-4">
-                          <CrownIcon className="shiny-btn-crown w-10 h-10 text-crown-gold" />
+                          <HatIcon className="shiny-btn-crown w-10 h-10 text-crown-gold" />
                           <span
                             className="font-pixel text-2xl tracking-widest crown-glow"
                             style={{ color: "#FFD700" }}
