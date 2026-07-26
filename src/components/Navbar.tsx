@@ -90,9 +90,13 @@ export const Navbar = ({
 
     let cancelled = false;
     if (typeof document !== "undefined" && document.fonts) {
-      document.fonts.ready.then(() => {
-        if (!cancelled) measureNavbar();
-      });
+      document.fonts.ready
+        .then(() => {
+          if (!cancelled) measureNavbar();
+        })
+        .catch(() => {
+          if (!cancelled) measureNavbar();
+        });
     }
 
     const ro = new ResizeObserver(measureNavbar);
