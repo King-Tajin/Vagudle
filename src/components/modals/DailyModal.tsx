@@ -9,6 +9,7 @@ import {
   RotateCcw,
   Loader,
   Trophy,
+  Eye,
   X,
 } from "lucide-react";
 import type { DailyConfig, DailyStats } from "../../lib/daily";
@@ -23,11 +24,14 @@ type Props = {
   isGameWon: boolean;
   guessCount: number;
   maxGuesses: number;
+  isDailyMode: boolean;
+  canViewGame: boolean;
   onPlay: () => void;
   onShare: () => void;
   onClose: () => void;
   onCloseModal: () => void;
   onOpenLeaderboard: () => void;
+  onViewGame: () => void;
 };
 
 const formatCountdown = (ms: number): string => {
@@ -65,11 +69,14 @@ export const DailyModal = ({
   isGameWon,
   guessCount,
   maxGuesses,
+  isDailyMode,
+  canViewGame,
   onPlay,
   onShare,
   onClose,
   onCloseModal,
   onOpenLeaderboard,
+  onViewGame,
 }: Props) => {
   const countdown = useCountdownToNextDaily();
 
@@ -212,50 +219,107 @@ export const DailyModal = ({
                     )}
                   </div>
 
-                  <p
-                    className="font-code text-xs leading-snug"
-                    style={{ color: "rgba(212,175,55,0.6)" }}
-                  >
-                    ⚠ Once you finish, you're locked out until the next reset. ⚠
-                  </p>
+                  {isDailyMode ? (
+                    <p className="font-code text-xs text-gray-500 leading-snug">
+                      You're already playing today's word. Leave to head back to
+                      a normal game, or close this to keep guessing.
+                    </p>
+                  ) : (
+                    <p
+                      className="font-code text-xs leading-snug"
+                      style={{ color: "rgba(212,175,55,0.6)" }}
+                    >
+                      ⚠ Once you finish, you're locked out until the next reset.
+                      ⚠
+                    </p>
+                  )}
 
-                  <button
-                    type="button"
-                    onClick={onPlay}
-                    className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, #d4af37 0%, #b8860b 100%)",
-                      border: "2px solid #d4af37",
-                      color: "#0a0014",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.filter = "brightness(1.1)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.filter = "brightness(1)";
-                    }}
-                  >
-                    <CalendarDays className="w-3.5 h-3.5" />
-                    PLAY TODAY'S DAILY
-                  </button>
+                  {isDailyMode ? (
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "2px solid rgba(255,255,255,0.12)",
+                        color: "#9ca3af",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.filter = "brightness(1.2)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.filter = "brightness(1)";
+                      }}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      LEAVE DAILY
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={onPlay}
+                      className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, #d4af37 0%, #b8860b 100%)",
+                        border: "2px solid #d4af37",
+                        color: "#0a0014",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.filter = "brightness(1.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.filter = "brightness(1)";
+                      }}
+                    >
+                      <CalendarDays className="w-3.5 h-3.5" />
+                      PLAY TODAY'S DAILY
+                    </button>
+                  )}
                 </>
               )}
 
               {mode === "complete" && (
                 <>
-                  <p
-                    className="font-pixel text-xs tracking-widest text-center"
-                    style={{
-                      color: isGameWon
-                        ? "var(--color-crown-amber, #f59e0b)"
-                        : "var(--color-spice-red, #ef4444)",
-                    }}
-                  >
-                    {isGameWon
-                      ? `SOLVED IN ${guessCount}/${maxGuesses}`
-                      : "NOT SOLVED TODAY"}
-                  </p>
+                  <div className="flex items-center justify-center gap-3">
+                    <p
+                      className="font-pixel text-xs tracking-widest text-center"
+                      style={{
+                        color: isGameWon
+                          ? "var(--color-crown-amber, #f59e0b)"
+                          : "var(--color-spice-red, #ef4444)",
+                      }}
+                    >
+                      {isGameWon
+                        ? `SOLVED IN ${guessCount}/${maxGuesses}`
+                        : "NOT SOLVED TODAY"}
+                    </p>
+                    {canViewGame && (
+                      <button
+                        type="button"
+                        onClick={onViewGame}
+                        className="flex items-center gap-1 py-1 px-2 font-pixel text-[9px] tracking-widest transition-colors shrink-0"
+                        style={{
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid rgba(255,255,255,0.15)",
+                          color: "#9ca3af",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = "#d4af37";
+                          e.currentTarget.style.borderColor =
+                            "rgba(212,175,55,0.4)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = "#9ca3af";
+                          e.currentTarget.style.borderColor =
+                            "rgba(255,255,255,0.15)";
+                        }}
+                      >
+                        <Eye className="w-3 h-3" />
+                        VIEW GAME
+                      </button>
+                    )}
+                  </div>
                   <p className="font-code text-xs text-gray-500 text-center leading-snug">
                     Come back after the reset for a new word.
                   </p>
@@ -323,25 +387,27 @@ export const DailyModal = ({
                     SHARE RESULT
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "2px solid rgba(255,255,255,0.12)",
-                      color: "#9ca3af",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.filter = "brightness(1.2)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.filter = "brightness(1)";
-                    }}
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    RETURN TO NORMAL GAME
-                  </button>
+                  {isDailyMode && (
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "2px solid rgba(255,255,255,0.12)",
+                        color: "#9ca3af",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.filter = "brightness(1.2)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.filter = "brightness(1)";
+                      }}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      RETURN TO NORMAL GAME
+                    </button>
+                  )}
                 </>
               )}
 

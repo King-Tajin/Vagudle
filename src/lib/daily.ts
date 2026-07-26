@@ -13,6 +13,8 @@ export type DailyResult = {
   maxGuesses: number;
   wordLength: number;
   completedAt: number;
+  guesses?: string[];
+  cellColors?: { [key: string]: string };
 };
 
 export type DailyProgress = {
@@ -125,7 +127,7 @@ export const loadDailyResult = (date: string): DailyResult | null => {
   }
 };
 
-const ONE_YEAR_MS = 365 * ONE_DAY_MS;
+const DAILY_RETENTION_MS = 3 * ONE_DAY_MS;
 
 export const pruneOldDailyEntries = (): void => {
   const now = Date.now();
@@ -139,7 +141,7 @@ export const pruneOldDailyEntries = (): void => {
 
     const dateString = key.slice(key.indexOf("_", 6) + 1);
     const parsed = new Date(`${dateString}T00:00:00Z`).getTime();
-    if (Number.isNaN(parsed) || now - parsed > ONE_YEAR_MS) {
+    if (Number.isNaN(parsed) || now - parsed > DAILY_RETENTION_MS) {
       keysToRemove.push(key);
     }
   }

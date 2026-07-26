@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "start": "vite",
+    "start:backend": "pnpm run build && pnpm exec wrangler pages dev --proxy 5173",
     "build": "vite build && node scripts/optimize-dist.mjs",
     "typecheck": "node ./node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
     "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
     "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && react-doctor --verbose",
-    "doctor": "npx react-doctor@latest --verbose"
+    "doctor": "pnpm dlx react-doctor@latest --verbose"
   },
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.5.0",

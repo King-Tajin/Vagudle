@@ -23,6 +23,7 @@ type Params = {
   isChallengeMode: boolean;
   isDuelMode: boolean;
   isDailyMode: boolean;
+  cellColors: { [key: string]: CharStatus };
   revealTimerRef: React.RefObject<ReturnType<typeof setTimeout> | null>;
   setCurrentGuess: (v: string) => void;
   setCurrentRowClass: (v: string) => void;
@@ -42,7 +43,12 @@ type Params = {
   ) => void;
   recordStats: (count: number) => void;
   onGuessSubmit?: (word: string) => void;
-  onDailyComplete?: (won: boolean, guessCount: number) => void;
+  onDailyComplete?: (
+    won: boolean,
+    guessCount: number,
+    finalGuesses: string[],
+    finalCellColors: { [key: string]: CharStatus }
+  ) => void;
 };
 
 type Return = {
@@ -61,6 +67,7 @@ export const useGuessInput = ({
   isChallengeMode,
   isDuelMode,
   isDailyMode,
+  cellColors,
   revealTimerRef,
   setCurrentGuess,
   setCurrentRowClass,
@@ -128,7 +135,8 @@ export const useGuessInput = ({
       guesses.length < maxChallenges &&
       !isGameWon
     ) {
-      setGuesses([...guesses, currentGuess]);
+      const updatedGuesses = [...guesses, currentGuess];
+      setGuesses(updatedGuesses);
       setCurrentGuess("");
 
       if (
@@ -144,24 +152,38 @@ export const useGuessInput = ({
 
       if (winningWord) {
         const winRowIndex = guesses.length;
+        let finalCellColors = cellColors;
         setCellColors((prev) => {
           const next = { ...prev };
           unicodeSplit(currentGuess).forEach((_, c) => {
             next[`${winRowIndex}-${c}`] = "correct";
           });
+          finalCellColors = next;
           return next;
         });
 
         if (!isChallengeMode && !isDuelMode && !isDailyMode)
           recordStats(guesses.length);
-        if (isDailyMode) onDailyComplete?.(true, guesses.length + 1);
+        if (isDailyMode)
+          onDailyComplete?.(
+            true,
+            guesses.length + 1,
+            updatedGuesses,
+            finalCellColors
+          );
         return setIsGameWon(true);
       }
 
       if (guesses.length === maxChallenges - 1) {
         if (!isChallengeMode && !isDuelMode && !isDailyMode)
           recordStats(guesses.length + 1);
-        if (isDailyMode) onDailyComplete?.(false, guesses.length + 1);
+        if (isDailyMode)
+          onDailyComplete?.(
+            false,
+            guesses.length + 1,
+            updatedGuesses,
+            cellColors
+          );
         setIsGameLost(true);
         if (!isChallengeMode && !isDuelMode) {
           showErrorAlert(CORRECT_WORD_MESSAGE(solution), {

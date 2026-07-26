@@ -425,6 +425,7 @@ function App() {
       !isGameWon ||
       isDuelMode ||
       isChallengeMode ||
+      isDailyMode ||
       achievementCheckedRef.current
     )
       return;
@@ -445,6 +446,7 @@ function App() {
     isGameWon,
     isDuelMode,
     isChallengeMode,
+    isDailyMode,
     solution.length,
     guesses,
     hardMode,
@@ -550,6 +552,7 @@ function App() {
     isChallengeMode,
     isDuelMode,
     isDailyMode,
+    cellColors,
     revealTimerRef,
     setCurrentGuess,
     setCurrentRowClass,
@@ -564,7 +567,7 @@ function App() {
     hasAutoClosedTrayRef,
     setIsTrayOpen,
     onGuessSubmit: (word) => {
-      if (isChallengeMode || isDuelMode) return;
+      if (isChallengeMode || isDuelMode || isDailyMode) return;
       const newly = recordGuess(word, solution, guesses);
       if (newly.length > 0) {
         setNewlyUnlockedAchievements((prev) => [...prev, ...newly]);
@@ -572,7 +575,7 @@ function App() {
         newly.forEach(announceAchievement);
       }
     },
-    onDailyComplete: (won, guessCount) => {
+    onDailyComplete: (won, guessCount, finalGuesses, finalCellColors) => {
       if (!dailyConfig) return;
       const result: DailyResult = {
         date: dailyConfig.date,
@@ -581,6 +584,8 @@ function App() {
         maxGuesses: maxChallenges,
         wordLength: dailyConfig.wordLength,
         completedAt: Date.now(),
+        guesses: finalGuesses,
+        cellColors: finalCellColors,
       };
       saveDailyResult(result);
       setDailyResult(result);
@@ -771,6 +776,8 @@ function App() {
         maxGuesses: dailyMaxChallenges,
         wordLength: dailyConfig.wordLength,
         completedAt: Date.now(),
+        guesses: restoredGuesses,
+        cellColors: progress?.cellColors,
       };
       saveDailyResult(result);
       setDailyResult(result);
@@ -802,6 +809,22 @@ function App() {
   };
 
   const handleCloseDailyModal = () => {
+    setIsDailyModalOpen(false);
+  };
+
+  const handleViewDailyGame = () => {
+    if (!dailyConfig || !dailyResult?.guesses) return;
+    dismissAlert();
+    setIsDailyActive(true);
+    setSolution(dailyConfig.word);
+    setGuesses(dailyResult.guesses);
+    setCellColors(
+      (dailyResult.cellColors as { [key: string]: CharStatus }) ?? {}
+    );
+    setCurrentGuess("");
+    setCurrentRowClass("");
+    setIsGameWon(dailyResult.won);
+    setIsGameLost(!dailyResult.won);
     setIsDailyModalOpen(false);
   };
 
@@ -885,10 +908,10 @@ function App() {
           isMobile={isMobile}
         />
       )}
-      {!isChallengeMode && !isDuelMode && (
+      {!isChallengeMode && !isDuelMode && !isDailyMode && (
         <m.div
           className="fixed left-0 z-20 flex items-stretch"
-          style={{ top: "4.5rem" }}
+          style={{ top: "calc(5rem + 6px)" }}
           initial={false}
           animate={{ x: isTrayOpen ? 0 : -ACHIEVEMENT_TRAY_WIDTH }}
           transition={{ type: "spring", stiffness: 280, damping: 28 }}
@@ -1003,6 +1026,7 @@ function App() {
           handleShareDaily={handleShareDaily}
           handleCloseDaily={handleCloseDaily}
           handleCloseDailyModal={handleCloseDailyModal}
+          handleViewDailyGame={handleViewDailyGame}
           isLeaderboardModalOpen={isLeaderboardModalOpen}
           handleOpenLeaderboard={handleOpenLeaderboard}
           handleCloseLeaderboard={handleCloseLeaderboard}

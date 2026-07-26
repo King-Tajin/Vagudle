@@ -51,6 +51,7 @@ type Props = {
   handleShareDaily: () => void;
   handleCloseDaily: () => void;
   handleCloseDailyModal: () => void;
+  handleViewDailyGame: () => void;
   isLeaderboardModalOpen: boolean;
   handleOpenLeaderboard: () => void;
   handleCloseLeaderboard: () => void;
@@ -125,6 +126,7 @@ export const GameModals = ({
   handleShareDaily,
   handleCloseDaily,
   handleCloseDailyModal,
+  handleViewDailyGame,
   isLeaderboardModalOpen,
   handleOpenLeaderboard,
   handleCloseLeaderboard,
@@ -288,11 +290,14 @@ export const GameModals = ({
               ? HARD_MODE_MAX_CHALLENGES
               : NORMAL_MODE_MAX_CHALLENGES)
           }
+          isDailyMode={gameMode === "daily"}
+          canViewGame={!!dailyResult?.guesses}
           onPlay={handlePlayDaily}
           onShare={handleShareDaily}
           onClose={handleCloseDaily}
           onCloseModal={handleCloseDailyModal}
           onOpenLeaderboard={handleOpenLeaderboard}
+          onViewGame={handleViewDailyGame}
         />
         <LeaderboardModal
           isOpen={isLeaderboardModalOpen}

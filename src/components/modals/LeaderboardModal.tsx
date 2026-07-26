@@ -73,7 +73,7 @@ const LeaderboardRow = ({
         <p className="font-pixel text-[8px] text-gray-500 tracking-widest">
           W/L
         </p>
-        <p className="font-code text-xs text-gray-300">
+        <p className="font-code text-base font-semibold text-gray-300">
           {wins}/{losses}
         </p>
       </div>
@@ -81,13 +81,17 @@ const LeaderboardRow = ({
         <p className="font-pixel text-[8px] text-gray-500 tracking-widest">
           STREAK
         </p>
-        <p className="font-code text-xs text-gray-300">{currentStreak}</p>
+        <p className="font-code text-base font-semibold text-gray-300">
+          {currentStreak}
+        </p>
       </div>
       <div className="text-center">
         <p className="font-pixel text-[8px] text-crown-amber tracking-widest">
           BEST
         </p>
-        <p className="font-code text-xs text-crown-amber">{bestStreak}</p>
+        <p className="font-code text-base font-semibold text-crown-amber">
+          {bestStreak}
+        </p>
       </div>
     </div>
   </div>
@@ -396,27 +400,30 @@ export const LeaderboardModal = ({
                   )}
                 </>
               ) : (
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-code text-sm text-gray-200 truncate">
-                    Playing as{" "}
-                    <span className="text-crown-amber">
-                      {usernameStatus.username}
-                    </span>
-                  </p>
-                  {usernameStatus.canChangeAt ? (
-                    <p className="font-pixel text-[9px] text-gray-500 tracking-widest shrink-0">
-                      NEXT CHANGE IN{" "}
-                      {formatCooldown(usernameStatus.canChangeAt).toUpperCase()}
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-code text-sm text-gray-200 truncate">
+                      Playing as{" "}
+                      <span className="text-crown-amber">
+                        {usernameStatus.username}
+                      </span>
                     </p>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => dispatch({ type: "startEditing" })}
-                      className="flex items-center gap-1 font-pixel text-[9px] text-gray-400 hover:text-crown-amber tracking-widest transition-colors shrink-0"
-                    >
-                      <Pencil className="w-3 h-3" />
-                      CHANGE
-                    </button>
+                    {!usernameStatus.canChangeAt && (
+                      <button
+                        type="button"
+                        onClick={() => dispatch({ type: "startEditing" })}
+                        className="flex items-center gap-1 font-pixel text-[9px] text-gray-400 hover:text-crown-amber tracking-widest transition-colors shrink-0"
+                      >
+                        <Pencil className="w-3 h-3" />
+                        CHANGE
+                      </button>
+                    )}
+                  </div>
+                  {usernameStatus.canChangeAt && (
+                    <p className="font-code text-xs text-gray-500 mt-1">
+                      Please wait {formatCooldown(usernameStatus.canChangeAt)}{" "}
+                      before changing your username.
+                    </p>
                   )}
                 </div>
               )}

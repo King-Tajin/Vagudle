@@ -340,6 +340,8 @@ export const useGameInitialization = ({
                   maxGuesses: dailyMaxChallenges,
                   wordLength: config.wordLength,
                   completedAt: Date.now(),
+                  guesses: restoredGuesses,
+                  cellColors: progress.cellColors,
                 };
                 saveDailyResult(result);
                 setDailyResult(result);

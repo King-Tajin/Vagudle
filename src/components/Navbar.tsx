@@ -130,7 +130,7 @@ export const Navbar = ({
   };
 
   const onNewGameClick = () => {
-    if (hasActiveGame) {
+    if (gameMode !== "normal" || hasActiveGame) {
       setShowConfirm(true);
     } else {
       handleNewGame();
@@ -235,18 +235,32 @@ export const Navbar = ({
                 </m.button>
               )}
 
-              {!isActivityMode && gameMode === "normal" && onOpenDaily && (
-                <m.button
-                  onClick={onOpenDaily}
-                  className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label="Daily word"
-                  title="Daily"
-                >
-                  <CalendarDays className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
-                </m.button>
-              )}
+              {!isActivityMode &&
+                (gameMode === "normal" || gameMode === "daily") &&
+                onOpenDaily && (
+                  <m.button
+                    onClick={onOpenDaily}
+                    className={
+                      gameMode === "daily"
+                        ? "shrink-0 p-1.5 sm:p-2 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2"
+                        : "shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                    }
+                    style={
+                      gameMode === "daily"
+                        ? {
+                            borderColor: "rgba(255,215,0,0.9)",
+                            background: "rgba(255,215,0,0.12)",
+                          }
+                        : {}
+                    }
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Daily word"
+                    title="Daily"
+                  >
+                    <CalendarDays className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
+                  </m.button>
+                )}
 
               {!isActivityMode && (
                 <m.button
