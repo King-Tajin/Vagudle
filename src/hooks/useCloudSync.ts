@@ -36,46 +36,50 @@ export const useCloudSync = (isMobile: boolean) => {
 
     let ignore = false;
 
-    void (async () => {
+    const run = async () => {
       const idToken = await getIdTokenForCurrentUser();
-      if (ignore || !idToken) {
-        if (!ignore) {
-          setSyncError("Couldn't verify sign-in for cloud sync.");
-        }
+      if (ignore) return;
+      if (!idToken) {
+        setSyncError("Couldn't verify sign-in for cloud sync.");
         return;
       }
 
       const result = await pullCloudSave(idToken);
-      if (!ignore) {
-        if (result.status === "found") {
-          if (cloudSaveMatchesLocal(result.save, isMobile)) {
-            lastPushedAtRef.current = getLocalMaxUpdatedAt();
-            setCloudUpdatedAt(result.save.updatedAt);
-            setIsUpToDate(true);
-          } else {
-            setPendingCloudSave(result.save);
-            setCloudUpdatedAt(result.save.updatedAt);
-          }
-        } else if (result.status === "not_found") {
-          const updatedAt = await pushCloudSave(
-            idToken,
-            buildCloudSavePayloadFromLocalStorage(isMobile)
-          );
-          if (ignore || !updatedAt) {
-            if (!ignore) {
-              setSyncError("Couldn't create your cloud save.");
-            }
-            return;
-          }
+      if (ignore) return;
+
+      if (result.status === "found") {
+        if (cloudSaveMatchesLocal(result.save, isMobile)) {
           lastPushedAtRef.current = getLocalMaxUpdatedAt();
-          setCloudUpdatedAt(updatedAt);
+          setCloudUpdatedAt(result.save.updatedAt);
           setIsUpToDate(true);
-          setSyncError(null);
         } else {
-          setSyncError("Couldn't reach cloud save.");
+          setPendingCloudSave(result.save);
+          setCloudUpdatedAt(result.save.updatedAt);
         }
+        return;
       }
-    })();
+
+      if (result.status === "not_found") {
+        const updatedAt = await pushCloudSave(
+          idToken,
+          buildCloudSavePayloadFromLocalStorage(isMobile)
+        );
+        if (ignore) return;
+        if (!updatedAt) {
+          setSyncError("Couldn't create your cloud save.");
+          return;
+        }
+        lastPushedAtRef.current = getLocalMaxUpdatedAt();
+        setCloudUpdatedAt(updatedAt);
+        setIsUpToDate(true);
+        setSyncError(null);
+        return;
+      }
+
+      setSyncError("Couldn't reach cloud save.");
+    };
+
+    void run();
 
     return () => {
       ignore = true;
@@ -84,6 +88,8 @@ export const useCloudSync = (isMobile: boolean) => {
 
   useEffect(() => {
     if (!user || pendingCloudSave) return;
+
+    let ignore = false;
 
     const interval = setInterval(() => {
       const latest = getLocalMaxUpdatedAt();
@@ -94,13 +100,17 @@ export const useCloudSync = (isMobile: boolean) => {
       setIsUpToDate(false);
       if (pushTimerRef.current) clearTimeout(pushTimerRef.current);
       pushTimerRef.current = setTimeout(() => {
-        void (async () => {
+        const run = async () => {
           const idToken = await getIdTokenForCurrentUser();
+          if (ignore) return;
           if (!idToken) return;
+
           const updatedAt = await pushCloudSave(
             idToken,
             buildCloudSavePayloadFromLocalStorage(isMobile)
           );
+          if (ignore) return;
+
           if (updatedAt) {
             lastPushedAtRef.current = latest;
             setCloudUpdatedAt(updatedAt);
@@ -109,11 +119,13 @@ export const useCloudSync = (isMobile: boolean) => {
           } else {
             setSyncError("Couldn't sync to cloud.");
           }
-        })();
+        };
+        void run();
       }, PUSH_DEBOUNCE_MS);
     }, POLL_INTERVAL_MS);
 
     return () => {
+      ignore = true;
       clearInterval(interval);
       if (pushTimerRef.current) clearTimeout(pushTimerRef.current);
     };

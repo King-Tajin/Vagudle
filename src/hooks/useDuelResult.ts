@@ -57,12 +57,15 @@ export const useDuelResult = ({
           break;
         }
         if (cancelled) return;
+
         if (ok) {
           setSaveStatus("saved");
           return;
         }
       }
-      if (!cancelled) setSaveStatus("failed");
+
+      if (cancelled) return;
+      setSaveStatus("failed");
     };
 
     void submit();

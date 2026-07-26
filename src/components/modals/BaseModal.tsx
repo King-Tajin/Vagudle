@@ -61,7 +61,7 @@ export const BaseModal = ({
             style={{ background: "rgba(10,0,20,0.97)" }}
           >
             <div className="flex items-center gap-3">
-              <HatIcon className="w-10 h-10 text-crown-gold" />
+              <HatIcon className="w-12 h-12 text-crown-gold" />
               <DialogTitle
                 as="h3"
                 className="font-pixel text-sm text-crown-amber tracking-widest"

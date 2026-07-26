@@ -9,6 +9,7 @@ import {
   RotateCcw,
   Loader,
   Trophy,
+  X,
 } from "lucide-react";
 import type { DailyConfig, DailyStats } from "../../lib/daily";
 import { msUntilNextUtcMidnight } from "../../lib/daily";
@@ -105,14 +106,24 @@ export const DailyModal = ({
             }}
           >
             <div
-              className="flex items-center gap-3 px-5 py-4 border-b-2 border-obsidian-700"
+              className="flex items-center justify-between px-5 py-4 border-b-2 border-obsidian-700"
               style={{ background: "rgba(10,0,20,0.97)" }}
             >
-              <CalendarDays className="w-5 h-5 text-crown-gold" />
-              <h3 className="font-pixel text-sm text-crown-amber tracking-widest">
-                {mode === "complete" ? "DAILY COMPLETE" : "DAILY"}
-                {dailyNumber > 0 ? ` #${dailyNumber}` : ""}
-              </h3>
+              <div className="flex items-center gap-3">
+                <CalendarDays className="w-5 h-5 text-crown-gold" />
+                <h3 className="font-pixel text-sm text-crown-amber tracking-widest">
+                  {mode === "complete" ? "DAILY COMPLETE" : "DAILY"}
+                  {dailyNumber > 0 ? ` #${dailyNumber}` : ""}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
             <div className="px-5 py-5 space-y-4">
@@ -226,26 +237,6 @@ export const DailyModal = ({
                     <CalendarDays className="w-3.5 h-3.5" />
                     PLAY TODAY'S DAILY
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={onOpenLeaderboard}
-                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-colors"
-                    style={{
-                      background: "rgba(212,175,55,0.08)",
-                      border: "2px solid rgba(212,175,55,0.4)",
-                      color: "#d4af37",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.filter = "brightness(1.15)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.filter = "brightness(1)";
-                    }}
-                  >
-                    <Trophy className="w-3.5 h-3.5" />
-                    VIEW LEADERBOARD
-                  </button>
                 </>
               )}
 
@@ -332,26 +323,6 @@ export const DailyModal = ({
 
                   <button
                     type="button"
-                    onClick={onOpenLeaderboard}
-                    className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-colors"
-                    style={{
-                      background: "rgba(212,175,55,0.08)",
-                      border: "2px solid rgba(212,175,55,0.4)",
-                      color: "#d4af37",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.filter = "brightness(1.15)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.filter = "brightness(1)";
-                    }}
-                  >
-                    <Trophy className="w-3.5 h-3.5" />
-                    VIEW LEADERBOARD
-                  </button>
-
-                  <button
-                    type="button"
                     onClick={onClose}
                     className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
                     style={{
@@ -371,6 +342,26 @@ export const DailyModal = ({
                   </button>
                 </>
               )}
+
+              <button
+                type="button"
+                onClick={onOpenLeaderboard}
+                className="w-full flex items-center justify-center gap-2 py-2 font-pixel text-[10px] tracking-wider transition-colors"
+                style={{
+                  background: "rgba(212,175,55,0.08)",
+                  border: "2px solid rgba(212,175,55,0.4)",
+                  color: "#d4af37",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.filter = "brightness(1.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.filter = "brightness(1)";
+                }}
+              >
+                <Trophy className="w-3.5 h-3.5" />
+                VIEW LEADERBOARD
+              </button>
             </div>
           </div>
         </TransitionChild>

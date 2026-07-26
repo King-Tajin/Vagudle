@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { Loader, Trophy, Pencil } from "lucide-react";
+import { Loader, Pencil } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import {
   fetchDailyLeaderboard,
@@ -286,7 +286,6 @@ export const LeaderboardModal = ({
       isOpen={isOpen}
       handleClose={handleClose}
       maxWidthClass="sm:max-w-md"
-      headerExtra={<Trophy className="w-6 h-6 text-crown-gold shrink-0" />}
     >
       {status === "loading" && (
         <div className="flex items-center gap-3 py-8 justify-center">

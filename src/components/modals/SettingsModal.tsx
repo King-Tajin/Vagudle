@@ -461,7 +461,9 @@ export const SettingsModal = ({
               {challengeConfig ? (
                 <div className="py-3 space-y-2">
                   <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none mb-2">
-                    CUSTOM CHALLENGE ACTIVE
+                    {challengeConfig.id === "daily"
+                      ? "DAILY MODE ACTIVE"
+                      : "CUSTOM CHALLENGE ACTIVE"}
                   </p>
                   <div
                     className="p-3 space-y-2"
@@ -493,8 +495,9 @@ export const SettingsModal = ({
                     </div>
                   </div>
                   <p className="font-code text-xs text-gray-500 leading-snug">
-                    Word length and difficulty are set by this challenge. Return
-                    to normal Vagudle to change these.
+                    {challengeConfig.id === "daily"
+                      ? "Word length and difficulty are set by today's daily word and reset at the next daily."
+                      : "Word length and difficulty are set by this challenge. Return to normal Vagudle to change these."}
                   </p>
                 </div>
               ) : (
