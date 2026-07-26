@@ -788,8 +788,8 @@ export const InfoModal = ({
 
                       <div className="flex gap-4 justify-center pt-1 pb-2">
                         <img
-                          src="/icon-transparent.png"
-                          alt="Vagudle icon"
+                          src="/favicon.svg"
+                          alt="Vagudle favicon"
                           width={48}
                           height={48}
                           style={{
