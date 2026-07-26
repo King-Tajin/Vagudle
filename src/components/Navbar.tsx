@@ -1,4 +1,10 @@
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { CalendarDays } from "lucide-react";
 import {
@@ -9,6 +15,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { openExternalLink } from "../lib/discord";
 import type { GameMode } from "../lib/gameMode";
+import MudskipperIcon from "@/assets/icons/mudskipper.svg?react";
 
 const SETTINGS_NUDGE_KEY = "vagudle-settings-nudge-dismissed";
 
@@ -43,29 +50,63 @@ export const Navbar = ({
   const navbarContentRef = useRef<HTMLDivElement>(null);
   const brandTitleRef = useRef<HTMLHeadingElement>(null);
   const brandSubtitleRef = useRef<HTMLParagraphElement>(null);
+  const brandRef = useRef<HTMLDivElement>(null);
+
+  const measureNavbar = useCallback(() => {
+    const content = navbarContentRef.current;
+    const brand = brandRef.current;
+    const title = brandTitleRef.current;
+    const subtitle = brandSubtitleRef.current;
+    if (!content || !brand || !title) return;
+
+    const MAX_TITLE_REM = 1.25;
+    const MIN_TITLE_REM = 0.75;
+    const STEP_REM = 0.01;
+    const SUBTITLE_RATIO = 0.55;
+    const MIN_SUBTITLE_REM = 0.1;
+
+    let size = MAX_TITLE_REM;
+    title.style.fontSize = `${size}rem`;
+    if (subtitle) {
+      subtitle.style.fontSize = `${Math.max(size * SUBTITLE_RATIO, MIN_SUBTITLE_REM)}rem`;
+    }
+
+    while (brand.scrollWidth > brand.clientWidth && size > MIN_TITLE_REM) {
+      size = Math.max(size - STEP_REM, MIN_TITLE_REM);
+      title.style.fontSize = `${size}rem`;
+      if (subtitle) {
+        subtitle.style.fontSize = `${Math.max(size * SUBTITLE_RATIO, MIN_SUBTITLE_REM)}rem`;
+      }
+    }
+  }, []);
+  useLayoutEffect(() => {
+    measureNavbar();
+  }, [measureNavbar, isActivityMode, gameMode, hasActiveGame, onOpenDaily]);
 
   useLayoutEffect(() => {
     const wrapper = headerWrapperRef.current;
     const content = navbarContentRef.current;
-    const title = brandTitleRef.current;
-    if (!wrapper || !content || !title) return;
+    if (!wrapper || !content) return;
 
-    const measure = () => {
-      title.classList.remove("text-sm");
-      title.classList.add("text-xl");
+    let cancelled = false;
+    if (typeof document !== "undefined" && document.fonts) {
+      document.fonts.ready.then(() => {
+        if (!cancelled) measureNavbar();
+      });
+    }
 
-      if (content.scrollWidth > content.clientWidth) {
-        title.classList.remove("text-xl");
-        title.classList.add("text-sm");
-      }
-    };
-
-    measure();
-
-    const ro = new ResizeObserver(measure);
+    const ro = new ResizeObserver(measureNavbar);
     ro.observe(wrapper);
-    return () => ro.disconnect();
-  }, []);
+
+    const mo = new MutationObserver(measureNavbar);
+    mo.observe(content, { childList: true, subtree: true });
+
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      mo.disconnect();
+    };
+  }, [measureNavbar]);
 
   useEffect(() => {
     const dismissed = localStorage.getItem(SETTINGS_NUDGE_KEY);
@@ -113,35 +154,39 @@ export const Navbar = ({
   return (
     <div className="navbar">
       <header className="sticky top-0 z-50 bg-obsidian-900/95 backdrop-blur-sm border-b-4 border-crown-gold">
-        <div ref={headerWrapperRef} className="max-w-7xl mx-auto px-5">
+        <div ref={headerWrapperRef} className="max-w-7xl mx-auto px-3 sm:px-5">
           <div ref={navbarContentRef} className="navbar-content">
             <m.button
               onClick={() => setIsInfoModalOpen(true)}
-              className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+              className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label="How to play"
             >
-              <InformationCircleIcon className="h-6 w-6 text-crown-gold" />
+              <InformationCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
             </m.button>
 
             {isActivityMode ? (
               <m.button
                 type="button"
                 onClick={() => openExternalLink("https://King-Tajin.dev")}
-                className="flex items-center gap-3 select-none"
+                className="flex items-center gap-1.5 sm:gap-3 select-none min-w-0"
                 whileHover={{ scale: 1.02 }}
               >
-                <div>
+                <MudskipperIcon
+                  className="h-12 w-12 sm:h-16 sm:w-16 shrink-0"
+                  aria-hidden="true"
+                />
+                <div ref={brandRef} className="min-w-0">
                   <h1
                     ref={brandTitleRef}
-                    className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
+                    className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
                     Yellow Skipper
                   </h1>
                   <p
                     ref={brandSubtitleRef}
-                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap text-center"
+                    className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
                     Games
                   </p>
@@ -152,19 +197,23 @@ export const Navbar = ({
                 href="https://King-Tajin.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 select-none"
+                className="flex items-center gap-1.5 sm:gap-3 select-none min-w-0"
                 whileHover={{ scale: 1.02 }}
               >
-                <div>
+                <MudskipperIcon
+                  className="h-12 w-12 sm:h-16 sm:w-16 shrink-0"
+                  aria-hidden="true"
+                />
+                <div ref={brandRef} className="min-w-0">
                   <h1
                     ref={brandTitleRef}
-                    className="font-royal text-xl font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
+                    className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
                     Yellow Skipper
                   </h1>
                   <p
                     ref={brandSubtitleRef}
-                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap text-center"
+                    className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
                     Games
                   </p>
@@ -177,48 +226,48 @@ export const Navbar = ({
                 <m.button
                   title={leaveLabel}
                   onClick={onNewGameClick}
-                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95, rotate: 180 }}
                   aria-label={leaveLabel}
                 >
-                  <ArrowPathIcon className="h-6 w-6 text-crown-gold" />
+                  <ArrowPathIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
                 </m.button>
               )}
 
               {!isActivityMode && gameMode === "normal" && onOpenDaily && (
                 <m.button
                   onClick={onOpenDaily}
-                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Daily word"
                   title="Daily"
                 >
-                  <CalendarDays className="h-6 w-6 text-crown-gold" />
+                  <CalendarDays className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
                 </m.button>
               )}
 
               {!isActivityMode && (
                 <m.button
                   onClick={() => setIsStatsModalOpen(true)}
-                  className="p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                  className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Statistics"
                 >
-                  <ChartBarIcon className="h-6 w-6 text-crown-gold" />
+                  <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
                 </m.button>
               )}
 
-              <div className="relative">
+              <div className="relative shrink-0">
                 <m.button
                   ref={settingsRef}
                   onClick={onSettingsClick}
                   className={
                     showNudge
-                      ? "p-2 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2"
-                      : "p-2 hover:bg-obsidian-700 rounded transition-colors min-h-11 min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                      ? "p-1.5 sm:p-2 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2"
+                      : "p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                   }
                   style={
                     showNudge
@@ -239,7 +288,7 @@ export const Navbar = ({
                       : {}
                   }
                 >
-                  <Cog6ToothIcon className="h-6 w-6 text-crown-gold" />
+                  <Cog6ToothIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
                 </m.button>
 
                 <AnimatePresence>
