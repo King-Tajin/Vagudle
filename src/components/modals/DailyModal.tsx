@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Transition, TransitionChild } from "@headlessui/react";
 import {
   CalendarDays,
+  CalendarClock,
   Hash,
   BookOpen,
   Flame,
@@ -32,6 +33,7 @@ type Props = {
   onCloseModal: () => void;
   onOpenLeaderboard: () => void;
   onViewGame: () => void;
+  onOpenSchedule: () => void;
 };
 
 const formatCountdown = (ms: number): string => {
@@ -77,6 +79,7 @@ export const DailyModal = ({
   onCloseModal,
   onOpenLeaderboard,
   onViewGame,
+  onOpenSchedule,
 }: Props) => {
   const countdown = useCountdownToNextDaily();
 
@@ -125,14 +128,25 @@ export const DailyModal = ({
                   {dailyNumber > 0 ? ` #${dailyNumber}` : ""}
                 </h3>
               </div>
-              <button
-                type="button"
-                onClick={onCloseModal}
-                className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
-                aria-label="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onOpenSchedule}
+                  className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
+                  aria-label="Daily schedule"
+                  title="Daily schedule"
+                >
+                  <CalendarClock className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={onCloseModal}
+                  className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <div className="px-5 py-5 space-y-4">
@@ -294,7 +308,7 @@ export const DailyModal = ({
                         ? `SOLVED IN ${guessCount}/${maxGuesses}`
                         : "NOT SOLVED TODAY"}
                     </p>
-                    {canViewGame && (
+                    {canViewGame && !isDailyMode && (
                       <button
                         type="button"
                         onClick={onViewGame}

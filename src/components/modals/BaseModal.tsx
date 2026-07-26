@@ -15,6 +15,7 @@ type Props = {
   handleClose: () => void;
   maxWidthClass?: string;
   headerExtra?: React.ReactNode;
+  zIndexClass?: string;
 };
 
 export const BaseModal = ({
@@ -24,12 +25,13 @@ export const BaseModal = ({
   handleClose,
   maxWidthClass = "sm:max-w-sm",
   headerExtra,
+  zIndexClass = "z-60",
 }: Props) => {
   return (
     <Dialog
       open={isOpen}
       onClose={handleClose}
-      className="fixed z-60 inset-0 overflow-y-auto"
+      className={`fixed ${zIndexClass} inset-0 overflow-y-auto`}
     >
       <div className="flex items-center justify-center min-h-screen py-10 px-4 text-center sm:block sm:p-0">
         <DialogBackdrop

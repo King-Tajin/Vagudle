@@ -6,6 +6,7 @@ import {
   ChallengeAcceptModal,
   DuelModal,
   DailyModal,
+  DailyScheduleModal,
   LeaderboardModal,
   AttributionModal,
   AchievementsModal,
@@ -52,6 +53,9 @@ type Props = {
   handleCloseDaily: () => void;
   handleCloseDailyModal: () => void;
   handleViewDailyGame: () => void;
+  isDailyScheduleModalOpen: boolean;
+  handleOpenDailySchedule: () => void;
+  handleCloseDailySchedule: () => void;
   isLeaderboardModalOpen: boolean;
   handleOpenLeaderboard: () => void;
   handleCloseLeaderboard: () => void;
@@ -127,6 +131,9 @@ export const GameModals = ({
   handleCloseDaily,
   handleCloseDailyModal,
   handleViewDailyGame,
+  isDailyScheduleModalOpen,
+  handleOpenDailySchedule,
+  handleCloseDailySchedule,
   isLeaderboardModalOpen,
   handleOpenLeaderboard,
   handleCloseLeaderboard,
@@ -298,6 +305,11 @@ export const GameModals = ({
           onCloseModal={handleCloseDailyModal}
           onOpenLeaderboard={handleOpenLeaderboard}
           onViewGame={handleViewDailyGame}
+          onOpenSchedule={handleOpenDailySchedule}
+        />
+        <DailyScheduleModal
+          isOpen={isDailyScheduleModalOpen}
+          handleClose={handleCloseDailySchedule}
         />
         <LeaderboardModal
           isOpen={isLeaderboardModalOpen}

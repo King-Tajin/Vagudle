@@ -45,6 +45,11 @@ export const LeaderboardModal = lazy(() =>
     default: m.LeaderboardModal,
   }))
 );
+export const DailyScheduleModal = lazy(() =>
+  import("./components/modals/DailyScheduleModal").then((m) => ({
+    default: m.DailyScheduleModal,
+  }))
+);
 export const WinCelebration = lazy(() =>
   import("./components/screens/WinCelebration").then((m) => ({
     default: m.WinCelebration,

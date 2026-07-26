@@ -258,6 +258,39 @@ export const fetchDailyLeaderboard = async (
   }
 };
 
+export type DailyRotationEntry = { wordLength: number; hardMode: boolean };
+
+export const DAILY_SCHEDULE: DailyRotationEntry[] = [
+  { wordLength: 4, hardMode: false },
+  { wordLength: 4, hardMode: true },
+  { wordLength: 5, hardMode: false },
+  { wordLength: 5, hardMode: true },
+  { wordLength: 4, hardMode: false },
+  { wordLength: 5, hardMode: true },
+  { wordLength: 4, hardMode: true },
+];
+
+export const WEEKDAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+export const getLocalDailyUnlockTime = (date: Date = new Date()): string => {
+  const utcMidnight = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+  );
+  return utcMidnight.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+};
+
 export const recordDailyStats = (date: string, won: boolean): DailyStats => {
   const stats = loadDailyStats();
   if (stats.lastCompletedDate === date) return stats;

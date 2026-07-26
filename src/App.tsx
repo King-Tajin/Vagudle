@@ -307,6 +307,8 @@ function App() {
   >("loading");
   const [dailyResult, setDailyResult] = useState<DailyResult | null>(null);
   const [dailyStats, setDailyStats] = useState(() => loadDailyStats());
+  const [isDailyScheduleModalOpen, setIsDailyScheduleModalOpen] =
+    useState(false);
   const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
   const [leaderboardIdToken, setLeaderboardIdToken] = useState<string | null>(
     null
@@ -812,9 +814,18 @@ function App() {
     setIsDailyModalOpen(false);
   };
 
+  const handleOpenDailySchedule = () => {
+    setIsDailyScheduleModalOpen(true);
+  };
+
+  const handleCloseDailySchedule = () => {
+    setIsDailyScheduleModalOpen(false);
+  };
+
   const handleViewDailyGame = () => {
     if (!dailyConfig || !dailyResult?.guesses) return;
     dismissAlert();
+    restoredGameRef.current = true;
     setIsDailyActive(true);
     setSolution(dailyConfig.word);
     setGuesses(dailyResult.guesses);
@@ -1027,6 +1038,9 @@ function App() {
           handleCloseDaily={handleCloseDaily}
           handleCloseDailyModal={handleCloseDailyModal}
           handleViewDailyGame={handleViewDailyGame}
+          isDailyScheduleModalOpen={isDailyScheduleModalOpen}
+          handleOpenDailySchedule={handleOpenDailySchedule}
+          handleCloseDailySchedule={handleCloseDailySchedule}
           isLeaderboardModalOpen={isLeaderboardModalOpen}
           handleOpenLeaderboard={handleOpenLeaderboard}
           handleCloseLeaderboard={handleCloseLeaderboard}
