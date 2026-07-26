@@ -14,6 +14,7 @@ import {
   type GameStats,
 } from "../lib/localStorage";
 import { loadStats } from "../lib/stats";
+import { dailyStatsKey, loadDailyStats, type DailyStats } from "../lib/daily";
 import {
   BG_KEY,
   ATTRIBUTION_HIDDEN_KEY,
@@ -59,6 +60,7 @@ type Params = {
   setExtraEffects: (v: boolean) => void;
   setStats: (v: GameStats) => void;
   setHardStats: (v: GameStats) => void;
+  setDailyStats: (v: DailyStats) => void;
   setBackgroundId: (v: BackgroundId) => void;
   setHiddenAttributionIds: (v: BackgroundId[]) => void;
 };
@@ -106,6 +108,7 @@ export const useCrossTabSync = ({
   setExtraEffects,
   setStats,
   setHardStats,
+  setDailyStats,
   setBackgroundId,
   setHiddenAttributionIds,
 }: Params) => {
@@ -131,6 +134,7 @@ export const useCrossTabSync = ({
 
   useStorageSync(normalStatKey, () => setStats(loadStats(false)));
   useStorageSync(hardStatKey, () => setHardStats(loadStats(true)));
+  useStorageSync(dailyStatsKey, () => setDailyStats(loadDailyStats()));
 
   useStorageSync(BG_KEY, () => setBackgroundId(loadBackgroundId(isMobile)));
   useStorageSync(ATTRIBUTION_HIDDEN_KEY, () =>

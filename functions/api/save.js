@@ -60,6 +60,7 @@ export async function onRequestPost(context) {
       wordConnoisseur,
       statsNormal,
       statsHard,
+      dailyStats,
       settings,
       backgroundId,
     } = body;
@@ -69,6 +70,7 @@ export async function onRequestPost(context) {
       !isJsonString(wordConnoisseur) ||
       !isJsonString(statsNormal) ||
       !isJsonString(statsHard) ||
+      !isJsonString(dailyStats) ||
       !isJsonString(settings) ||
       !isValidBackgroundId(backgroundId)
     )
@@ -80,14 +82,15 @@ export async function onRequestPost(context) {
     const row = await db
       .prepare(
         `INSERT INTO player_saves
-           (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, settings, background_id, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+           (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, daily_stats, settings, background_id, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(uid) DO UPDATE SET
            discord_id = excluded.discord_id,
            achievements = excluded.achievements,
            word_connoisseur = excluded.word_connoisseur,
            stats_normal = excluded.stats_normal,
            stats_hard = excluded.stats_hard,
+           daily_stats = excluded.daily_stats,
            settings = excluded.settings,
            background_id = excluded.background_id,
            updated_at = CASE
@@ -95,6 +98,7 @@ export async function onRequestPost(context) {
               AND player_saves.word_connoisseur IS excluded.word_connoisseur
               AND player_saves.stats_normal IS excluded.stats_normal
               AND player_saves.stats_hard IS excluded.stats_hard
+              AND player_saves.daily_stats IS excluded.daily_stats
               AND player_saves.settings IS excluded.settings
               AND player_saves.background_id IS excluded.background_id
              THEN player_saves.updated_at
@@ -109,6 +113,7 @@ export async function onRequestPost(context) {
         wordConnoisseur,
         statsNormal,
         statsHard,
+        dailyStats,
         settings,
         backgroundId ?? null,
         updatedAt

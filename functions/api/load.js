@@ -40,6 +40,7 @@ export async function onRequestGet(context) {
         wordConnoisseur: row.word_connoisseur,
         statsNormal: row.stats_normal,
         statsHard: row.stats_hard,
+        dailyStats: row.daily_stats,
         settings: row.settings,
         backgroundId: row.background_id,
         updatedAt: row.updated_at,

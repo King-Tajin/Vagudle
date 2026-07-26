@@ -33,12 +33,19 @@ import {
   type BackgroundId,
 } from "./backgrounds";
 import { getRandomWord } from "./words";
+import {
+  loadDailyStats,
+  saveDailyStats,
+  dailyStatsKey,
+  type DailyStats,
+} from "./daily";
 
 export type CloudSavePayload = {
   achievements: string;
   wordConnoisseur: string;
   statsNormal: string;
   statsHard: string;
+  dailyStats: string;
   settings: string;
   backgroundId: string | null;
 };
@@ -81,6 +88,7 @@ export const buildCloudSavePayloadFromLocalStorage = (
   wordConnoisseur: JSON.stringify(loadWordConnoisseurList()),
   statsNormal: JSON.stringify(loadStatsFromLocalStorage(false) ?? emptyStats),
   statsHard: JSON.stringify(loadStatsFromLocalStorage(true) ?? emptyStats),
+  dailyStats: JSON.stringify(loadDailyStats()),
   settings: JSON.stringify(loadSettingsFromLocalStorage()),
   backgroundId: loadBackgroundId(isMobile),
 });
@@ -95,6 +103,7 @@ export const cloudSaveMatchesLocal = (
     cloudSave.wordConnoisseur === local.wordConnoisseur &&
     cloudSave.statsNormal === local.statsNormal &&
     cloudSave.statsHard === local.statsHard &&
+    cloudSave.dailyStats === local.dailyStats &&
     cloudSave.settings === local.settings &&
     (cloudSave.backgroundId ?? null) === (local.backgroundId ?? null)
   );
@@ -165,6 +174,10 @@ export const resolveCloudSaveConflict = async (
         true
       );
       dispatchStorageSync(hardStatKey);
+    } catch {}
+    try {
+      saveDailyStats(JSON.parse(cloudSave.dailyStats) as DailyStats);
+      dispatchStorageSync(dailyStatsKey);
     } catch {}
     try {
       const cloudSettings = JSON.parse(cloudSave.settings) as StoredSettings;

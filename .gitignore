@@ -21,3 +21,4 @@ yarn-error.log*
 /.wrangler/
 .eslintcache
 /--cache-location/
+/worker-configuration.d.ts

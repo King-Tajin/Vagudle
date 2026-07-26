@@ -8,6 +8,7 @@ import {
   loadStatsFromLocalStorage,
   type GameStats,
 } from "../../lib/localStorage";
+import { loadDailyStats, type DailyStats } from "../../lib/daily";
 import {
   getLocalMaxUpdatedAt,
   resolveCloudSaveConflict,
@@ -33,11 +34,30 @@ const emptyStats: GameStats = {
   successRate: 0,
 };
 
+const emptyDailyStats: DailyStats = {
+  currentStreak: 0,
+  bestStreak: 0,
+  totalPlayed: 0,
+  totalWon: 0,
+  lastCompletedDate: null,
+};
+
 const parseStats = (value: string): GameStats => {
   try {
     return JSON.parse(value) as GameStats;
   } catch {
     return emptyStats;
+  }
+};
+
+const parseDailyStats = (value: string): DailyStats => {
+  try {
+    return {
+      ...emptyDailyStats,
+      ...(JSON.parse(value) as Partial<DailyStats>),
+    };
+  } catch {
+    return emptyDailyStats;
   }
 };
 
@@ -52,12 +72,14 @@ const SideSummary = ({
   unlockedCount,
   statsNormal,
   statsHard,
+  dailyStats,
 }: {
   label: string;
   updatedAt: string | null;
   unlockedCount: number;
   statsNormal: GameStats;
   statsHard: GameStats;
+  dailyStats: DailyStats;
 }) => (
   <div className="p-3 space-y-2" style={sideColumnStyle}>
     <p className="font-pixel text-xs text-crown-amber tracking-widest">
@@ -76,6 +98,10 @@ const SideSummary = ({
         Hard: {statsHard.totalGames - statsHard.gamesFailed}/
         {statsHard.totalGames} won
       </p>
+      <p>
+        Daily: {dailyStats.totalWon}/{dailyStats.totalPlayed} won, streak{" "}
+        {dailyStats.currentStreak}
+      </p>
     </div>
   </div>
 );
@@ -91,6 +117,7 @@ export const CloudSaveConflictModal = ({
   const localAchievements = loadAchievementProgress();
   const localStatsNormal = loadStatsFromLocalStorage(false) ?? emptyStats;
   const localStatsHard = loadStatsFromLocalStorage(true) ?? emptyStats;
+  const localDailyStats = loadDailyStats();
 
   const cloudAchievementIds: string[] = (() => {
     try {
@@ -134,6 +161,7 @@ export const CloudSaveConflictModal = ({
           }
           statsNormal={localStatsNormal}
           statsHard={localStatsHard}
+          dailyStats={localDailyStats}
         />
         <SideSummary
           label="CLOUD SAVE"
@@ -141,6 +169,7 @@ export const CloudSaveConflictModal = ({
           unlockedCount={getEffectiveUnlockedIds(cloudAchievementIds).length}
           statsNormal={parseStats(cloudSave.statsNormal)}
           statsHard={parseStats(cloudSave.statsHard)}
+          dailyStats={parseDailyStats(cloudSave.dailyStats)}
         />
       </div>
       {error && (

@@ -735,6 +735,7 @@ function App() {
     setExtraEffects,
     setStats,
     setHardStats,
+    setDailyStats,
     setBackgroundId,
     setHiddenAttributionIds,
   });

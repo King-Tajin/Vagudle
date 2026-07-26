@@ -1,3 +1,5 @@
+import { stampUpdatedAt, cloudSyncKey } from "./localStorage";
+
 export type DailyConfig = {
   date: string;
   word: string;
@@ -186,9 +188,10 @@ export const loadDailyStats = (): DailyStats => {
   }
 };
 
-const saveDailyStats = (stats: DailyStats): void => {
+export const saveDailyStats = (stats: DailyStats): void => {
   try {
     localStorage.setItem(dailyStatsKey, JSON.stringify(stats));
+    stampUpdatedAt(cloudSyncKey);
   } catch {}
 };
 
