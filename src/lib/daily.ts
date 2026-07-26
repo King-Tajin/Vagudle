@@ -33,15 +33,27 @@ export type DailyStats = {
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
+export const DAILY_RELEASE_HOUR_UTC = 8;
+
 export const DAILY_PATH = "/daily";
 
-export const msUntilNextUtcMidnight = (date: Date = new Date()): number => {
-  const next = Date.UTC(
+export const msUntilNextDailyRelease = (date: Date = new Date()): number => {
+  const todayRelease = Date.UTC(
     date.getUTCFullYear(),
     date.getUTCMonth(),
-    date.getUTCDate() + 1
+    date.getUTCDate(),
+    DAILY_RELEASE_HOUR_UTC
   );
+  const next =
+    date.getTime() < todayRelease ? todayRelease : todayRelease + ONE_DAY_MS;
   return next - date.getTime();
+};
+
+export const getCurrentDailyWeekday = (date: Date = new Date()): number => {
+  const shifted = new Date(
+    date.getTime() - DAILY_RELEASE_HOUR_UTC * 60 * 60 * 1000
+  );
+  return shifted.getUTCDay();
 };
 
 export const getDailyNumber = (date: string, originDate: string): number => {
@@ -281,10 +293,15 @@ export const WEEKDAY_NAMES = [
 ];
 
 export const getLocalDailyUnlockTime = (date: Date = new Date()): string => {
-  const utcMidnight = new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+  const releaseTime = new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      DAILY_RELEASE_HOUR_UTC
+    )
   );
-  return utcMidnight.toLocaleTimeString(undefined, {
+  return releaseTime.toLocaleTimeString(undefined, {
     hour: "numeric",
     minute: "2-digit",
     timeZoneName: "short",

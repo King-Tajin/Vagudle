@@ -13,6 +13,8 @@ type Props = {
   isDailyMode: boolean;
   dailyConfig: DailyConfig | null;
   dailyNumber: number;
+  isSignedIn: boolean;
+  hasUsername: boolean | null;
 };
 
 export const GameBanner = ({
@@ -23,6 +25,8 @@ export const GameBanner = ({
   isDailyMode,
   dailyConfig,
   dailyNumber,
+  isSignedIn,
+  hasUsername,
 }: Props) => (
   <>
     {isChallengeMode && challengeConfig && (
@@ -131,6 +135,17 @@ export const GameBanner = ({
             <CalendarDays className="w-3 h-3 text-crown-amber" />1 attempt/day
           </span>
         </div>
+        {(!isSignedIn || hasUsername === false) && (
+          <p
+            className="mt-2 font-code text-[11px] text-center"
+            style={{ color: "rgba(212,175,55,0.75)" }}
+          >
+            ⚠{" "}
+            {isSignedIn
+              ? "Set a username to save to the leaderboard"
+              : "Sign in to save to the leaderboard"}
+          </p>
+        )}
       </m.div>
     )}
   </>

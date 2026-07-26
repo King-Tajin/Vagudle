@@ -4,6 +4,7 @@ import {
   DAILY_SCHEDULE,
   WEEKDAY_NAMES,
   getLocalDailyUnlockTime,
+  getCurrentDailyWeekday,
 } from "../../lib/daily";
 
 type Props = {
@@ -12,7 +13,7 @@ type Props = {
 };
 
 export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
-  const today = new Date().getUTCDay();
+  const today = getCurrentDailyWeekday();
   const localUnlockTime = getLocalDailyUnlockTime();
 
   return (

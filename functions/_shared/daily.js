@@ -10,8 +10,14 @@ export const DAILY_ROTATION = [
   { length: 4, hardMode: true },
 ];
 
-export const getUtcDateString = (date = new Date()) =>
-  date.toISOString().slice(0, 10);
+export const DAILY_RELEASE_HOUR_UTC = 8;
+
+export const getUtcDateString = (date = new Date()) => {
+  const shifted = new Date(
+    date.getTime() - DAILY_RELEASE_HOUR_UTC * 60 * 60 * 1000
+  );
+  return shifted.toISOString().slice(0, 10);
+};
 
 export const getRotationForDate = (dateString) => {
   const dayOfWeek = new Date(`${dateString}T00:00:00Z`).getUTCDay();

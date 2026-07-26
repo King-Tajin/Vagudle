@@ -72,7 +72,7 @@ type Params = {
   setDailyStats: (v: DailyStats) => void;
   setIsDailyModalOpen: (v: boolean) => void;
   setDailyModalMode: (v: "loading" | "error" | "play" | "complete") => void;
-  onDailyRestoredComplete?: (won: boolean) => void;
+  onDailyRestoredComplete?: (date: string, won: boolean) => void;
   showErrorAlert: (message: string, options?: { persist?: boolean }) => void;
 };
 
@@ -349,7 +349,7 @@ export const useGameInitialization = ({
                 clearDailyProgress(config.date);
                 setDailyModalMode("complete");
                 setIsDailyModalOpen(true);
-                onDailyRestoredComplete?.(won);
+                onDailyRestoredComplete?.(config.date, won);
               }
             } else {
               setDailyModalMode("play");

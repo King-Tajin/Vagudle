@@ -59,6 +59,7 @@ import {
 } from "./hooks/useCloudAuth";
 import { useCloudSync } from "./hooks/useCloudSync";
 import { getIdTokenForCurrentUser } from "./lib/cloudSync";
+import { fetchUsernameStatus } from "./lib/username";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
@@ -313,6 +314,30 @@ function App() {
   const [leaderboardIdToken, setLeaderboardIdToken] = useState<string | null>(
     null
   );
+  const [hasUsername, setHasUsername] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setHasUsername(null);
+      return;
+    }
+    const checkUsername = async () => {
+      const idToken = await getIdTokenForCurrentUser();
+      if (!idToken) {
+        if (!cancelled) setHasUsername(null);
+        return;
+      }
+      const status = await fetchUsernameStatus(idToken);
+      if (!cancelled) setHasUsername(status ? !!status.username : null);
+    };
+    void checkUsername();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -389,12 +414,36 @@ function App() {
     setSolution(newSolution);
   };
 
-  const submitDailyToLeaderboard = async (won: boolean) => {
+  const dailyLeaderboardSubmittedForRef = useRef<string | null>(null);
+
+  const submitDailyToLeaderboard = async (date: string, won: boolean) => {
     if (!user) return;
+    if (dailyLeaderboardSubmittedForRef.current === date) return;
     const idToken = await getIdTokenForCurrentUser();
     if (!idToken) return;
+    dailyLeaderboardSubmittedForRef.current = date;
     void submitDailyResult(idToken, won);
   };
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    const run = async () => {
+      const config = dailyConfig ?? (await fetchDailyConfig());
+      if (!config || cancelled) return;
+      const pendingResult =
+        dailyResult?.date === config.date
+          ? dailyResult
+          : loadDailyResult(config.date);
+      if (!pendingResult) return;
+      void submitDailyToLeaderboard(config.date, pendingResult.won);
+    };
+    void run();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
 
   const announceAchievement = (achievement: Achievement) => {
     const bg = BACKGROUNDS.find(
@@ -594,7 +643,7 @@ function App() {
       setDailyStats(recordDailyStats(dailyConfig.date, won));
       clearDailyProgress(dailyConfig.date);
       setDailyModalMode("complete");
-      void submitDailyToLeaderboard(won);
+      void submitDailyToLeaderboard(dailyConfig.date, won);
     },
   });
 
@@ -630,8 +679,8 @@ function App() {
     setDailyStats,
     setIsDailyModalOpen,
     setDailyModalMode,
-    onDailyRestoredComplete: (won) => {
-      void submitDailyToLeaderboard(won);
+    onDailyRestoredComplete: (date, won) => {
+      void submitDailyToLeaderboard(date, won);
     },
     showErrorAlert,
   });
@@ -785,7 +834,7 @@ function App() {
       setDailyResult(result);
       setDailyStats(recordDailyStats(dailyConfig.date, won));
       clearDailyProgress(dailyConfig.date);
-      void submitDailyToLeaderboard(won);
+      void submitDailyToLeaderboard(dailyConfig.date, won);
     }
   };
 
@@ -980,6 +1029,8 @@ function App() {
             isDailyMode={isDailyMode}
             dailyConfig={dailyConfig}
             dailyNumber={dailyNumber}
+            isSignedIn={!!user}
+            hasUsername={hasUsername}
           />
 
           <Grid

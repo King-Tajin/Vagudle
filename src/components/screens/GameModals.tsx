@@ -289,16 +289,20 @@ export const GameModals = ({
           config={dailyConfig}
           dailyNumber={dailyNumber}
           dailyStats={dailyStats}
-          isGameWon={dailyResult?.won ?? isGameWon}
-          guessCount={dailyResult?.guessCount ?? guesses.length}
-          maxGuesses={
-            dailyResult?.maxGuesses ??
-            (dailyConfig?.hardMode
-              ? HARD_MODE_MAX_CHALLENGES
-              : NORMAL_MODE_MAX_CHALLENGES)
+          result={{
+            won: dailyResult?.won ?? isGameWon,
+            guessCount: dailyResult?.guessCount ?? guesses.length,
+            maxGuesses:
+              dailyResult?.maxGuesses ??
+              (dailyConfig?.hardMode
+                ? HARD_MODE_MAX_CHALLENGES
+                : NORMAL_MODE_MAX_CHALLENGES),
+          }}
+          origin={
+            gameMode === "daily"
+              ? { type: "daily" }
+              : { type: "normal", canViewGame: !!dailyResult?.guesses }
           }
-          isDailyMode={gameMode === "daily"}
-          canViewGame={!!dailyResult?.guesses}
           onPlay={handlePlayDaily}
           onShare={handleShareDaily}
           onClose={handleCloseDaily}
