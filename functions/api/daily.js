@@ -21,7 +21,10 @@ export async function onRequestGet(context) {
 
     const row = await db
       .prepare(
-        "SELECT word, word_length, hard_mode FROM daily_words WHERE date = ?"
+        `SELECT word, word_length, hard_mode,
+                (SELECT MIN(date) FROM daily_words) AS origin_date
+         FROM daily_words
+         WHERE date = ?`
       )
       .bind(date)
       .first();
@@ -64,6 +67,7 @@ export async function onRequestGet(context) {
       word: row.word.toUpperCase(),
       wordLength: row.word_length,
       hardMode: Boolean(row.hard_mode),
+      originDate: row.origin_date,
     });
   } catch (error) {
     console.error("Daily word fetch error:", error);

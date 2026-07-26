@@ -416,7 +416,9 @@ function App() {
   const isChallengeMode = gameMode === "challenge";
   const isDuelMode = gameMode === "duel";
   const isDailyMode = gameMode === "daily";
-  const dailyNumber = dailyConfig ? getDailyNumber(dailyConfig.date) : 0;
+  const dailyNumber = dailyConfig
+    ? getDailyNumber(dailyConfig.date, dailyConfig.originDate)
+    : 0;
 
   useEffect(() => {
     if (
@@ -799,6 +801,10 @@ function App() {
     }
   };
 
+  const handleCloseDailyModal = () => {
+    setIsDailyModalOpen(false);
+  };
+
   const handleOpenLeaderboard = async () => {
     const idToken = await getIdTokenForCurrentUser();
     setLeaderboardIdToken(idToken ?? null);
@@ -996,6 +1002,7 @@ function App() {
           handlePlayDaily={handlePlayDaily}
           handleShareDaily={handleShareDaily}
           handleCloseDaily={handleCloseDaily}
+          handleCloseDailyModal={handleCloseDailyModal}
           isLeaderboardModalOpen={isLeaderboardModalOpen}
           handleOpenLeaderboard={handleOpenLeaderboard}
           handleCloseLeaderboard={handleCloseLeaderboard}

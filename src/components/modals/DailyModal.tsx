@@ -26,6 +26,7 @@ type Props = {
   onPlay: () => void;
   onShare: () => void;
   onClose: () => void;
+  onCloseModal: () => void;
   onOpenLeaderboard: () => void;
 };
 
@@ -67,6 +68,7 @@ export const DailyModal = ({
   onPlay,
   onShare,
   onClose,
+  onCloseModal,
   onOpenLeaderboard,
 }: Props) => {
   const countdown = useCountdownToNextDaily();
@@ -118,7 +120,7 @@ export const DailyModal = ({
               </div>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={onCloseModal}
                 className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
                 aria-label="Close"
               >

@@ -3,6 +3,7 @@ export type DailyConfig = {
   word: string;
   wordLength: number;
   hardMode: boolean;
+  originDate: string;
 };
 
 export type DailyResult = {
@@ -28,7 +29,6 @@ export type DailyStats = {
   lastCompletedDate: string | null;
 };
 
-const DAILY_ORIGIN_DATE = "2026-08-01";
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 export const DAILY_PATH = "/daily";
@@ -42,8 +42,8 @@ export const msUntilNextUtcMidnight = (date: Date = new Date()): number => {
   return next - date.getTime();
 };
 
-export const getDailyNumber = (date: string): number => {
-  const start = new Date(`${DAILY_ORIGIN_DATE}T00:00:00Z`).getTime();
+export const getDailyNumber = (date: string, originDate: string): number => {
+  const start = new Date(`${originDate}T00:00:00Z`).getTime();
   const current = new Date(`${date}T00:00:00Z`).getTime();
   return Math.max(1, Math.round((current - start) / ONE_DAY_MS) + 1);
 };
@@ -61,6 +61,7 @@ export const fetchDailyConfig = async (): Promise<DailyConfig | null> => {
           word: string;
           wordLength: number;
           hardMode: boolean;
+          originDate: string;
         }
       | { success: false; error: string };
     if (!data.success) return null;
@@ -69,6 +70,7 @@ export const fetchDailyConfig = async (): Promise<DailyConfig | null> => {
       word: data.word,
       wordLength: data.wordLength,
       hardMode: data.hardMode,
+      originDate: data.originDate,
     };
   } catch {
     return null;

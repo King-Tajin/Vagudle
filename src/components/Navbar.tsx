@@ -48,17 +48,11 @@ export const Navbar = ({
     const wrapper = headerWrapperRef.current;
     const content = navbarContentRef.current;
     const title = brandTitleRef.current;
-    const subtitle = brandSubtitleRef.current;
-    if (!wrapper || !content || !title || !subtitle) return;
+    if (!wrapper || !content || !title) return;
 
     const measure = () => {
-      subtitle.style.display = "";
       title.classList.remove("text-sm");
       title.classList.add("text-xl");
-
-      if (content.scrollWidth > content.clientWidth) {
-        subtitle.style.display = "none";
-      }
 
       if (content.scrollWidth > content.clientWidth) {
         title.classList.remove("text-xl");
@@ -147,7 +141,7 @@ export const Navbar = ({
                   </h1>
                   <p
                     ref={brandSubtitleRef}
-                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap"
+                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
                     Games
                   </p>
@@ -170,7 +164,7 @@ export const Navbar = ({
                   </h1>
                   <p
                     ref={brandSubtitleRef}
-                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap"
+                    className="font-pixel text-xs text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
                     Games
                   </p>
