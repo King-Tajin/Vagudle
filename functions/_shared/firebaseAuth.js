@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 const JWKS_URL =
   "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com";
 const JWKS_CACHE_TTL_MS = 60 * 60 * 1000;

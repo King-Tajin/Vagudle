@@ -901,6 +901,17 @@ export const InfoModal = ({
                         </ActivityLink>
                         . Contributions and feedback are welcome.
                       </p>
+
+                      <p className="font-code text-sm text-gray-400 leading-relaxed">
+                        Made by{" "}
+                        <ActivityLink
+                          href="https://github.com/King-Tajin"
+                          className="text-crown-gold underline hover:text-crown-amber transition-colors"
+                        >
+                          King Tajin
+                        </ActivityLink>
+                        .
+                      </p>
                     </div>
                   )}
 
@@ -918,7 +929,14 @@ export const InfoModal = ({
                     >
                       TOS
                     </ActivityLink>{" "}
-                    · KING TAJIN ·{" "}
+                    ·{" "}
+                    <ActivityLink
+                      href="https://github.com/King-Tajin"
+                      className="hover:text-crown-amber transition-colors underline"
+                    >
+                      KING TAJIN
+                    </ActivityLink>{" "}
+                    ·{" "}
                     <ActivityLink
                       href="https://vagudle.king-tajin.dev/privacy.html"
                       className="hover:text-crown-amber transition-colors underline"
