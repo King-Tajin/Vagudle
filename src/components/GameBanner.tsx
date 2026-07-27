@@ -5,6 +5,7 @@ import type { ChallengeConfig } from "../lib/challenge";
 import type { DuelConfig } from "../lib/duel";
 import type { DailyConfig } from "../lib/daily";
 import type { GameMode } from "../lib/gameMode";
+import React from "react";
 
 const BannerFrame = ({ children }: { children: React.ReactNode }) => (
   <m.div
@@ -46,7 +47,7 @@ const BannerDivider = () => (
   <span className="font-code text-xs text-gray-600">&middot;</span>
 );
 
-export const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
+const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
   <BannerFrame>
     <BannerLabel>CUSTOM CHALLENGE</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
@@ -65,7 +66,7 @@ export const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
   </BannerFrame>
 );
 
-export const DuelBanner = ({ config }: { config: DuelConfig }) => (
+const DuelBanner = ({ config }: { config: DuelConfig }) => (
   <BannerFrame>
     <BannerLabel>DUEL</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
@@ -88,7 +89,7 @@ export const DuelBanner = ({ config }: { config: DuelConfig }) => (
   </BannerFrame>
 );
 
-export const DailyBanner = ({
+const DailyBanner = ({
   config,
   dailyNumber,
   usernameWarning,
