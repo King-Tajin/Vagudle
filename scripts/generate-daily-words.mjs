@@ -66,7 +66,9 @@ const getRotationForDate = (dateString) => {
 const main = () => {
   const args = parseArgs();
   const start =
-    args.start || addUtcDays(new Date().toISOString().slice(0, 10), 1);
+    args.start === "today"
+      ? new Date().toISOString().slice(0, 10)
+      : args.start || addUtcDays(new Date().toISOString().slice(0, 10), 1);
   const days = Number(args.days || 1096);
   const outFile = args.out
     ? path.resolve(process.cwd(), args.out)

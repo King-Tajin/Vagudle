@@ -680,6 +680,10 @@ export const InfoModal = ({
                           "Solutions are selected from uncommon words and the player is limited to 9 guesses.",
                         ],
                         [
+                          "Daily",
+                          "A new word unlocks once a day, alternating between 4- and 5-letter, normal and hard mode. Track your streak on the leaderboard, and subscribe to a calendar reminder so you never miss one.",
+                        ],
+                        [
                           "Cell painting",
                           "Select a brush and click or drag across cells to color them.",
                         ],
