@@ -470,6 +470,11 @@ function App() {
   const dailyNumber = dailyConfig
     ? getDailyNumber(dailyConfig.date, dailyConfig.originDate)
     : 0;
+  const dailyUsernameWarning = !user
+    ? "Sign in to save to the leaderboard"
+    : hasUsername === false
+      ? "Set a username to save to the leaderboard"
+      : null;
 
   useEffect(() => {
     if (
@@ -1023,15 +1028,12 @@ function App() {
           </m.p>
 
           <GameBanner
-            isChallengeMode={isChallengeMode}
+            gameMode={gameMode}
             challengeConfig={challengeConfig}
-            isDuelMode={isDuelMode}
             duelConfig={duelConfig}
-            isDailyMode={isDailyMode}
             dailyConfig={dailyConfig}
             dailyNumber={dailyNumber}
-            isSignedIn={!!user}
-            hasUsername={hasUsername}
+            usernameWarning={dailyUsernameWarning}
           />
 
           <Grid

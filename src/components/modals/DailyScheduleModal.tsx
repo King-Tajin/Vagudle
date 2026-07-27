@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarClock, CalendarPlus, Check, Copy } from "lucide-react";
+import {
+  CalendarClock,
+  CalendarPlus,
+  Check,
+  Copy,
+  Loader2,
+} from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import {
   DAILY_SCHEDULE,
@@ -19,6 +25,8 @@ type Props = {
   handleClose: () => void;
 };
 
+const SUBSCRIBE_FALLBACK_DELAY_MS = 8000;
+
 export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
   const today = getCurrentDailyWeekday();
   const localUnlockTime = getLocalDailyUnlockTime();
@@ -26,11 +34,15 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
     DAILY_CALENDAR_FIRST_HOUR_UTC
   );
   const [copied, setCopied] = useState(false);
+  const [showDownloadPrompt, setShowDownloadPrompt] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      if (fallbackTimerRef.current) clearTimeout(fallbackTimerRef.current);
     };
   }, []);
 
@@ -43,6 +55,41 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
       copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {}
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = getDailyCalendarHttpsUrl(fileName);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setShowDownloadPrompt(false);
+  };
+
+  const handleSubscribeClick = () => {
+    setShowDownloadPrompt(false);
+    setIsChecking(true);
+    if (fallbackTimerRef.current) clearTimeout(fallbackTimerRef.current);
+
+    let handled = false;
+    const markHandled = () => {
+      handled = true;
+      setIsChecking(false);
+    };
+    document.addEventListener("visibilitychange", markHandled, {
+      once: true,
+    });
+    window.addEventListener("blur", markHandled, { once: true });
+
+    window.location.href = getDailyCalendarWebcalUrl(fileName);
+
+    fallbackTimerRef.current = setTimeout(() => {
+      document.removeEventListener("visibilitychange", markHandled);
+      window.removeEventListener("blur", markHandled);
+      setIsChecking(false);
+      if (!handled) setShowDownloadPrompt(true);
+    }, SUBSCRIBE_FALLBACK_DELAY_MS);
   };
 
   return (
@@ -149,15 +196,26 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
               border: "1px solid rgba(255,255,255,0.06)",
             }}
           >
-            <a
-              href={getDailyCalendarWebcalUrl(fileName)}
-              className="flex-1 flex items-center justify-center gap-1 font-pixel text-[9px] tracking-widest px-2 py-2 pixel-border-sm text-crown-amber hover:text-crown-gold transition-colors"
+            <button
+              type="button"
+              onClick={handleSubscribeClick}
+              disabled={isChecking}
+              className="flex-1 flex items-center justify-center gap-1 font-pixel text-[9px] tracking-widest px-2 py-2 pixel-border-sm text-crown-amber hover:text-crown-gold transition-colors disabled:opacity-60 disabled:cursor-wait"
               style={{ border: "1px solid rgba(212,175,55,0.4)" }}
               aria-label="Subscribe to daily reminder calendar feed"
             >
-              <CalendarPlus className="w-3 h-3" />
-              SUBSCRIBE
-            </a>
+              {isChecking ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  OPENING...
+                </>
+              ) : (
+                <>
+                  <CalendarPlus className="w-3 h-3" />
+                  SUBSCRIBE
+                </>
+              )}
+            </button>
             <button
               type="button"
               onClick={handleCopy}
@@ -172,6 +230,37 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
               )}
             </button>
           </div>
+
+          {showDownloadPrompt && (
+            <div
+              className="flex items-center justify-between gap-2 px-3 py-2"
+              style={{
+                background: "rgba(212,175,55,0.08)",
+                border: "1px solid rgba(212,175,55,0.35)",
+              }}
+            >
+              <p className="font-code text-xs text-gray-300 leading-snug">
+                Didn't open your calendar app?
+              </p>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="font-pixel text-[9px] tracking-widest px-2 py-1.5 pixel-border-sm text-crown-amber hover:text-crown-gold transition-colors"
+                  style={{ border: "1px solid rgba(212,175,55,0.4)" }}
+                >
+                  DOWNLOAD
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDownloadPrompt(false)}
+                  className="font-pixel text-[9px] tracking-widest px-2 py-1.5 text-gray-500 hover:text-gray-300 transition-colors"
+                >
+                  DISMISS
+                </button>
+              </div>
+            </div>
+          )}
 
           <p className="font-code text-[11px] text-gray-600 leading-snug">
             Apple Calendar and Outlook can subscribe directly via the button

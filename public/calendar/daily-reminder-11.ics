@@ -8,13 +8,121 @@ X-WR-TIMEZONE:UTC
 REFRESH-INTERVAL;VALUE=DURATION:P1D
 X-PUBLISHED-TTL:P1D
 BEGIN:VEVENT
-UID:vagudle-daily-reminder-11@vagudle.king-tajin.dev
+UID:vagudle-daily-reminder-11-SU@vagudle.king-tajin.dev
+DTSTAMP:20260101T000000Z
+DTSTART:20260104T110000Z
+DURATION:PT15M
+RRULE:FREQ=WEEKLY;BYDAY=SU
+SUMMARY:Play today's Vagudle
+DESCRIPTION:Reminder to play today's Vagudle daily word. Today's word: 4-letter word, Normal Mode.
+URL:https://vagudle.king-tajin.dev/daily
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Play today's Vagudle
+TRIGGER:PT0S
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:vagudle-daily-reminder-11-MO@vagudle.king-tajin.dev
+DTSTAMP:20260101T000000Z
+DTSTART:20260105T110000Z
+DURATION:PT15M
+RRULE:FREQ=WEEKLY;BYDAY=MO
+SUMMARY:Play today's Vagudle
+DESCRIPTION:Reminder to play today's Vagudle daily word. Today's word: 4-letter word, Hard Mode.
+URL:https://vagudle.king-tajin.dev/daily
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Play today's Vagudle
+TRIGGER:PT0S
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:vagudle-daily-reminder-11-TU@vagudle.king-tajin.dev
+DTSTAMP:20260101T000000Z
+DTSTART:20260106T110000Z
+DURATION:PT15M
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Play today's Vagudle
+DESCRIPTION:Reminder to play today's Vagudle daily word. Today's word: 5-letter word, Normal Mode.
+URL:https://vagudle.king-tajin.dev/daily
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Play today's Vagudle
+TRIGGER:PT0S
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:vagudle-daily-reminder-11-WE@vagudle.king-tajin.dev
+DTSTAMP:20260101T000000Z
+DTSTART:20260107T110000Z
+DURATION:PT15M
+RRULE:FREQ=WEEKLY;BYDAY=WE
+SUMMARY:Play today's Vagudle
+DESCRIPTION:Reminder to play today's Vagudle daily word. Today's word: 5-letter word, Hard Mode.
+URL:https://vagudle.king-tajin.dev/daily
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Play today's Vagudle
+TRIGGER:PT0S
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:vagudle-daily-reminder-11-TH@vagudle.king-tajin.dev
 DTSTAMP:20260101T000000Z
 DTSTART:20260101T110000Z
 DURATION:PT15M
-RRULE:FREQ=DAILY
+RRULE:FREQ=WEEKLY;BYDAY=TH
 SUMMARY:Play today's Vagudle
-DESCRIPTION:Reminder to play today's Vagudle daily word.
+DESCRIPTION:Reminder to play today's Vagudle daily word. Today's word: 4-letter word, Normal Mode.
+URL:https://vagudle.king-tajin.dev/daily
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Play today's Vagudle
+TRIGGER:PT0S
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:vagudle-daily-reminder-11-FR@vagudle.king-tajin.dev
+DTSTAMP:20260101T000000Z
+DTSTART:20260102T110000Z
+DURATION:PT15M
+RRULE:FREQ=WEEKLY;BYDAY=FR
+SUMMARY:Play today's Vagudle
+DESCRIPTION:Reminder to play today's Vagudle daily word. Today's word: 5-letter word, Hard Mode.
+URL:https://vagudle.king-tajin.dev/daily
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Play today's Vagudle
+TRIGGER:PT0S
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:vagudle-daily-reminder-11-SA@vagudle.king-tajin.dev
+DTSTAMP:20260101T000000Z
+DTSTART:20260103T110000Z
+DURATION:PT15M
+RRULE:FREQ=WEEKLY;BYDAY=SA
+SUMMARY:Play today's Vagudle
+DESCRIPTION:Reminder to play today's Vagudle daily word. Today's word: 4-letter word, Hard Mode.
 URL:https://vagudle.king-tajin.dev/daily
 TRANSP:TRANSPARENT
 STATUS:CONFIRMED
