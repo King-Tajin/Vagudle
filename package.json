@@ -7,7 +7,8 @@
     "start": "vite",
     "start:backend": "pnpm run build && pnpm exec wrangler pages dev --proxy 5173",
     "build": "vite build && node scripts/optimize-dist.mjs",
-    "typecheck": "node ./node_modules/typescript-7/bin/tsc --noEmit",
+    "types": "wrangler types",
+    "typecheck": "pnpm run types && node ./node_modules/typescript-7/bin/tsc --noEmit && node ./node_modules/typescript-7/bin/tsc --noEmit -p functions/tsconfig.json",
     "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
     "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
@@ -48,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260724.1",
     "@eslint/js": "^9.39.5",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",

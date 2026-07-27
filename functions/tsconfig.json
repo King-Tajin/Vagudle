@@ -10,7 +10,7 @@
     "noImplicitAny": false,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": []
+    "types": ["@cloudflare/workers-types"]
   },
   "include": ["**/*.js", "../worker-configuration.d.ts"]
 }

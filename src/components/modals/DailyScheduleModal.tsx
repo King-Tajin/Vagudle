@@ -1,10 +1,17 @@
-import { CalendarClock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { CalendarClock, CalendarPlus, Check, Copy } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import {
   DAILY_SCHEDULE,
   WEEKDAY_NAMES,
+  DAILY_CALENDAR_HOURS,
+  DAILY_CALENDAR_FIRST_HOUR_UTC,
   getLocalDailyUnlockTime,
   getCurrentDailyWeekday,
+  dailyCalendarFileName,
+  getDailyCalendarHourLabel,
+  getDailyCalendarHttpsUrl,
+  getDailyCalendarWebcalUrl,
 } from "../../lib/daily";
 
 type Props = {
@@ -15,6 +22,28 @@ type Props = {
 export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
   const today = getCurrentDailyWeekday();
   const localUnlockTime = getLocalDailyUnlockTime();
+  const [selectedHour, setSelectedHour] = useState(
+    DAILY_CALENDAR_FIRST_HOUR_UTC
+  );
+  const [copied, setCopied] = useState(false);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    };
+  }, []);
+
+  const fileName = dailyCalendarFileName(selectedHour);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(getDailyCalendarHttpsUrl(fileName));
+      setCopied(true);
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
 
   return (
     <BaseModal
@@ -84,6 +113,71 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="space-y-2 pt-3 border-t-2 border-obsidian-700">
+          <p className="font-pixel text-[10px] text-gray-500 tracking-widest">
+            ADD TO CALENDAR
+          </p>
+          <p className="font-code text-xs text-gray-500 leading-snug">
+            Subscribe once and your calendar app checks for the daily unlock
+            automatically. Pick what hour you want reminded:
+          </p>
+
+          <select
+            value={selectedHour}
+            onChange={(e) => setSelectedHour(Number(e.target.value))}
+            className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"
+            style={{
+              background: "#0a0014",
+              borderColor: "#d4af37",
+              color: "#d1d5db",
+            }}
+            aria-label="Reminder hour"
+          >
+            {DAILY_CALENDAR_HOURS.map((hour) => (
+              <option key={hour} value={hour}>
+                {getDailyCalendarHourLabel(hour)}
+              </option>
+            ))}
+          </select>
+
+          <div
+            className="flex items-center gap-1.5 px-3 py-2"
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            <a
+              href={getDailyCalendarWebcalUrl(fileName)}
+              className="flex-1 flex items-center justify-center gap-1 font-pixel text-[9px] tracking-widest px-2 py-2 pixel-border-sm text-crown-amber hover:text-crown-gold transition-colors"
+              style={{ border: "1px solid rgba(212,175,55,0.4)" }}
+              aria-label="Subscribe to daily reminder calendar feed"
+            >
+              <CalendarPlus className="w-3 h-3" />
+              SUBSCRIBE
+            </a>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="p-2 pixel-border-sm text-gray-400 hover:text-white transition-colors shrink-0"
+              style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+              aria-label="Copy calendar link"
+            >
+              {copied ? (
+                <Check className="w-3 h-3 text-green-400" />
+              ) : (
+                <Copy className="w-3 h-3" />
+              )}
+            </button>
+          </div>
+
+          <p className="font-code text-[11px] text-gray-600 leading-snug">
+            Apple Calendar and Outlook can subscribe directly via the button
+            above. For Google Calendar, use the copy button and add it under
+            "Other calendars &rarr; From URL".
+          </p>
         </div>
       </div>
     </BaseModal>

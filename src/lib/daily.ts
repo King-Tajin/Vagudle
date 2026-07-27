@@ -311,6 +311,44 @@ export const getLocalDailyUnlockTime = (date: Date = new Date()): string => {
   });
 };
 
+export const DAILY_CALENDAR_FIRST_HOUR_UTC = DAILY_RELEASE_HOUR_UTC;
+export const DAILY_CALENDAR_LAST_HOUR_UTC = 23;
+
+export const DAILY_CALENDAR_HOURS: number[] = Array.from(
+  { length: DAILY_CALENDAR_LAST_HOUR_UTC - DAILY_CALENDAR_FIRST_HOUR_UTC + 1 },
+  (_, i) => DAILY_CALENDAR_FIRST_HOUR_UTC + i
+);
+
+export const dailyCalendarFileName = (hourUtc: number): string =>
+  `daily-reminder-${String(hourUtc).padStart(2, "0")}.ics`;
+
+export const getDailyCalendarHourLabel = (
+  hourUtc: number,
+  date: Date = new Date()
+): string => {
+  const localTime = new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      hourUtc
+    )
+  );
+  const time = localTime.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  return hourUtc === DAILY_RELEASE_HOUR_UTC ? `${time} (on time)` : time;
+};
+
+export const getDailyCalendarHttpsUrl = (fileName: string): string => {
+  if (typeof window === "undefined") return `/calendar/${fileName}`;
+  return `${window.location.origin}/calendar/${fileName}`;
+};
+
+export const getDailyCalendarWebcalUrl = (fileName: string): string =>
+  getDailyCalendarHttpsUrl(fileName).replace(/^https?:/, "webcal:");
+
 export const recordDailyStats = (date: string, won: boolean): DailyStats => {
   const stats = loadDailyStats();
   if (stats.lastCompletedDate === date) return stats;
