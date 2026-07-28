@@ -152,15 +152,11 @@ export const useGuessInput = ({
 
       if (winningWord) {
         const winRowIndex = guesses.length;
-        let finalCellColors = cellColors;
-        setCellColors((prev) => {
-          const next = { ...prev };
-          unicodeSplit(currentGuess).forEach((_, c) => {
-            next[`${winRowIndex}-${c}`] = "correct";
-          });
-          finalCellColors = next;
-          return next;
+        const finalCellColors = { ...cellColors };
+        unicodeSplit(currentGuess).forEach((_, c) => {
+          finalCellColors[`${winRowIndex}-${c}`] = "correct";
         });
+        setCellColors(finalCellColors);
 
         if (!isChallengeMode && !isDuelMode && !isDailyMode)
           recordStats(guesses.length);

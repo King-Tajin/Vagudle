@@ -329,6 +329,7 @@ export const useGameInitialization = ({
               setCellColors(
                 progress.cellColors as { [key: string]: CharStatus }
               );
+              if (won || lost) restoredGameRef.current = true;
               setIsGameWon(won);
               setIsGameLost(lost);
 

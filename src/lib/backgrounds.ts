@@ -139,7 +139,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
     mobileLabel: "MOUSE",
     requiresAchievementId: "guess_mouse",
     kind: "video",
-    videoSrc: "/backgrounds/mouse_v2.mp4",
+    videoSrc: "/backgrounds/mouse_v3.mp4",
     objectPosition: "65% 65%",
     attribution: {
       credits: [
@@ -177,7 +177,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
     mobileLabel: "SEAL",
     requiresAchievementId: COMPLETIONIST_ID,
     kind: "video",
-    videoSrc: "/backgrounds/seal.mp4",
+    videoSrc: "/backgrounds/seal_v2.mp4",
     attribution: {
       credits: [
         {

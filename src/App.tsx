@@ -821,6 +821,7 @@ function App() {
     );
     setCurrentGuess("");
     setCurrentRowClass("");
+    if (won || lost) restoredGameRef.current = true;
     setIsGameWon(won);
     setIsGameLost(lost);
     setIsDailyModalOpen(false);
