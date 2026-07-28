@@ -362,6 +362,7 @@ export const StatsModal = ({
     if (isOpen) {
       setShowChallengeCreator(false);
       setAchievementIdx(0);
+      setActiveTab(hardMode ? "hard" : "normal");
     }
   }
 

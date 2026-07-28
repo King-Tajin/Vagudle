@@ -23,6 +23,8 @@
     "@vitejs/plugin-react": "^6.0.4",
     "autoprefixer": "^10.5.4",
     "classnames": "^2.5.1",
+    "exiftool-vendored": "^37.0.0",
+    "ffmpeg-static": "^5.3.0",
     "firebase": "^12.16.0",
     "framer-motion": "^12.42.2",
     "lottie-web": "^5.13.0",
@@ -77,5 +79,5 @@
     "public/**/*.svg": "svgo",
     ".github/**/*.md": "prettier --write"
   },
-  "packageManager": "pnpm@11.16.0"
+  "packageManager": "pnpm@11.17.0"
 }

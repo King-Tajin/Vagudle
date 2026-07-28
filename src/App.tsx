@@ -421,22 +421,29 @@ function App() {
     if (dailyLeaderboardSubmittedForRef.current === date) return;
     const idToken = await getIdTokenForCurrentUser();
     if (!idToken) return;
-    dailyLeaderboardSubmittedForRef.current = date;
-    void submitDailyResult(idToken, won);
+    const outcome = await submitDailyResult(idToken, won);
+    if (outcome === "recorded" || outcome === "already_submitted") {
+      dailyLeaderboardSubmittedForRef.current = date;
+    }
+  };
+
+  const submitPendingDailyToLeaderboard = async () => {
+    if (!user) return;
+    const config = dailyConfig ?? (await fetchDailyConfig());
+    if (!config) return;
+    const pendingResult =
+      dailyResult?.date === config.date
+        ? dailyResult
+        : loadDailyResult(config.date);
+    if (!pendingResult) return;
+    await submitDailyToLeaderboard(config.date, pendingResult.won);
   };
 
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
     const run = async () => {
-      const config = dailyConfig ?? (await fetchDailyConfig());
-      if (!config || cancelled) return;
-      const pendingResult =
-        dailyResult?.date === config.date
-          ? dailyResult
-          : loadDailyResult(config.date);
-      if (!pendingResult) return;
-      void submitDailyToLeaderboard(config.date, pendingResult.won);
+      if (!cancelled) await submitPendingDailyToLeaderboard();
     };
     void run();
     return () => {
@@ -913,6 +920,10 @@ function App() {
     setIsSettingsModalOpen(true);
   };
 
+  const handleUsernameSaved = async () => {
+    await submitPendingDailyToLeaderboard();
+  };
+
   if (isLoading) return <LoadingScreen />;
 
   const screenFallback = (
@@ -1100,6 +1111,7 @@ function App() {
           handleOpenLeaderboard={handleOpenLeaderboard}
           handleCloseLeaderboard={handleCloseLeaderboard}
           handleOpenSettingsFromLeaderboard={handleOpenSettingsFromLeaderboard}
+          handleUsernameSaved={handleUsernameSaved}
           leaderboardIdToken={leaderboardIdToken}
           showGrayCount={showGrayCount}
           setShowGrayCount={setShowGrayCount}

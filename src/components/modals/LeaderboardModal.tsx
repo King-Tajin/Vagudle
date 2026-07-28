@@ -17,6 +17,7 @@ type Props = {
   handleClose: () => void;
   idToken: string | null;
   onOpenSettings: () => void;
+  onUsernameSaved: () => Promise<void>;
 };
 
 const formatCooldown = (canChangeAt: string): string => {
@@ -190,6 +191,7 @@ export const LeaderboardModal = ({
   handleClose,
   idToken,
   onOpenSettings,
+  onUsernameSaved,
 }: Props) => {
   const [
     {
@@ -257,6 +259,7 @@ export const LeaderboardModal = ({
         },
         inputValue: outcome.username,
       });
+      await onUsernameSaved();
       const refreshed = await fetchDailyLeaderboard(idToken);
       if (refreshed) dispatch({ type: "refreshData", data: refreshed });
       return;

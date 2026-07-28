@@ -60,6 +60,7 @@ type Props = {
   handleOpenLeaderboard: () => void;
   handleCloseLeaderboard: () => void;
   handleOpenSettingsFromLeaderboard: () => void;
+  handleUsernameSaved: () => Promise<void>;
   leaderboardIdToken: string | null;
   showGrayCount: boolean;
   setShowGrayCount: (value: boolean) => void;
@@ -138,6 +139,7 @@ export const GameModals = ({
   handleOpenLeaderboard,
   handleCloseLeaderboard,
   handleOpenSettingsFromLeaderboard,
+  handleUsernameSaved,
   leaderboardIdToken,
   showGrayCount,
   setShowGrayCount,
@@ -320,6 +322,7 @@ export const GameModals = ({
           handleClose={handleCloseLeaderboard}
           idToken={leaderboardIdToken}
           onOpenSettings={handleOpenSettingsFromLeaderboard}
+          onUsernameSaved={handleUsernameSaved}
         />
         {currentBackground?.attribution && (
           <AttributionModal

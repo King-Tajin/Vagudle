@@ -1,9 +1,16 @@
 // @ts-nocheck
-import { readdir, readFile, writeFile, stat } from "fs/promises";
+import { readdir, readFile, writeFile, stat, rename } from "fs/promises";
 import path from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
 import { optimize } from "svgo";
+import ffmpegPath from "ffmpeg-static";
+import { exiftool } from "exiftool-vendored";
+
+const execFileAsync = promisify(execFile);
 
 const distDir = path.resolve(process.cwd(), "dist");
+const backgroundsDir = path.join(distDir, "backgrounds");
 
 const svgoConfig = {
   multipass: true,
@@ -12,6 +19,9 @@ const svgoConfig = {
   },
   plugins: ["preset-default"],
 };
+
+const VIDEO_EXTS = new Set([".mp4", ".webm"]);
+const IMAGE_METADATA_EXTS = new Set([".webp", ".jpg", ".jpeg", ".png", ".gif"]);
 
 const walk = async (dir) => {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -47,6 +57,37 @@ const minifyJson = async (filePath) => {
   return { before, after };
 };
 
+const stripVideoMetadata = async (filePath) => {
+  const before = (await stat(filePath)).size;
+  const tempPath = `${filePath}.stripped${path.extname(filePath)}`;
+  await execFileAsync(ffmpegPath, [
+    "-y",
+    "-i",
+    filePath,
+    "-map_metadata",
+    "-1",
+    "-map_chapters",
+    "-1",
+    "-c",
+    "copy",
+    tempPath,
+  ]);
+  await rename(tempPath, filePath);
+  const after = (await stat(filePath)).size;
+  return { before, after };
+};
+
+const stripImageMetadata = async (filePath) => {
+  const before = (await stat(filePath)).size;
+  await exiftool.write(
+    filePath,
+    {},
+    { writeArgs: ["-overwrite_original", "-all="] }
+  );
+  const after = (await stat(filePath)).size;
+  return { before, after };
+};
+
 const run = async () => {
   let files;
   try {
@@ -62,6 +103,8 @@ const run = async () => {
   let totalAfter = 0;
   let svgCount = 0;
   let jsonCount = 0;
+  let videoCount = 0;
+  let imageCount = 0;
 
   for (const filePath of files) {
     const ext = path.extname(filePath).toLowerCase();
@@ -93,12 +136,47 @@ const run = async () => {
           err.message
         );
       }
+      continue;
+    }
+
+    const isInBackgrounds = filePath.startsWith(`${backgroundsDir}${path.sep}`);
+    if (!isInBackgrounds) continue;
+
+    if (VIDEO_EXTS.has(ext)) {
+      try {
+        const { before, after } = await stripVideoMetadata(filePath);
+        totalBefore += before;
+        totalAfter += after;
+        videoCount += 1;
+      } catch (err) {
+        console.warn(
+          `optimize-dist: failed to strip metadata from ${filePath}:`,
+          err.message
+        );
+      }
+      continue;
+    }
+
+    if (IMAGE_METADATA_EXTS.has(ext)) {
+      try {
+        const { before, after } = await stripImageMetadata(filePath);
+        totalBefore += before;
+        totalAfter += after;
+        imageCount += 1;
+      } catch (err) {
+        console.warn(
+          `optimize-dist: failed to strip metadata from ${filePath}:`,
+          err.message
+        );
+      }
     }
   }
 
+  await exiftool.end().catch(() => {});
+
   const savedKb = ((totalBefore - totalAfter) / 1024).toFixed(1);
   console.log(
-    `optimize-dist: optimized ${svgCount} svg + ${jsonCount} json file(s), saved ${savedKb} KB`
+    `optimize-dist: optimized ${svgCount} svg + ${jsonCount} json file(s), stripped metadata from ${videoCount} video + ${imageCount} image file(s) in backgrounds/, saved ${savedKb} KB`
   );
 };
 
