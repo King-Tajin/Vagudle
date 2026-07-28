@@ -110,6 +110,11 @@ export const DuckParade = lazy(() =>
     default: m.DuckParade,
   }))
 );
+export const FlyingMudskipper = lazy(() =>
+  import("./components/backgrounds/FlyingMudskipper").then((m) => ({
+    default: m.FlyingMudskipper,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,

@@ -14,6 +14,7 @@ import {
   FireStreak,
   Fireworks,
   DuckParade,
+  FlyingMudskipper,
 } from "../../lazyComponents";
 
 type Props = {
@@ -193,6 +194,19 @@ export const BackgroundStage = ({
           }
         >
           <DuckParade keyboardRef={keyboardRef} />
+        </Suspense>
+      );
+    case "flying_mudskipper":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#4a3018", zIndex: 0 }}
+            />
+          }
+        >
+          <FlyingMudskipper />
         </Suspense>
       );
     default:

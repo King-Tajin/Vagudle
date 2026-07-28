@@ -11,16 +11,17 @@ export type BackgroundId =
   | "flakes"
   | "pulsing_purple"
   | "carrots"
+  | "flying_mudskipper"
   | "escalating_fire"
   | "dvd_screensaver"
   | "number_rain"
   | "seven_letters"
   | "snowfall"
   | "letter_rain"
+  | "duck_parade"
   | "mouse_eating"
-  | "spinning_seal"
   | "fireworks"
-  | "duck_parade";
+  | "spinning_seal";
 
 export type AttributionCredit = {
   role: string;
@@ -70,6 +71,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
     desktopLabel: "SPINNING CARROTS",
     mobileLabel: "CARROTS",
     requiresAchievementId: "win_50",
+    kind: "css",
+  },
+  {
+    id: "flying_mudskipper",
+    desktopLabel: "FLYING MUDSKIPPER",
+    mobileLabel: "MUDSKIPPER",
+    requiresAchievementId: "on_a_roll",
     kind: "css",
   },
   {
