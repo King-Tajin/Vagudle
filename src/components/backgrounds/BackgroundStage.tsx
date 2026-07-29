@@ -15,6 +15,7 @@ import {
   Fireworks,
   DuckParade,
   FlyingMudskipper,
+  EmojiRain,
 } from "../../lazyComponents";
 
 type Props = {
@@ -207,6 +208,19 @@ export const BackgroundStage = ({
           }
         >
           <FlyingMudskipper />
+        </Suspense>
+      );
+    case "emoji_rain":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#151025", zIndex: 0 }}
+            />
+          }
+        >
+          <EmojiRain />
         </Suspense>
       );
     default:

@@ -20,6 +20,7 @@ export type BackgroundId =
   | "letter_rain"
   | "duck_parade"
   | "mouse_eating"
+  | "emoji_rain"
   | "fireworks"
   | "spinning_seal";
 
@@ -171,6 +172,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
       ],
       license: "Unknown",
     },
+  },
+  {
+    id: "emoji_rain",
+    desktopLabel: "EMOJI RAIN",
+    mobileLabel: "EMOJIS",
+    requiresAchievementId: "nail_biter",
+    kind: "css",
   },
   {
     id: "fireworks",

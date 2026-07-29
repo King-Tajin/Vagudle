@@ -115,6 +115,11 @@ export const FlyingMudskipper = lazy(() =>
     default: m.FlyingMudskipper,
   }))
 );
+export const EmojiRain = lazy(() =>
+  import("./components/backgrounds/EmojiRain").then((m) => ({
+    default: m.EmojiRain,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
