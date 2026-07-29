@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import lottie from "lottie-web";
 import { drawDirtTexture, drawGrassTexture } from "../../lib/dirtTexture";
+import { attachDebouncedResize } from "../../lib/animationLoop";
 
 const DUCK_JSON_SRC = "/backgrounds/walking_duck.json";
 const SKY_COLOR = "#8fd3f4";
@@ -417,19 +418,7 @@ export const DuckParade = ({
       drawGrassTexture(canvas);
     };
 
-    resize();
-
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const debouncedResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(resize, 150);
-    };
-
-    window.addEventListener("resize", debouncedResize);
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-      clearTimeout(timeoutId);
-    };
+    return attachDebouncedResize(resize);
   }, [groundHeight]);
 
   const duckAnimationData = useMemo(() => {

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { hexToRgb, lerpColor } from "../../lib/colorUtils";
+import { attachResizableAnimationLoop } from "../../lib/animationLoop";
 
 const STAGE_THRESHOLDS = [0, 1, 2, 4, 6, 10];
 
@@ -90,8 +91,7 @@ export const FireStreak = ({ currentStreak }: Props) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let rafId: number;
-    let resizeTimeout: ReturnType<typeof setTimeout>;
+    const rafIdRef = { current: 0 };
     let particles: Particle[] = [];
     let displayedStage = getStageIndex(streakRef.current);
     let lastTimestamp: number | null = null;
@@ -217,22 +217,10 @@ export const FireStreak = ({ currentStreak }: Props) => {
         return true;
       });
 
-      rafId = requestAnimationFrame(tick);
+      rafIdRef.current = requestAnimationFrame(tick);
     };
 
-    rafId = requestAnimationFrame(tick);
-
-    const onResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(setupSize, 150);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", onResize);
-      clearTimeout(resizeTimeout);
-    };
+    return attachResizableAnimationLoop(rafIdRef, tick, setupSize);
   }, []);
 
   return (

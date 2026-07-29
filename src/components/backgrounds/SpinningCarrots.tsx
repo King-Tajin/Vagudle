@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { m, useMotionValue, useAnimationFrame } from "framer-motion";
 import CarrotUrl from "../../assets/icons/carrot.svg";
 import { drawDirtTexture } from "../../lib/dirtTexture";
+import { attachDebouncedResize } from "../../lib/animationLoop";
 
 const CARROT_DENSITY = 40;
 const CARROT_DENSITY_REF = 1920 * 1080;
@@ -70,19 +71,7 @@ export const SpinningCarrots = () => {
       drawDirt(canvas);
     };
 
-    resize();
-
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const debouncedResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(resize, 150);
-    };
-
-    window.addEventListener("resize", debouncedResize);
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-      clearTimeout(timeoutId);
-    };
+    return attachDebouncedResize(resize);
   }, []);
 
   const [carrots] = useState<CarrotParticle[]>(() => {

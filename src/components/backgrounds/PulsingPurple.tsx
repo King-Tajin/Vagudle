@@ -5,6 +5,7 @@ import {
   lerpColor,
   averageColor,
 } from "../../lib/colorUtils";
+import { attachResizableAnimationLoop } from "../../lib/animationLoop";
 
 const PIXEL_SIZE_RATIO = 1 / 18;
 const PIXEL_SIZE_MIN = 16;
@@ -78,7 +79,7 @@ export const PulsingPurple = () => {
     );
 
     let lastTime = performance.now();
-    let rafId: number;
+    const rafIdRef = { current: 0 };
 
     const tick = (now: number) => {
       const delta = Math.max(0, now - lastTime);
@@ -104,23 +105,10 @@ export const PulsingPurple = () => {
         }
       }
 
-      rafId = requestAnimationFrame(tick);
+      rafIdRef.current = requestAnimationFrame(tick);
     };
 
-    rafId = requestAnimationFrame(tick);
-
-    let resizeTimeout: ReturnType<typeof setTimeout>;
-    const onResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(setup, 150);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", onResize);
-      clearTimeout(resizeTimeout);
-    };
+    return attachResizableAnimationLoop(rafIdRef, tick, setup);
   }, []);
 
   return (

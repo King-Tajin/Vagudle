@@ -19,6 +19,29 @@ export const lerpColor = (from: string, to: string, t: number): string => {
   return rgbToHex(r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t);
 };
 
+export const hslToHex = (h: number, s: number, l: number): string => {
+  const sNorm = s / 100;
+  const lNorm = l / 100;
+  const c = (1 - Math.abs(2 * lNorm - 1)) * sNorm;
+  const hPrime = (((h % 360) + 360) % 360) / 60;
+  const x = c * (1 - Math.abs((hPrime % 2) - 1));
+  let r: number;
+  let g: number;
+  let b: number;
+  if (hPrime < 1) [r, g, b] = [c, x, 0];
+  else if (hPrime < 2) [r, g, b] = [x, c, 0];
+  else if (hPrime < 3) [r, g, b] = [0, c, x];
+  else if (hPrime < 4) [r, g, b] = [0, x, c];
+  else if (hPrime < 5) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  const m = lNorm - c / 2;
+  const toHex = (v: number) =>
+    Math.round((v + m) * 255)
+      .toString(16)
+      .padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
+
 export const averageColor = (colors: string[]): string => {
   const sum = colors.reduce(
     ([ra, ga, ba], h) => {

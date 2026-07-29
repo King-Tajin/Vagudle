@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { lerpColor } from "../../lib/colorUtils";
+import { lerpColor, hslToHex } from "../../lib/colorUtils";
 import { pickWeightedLetter } from "../../constants/letterWeights";
+import { attachResizableAnimationLoop } from "../../lib/animationLoop";
 
 const FONT_SIZE = 21;
 const COLUMN_WIDTH = 21;
@@ -15,29 +16,6 @@ const PURPLE_HUE_VARIANCE = 10;
 const PURPLE_SATURATION = 75;
 const PURPLE_LIGHTNESS = 65;
 const PURPLE_LIGHTNESS_VARIANCE = 12;
-
-const hslToHex = (h: number, s: number, l: number): string => {
-  const sNorm = s / 100;
-  const lNorm = l / 100;
-  const c = (1 - Math.abs(2 * lNorm - 1)) * sNorm;
-  const hPrime = (((h % 360) + 360) % 360) / 60;
-  const x = c * (1 - Math.abs((hPrime % 2) - 1));
-  let r: number;
-  let g: number;
-  let b: number;
-  if (hPrime < 1) [r, g, b] = [c, x, 0];
-  else if (hPrime < 2) [r, g, b] = [x, c, 0];
-  else if (hPrime < 3) [r, g, b] = [0, c, x];
-  else if (hPrime < 4) [r, g, b] = [0, x, c];
-  else if (hPrime < 5) [r, g, b] = [x, 0, c];
-  else [r, g, b] = [c, 0, x];
-  const m = lNorm - c / 2;
-  const toHex = (v: number) =>
-    Math.round((v + m) * 255)
-      .toString(16)
-      .padStart(2, "0");
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-};
 
 const pickPurpleColor = (): string => {
   const hue = PURPLE_HUE + (Math.random() * 2 - 1) * PURPLE_HUE_VARIANCE;
@@ -74,7 +52,7 @@ export const LetterRain = () => {
     if (!ctx) return;
 
     let columns: Column[] = [];
-    let rafId: number;
+    const rafIdRef = { current: 0 };
 
     const setup = () => {
       canvas.width = window.innerWidth;
@@ -121,23 +99,10 @@ export const LetterRain = () => {
         }
       }
 
-      rafId = requestAnimationFrame(tick);
+      rafIdRef.current = requestAnimationFrame(tick);
     };
 
-    rafId = requestAnimationFrame(tick);
-
-    let resizeTimeout: ReturnType<typeof setTimeout>;
-    const onResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(setup, 150);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", onResize);
-      clearTimeout(resizeTimeout);
-    };
+    return attachResizableAnimationLoop(rafIdRef, tick, setup);
   }, []);
 
   return (

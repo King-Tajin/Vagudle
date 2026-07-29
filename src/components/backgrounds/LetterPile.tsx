@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { hexToRgb } from "../../lib/colorUtils";
+import { hexToRgb, hslToHex } from "../../lib/colorUtils";
 import { pickWeightedLetter } from "../../constants/letterWeights";
+import { attachResizableAnimationLoop } from "../../lib/animationLoop";
 
 const BACKGROUND_COLOR = "#0d1322";
 const FLOOR_COLOR = "#000000";
@@ -33,29 +34,6 @@ const SPIN_DECAY = 0.9;
 const FREEZE_AFTER_SECONDS = 6;
 
 const LETTER_SOURCE_MODE = "last_guess" as "random" | "last_guess";
-
-const hslToHex = (h: number, s: number, l: number): string => {
-  const sNorm = s / 100;
-  const lNorm = l / 100;
-  const c = (1 - Math.abs(2 * lNorm - 1)) * sNorm;
-  const hPrime = (((h % 360) + 360) % 360) / 60;
-  const x = c * (1 - Math.abs((hPrime % 2) - 1));
-  let r: number;
-  let g: number;
-  let b: number;
-  if (hPrime < 1) [r, g, b] = [c, x, 0];
-  else if (hPrime < 2) [r, g, b] = [x, c, 0];
-  else if (hPrime < 3) [r, g, b] = [0, c, x];
-  else if (hPrime < 4) [r, g, b] = [0, x, c];
-  else if (hPrime < 5) [r, g, b] = [x, 0, c];
-  else [r, g, b] = [c, 0, x];
-  const m = lNorm - c / 2;
-  const toHex = (v: number) =>
-    Math.round((v + m) * 255)
-      .toString(16)
-      .padStart(2, "0");
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-};
 
 const pickPurpleColor = (): string => {
   const hue = PURPLE_HUE + (Math.random() * 2 - 1) * PURPLE_HUE_VARIANCE;
@@ -104,10 +82,12 @@ interface LetterPileProps {
   guesses?: string[];
 }
 
+const EMPTY_ITEMS: string[] = [];
+
 export const LetterPile = ({
   guessesUsed,
   maxGuesses,
-  guesses = [],
+  guesses = EMPTY_ITEMS,
 }: LetterPileProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const guessesUsedRef = useRef(guessesUsed);
@@ -132,8 +112,7 @@ export const LetterPile = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let rafId: number;
-    let resizeTimeout: ReturnType<typeof setTimeout>;
+    const rafIdRef = { current: 0 };
     let particles: LetterParticle[] = [];
     let trackedGuessesUsed = 0;
     let plannedCount = 0;
@@ -368,22 +347,10 @@ export const LetterPile = ({
 
       draw();
 
-      rafId = requestAnimationFrame(tick);
+      rafIdRef.current = requestAnimationFrame(tick);
     };
 
-    rafId = requestAnimationFrame(tick);
-
-    const onResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(setupSize, 150);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", onResize);
-      clearTimeout(resizeTimeout);
-    };
+    return attachResizableAnimationLoop(rafIdRef, tick, setupSize);
   }, []);
 
   return (
