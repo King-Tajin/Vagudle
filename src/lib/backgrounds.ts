@@ -17,6 +17,7 @@ export type BackgroundId =
   | "number_rain"
   | "seven_letters"
   | "snowfall"
+  | "letter_pile"
   | "letter_rain"
   | "duck_parade"
   | "mouse_eating"
@@ -126,6 +127,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
     desktopLabel: "SNOWFALL",
     mobileLabel: "SNOW",
     requiresAchievementId: "close_but_no_cigar",
+    kind: "css",
+  },
+  {
+    id: "letter_pile",
+    desktopLabel: "LETTER PILE",
+    mobileLabel: "PILE",
+    requiresAchievementId: "process_of_elimination",
     kind: "css",
   },
   {

@@ -16,6 +16,7 @@ import {
   DuckParade,
   FlyingMudskipper,
   EmojiRain,
+  LetterPile,
 } from "../../lazyComponents";
 
 type Props = {
@@ -26,6 +27,7 @@ type Props = {
   guessesUsed: number;
   maxChallenges: number;
   currentWinStreak: number;
+  guesses: string[];
 };
 
 export const BackgroundStage = ({
@@ -36,6 +38,7 @@ export const BackgroundStage = ({
   guessesUsed,
   maxChallenges,
   currentWinStreak,
+  guesses,
 }: Props): React.JSX.Element | null => {
   const bg = BACKGROUNDS.find((b) => b.id === backgroundId);
 
@@ -221,6 +224,23 @@ export const BackgroundStage = ({
           }
         >
           <EmojiRain />
+        </Suspense>
+      );
+    case "letter_pile":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#0d1322", zIndex: 0 }}
+            />
+          }
+        >
+          <LetterPile
+            guessesUsed={guessesUsed}
+            maxGuesses={maxChallenges}
+            guesses={guesses}
+          />
         </Suspense>
       );
     default:

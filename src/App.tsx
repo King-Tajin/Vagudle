@@ -978,6 +978,7 @@ function App() {
         guessesUsed={guesses.length}
         maxChallenges={maxChallenges}
         currentWinStreak={currentWinStreak}
+        guesses={guesses}
       />
       {showAttributionButton && (
         <AttributionButton

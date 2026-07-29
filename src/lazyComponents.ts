@@ -120,6 +120,11 @@ export const EmojiRain = lazy(() =>
     default: m.EmojiRain,
   }))
 );
+export const LetterPile = lazy(() =>
+  import("./components/backgrounds/LetterPile").then((m) => ({
+    default: m.LetterPile,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,
