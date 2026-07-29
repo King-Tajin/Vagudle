@@ -60,10 +60,15 @@ const twemojiIconFor = (emoji: string): string | null => {
   return icon;
 };
 
-const ICON_POOL: string[] = Object.entries(emojiByChar)
-  .filter(([, info]) => CATEGORY_ENABLED[info.group as EmojiGroup])
-  .map(([emoji]) => twemojiIconFor(emoji))
-  .filter((icon): icon is string => icon !== null);
+const ICON_POOL: string[] = Object.entries(emojiByChar).reduce<string[]>(
+  (pool, [emoji, info]) => {
+    if (!CATEGORY_ENABLED[info.group as EmojiGroup]) return pool;
+    const icon = twemojiIconFor(emoji);
+    if (icon !== null) pool.push(icon);
+    return pool;
+  },
+  []
+);
 
 interface EmojiParticle {
   id: number;
