@@ -122,24 +122,16 @@ export const computeCloseCallStreak = (
   return false;
 };
 
-export const computeAllGrayStreak = (
+export const computeAllGrayCount = (
   guessHistory: string[],
   solution: string
 ): boolean => {
-  let streak = new Set<string>();
+  const allGrayWords = new Set<string>();
 
   for (const guess of guessHistory) {
-    const normalized = guess.toLowerCase();
-
     if (isAllGrayGuess(solution, guess)) {
-      if (streak.has(normalized)) {
-        streak = new Set([normalized]);
-      } else {
-        streak.add(normalized);
-      }
-      if (streak.size >= 3) return true;
-    } else {
-      streak = new Set();
+      allGrayWords.add(guess.toLowerCase());
+      if (allGrayWords.size >= 3) return true;
     }
   }
 
@@ -268,7 +260,7 @@ export const useAchievements = () => {
       solution
     );
 
-    const gotAllGrayStreak = computeAllGrayStreak(
+    const gotAllGrayStreak = computeAllGrayCount(
       [...previousGuesses, word],
       solution
     );

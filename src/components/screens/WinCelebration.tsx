@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { m } from "framer-motion";
 import cn from "classnames";
 import VagudleIcon from "@/assets/icons/vagudle.svg?react";
@@ -131,6 +131,11 @@ export function WinCelebration({ word, onDone }: Props) {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [visible, setVisible] = useState(true);
   const [isEntranceAnimating, setIsEntranceAnimating] = useState(true);
+  const onDoneRef = useRef(onDone);
+
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
   const cellSize = Math.min(
     72,
@@ -177,13 +182,16 @@ export function WinCelebration({ word, onDone }: Props) {
       ENTRANCE_ANIMATION_MS
     );
     const fadeTimer = setTimeout(() => setVisible(false), FADE_OUT_AT_MS);
-    const doneTimer = setTimeout(onDone, CELEBRATION_DURATION_MS);
+    const doneTimer = setTimeout(
+      () => onDoneRef.current(),
+      CELEBRATION_DURATION_MS
+    );
     return () => {
       clearTimeout(entranceTimer);
       clearTimeout(fadeTimer);
       clearTimeout(doneTimer);
     };
-  }, [onDone]);
+  }, []);
 
   return (
     <m.div

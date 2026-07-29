@@ -70,6 +70,9 @@ const ICON_POOL: string[] = Object.entries(emojiByChar).reduce<string[]>(
   []
 );
 
+const randomIcon = (): string =>
+  ICON_POOL[Math.floor(Math.random() * ICON_POOL.length)];
+
 interface EmojiParticle {
   id: number;
   icon: string;
@@ -97,7 +100,7 @@ const buildParticles = (): EmojiParticle[] => {
   );
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    icon: ICON_POOL[Math.floor(Math.random() * ICON_POOL.length)],
+    icon: randomIcon(),
     x: Math.random() * 100,
     size: SIZE_MIN + Math.random() * (SIZE_MAX - SIZE_MIN),
     fallDuration:
@@ -134,53 +137,77 @@ const createParticlesStore = () => {
   };
 };
 
-const EmojiItem = ({ particle }: { particle: EmojiParticle }) => (
-  <m.img
-    src={`${TWEMOJI_BASE}/${particle.icon}.svg`}
-    alt=""
-    decoding="async"
-    style={{
-      position: "absolute",
-      left: `${particle.x}%`,
-      top: -particle.size,
-      width: particle.size,
-      height: particle.size,
-      opacity: particle.opacity,
-      willChange: "transform",
-    }}
-    animate={{
-      y: ["0vh", "110vh"],
-      x: [
-        -particle.swayAmplitude,
-        particle.swayAmplitude,
-        -particle.swayAmplitude,
-      ],
-      rotate: ENABLE_ROTATION
-        ? particle.rotationDirection === 1
-          ? [0, 360]
-          : [360, 0]
-        : 0,
-    }}
-    transition={{
-      y: {
-        duration: particle.fallDuration,
-        delay: particle.fallDelay,
-        repeat: Infinity,
-        ease: "linear",
-      },
-      x: {
-        duration: particle.swayDuration,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-      rotate: {
-        duration: particle.rotationDuration,
-        repeat: Infinity,
-        ease: "linear",
-      },
-    }}
-  />
-);
+const EmojiItem = ({ particle }: { particle: EmojiParticle }) => {
+  const [icon, setIcon] = useState(randomIcon);
+  const [cycleId, setCycleId] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const delay = cycleId === 0 ? particle.fallDelay : 0;
+  const swayRepeat = Math.max(
+    1,
+    Math.round(particle.fallDuration / particle.swayDuration)
+  );
+  const rotationRepeat = Math.max(
+    1,
+    Math.round(particle.fallDuration / particle.rotationDuration)
+  );
+
+  return (
+    <m.img
+      key={cycleId}
+      src={`${TWEMOJI_BASE}/${icon}.svg`}
+      alt=""
+      decoding="async"
+      style={{
+        position: "absolute",
+        left: `${particle.x}%`,
+        top: -particle.size,
+        width: particle.size,
+        height: particle.size,
+        opacity: particle.opacity,
+        willChange: isAnimating ? "transform" : "auto",
+      }}
+      onAnimationStart={() => setIsAnimating(true)}
+      onAnimationComplete={() => {
+        setIsAnimating(false);
+        setIcon(randomIcon());
+        setCycleId((id) => id + 1);
+      }}
+      animate={{
+        y: ["0vh", "110vh"],
+        x: [
+          -particle.swayAmplitude,
+          particle.swayAmplitude,
+          -particle.swayAmplitude,
+        ],
+        rotate: ENABLE_ROTATION
+          ? particle.rotationDirection === 1
+            ? [0, 360]
+            : [360, 0]
+          : 0,
+      }}
+      transition={{
+        y: {
+          duration: particle.fallDuration,
+          delay,
+          ease: "linear",
+        },
+        x: {
+          duration: particle.swayDuration,
+          repeat: swayRepeat,
+          ease: "easeInOut",
+        },
+        rotate: ENABLE_ROTATION
+          ? {
+              duration: particle.rotationDuration,
+              repeat: rotationRepeat,
+              ease: "linear",
+            }
+          : { duration: 0 },
+      }}
+    />
+  );
+};
 
 export const EmojiRain = () => {
   const [particlesStore] = useState(() => createParticlesStore());

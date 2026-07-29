@@ -109,7 +109,8 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "process_of_elimination",
     title: "Process of Elimination",
-    description: "Guess 3 different words in a row with every letter incorrect",
+    description:
+      "Guess 3 different words in the same game with every letter incorrect",
     hidden: false,
     check: (ctx) => ctx.gotAllGrayStreak,
   },
