@@ -53,6 +53,11 @@ const isCloseCallGuess = (solution: string, guess: string): boolean => {
   return grayCount === 1 && greenCount === statuses.length - 1;
 };
 
+const isAllGrayGuess = (solution: string, guess: string): boolean => {
+  const statuses = getGuessStatuses(solution, guess);
+  return statuses.every((s) => s === "absent");
+};
+
 export const computeNoLetterReuseWin = (guesses: string[]): boolean => {
   if (guesses.length < 3) return false;
 
@@ -103,6 +108,30 @@ export const computeCloseCallStreak = (
     const normalized = guess.toLowerCase();
 
     if (isCloseCallGuess(solution, guess)) {
+      if (streak.has(normalized)) {
+        streak = new Set([normalized]);
+      } else {
+        streak.add(normalized);
+      }
+      if (streak.size >= 3) return true;
+    } else {
+      streak = new Set();
+    }
+  }
+
+  return false;
+};
+
+export const computeAllGrayStreak = (
+  guessHistory: string[],
+  solution: string
+): boolean => {
+  let streak = new Set<string>();
+
+  for (const guess of guessHistory) {
+    const normalized = guess.toLowerCase();
+
+    if (isAllGrayGuess(solution, guess)) {
       if (streak.has(normalized)) {
         streak = new Set([normalized]);
       } else {
@@ -208,6 +237,7 @@ export const useAchievements = () => {
       gotCloseCallStreak: false,
       bestCurrentStreak: getBestCurrentStreak(),
       spelledDuckVertically: computeDuckVerticalSpell(event.guesses),
+      gotAllGrayStreak: false,
     };
 
     return commitProgress(base, next, ctx);
@@ -238,6 +268,11 @@ export const useAchievements = () => {
       solution
     );
 
+    const gotAllGrayStreak = computeAllGrayStreak(
+      [...previousGuesses, word],
+      solution
+    );
+
     const spelledDuckVertically = computeDuckVerticalSpell([
       ...previousGuesses,
       word,
@@ -255,6 +290,7 @@ export const useAchievements = () => {
       gotCloseCallStreak,
       bestCurrentStreak: getBestCurrentStreak(),
       spelledDuckVertically,
+      gotAllGrayStreak,
     };
 
     const next: AchievementProgress = { ...base };

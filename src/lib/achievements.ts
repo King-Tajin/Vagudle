@@ -10,6 +10,7 @@ export type AchievementContext = {
   gotCloseCallStreak: boolean;
   bestCurrentStreak: number;
   spelledDuckVertically: boolean;
+  gotAllGrayStreak: boolean;
 };
 
 export type Achievement = {
@@ -104,6 +105,13 @@ export const ACHIEVEMENTS: Achievement[] = [
       "Guess 3 different words in a row with only one letter incorrect",
     hidden: true,
     check: (ctx) => ctx.gotCloseCallStreak,
+  },
+  {
+    id: "process_of_elimination",
+    title: "Process of Elimination",
+    description: "Guess 3 different words in a row with every letter incorrect",
+    hidden: false,
+    check: (ctx) => ctx.gotAllGrayStreak,
   },
   {
     id: "word_connoisseur",
