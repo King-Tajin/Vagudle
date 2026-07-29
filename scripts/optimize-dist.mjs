@@ -2,12 +2,27 @@
 import { readdir, readFile, writeFile, stat, rename } from "fs/promises";
 import path from "path";
 import { execFile } from "child_process";
-import { promisify } from "util";
 import { optimize } from "svgo";
 import ffmpegPath from "ffmpeg-static";
 import { exiftool } from "exiftool-vendored";
 
-const execFileAsync = promisify(execFile);
+const runFfmpeg = (file, args) =>
+  new Promise((resolve, reject) => {
+    execFile(file, args, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve({ stdout, stderr });
+    });
+  });
+
+if (!ffmpegPath) {
+  throw new Error(
+    "optimize-dist: ffmpeg-static did not return a binary for this platform"
+  );
+}
+const ffmpegBinary = ffmpegPath;
 
 const distDir = path.resolve(process.cwd(), "dist");
 const backgroundsDir = path.join(distDir, "backgrounds");
@@ -60,7 +75,7 @@ const minifyJson = async (filePath) => {
 const stripVideoMetadata = async (filePath) => {
   const before = (await stat(filePath)).size;
   const tempPath = `${filePath}.stripped${path.extname(filePath)}`;
-  await execFileAsync(ffmpegPath, [
+  await runFfmpeg(ffmpegBinary, [
     "-y",
     "-i",
     filePath,
