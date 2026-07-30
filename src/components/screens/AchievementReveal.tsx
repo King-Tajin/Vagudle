@@ -4,6 +4,7 @@ import ChestBase from "@/assets/icons/chest-base.svg";
 import ChestDoorLeft from "@/assets/icons/chest-door-left.svg";
 import ChestDoorRight from "@/assets/icons/chest-door-right.svg";
 import RibbonIcon from "@/assets/icons/ribon.svg?react";
+import { playRattle, playBurstSound } from "../../lib/sounds";
 
 const TIME_SCALE = 1.6;
 
@@ -86,116 +87,6 @@ type Dust = {
 
 const GOLD = "#FFD700";
 const AMBER = "#FFBF00";
-
-function playRattle(progress: number) {
-  try {
-    const Ctx =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext;
-    if (!Ctx) return;
-    const ctx = new Ctx();
-    const t = ctx.currentTime;
-
-    const bufferSize = Math.floor(ctx.sampleRate * 0.06);
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-    const noise = ctx.createBufferSource();
-    noise.buffer = buffer;
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = "bandpass";
-    noiseFilter.frequency.value = 700 + progress * 1400;
-    noiseFilter.Q.value = 1.1;
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.0001, t);
-    noiseGain.gain.linearRampToValueAtTime(0.1 + progress * 0.12, t + 0.006);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.055);
-    noise.connect(noiseFilter).connect(noiseGain).connect(ctx.destination);
-    noise.start(t);
-    noise.stop(t + 0.06);
-
-    const knock = ctx.createOscillator();
-    const knockGain = ctx.createGain();
-    knock.type = "triangle";
-    knock.frequency.setValueAtTime(85 + progress * 35, t);
-    knock.frequency.exponentialRampToValueAtTime(55, t + 0.05);
-    knockGain.gain.setValueAtTime(0.0001, t);
-    knockGain.gain.linearRampToValueAtTime(0.09 + progress * 0.06, t + 0.008);
-    knockGain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-    knock.connect(knockGain).connect(ctx.destination);
-    knock.start(t);
-    knock.stop(t + 0.07);
-
-    setTimeout(() => {
-      try {
-        void ctx.close();
-      } catch {}
-    }, 200);
-  } catch {}
-}
-
-function playBurstSound() {
-  try {
-    const Ctx =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext;
-    if (!Ctx) return;
-    const ctx = new Ctx();
-    const t = ctx.currentTime;
-
-    const boom = ctx.createOscillator();
-    const boomGain = ctx.createGain();
-    boom.type = "sine";
-    boom.frequency.setValueAtTime(110, t);
-    boom.frequency.exponentialRampToValueAtTime(35, t + 0.35);
-    boomGain.gain.setValueAtTime(0.0001, t);
-    boomGain.gain.linearRampToValueAtTime(0.45, t + 0.03);
-    boomGain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-    boom.connect(boomGain).connect(ctx.destination);
-    boom.start(t);
-    boom.stop(t + 0.42);
-
-    const creak = ctx.createOscillator();
-    const creakGain = ctx.createGain();
-    creak.type = "sawtooth";
-    creak.frequency.setValueAtTime(180, t);
-    creak.frequency.exponentialRampToValueAtTime(90, t + 0.22);
-    creakGain.gain.setValueAtTime(0.0001, t);
-    creakGain.gain.linearRampToValueAtTime(0.1, t + 0.02);
-    creakGain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-    creak.connect(creakGain).connect(ctx.destination);
-    creak.start(t);
-    creak.stop(t + 0.27);
-
-    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5];
-    notes.forEach((freq, i) => {
-      const start = t + 0.28 + i * 0.08;
-      const dur = i === notes.length - 1 ? 0.6 : 0.14;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(6000, start);
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, start);
-      gain.gain.setValueAtTime(0, start);
-      gain.gain.linearRampToValueAtTime(0.17, start + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
-      osc.connect(gain).connect(filter).connect(ctx.destination);
-      osc.start(start);
-      osc.stop(start + dur);
-    });
-
-    setTimeout(() => {
-      try {
-        void ctx.close();
-      } catch {}
-    }, 1200);
-  } catch {}
-}
 
 const buildShakeSteps = () => {
   const rotate: number[] = [0];

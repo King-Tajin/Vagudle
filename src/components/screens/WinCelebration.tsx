@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { m } from "framer-motion";
 import cn from "classnames";
 import VagudleIcon from "@/assets/icons/vagudle.svg?react";
+import { playWinSound } from "../../lib/sounds";
 import "./WinCelebration.css";
 
 const PURPLES = [
@@ -60,66 +61,6 @@ function generateBurst(
       burstDelay: delayMs / 1000,
     };
   });
-}
-
-function playWinSound() {
-  try {
-    const Ctx =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext;
-    if (!Ctx) return;
-    const ctx = new Ctx();
-
-    const playTone = (freq: number, start: number, dur: number, vol = 0.18) => {
-      const osc = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      const g = ctx.createGain();
-      const g2 = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(4000, start);
-      filter.frequency.exponentialRampToValueAtTime(1800, start + dur);
-      filter.Q.setValueAtTime(0.4, start);
-
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, start);
-
-      osc2.type = "sine";
-      osc2.frequency.setValueAtTime(freq * 2, start);
-
-      g.gain.setValueAtTime(0, start);
-      g.gain.linearRampToValueAtTime(vol, start + 0.03);
-      g.gain.setValueAtTime(vol * 0.6, start + dur * 0.35);
-      g.gain.exponentialRampToValueAtTime(0.001, start + dur);
-
-      g2.gain.setValueAtTime(0, start);
-      g2.gain.linearRampToValueAtTime(vol * 0.12, start + 0.03);
-      g2.gain.exponentialRampToValueAtTime(0.001, start + dur);
-
-      osc.connect(g).connect(filter).connect(ctx.destination);
-      osc2.connect(g2).connect(filter);
-      osc.start(start);
-      osc.stop(start + dur);
-      osc2.start(start);
-      osc2.stop(start + dur);
-    };
-
-    const t = ctx.currentTime;
-    playTone(523.25, t, 0.17);
-    playTone(659.25, t + 0.14, 0.17);
-    playTone(783.99, t + 0.28, 0.17);
-    playTone(1046.5, t + 0.43, 0.65, 0.22);
-    playTone(783.99, t + 0.43, 0.65, 0.1);
-    playTone(659.25, t + 0.43, 0.65, 0.06);
-
-    setTimeout(() => {
-      try {
-        void ctx.close();
-      } catch {}
-    }, 2500);
-  } catch {}
 }
 
 type Props = {

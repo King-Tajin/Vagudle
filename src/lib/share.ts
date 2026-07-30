@@ -4,6 +4,9 @@ import { GAME_TITLE } from "../constants/strings";
 import { type GameStats } from "./localStorage";
 import { DAILY_PATH } from "./daily";
 import { UAParser } from "ua-parser-js";
+import { DICT_LABELS, type ChallengeConfig } from "./challenge";
+import type { Achievement } from "./achievements";
+import { BACKGROUNDS } from "./backgrounds";
 
 const parser = new UAParser();
 const browser = parser.getBrowser();
@@ -147,4 +150,57 @@ export const shareStats = async (
     textToShare,
     handleShareToClipboard
   );
+};
+
+export const shareChallengeInvite = async (
+  config: ChallengeConfig,
+  handleShareToClipboard: () => void
+) => {
+  const text =
+    `I'm challenging you to a custom Vagudle!\n` +
+    `${config.length} letters · ${DICT_LABELS[config.dict]} dictionary · ${
+      config.guesses
+    } guesses\n` +
+    `(Results won't affect your stats)\n` +
+    window.location.href;
+  try {
+    if (
+      typeof navigator.share === "function" &&
+      navigator.canShare?.({ text })
+    ) {
+      await navigator.share({ title: "Vagudle Challenge", text });
+      return;
+    }
+  } catch {}
+  try {
+    await navigator.clipboard.writeText(text);
+    handleShareToClipboard();
+  } catch {}
+};
+
+export const shareAchievement = async (
+  achievement: Achievement,
+  handleShareToClipboard: () => void
+) => {
+  const bgUnlock = BACKGROUNDS.find(
+    (b) => b.requiresAchievementId === achievement.id
+  );
+  const text =
+    `🏆 Achievement Unlocked: ${achievement.title}\n` +
+    `${achievement.description}\n` +
+    (bgUnlock ? `Unlocked background: ${bgUnlock.desktopLabel}\n` : "") +
+    window.location.href;
+  try {
+    if (
+      typeof navigator.share === "function" &&
+      navigator.canShare?.({ text })
+    ) {
+      await navigator.share({ title: "Vagudle Achievement", text });
+      return;
+    }
+  } catch {}
+  try {
+    await navigator.clipboard.writeText(text);
+    handleShareToClipboard();
+  } catch {}
 };
