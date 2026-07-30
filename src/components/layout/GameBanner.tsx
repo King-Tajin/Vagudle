@@ -1,10 +1,10 @@
 import { m } from "framer-motion";
 import { BookOpen, Hash, Target, Swords, CalendarDays } from "lucide-react";
-import { DICT_LABELS } from "../lib/challenge";
-import type { ChallengeConfig } from "../lib/challenge";
-import type { DuelConfig } from "../lib/duel";
-import type { DailyConfig } from "../lib/daily";
-import type { GameMode } from "../lib/gameMode";
+import { DICT_LABELS } from "../../lib/challenge";
+import type { ChallengeConfig } from "../../lib/challenge";
+import type { DuelConfig } from "../../lib/duel";
+import type { DailyConfig } from "../../lib/daily";
+import type { GameMode } from "../../lib/gameMode";
 import React from "react";
 
 const BannerFrame = ({ children }: { children: React.ReactNode }) => (

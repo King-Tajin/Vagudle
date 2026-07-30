@@ -13,8 +13,8 @@ import {
   InformationCircleIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
-import { openExternalLink } from "../lib/discord";
-import type { GameMode } from "../lib/gameMode";
+import { openExternalLink } from "../../lib/discord";
+import type { GameMode } from "../../lib/gameMode";
 import MudskipperIcon from "@/assets/icons/mudskipper.svg?react";
 
 const SETTINGS_NUDGE_KEY = "vagudle-settings-nudge-dismissed";

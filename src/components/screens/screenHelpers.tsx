@@ -1,5 +1,5 @@
 import { m } from "framer-motion";
-import { Navbar } from "../Navbar";
+import { Navbar } from "../layout/Navbar";
 
 export const emptyNavbar = (isActivityMode = false) => (
   <Navbar

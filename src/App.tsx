@@ -8,17 +8,20 @@ import React, {
   Suspense,
 } from "react";
 import { m } from "framer-motion";
-import RibbonIcon from "./assets/icons/ribon.svg?react";
 
 import { Grid } from "./components/grid/Grid";
 import { Keyboard } from "./components/keyboard/Keyboard";
 import { AlertContainer } from "./components/Alert";
-import { Navbar } from "./components/Navbar";
+import { Navbar } from "./components/layout/Navbar";
 import { BackgroundStage } from "./components/backgrounds/BackgroundStage";
-import { GameBanner } from "./components/GameBanner";
-import { DisclaimerBanner } from "./components/DisclaimerBanner";
-import { AttributionButton } from "./components/AttributionButton";
+import { GameBanner } from "./components/layout/GameBanner";
+import { DisclaimerBanner } from "./components/layout/DisclaimerBanner";
+import { AttributionButton } from "./components/layout/AttributionButton";
 import { GameModals } from "./components/screens/GameModals";
+import { AchievementTrayToggle } from "./components/overlays/AchievementTrayToggle";
+import { CloudSaveConflictOverlay } from "./components/overlays/CloudSaveConflictOverlay";
+import { WinCelebrationOverlay } from "./components/overlays/WinCelebrationOverlay";
+import { AchievementRevealOverlay } from "./components/overlays/AchievementRevealOverlay";
 import { useAchievements } from "./hooks/useAchievements";
 import {
   BACKGROUNDS,
@@ -29,20 +32,20 @@ import type { Achievement } from "./lib/achievements";
 import type { CharStatus } from "./lib/statuses";
 
 import {
-  WinCelebration,
-  AchievementReveal,
   MalformedChallengeScreen,
   MalformedDuelScreen,
   ExpiredDuelScreen,
   ActivityNotFoundScreen,
   ActivityWrongPlayerScreen,
   ActivityServerErrorScreen,
-  CloudSaveConflictModal,
 } from "./lazyComponents";
 
 import { LoadingScreen } from "./components/screens/GameScreens";
 
 import { useAlert } from "./context/alert-context";
+import { useIsMobile } from "./hooks/useIsMobile";
+import { usePageChrome } from "./hooks/usePageChrome";
+import { useDiscourageInAppBrowser } from "./hooks/useDiscourageInAppBrowser";
 import { useTilePainting } from "./hooks/useTilePainting";
 import { useDuelResult } from "./hooks/useDuelResult";
 import { useGameOutcome } from "./hooks/useGameOutcome";
@@ -52,14 +55,14 @@ import { useGuessInput } from "./hooks/useGuessInput";
 import { useSaveGameState } from "./hooks/useSaveGameState";
 import { useCrossTabSync } from "./hooks/useCrossTabSync";
 import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
+import { useDailyMode } from "./hooks/useDailyMode";
+import { useLeaderboardModal } from "./hooks/useLeaderboardModal";
 import {
   completeEmailLinkSignIn,
   completeDiscordSignIn,
   useCloudAuth,
 } from "./hooks/useCloudAuth";
 import { useCloudSync } from "./hooks/useCloudSync";
-import { getIdTokenForCurrentUser } from "./lib/cloudSync";
-import { fetchUsernameStatus } from "./lib/username";
 
 import { getRandomWord } from "./lib/words";
 import { getStatusesFromCellColors } from "./lib/statuses";
@@ -70,117 +73,26 @@ import {
 } from "./lib/localStorage";
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
-import { shareDailyResult } from "./lib/share";
-import {
-  fetchDailyConfig,
-  getDailyNumber,
-  loadDailyProgress,
-  saveDailyResult,
-  loadDailyResult,
-  clearDailyProgress,
-  recordDailyStats,
-  loadDailyStats,
-  pruneOldDailyEntries,
-  submitDailyResult,
-  DAILY_PATH,
-  type DailyConfig,
-  type DailyResult,
-} from "./lib/daily";
+import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
 import type { GameMode } from "./lib/gameMode";
+import {
+  gameRoundReducer,
+  type GameRoundState,
+} from "./state/gameRoundReducer";
 
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
-  DISCOURAGE_INAPP_BROWSERS,
 } from "./constants/settings";
-import {
-  GAME_COPIED_MESSAGE,
-  DISCOURAGE_INAPP_BROWSER_TEXT,
-} from "./constants/strings";
-
-// icon (w-14 = 56px) + padding (p-2 = 8px * 2) + right border (border-2 = 2px) = 74px
-const ACHIEVEMENT_TRAY_WIDTH = 74;
+import { GAME_COPIED_MESSAGE } from "./constants/strings";
 
 const challengeParam = new URLSearchParams(window.location.search).get(
   "challenge"
 );
 const duelParam = new URLSearchParams(window.location.search).get("duel");
 const isDailyRoute = window.location.pathname === DAILY_PATH;
-
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
-  useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 640);
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-  return isMobile;
-};
-
-type GameRoundState = {
-  solution: string;
-  guesses: string[];
-  cellColors: { [key: string]: CharStatus };
-  currentGuess: string;
-  currentRowClass: string;
-  isGameWon: boolean;
-  isGameLost: boolean;
-  isRevealing: boolean;
-  isCelebrating: boolean;
-};
-
-type GameRoundAction =
-  | { field: "solution"; value: React.SetStateAction<string> }
-  | { field: "guesses"; value: React.SetStateAction<string[]> }
-  | {
-      field: "cellColors";
-      value: React.SetStateAction<{ [key: string]: CharStatus }>;
-    }
-  | { field: "currentGuess"; value: React.SetStateAction<string> }
-  | { field: "currentRowClass"; value: React.SetStateAction<string> }
-  | { field: "isGameWon"; value: React.SetStateAction<boolean> }
-  | { field: "isGameLost"; value: React.SetStateAction<boolean> }
-  | { field: "isRevealing"; value: React.SetStateAction<boolean> }
-  | { field: "isCelebrating"; value: React.SetStateAction<boolean> };
-
-function applyGameRoundField<K extends keyof GameRoundState>(
-  state: GameRoundState,
-  field: K,
-  value: React.SetStateAction<GameRoundState[K]>
-): GameRoundState {
-  const nextValue = typeof value === "function" ? value(state[field]) : value;
-  return Object.is(nextValue, state[field])
-    ? state
-    : { ...state, [field]: nextValue };
-}
-
-function gameRoundReducer(
-  state: GameRoundState,
-  action: GameRoundAction
-): GameRoundState {
-  switch (action.field) {
-    case "solution":
-      return applyGameRoundField(state, "solution", action.value);
-    case "guesses":
-      return applyGameRoundField(state, "guesses", action.value);
-    case "cellColors":
-      return applyGameRoundField(state, "cellColors", action.value);
-    case "currentGuess":
-      return applyGameRoundField(state, "currentGuess", action.value);
-    case "currentRowClass":
-      return applyGameRoundField(state, "currentRowClass", action.value);
-    case "isGameWon":
-      return applyGameRoundField(state, "isGameWon", action.value);
-    case "isGameLost":
-      return applyGameRoundField(state, "isGameLost", action.value);
-    case "isRevealing":
-      return applyGameRoundField(state, "isRevealing", action.value);
-    case "isCelebrating":
-      return applyGameRoundField(state, "isCelebrating", action.value);
-  }
-}
 
 function App() {
   const {
@@ -228,7 +140,7 @@ function App() {
     isGameLost: false,
     isRevealing: false,
     isCelebrating: false,
-  });
+  } satisfies GameRoundState);
   const {
     solution,
     guesses,
@@ -300,44 +212,7 @@ function App() {
   const [isActivityWrongPlayer, setIsActivityWrongPlayer] = useState(false);
   const [isActivityServerError, setIsActivityServerError] = useState(false);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
-  const [dailyConfig, setDailyConfig] = useState<DailyConfig | null>(null);
   const [isDailyActive, setIsDailyActive] = useState(false);
-  const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
-  const [dailyModalMode, setDailyModalMode] = useState<
-    "loading" | "error" | "play" | "complete"
-  >("loading");
-  const [dailyResult, setDailyResult] = useState<DailyResult | null>(null);
-  const [dailyStats, setDailyStats] = useState(() => loadDailyStats());
-  const [isDailyScheduleModalOpen, setIsDailyScheduleModalOpen] =
-    useState(false);
-  const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
-  const [leaderboardIdToken, setLeaderboardIdToken] = useState<string | null>(
-    null
-  );
-  const [hasUsername, setHasUsername] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    if (!user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setHasUsername(null);
-      return;
-    }
-    const checkUsername = async () => {
-      const idToken = await getIdTokenForCurrentUser();
-      if (!idToken) {
-        if (!cancelled) setHasUsername(null);
-        return;
-      }
-      const status = await fetchUsernameStatus(idToken);
-      if (!cancelled) setHasUsername(status ? !!status.username : null);
-    };
-    void checkUsername();
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.uid]);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -355,7 +230,6 @@ function App() {
   const [newlyUnlockedAchievements, setNewlyUnlockedAchievements] = useState<
     Achievement[]
   >([]);
-
   const [wordLength, setWordLength] = useState(savedSettings.wordLength);
   const [hardMode, setHardMode] = useState(savedSettings.hardMode);
   const [showGrayCount, setShowGrayCount] = useState(
@@ -369,13 +243,11 @@ function App() {
   const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
     loadBackgroundId(window.innerWidth < 640)
   );
-
   const autoGrayLetters = useMemo(
     () =>
       autoGray ? computeFullyGrayLetters(solution, guesses) : new Set<string>(),
     [autoGray, solution, guesses]
   );
-
   const {
     hiddenAttributionIds,
     setHiddenAttributionIds,
@@ -384,7 +256,6 @@ function App() {
     handleAttributionHideForeverChange,
     handleRestoreHiddenAttributions,
   } = useBackgroundAttribution(backgroundId);
-
   const {
     unlockedIds,
     uniqueWordCount,
@@ -392,7 +263,6 @@ function App() {
     recordGuess,
     resetWinRecord,
   } = useAchievements();
-
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
   const duelSubmittedRef = useRef(false);
@@ -404,7 +274,6 @@ function App() {
   useEffect(() => {
     extraEffectsRef.current = extraEffects;
   }, [extraEffects]);
-
   const startNewGame = (newSolution: string) => {
     achievementCheckedRef.current = false;
     resetWinRecord();
@@ -413,45 +282,6 @@ function App() {
     setIsTrayOpen(true);
     setSolution(newSolution);
   };
-
-  const dailyLeaderboardSubmittedForRef = useRef<string | null>(null);
-
-  const submitDailyToLeaderboard = async (date: string, won: boolean) => {
-    if (!user) return;
-    if (dailyLeaderboardSubmittedForRef.current === date) return;
-    const idToken = await getIdTokenForCurrentUser();
-    if (!idToken) return;
-    const outcome = await submitDailyResult(idToken, won);
-    if (outcome === "recorded" || outcome === "already_submitted") {
-      dailyLeaderboardSubmittedForRef.current = date;
-    }
-  };
-
-  const submitPendingDailyToLeaderboard = async () => {
-    if (!user) return;
-    const config = dailyConfig ?? (await fetchDailyConfig());
-    if (!config) return;
-    const pendingResult =
-      dailyResult?.date === config.date
-        ? dailyResult
-        : loadDailyResult(config.date);
-    if (!pendingResult) return;
-    await submitDailyToLeaderboard(config.date, pendingResult.won);
-  };
-
-  useEffect(() => {
-    if (!user) return;
-    let cancelled = false;
-    const run = async () => {
-      if (!cancelled) await submitPendingDailyToLeaderboard();
-    };
-    void run();
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.uid]);
-
   const announceAchievement = (achievement: Achievement) => {
     const bg = BACKGROUNDS.find(
       (b) => b.requiresAchievementId === achievement.id
@@ -462,7 +292,6 @@ function App() {
       { durationMs: 4000 }
     );
   };
-
   const gameMode: GameMode =
     duelConfig !== null
       ? "duel"
@@ -474,15 +303,6 @@ function App() {
   const isChallengeMode = gameMode === "challenge";
   const isDuelMode = gameMode === "duel";
   const isDailyMode = gameMode === "daily";
-  const dailyNumber = dailyConfig
-    ? getDailyNumber(dailyConfig.date, dailyConfig.originDate)
-    : 0;
-  const dailyUsernameWarning = !user
-    ? "Sign in to save to the leaderboard"
-    : hasUsername === false
-      ? "Set a username to save to the leaderboard"
-      : null;
-
   useEffect(() => {
     if (
       !isGameWon ||
@@ -515,7 +335,6 @@ function App() {
     hardMode,
     recordWin,
   ]);
-
   const { onCellPaint, onRowReset, onFullReset, clearAutoGray } =
     useTilePainting({
       guesses,
@@ -525,7 +344,66 @@ function App() {
       cellColors,
       setCellColors,
     });
-
+  const {
+    dailyConfig,
+    setDailyConfig,
+    dailyResult,
+    setDailyResult,
+    dailyStats,
+    setDailyStats,
+    isDailyModalOpen,
+    setIsDailyModalOpen,
+    dailyModalMode,
+    setDailyModalMode,
+    isDailyScheduleModalOpen,
+    dailyNumber,
+    dailyUsernameWarning,
+    submitDailyToLeaderboard,
+    handleOpenDaily,
+    handlePlayDaily,
+    handleShareDaily,
+    handleCloseDaily,
+    handleCloseDailyModal,
+    handleOpenDailySchedule,
+    handleCloseDailySchedule,
+    handleViewDailyGame,
+    handleUsernameSaved,
+    handleDailyComplete,
+  } = useDailyMode({
+    user,
+    setIsDailyActive,
+    isDailyMode,
+    guesses,
+    isGameLost,
+    restoredGameRef,
+    dismissAlert,
+    showSuccessAlert,
+    setSolution,
+    setGuesses,
+    setCellColors,
+    setCurrentGuess,
+    setCurrentRowClass,
+    setIsGameWon,
+    setIsGameLost,
+  });
+  const openPostGameModal = () => {
+    if (isDuelMode) setIsDuelModalOpen(true);
+    else if (isDailyMode) setIsDailyModalOpen(true);
+    else setIsStatsModalOpen(true);
+  };
+  const handleCelebrationDone = () => {
+    setIsCelebrating(false);
+    if (achievementRevealPendingRef.current) {
+      achievementRevealPendingRef.current = false;
+      setIsRevealingAchievement(true);
+    } else {
+      openPostGameModal();
+    }
+  };
+  const handleAchievementRevealDone = () => {
+    setIsRevealingAchievement(false);
+    openPostGameModal();
+  };
   const maxChallenges =
     duelConfig?.guesses ??
     challengeConfig?.guesses ??
@@ -537,12 +415,10 @@ function App() {
         ? HARD_MODE_MAX_CHALLENGES
         : NORMAL_MODE_MAX_CHALLENGES);
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
-
   const handleSetAutoGray = (value: boolean) => {
     setAutoGray(value);
     if (!value) clearAutoGray();
   };
-
   const duelSaveStatus = useDuelResult({
     isDuelMode,
     duelToken,
@@ -553,7 +429,6 @@ function App() {
     guessCount: guesses.length,
     submittedRef: duelSubmittedRef,
   });
-
   useGameOutcome({
     isGameWon,
     isGameLost,
@@ -572,7 +447,6 @@ function App() {
     setIsStatsModalOpen,
     setIsDailyModalOpen,
   });
-
   const {
     handleNewGame,
     handleReturnToNormal,
@@ -604,7 +478,18 @@ function App() {
     setHardStats,
     dismissAlert,
   });
-
+  const {
+    isLeaderboardModalOpen,
+    leaderboardIdToken,
+    handleOpenLeaderboard,
+    handleCloseLeaderboard,
+    handleOpenSettingsFromLeaderboard,
+  } = useLeaderboardModal({
+    isDailyMode,
+    setIsDailyModalOpen,
+    setIsSettingsModalOpen,
+    setSettingsAccountJumpKey,
+  });
   const { onChar, onDelete, onEnter } = useGuessInput({
     currentGuess,
     solution,
@@ -638,27 +523,8 @@ function App() {
         newly.forEach(announceAchievement);
       }
     },
-    onDailyComplete: (won, guessCount, finalGuesses, finalCellColors) => {
-      if (!dailyConfig) return;
-      const result: DailyResult = {
-        date: dailyConfig.date,
-        won,
-        guessCount,
-        maxGuesses: maxChallenges,
-        wordLength: dailyConfig.wordLength,
-        completedAt: Date.now(),
-        guesses: finalGuesses,
-        cellColors: finalCellColors,
-      };
-      saveDailyResult(result);
-      setDailyResult(result);
-      setDailyStats(recordDailyStats(dailyConfig.date, won));
-      clearDailyProgress(dailyConfig.date);
-      setDailyModalMode("complete");
-      void submitDailyToLeaderboard(dailyConfig.date, won);
-    },
+    onDailyComplete: handleDailyComplete,
   });
-
   useGameInitialization({
     challengeParam,
     duelParam,
@@ -696,7 +562,6 @@ function App() {
     },
     showErrorAlert,
   });
-
   useSaveGameState({
     isLoading,
     solution,
@@ -716,7 +581,6 @@ function App() {
     isDailyMode,
     dailyConfig,
   });
-
   useCrossTabSync({
     isLoading,
     isMobile,
@@ -751,185 +615,12 @@ function App() {
     setBackgroundId,
     setHiddenAttributionIds,
   });
-
-  useEffect(() => {
-    document.documentElement.classList.add("dark");
-  }, []);
-
-  useEffect(() => {
-    document.title = isDuelMode
-      ? "Vagudle - Duel"
-      : isChallengeMode
-        ? "Vagudle - Challenge"
-        : isDailyMode
-          ? "Vagudle - Daily"
-          : "Vagudle";
-    return () => {
-      document.title = "Vagudle";
-    };
-  }, [isChallengeMode, isDuelMode, isDailyMode]);
-
-  useEffect(() => {
-    if (!DISCOURAGE_INAPP_BROWSERS) return;
-    let cancelled = false;
-    void import("./lib/browser").then(({ isInAppBrowser }) => {
-      if (!cancelled && isInAppBrowser()) {
-        showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
-          persist: false,
-          durationMs: 7000,
-        });
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [showErrorAlert]);
-
-  const handleOpenDaily = async () => {
-    if (window.location.pathname !== DAILY_PATH) {
-      window.history.pushState({}, "", DAILY_PATH);
-    }
-    setIsDailyModalOpen(true);
-    setDailyModalMode("loading");
-    const config = await fetchDailyConfig();
-    if (!config) {
-      setDailyModalMode("error");
-      return;
-    }
-    setDailyConfig(config);
-
-    const existingResult = loadDailyResult(config.date);
-    if (existingResult) {
-      setDailyResult(existingResult);
-      setDailyModalMode("complete");
-      return;
-    }
-    setDailyModalMode("play");
-  };
-
-  const handlePlayDaily = () => {
-    if (!dailyConfig) return;
-    const dailyMaxChallenges = dailyConfig.hardMode
-      ? HARD_MODE_MAX_CHALLENGES
-      : NORMAL_MODE_MAX_CHALLENGES;
-    const progress = loadDailyProgress(dailyConfig.date);
-    const restoredGuesses = progress?.guesses ?? [];
-    const won = restoredGuesses.some(
-      (guess) => guess.toUpperCase() === dailyConfig.word
-    );
-    const lost = !won && restoredGuesses.length >= dailyMaxChallenges;
-
-    dismissAlert();
-    setIsDailyActive(true);
-    setSolution(dailyConfig.word);
-    setGuesses(restoredGuesses);
-    setCellColors(
-      (progress?.cellColors as { [key: string]: CharStatus }) ?? {}
-    );
-    setCurrentGuess("");
-    setCurrentRowClass("");
-    if (won || lost) restoredGameRef.current = true;
-    setIsGameWon(won);
-    setIsGameLost(lost);
-    setIsDailyModalOpen(false);
-
-    if (won || lost) {
-      const result: DailyResult = {
-        date: dailyConfig.date,
-        won,
-        guessCount: restoredGuesses.length,
-        maxGuesses: dailyMaxChallenges,
-        wordLength: dailyConfig.wordLength,
-        completedAt: Date.now(),
-        guesses: restoredGuesses,
-        cellColors: progress?.cellColors,
-      };
-      saveDailyResult(result);
-      setDailyResult(result);
-      setDailyStats(recordDailyStats(dailyConfig.date, won));
-      clearDailyProgress(dailyConfig.date);
-      void submitDailyToLeaderboard(dailyConfig.date, won);
-    }
-  };
-
-  const handleShareDaily = () => {
-    if (!dailyConfig) return;
-    void shareDailyResult(
-      dailyConfig.word,
-      guesses,
-      isGameLost,
-      dailyNumber,
-      dailyResult?.maxGuesses ?? maxChallenges,
-      () => showSuccessAlert(GAME_COPIED_MESSAGE)
-    );
-  };
-
-  const handleCloseDaily = () => {
-    setIsDailyModalOpen(false);
-    if (isDailyMode) {
-      handleReturnToNormal();
-    } else if (window.location.pathname === DAILY_PATH) {
-      window.history.pushState({}, "", "/");
-    }
-  };
-
-  const handleCloseDailyModal = () => {
-    setIsDailyModalOpen(false);
-  };
-
-  const handleOpenDailySchedule = () => {
-    setIsDailyScheduleModalOpen(true);
-  };
-
-  const handleCloseDailySchedule = () => {
-    setIsDailyScheduleModalOpen(false);
-  };
-
-  const handleViewDailyGame = () => {
-    if (!dailyConfig || !dailyResult?.guesses) return;
-    dismissAlert();
-    restoredGameRef.current = true;
-    setIsDailyActive(true);
-    setSolution(dailyConfig.word);
-    setGuesses(dailyResult.guesses);
-    setCellColors(
-      (dailyResult.cellColors as { [key: string]: CharStatus }) ?? {}
-    );
-    setCurrentGuess("");
-    setCurrentRowClass("");
-    setIsGameWon(dailyResult.won);
-    setIsGameLost(!dailyResult.won);
-    setIsDailyModalOpen(false);
-  };
-
-  const handleOpenLeaderboard = async () => {
-    const idToken = await getIdTokenForCurrentUser();
-    setLeaderboardIdToken(idToken ?? null);
-    setIsDailyModalOpen(false);
-    setIsLeaderboardModalOpen(true);
-  };
-
-  const handleCloseLeaderboard = () => {
-    setIsLeaderboardModalOpen(false);
-    if (isDailyMode) setIsDailyModalOpen(true);
-  };
-
-  const handleOpenSettingsFromLeaderboard = () => {
-    setIsLeaderboardModalOpen(false);
-    setSettingsAccountJumpKey((key) => key + 1);
-    setIsSettingsModalOpen(true);
-  };
-
-  const handleUsernameSaved = async () => {
-    await submitPendingDailyToLeaderboard();
-  };
-
+  usePageChrome({ isDuelMode, isChallengeMode, isDailyMode });
+  useDiscourageInAppBrowser({ showErrorAlert });
   if (isLoading) return <LoadingScreen />;
-
   const screenFallback = (
     <div className="h-screen" style={{ background: "#0A0A0A" }} />
   );
-
   if (isActivityNotFound)
     return (
       <Suspense fallback={screenFallback}>
@@ -988,36 +679,11 @@ function App() {
         />
       )}
       {!isChallengeMode && !isDuelMode && !isDailyMode && (
-        <m.div
-          className="fixed left-0 z-20 flex items-stretch"
-          style={{ top: "calc(5rem + 6px)" }}
-          initial={false}
-          animate={{ x: isTrayOpen ? 0 : -ACHIEVEMENT_TRAY_WIDTH }}
-          transition={{ type: "spring", stiffness: 280, damping: 28 }}
-        >
-          <button
-            type="button"
-            className="p-2 flex items-center justify-center bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 transition-colors"
-            style={{ borderLeft: "none", borderRadius: 0 }}
-            onClick={() => setIsAchievementsModalOpen(true)}
-            aria-label="Achievements"
-          >
-            <RibbonIcon className="w-14 h-14" />
-          </button>
-          <button
-            type="button"
-            className="flex items-center justify-center px-1.5 bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 hover:bg-obsidian-700 transition-colors text-crown-gold"
-            style={{ borderLeft: "none", borderRadius: "0 6px 6px 0" }}
-            onClick={() => setIsTrayOpen((prev) => !prev)}
-            aria-label={
-              isTrayOpen ? "Hide achievements tray" : "Show achievements tray"
-            }
-          >
-            <span style={{ fontSize: "16px", lineHeight: 1 }}>
-              {isTrayOpen ? "‹" : "›"}
-            </span>
-          </button>
-        </m.div>
+        <AchievementTrayToggle
+          isTrayOpen={isTrayOpen}
+          onToggleTray={() => setIsTrayOpen((prev) => !prev)}
+          onOpenAchievements={() => setIsAchievementsModalOpen(true)}
+        />
       )}
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
@@ -1039,7 +705,6 @@ function App() {
           >
             VAGUDLE
           </m.p>
-
           <GameBanner
             gameMode={gameMode}
             challengeConfig={challengeConfig}
@@ -1048,7 +713,6 @@ function App() {
             dailyNumber={dailyNumber}
             usernameWarning={dailyUsernameWarning}
           />
-
           <Grid
             solution={solution}
             guesses={guesses}
@@ -1064,7 +728,6 @@ function App() {
             autoGray={autoGray}
           />
         </div>
-
         <Keyboard
           onChar={onChar}
           onDelete={onDelete}
@@ -1074,7 +737,6 @@ function App() {
           isRevealing={isRevealing}
           containerRef={keyboardRef}
         />
-
         <GameModals
           solution={solution}
           guesses={guesses}
@@ -1166,49 +828,23 @@ function App() {
           isAchievementsModalOpen={isAchievementsModalOpen}
           handleCloseAchievements={() => setIsAchievementsModalOpen(false)}
         />
-
         <AlertContainer />
       </div>
       {pendingCloudSave && (
-        <Suspense fallback={null}>
-          <CloudSaveConflictModal
-            cloudSave={pendingCloudSave}
-            isMobile={isMobile}
-            onResolved={resolvePendingCloudSave}
-          />
-        </Suspense>
+        <CloudSaveConflictOverlay
+          cloudSave={pendingCloudSave}
+          isMobile={isMobile}
+          onResolved={resolvePendingCloudSave}
+        />
       )}
       {isCelebrating && (
-        <Suspense fallback={null}>
-          <WinCelebration
-            word={solution}
-            onDone={() => {
-              setIsCelebrating(false);
-              if (achievementRevealPendingRef.current) {
-                achievementRevealPendingRef.current = false;
-                setIsRevealingAchievement(true);
-              } else if (isDuelMode) {
-                setIsDuelModalOpen(true);
-              } else if (isDailyMode) {
-                setIsDailyModalOpen(true);
-              } else {
-                setIsStatsModalOpen(true);
-              }
-            }}
-          />
-        </Suspense>
+        <WinCelebrationOverlay
+          solution={solution}
+          onDone={handleCelebrationDone}
+        />
       )}
       {isRevealingAchievement && (
-        <Suspense fallback={null}>
-          <AchievementReveal
-            onDone={() => {
-              setIsRevealingAchievement(false);
-              if (isDuelMode) setIsDuelModalOpen(true);
-              else if (isDailyMode) setIsDailyModalOpen(true);
-              else setIsStatsModalOpen(true);
-            }}
-          />
-        </Suspense>
+        <AchievementRevealOverlay onDone={handleAchievementRevealDone} />
       )}
     </div>
   );

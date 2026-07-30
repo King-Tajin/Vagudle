@@ -9,7 +9,7 @@ import { getRandomWord } from "../lib/words";
 import { DAILY_PATH } from "../lib/daily";
 import type React from "react";
 
-const handleReturnToNormal = () => {
+export const handleReturnToNormal = () => {
   const isOnDailyRoute = window.location.pathname === DAILY_PATH;
   window.location.href = isOnDailyRoute
     ? `${window.location.origin}/`
