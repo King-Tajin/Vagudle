@@ -9,33 +9,10 @@ export default {
   ignore: {
     overrides: [
       {
-        // Uses a seeded PRNG for decorative particle placement, not anything security-sensitive.
-        files: ["**/src/components/backgrounds/FlakeRain.tsx"],
-        rules: ["react-doctor/insecure-crypto-risk"],
-      },
-      {
         // Cleanup already clears every timer/interval pushed into local arrays; the rule
         // can't trace timers registered inside nested closures.
         files: ["**/src/components/screens/AchievementReveal.tsx"],
         rules: ["react-doctor/effect-needs-cleanup"],
-      },
-      {
-        // State setters here run inside timers/async callbacks for deferred UI updates,
-        // not as pure derivations during render.
-        files: [
-          "**/src/App.tsx",
-          "**/src/components/backgrounds/DuckParade.tsx",
-          "**/src/components/modals/ChallengeCreatorModal.tsx",
-          "**/src/components/modals/SettingsModal.tsx",
-          "**/src/context/AlertContext.tsx",
-          "**/src/hooks/useAchievements.ts",
-        ],
-        rules: ["react-doctor/no-impure-state-updater"],
-      },
-      {
-        // Tiny pixel-font labels are an intentional part of the retro badge styling.
-        files: ["**/src/components/modals/InfoModal.tsx"],
-        rules: ["react-doctor/no-tiny-text"],
       },
       {
         // List positions are fixed board/grid slots that never reorder, so index keys are safe.

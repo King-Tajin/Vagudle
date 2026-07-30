@@ -17,3 +17,5 @@ minimumReleaseAgeExclude:
   - wrangler
   - miniflare
   - deslop-js
+  - workerd
+  - cloudflare
