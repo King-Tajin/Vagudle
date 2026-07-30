@@ -98,8 +98,17 @@ export default {
       {
         // Every setter after an await is already guarded by the local
         // canceled flag set in the effect's cleanup.
-        files: ["**/src/components/backgrounds/VideoBackground.tsx"],
+        files: [
+          "**/src/components/backgrounds/VideoBackground.tsx",
+          "**/src/hooks/useDuelResult.ts",
+        ],
         rules: ["react-doctor/no-set-state-after-await-in-effect"],
+      },
+      {
+        // These guards check an ignore flag for staleness after the await,
+        // not a precondition that could be checked before it.
+        files: ["**/src/hooks/useCloudSync.ts"],
+        rules: ["react-doctor/async-defer-await"],
       },
     ],
   },
