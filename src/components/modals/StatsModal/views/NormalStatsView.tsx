@@ -8,6 +8,7 @@ import {
   STATISTICS_TITLE,
   GUESS_DISTRIBUTION_TEXT,
 } from "../../../../constants/strings";
+import type { GameOutcome } from "../../../../lib/gameOutcome";
 
 const TAB_ACTIVE_STYLE = {
   background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
@@ -29,13 +30,10 @@ type Props = {
   setActiveTab: (tab: "normal" | "hard") => void;
   displayStats: GameStats;
   tabMaxChallenges: number;
-  isGameWon: boolean;
-  isCurrentTab: boolean;
+  gameOutcome: GameOutcome;
   numberOfGuessesMade: number;
-  hasGames: boolean;
   isActivityMode: boolean;
   handleShareToClipboard: () => void;
-  isGameLost: boolean;
   handleNewGame: () => void;
   solution: string;
   guesses: string[];
@@ -51,13 +49,10 @@ export const NormalStatsView = ({
   setActiveTab,
   displayStats,
   tabMaxChallenges,
-  isGameWon,
-  isCurrentTab,
+  gameOutcome,
   numberOfGuessesMade,
-  hasGames,
   isActivityMode,
   handleShareToClipboard,
-  isGameLost,
   handleNewGame,
   solution,
   guesses,
@@ -65,6 +60,8 @@ export const NormalStatsView = ({
   gameMaxChallenges,
   onOpenChallengeCreator,
 }: Props) => {
+  const hasGames = displayStats.totalGames > 0;
+  const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
   return (
     <BaseModal
       title={STATISTICS_TITLE}
@@ -102,7 +99,7 @@ export const NormalStatsView = ({
           </p>
           <Histogram
             gameStats={displayStats}
-            isGameWon={isGameWon && isCurrentTab}
+            isGameWon={gameOutcome === "won" && isCurrentTab}
             numberOfGuessesMade={numberOfGuessesMade}
             maxChallenges={tabMaxChallenges}
           />
@@ -148,7 +145,7 @@ export const NormalStatsView = ({
           </button>
         </div>
       )}
-      {(isGameLost || isGameWon) && (
+      {gameOutcome !== "playing" && (
         <>
           <div
             className={`mt-3 ${isActivityMode ? "" : "grid grid-cols-2 gap-3"}`}
@@ -195,7 +192,7 @@ export const NormalStatsView = ({
                   shareStatus(
                     solution,
                     guesses,
-                    isGameLost,
+                    gameOutcome === "lost",
                     handleShareToClipboard,
                     hardMode,
                     gameMaxChallenges

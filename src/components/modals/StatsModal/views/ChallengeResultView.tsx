@@ -6,14 +6,14 @@ import {
   DICT_DESCRIPTIONS,
   type ChallengeConfig,
 } from "../../../../lib/challenge";
+import type { GameOutcome } from "../../../../lib/gameOutcome";
 
 type Props = {
   isOpen: boolean;
   handleClose: () => void;
   challengeConfig: ChallengeConfig;
   guesses: string[];
-  isGameWon: boolean;
-  isGameLost: boolean;
+  gameOutcome: GameOutcome;
   isActivityMode: boolean;
   handleReturnToNormal?: () => void;
   handleShareToClipboard: () => void;
@@ -24,13 +24,12 @@ export const ChallengeResultView = ({
   handleClose,
   challengeConfig,
   guesses,
-  isGameWon,
-  isGameLost,
+  gameOutcome,
   isActivityMode,
   handleReturnToNormal,
   handleShareToClipboard,
 }: Props) => {
-  const score = isGameLost ? "X" : guesses.length;
+  const score = gameOutcome === "lost" ? "X" : guesses.length;
   const maxG = challengeConfig.guesses;
 
   return (
@@ -72,7 +71,7 @@ export const ChallengeResultView = ({
         </div>
       </div>
 
-      {isGameWon && (
+      {gameOutcome === "won" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-lime tracking-widest">
             CHALLENGE COMPLETE!
@@ -86,7 +85,7 @@ export const ChallengeResultView = ({
           </p>
         </div>
       )}
-      {isGameLost && (
+      {gameOutcome === "lost" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-red tracking-widest">
             CHALLENGE FAILED

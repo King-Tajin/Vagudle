@@ -18,6 +18,7 @@ import type { DailyConfig, DailyResult, DailyStats } from "../../lib/daily";
 import type { BackgroundId, BackgroundDef } from "../../lib/backgrounds";
 import type { Achievement } from "../../lib/achievements";
 import type { GameMode } from "../../lib/gameMode";
+import { getGameOutcome } from "../../lib/gameOutcome";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
@@ -199,8 +200,7 @@ export const GameModals = ({
           guesses={guesses}
           gameStats={stats}
           hardGameStats={hardStats}
-          isGameLost={isGameLost}
-          isGameWon={isGameWon}
+          gameOutcome={getGameOutcome(isGameWon, isGameLost)}
           handleShareToClipboard={handleShareToClipboard}
           numberOfGuessesMade={guesses.length}
           handleNewGame={() => handleNewGame()}

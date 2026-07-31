@@ -2,6 +2,7 @@ import { BaseModal } from "../../BaseModal";
 import { RotateCcw, Hash, BookOpen, Target } from "lucide-react";
 import { DICT_LABELS, DICT_DESCRIPTIONS } from "../../../../lib/challenge";
 import type { DuelConfig } from "../../../../lib/duel";
+import type { GameOutcome } from "../../../../lib/gameOutcome";
 
 type Props = {
   isOpen: boolean;
@@ -9,8 +10,7 @@ type Props = {
   duelConfig: DuelConfig;
   solution: string;
   guesses: string[];
-  isGameWon: boolean;
-  isGameLost: boolean;
+  gameOutcome: GameOutcome;
   handleDuelReturn?: () => void;
 };
 
@@ -20,11 +20,10 @@ export const DuelResultView = ({
   duelConfig,
   solution,
   guesses,
-  isGameWon,
-  isGameLost,
+  gameOutcome,
   handleDuelReturn,
 }: Props) => {
-  const score = isGameLost ? "X" : guesses.length;
+  const score = gameOutcome === "lost" ? "X" : guesses.length;
 
   return (
     <BaseModal title="Duel Result" isOpen={isOpen} handleClose={handleClose}>
@@ -61,7 +60,7 @@ export const DuelResultView = ({
         </div>
       </div>
 
-      {isGameWon && (
+      {gameOutcome === "won" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-lime tracking-widest">
             DUEL COMPLETE!
@@ -72,7 +71,7 @@ export const DuelResultView = ({
           </p>
         </div>
       )}
-      {isGameLost && (
+      {gameOutcome === "lost" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-red tracking-widest">
             DUEL FAILED

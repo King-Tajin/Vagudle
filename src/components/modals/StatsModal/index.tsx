@@ -14,6 +14,7 @@ import type { Achievement } from "../../../lib/achievements";
 import { type BackgroundId } from "../../../lib/backgrounds";
 import type { DuelConfig } from "../../../lib/duel";
 import { playSadTrombone } from "../../../lib/sounds";
+import { type GameOutcome } from "../../../lib/gameOutcome";
 import { AchievementView } from "./views/AchievementView";
 import { DuelResultView } from "./views/DuelResultView";
 import { ChallengeResultView } from "./views/ChallengeResultView";
@@ -26,8 +27,7 @@ type Props = {
   guesses: string[];
   gameStats: GameStats;
   hardGameStats: GameStats;
-  isGameLost: boolean;
-  isGameWon: boolean;
+  gameOutcome: GameOutcome;
   handleShareToClipboard: () => void;
   numberOfGuessesMade: number;
   handleNewGame: () => void;
@@ -50,8 +50,7 @@ export const StatsModal = ({
   guesses,
   gameStats,
   hardGameStats,
-  isGameLost,
-  isGameWon,
+  gameOutcome,
   handleShareToClipboard,
   numberOfGuessesMade,
   handleNewGame,
@@ -88,7 +87,7 @@ export const StatsModal = ({
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
     if (
       isOpen &&
-      isGameLost &&
+      gameOutcome === "lost" &&
       extraEffects &&
       !hasPlayedSoundRef.current &&
       newlyUnlockedAchievements.length === 0
@@ -98,7 +97,7 @@ export const StatsModal = ({
     }
     if (!isOpen) hasPlayedSoundRef.current = false;
     return () => clearTimeout(timeoutId);
-  }, [isOpen, isGameLost, extraEffects, newlyUnlockedAchievements.length]);
+  }, [isOpen, gameOutcome, extraEffects, newlyUnlockedAchievements.length]);
 
   const showingAchievement =
     !duelConfig &&
@@ -124,8 +123,6 @@ export const StatsModal = ({
   const gameMaxChallenges = hardMode
     ? HARD_MODE_MAX_CHALLENGES
     : NORMAL_MODE_MAX_CHALLENGES;
-  const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
-  const hasGames = displayStats.totalGames > 0;
   const presetDict: ChallengeDict = hardMode ? "hard" : "normal";
   const presetGuesses: 9 | 11 = hardMode ? 9 : 11;
 
@@ -169,8 +166,7 @@ export const StatsModal = ({
         duelConfig={duelConfig}
         solution={solution}
         guesses={guesses}
-        isGameWon={isGameWon}
-        isGameLost={isGameLost}
+        gameOutcome={gameOutcome}
         handleDuelReturn={handleDuelReturn}
       />
     );
@@ -183,8 +179,7 @@ export const StatsModal = ({
         handleClose={handleClose}
         challengeConfig={challengeConfig}
         guesses={guesses}
-        isGameWon={isGameWon}
-        isGameLost={isGameLost}
+        gameOutcome={gameOutcome}
         isActivityMode={isActivityMode}
         handleReturnToNormal={handleReturnToNormal}
         handleShareToClipboard={handleShareToClipboard}
@@ -200,13 +195,10 @@ export const StatsModal = ({
       setActiveTab={setActiveTab}
       displayStats={displayStats}
       tabMaxChallenges={tabMaxChallenges}
-      isGameWon={isGameWon}
-      isCurrentTab={isCurrentTab}
+      gameOutcome={gameOutcome}
       numberOfGuessesMade={numberOfGuessesMade}
-      hasGames={hasGames}
       isActivityMode={isActivityMode}
       handleShareToClipboard={handleShareToClipboard}
-      isGameLost={isGameLost}
       handleNewGame={handleNewGame}
       solution={solution}
       guesses={guesses}
