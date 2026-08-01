@@ -196,19 +196,16 @@ function SpriteParticle({
   filter?: string;
 }) {
   const [frameIndex, setFrameIndex] = useState(0);
-  const [finished, setFinished] = useState(false);
+  const finished = frameIndex >= frames.length - 1;
 
   useEffect(() => {
-    if (frameIndex >= frames.length - 1) {
-      setFinished(true);
-      return;
-    }
+    if (finished) return;
     const timer = setTimeout(
       () => setFrameIndex((i) => i + 1),
       frameDurationMs
     );
     return () => clearTimeout(timer);
-  }, [frameIndex, frames.length, frameDurationMs]);
+  }, [finished, frameDurationMs]);
 
   return (
     <m.img
@@ -244,19 +241,23 @@ function FallingTntItem({
 }) {
   const y = useMotionValue(-tnt.size);
 
+  const handleFuse = useEffectEvent(() => {
+    onExplode(tnt.id, tnt.x + tnt.size / 2, y.get() + tnt.size / 2);
+  });
+
   useEffect(() => {
     const controls = animate(y, tnt.fallDistance, {
       duration: tnt.fallDuration,
       ease: "linear",
     });
     const fuseTimer = setTimeout(() => {
-      onExplode(tnt.id, tnt.x + tnt.size / 2, y.get() + tnt.size / 2);
+      handleFuse();
     }, tnt.fuseDuration * 1000);
     return () => {
       controls.stop();
       clearTimeout(fuseTimer);
     };
-  }, []);
+  }, [tnt.fallDistance, tnt.fallDuration, tnt.fuseDuration, y]);
 
   return (
     <m.div

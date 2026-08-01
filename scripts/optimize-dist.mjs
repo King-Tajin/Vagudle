@@ -26,6 +26,7 @@ const ffmpegBinary = ffmpegPath;
 
 const distDir = path.resolve(process.cwd(), "dist");
 const backgroundsDir = path.join(distDir, "backgrounds");
+const soundsDir = path.join(distDir, "sounds");
 
 const svgoConfig = {
   multipass: true,
@@ -37,6 +38,7 @@ const svgoConfig = {
 
 const VIDEO_EXTS = new Set([".mp4", ".webm"]);
 const IMAGE_METADATA_EXTS = new Set([".webp", ".jpg", ".jpeg", ".png", ".gif"]);
+const SOUND_EXTS = new Set([".ogg", ".mp3", ".wav"]);
 
 const walk = async (dir) => {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -92,6 +94,24 @@ const stripVideoMetadata = async (filePath) => {
   return { before, after };
 };
 
+const stripSoundMetadata = async (filePath) => {
+  const before = (await stat(filePath)).size;
+  const tempPath = `${filePath}.stripped${path.extname(filePath)}`;
+  await runFfmpeg(ffmpegBinary, [
+    "-y",
+    "-i",
+    filePath,
+    "-map_metadata",
+    "-1",
+    "-c",
+    "copy",
+    tempPath,
+  ]);
+  await rename(tempPath, filePath);
+  const after = (await stat(filePath)).size;
+  return { before, after };
+};
+
 const stripImageMetadata = async (filePath) => {
   const before = (await stat(filePath)).size;
   await exiftool.write(
@@ -120,6 +140,7 @@ const run = async () => {
   let jsonCount = 0;
   let videoCount = 0;
   let imageCount = 0;
+  let soundCount = 0;
 
   for (const filePath of files) {
     const ext = path.extname(filePath).toLowerCase();
@@ -155,6 +176,23 @@ const run = async () => {
     }
 
     const isInBackgrounds = filePath.startsWith(`${backgroundsDir}${path.sep}`);
+    const isInSounds = filePath.startsWith(`${soundsDir}${path.sep}`);
+
+    if (isInSounds && SOUND_EXTS.has(ext)) {
+      try {
+        const { before, after } = await stripSoundMetadata(filePath);
+        totalBefore += before;
+        totalAfter += after;
+        soundCount += 1;
+      } catch (err) {
+        console.warn(
+          `optimize-dist: failed to strip metadata from ${filePath}:`,
+          err.message
+        );
+      }
+      continue;
+    }
+
     if (!isInBackgrounds) continue;
 
     if (VIDEO_EXTS.has(ext)) {
@@ -191,7 +229,7 @@ const run = async () => {
 
   const savedKb = ((totalBefore - totalAfter) / 1024).toFixed(1);
   console.log(
-    `optimize-dist: optimized ${svgCount} svg + ${jsonCount} json file(s), stripped metadata from ${videoCount} video + ${imageCount} image file(s) in backgrounds/, saved ${savedKb} KB`
+    `optimize-dist: optimized ${svgCount} svg + ${jsonCount} json file(s), stripped metadata from ${videoCount} video + ${imageCount} image file(s) in backgrounds/ and ${soundCount} sound file(s) in sounds/, saved ${savedKb} KB`
   );
 };
 
