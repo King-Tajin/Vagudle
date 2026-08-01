@@ -41,12 +41,12 @@ const FLUID_CONFIG = {
 
 const REVEAL_DELAY_MS = 260;
 const REVEAL_TRANSITION_MS = 300;
-const RIPPLE_FORCE_MIN = 2200;
-const RIPPLE_FORCE_RANGE = 3200;
+const RIPPLE_MAX_FORCE = 5400;
 const HEAD_COLOR_INTENSITY = 0.22;
 const TRAIL_COLOR_INTENSITY = 0.1;
 const TRAIL_FORCE_SCALE = 0.55;
 const TRAIL_OFFSET = 46;
+const INTENSITY_SCALE_FLOOR = 0.3;
 
 const dimHexColor = (hex: string, intensity: number): string => {
   const value = hex.replace("#", "");
@@ -89,13 +89,21 @@ export const LiquidRipple = (): React.JSX.Element => {
       if (!fluid) return;
       const x = event.x * window.innerWidth;
       const y = event.y * window.innerHeight;
-      const kick = RIPPLE_FORCE_MIN + event.strength * RIPPLE_FORCE_RANGE;
+      const kick = RIPPLE_MAX_FORCE * event.strength;
+      const intensityScale =
+        INTENSITY_SCALE_FLOOR + (1 - INTENSITY_SCALE_FLOOR) * event.strength;
       const baseAngle = Math.random() * Math.PI * 2;
       const dirX = Math.cos(baseAngle);
       const dirY = Math.sin(baseAngle);
       const baseColor = STATUS_HEX[event.color];
-      const headColor = dimHexColor(baseColor, HEAD_COLOR_INTENSITY);
-      const trailColor = dimHexColor(baseColor, TRAIL_COLOR_INTENSITY);
+      const headColor = dimHexColor(
+        baseColor,
+        HEAD_COLOR_INTENSITY * intensityScale
+      );
+      const trailColor = dimHexColor(
+        baseColor,
+        TRAIL_COLOR_INTENSITY * intensityScale
+      );
 
       const headDx = dirX * kick;
       const headDy = dirY * kick;

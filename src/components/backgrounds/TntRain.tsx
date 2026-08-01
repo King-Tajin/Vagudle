@@ -308,7 +308,12 @@ export function TntRain({
   const [tnts, setTnts] = useState<FallingTnt[]>([]);
   const [explosions, setExplosions] = useState<Explosion[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const explosionTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const explosionTimers = useRef<Set<ReturnType<typeof setTimeout>> | null>(
+    null
+  );
+  if (explosionTimers.current === null) {
+    explosionTimers.current = new Set();
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -363,9 +368,9 @@ export function TntRain({
 
     const timer = setTimeout(() => {
       setExplosions((prev) => prev.filter((e) => e.id !== explosionId));
-      explosionTimers.current.delete(timer);
+      explosionTimers.current!.delete(timer);
     }, EXPLOSION_LIFETIME_MS);
-    explosionTimers.current.add(timer);
+    explosionTimers.current!.add(timer);
   }, []);
 
   const onKeydown = useEffectEvent((e: KeyboardEvent) => {
@@ -399,7 +404,7 @@ export function TntRain({
   }, [keyboardRef, spawnTnt]);
 
   useEffect(() => {
-    const timers = explosionTimers.current;
+    const timers = explosionTimers.current!;
     return () => {
       timers.forEach((timer) => clearTimeout(timer));
       timers.clear();

@@ -88,8 +88,10 @@ const paintFromPoint = (
   const r = parseInt(cell.dataset.row ?? "");
   const c = parseInt(cell.dataset.cell ?? "");
   if (isNaN(r) || isNaN(c)) return;
+  const key = `${r}-${c}`;
+  const prevColor = cellColors[key];
   onCellPaint(r, c, selectedBrush);
-  if (cellColors[`${r}-${c}`] !== "auto-absent") {
+  if (prevColor !== "auto-absent" && prevColor !== selectedBrush) {
     emitRippleFromPoint(x, y, selectedBrush, 1);
   }
 };
