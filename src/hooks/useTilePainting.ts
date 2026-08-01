@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import type { CharStatus } from "../lib/statuses";
 import { computeFullyGrayLetters } from "../lib/rowAnalysis";
+import { emitRippleFromCell } from "../lib/liquidRippleBus";
+
+const AUTO_REVEAL_RIPPLE_STRENGTH = 0.35;
 
 type Params = {
   guesses: string[];
@@ -52,6 +55,12 @@ export const useTilePainting = ({
           ) {
             next[key] = "auto-absent";
             changed = true;
+            emitRippleFromCell(
+              r,
+              c,
+              "auto-absent",
+              AUTO_REVEAL_RIPPLE_STRENGTH
+            );
           }
         });
       });
@@ -94,6 +103,12 @@ export const useTilePainting = ({
             ) {
               next[key] = "correct";
               changed = true;
+              emitRippleFromCell(
+                newRowIndex,
+                c,
+                "correct",
+                AUTO_REVEAL_RIPPLE_STRENGTH
+              );
               break;
             }
           }

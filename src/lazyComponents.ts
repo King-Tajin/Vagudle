@@ -130,6 +130,11 @@ export const TntRain = lazy(() =>
     default: m.TntRain,
   }))
 );
+export const LiquidRipple = lazy(() =>
+  import("./components/backgrounds/LiquidRipple").then((m) => ({
+    default: m.LiquidRipple,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,

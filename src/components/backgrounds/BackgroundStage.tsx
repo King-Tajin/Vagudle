@@ -18,6 +18,7 @@ import {
   EmojiRain,
   LetterPile,
   TntRain,
+  LiquidRipple,
 } from "../../lazyComponents";
 
 type Props = {
@@ -255,6 +256,19 @@ export const BackgroundStage = ({
           }
         >
           <TntRain keyboardRef={keyboardRef} />
+        </Suspense>
+      );
+    case "liquid_ripple":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#070b16", zIndex: 0 }}
+            />
+          }
+        >
+          <LiquidRipple />
         </Suspense>
       );
     default:

@@ -3,6 +3,7 @@ import { NORMAL_MODE_MAX_CHALLENGES } from "../../constants/settings";
 import { type CharStatus } from "../../lib/statuses";
 import { CompletedRow } from "./CompletedRow";
 import { CurrentRow, EmptyRow } from "./GridRows";
+import { emitRippleFromPoint } from "../../lib/liquidRippleBus";
 import GreenBrushIcon from "@/assets/icons/green-brush.svg?react";
 import YellowBrushIcon from "@/assets/icons/yellow-brush.svg?react";
 import GrayBrushIcon from "@/assets/icons/gray-brush.svg?react";
@@ -78,6 +79,7 @@ const paintFromPoint = (
   x: number,
   y: number,
   selectedBrush: CharStatus,
+  cellColors: { [key: string]: CharStatus },
   onCellPaint: (r: number, c: number, color: CharStatus) => void
 ) => {
   const el = document.elementFromPoint(x, y);
@@ -85,7 +87,11 @@ const paintFromPoint = (
   if (!cell) return;
   const r = parseInt(cell.dataset.row ?? "");
   const c = parseInt(cell.dataset.cell ?? "");
-  if (!isNaN(r) && !isNaN(c)) onCellPaint(r, c, selectedBrush);
+  if (isNaN(r) || isNaN(c)) return;
+  onCellPaint(r, c, selectedBrush);
+  if (cellColors[`${r}-${c}`] !== "auto-absent") {
+    emitRippleFromPoint(x, y, selectedBrush, 1);
+  }
 };
 
 export const Grid = ({
@@ -151,6 +157,7 @@ export const Grid = ({
         t.clientX,
         t.clientY,
         selectedBrushRef.current,
+        cellColors,
         onCellPaint
       );
     };
@@ -163,6 +170,7 @@ export const Grid = ({
         t.clientX,
         t.clientY,
         selectedBrushRef.current,
+        cellColors,
         onCellPaint
       );
     };
@@ -173,18 +181,30 @@ export const Grid = ({
       el.removeEventListener("touchstart", onTouchStart);
       el.removeEventListener("touchmove", onTouchMove);
     };
-  }, [onCellPaint]);
+  }, [onCellPaint, cellColors]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!selectedBrushRef.current) return;
     e.preventDefault();
     isPainting.current = true;
-    paintFromPoint(e.clientX, e.clientY, selectedBrushRef.current, onCellPaint);
+    paintFromPoint(
+      e.clientX,
+      e.clientY,
+      selectedBrushRef.current,
+      cellColors,
+      onCellPaint
+    );
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPainting.current || !selectedBrushRef.current) return;
-    paintFromPoint(e.clientX, e.clientY, selectedBrushRef.current, onCellPaint);
+    paintFromPoint(
+      e.clientX,
+      e.clientY,
+      selectedBrushRef.current,
+      cellColors,
+      onCellPaint
+    );
   };
 
   const empties =
