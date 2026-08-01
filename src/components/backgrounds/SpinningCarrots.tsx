@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { m, useMotionValue, useAnimationFrame } from "framer-motion";
 import CarrotUrl from "../../assets/icons/carrot.svg";
-import { drawDirtTexture } from "../../lib/dirtTexture";
+import { drawDirtTexture } from "../../lib/pixelTextures";
 import { attachDebouncedResize } from "../../lib/animationLoop";
 
 const CARROT_DENSITY = 40;

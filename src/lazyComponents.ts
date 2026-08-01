@@ -125,6 +125,11 @@ export const LetterPile = lazy(() =>
     default: m.LetterPile,
   }))
 );
+export const TntRain = lazy(() =>
+  import("./components/backgrounds/TntRain").then((m) => ({
+    default: m.TntRain,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import lottie from "lottie-web";
-import { drawDirtTexture, drawGrassTexture } from "../../lib/dirtTexture";
+import { drawDirtTexture, drawGrassTexture } from "../../lib/pixelTextures";
 import { attachDebouncedResize } from "../../lib/animationLoop";
 
 const DUCK_JSON_SRC = "/backgrounds/walking_duck.json";

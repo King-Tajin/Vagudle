@@ -9,6 +9,7 @@ import {
 export type BackgroundId =
   | "sprinkles"
   | "flakes"
+  | "tnt_rain"
   | "pulsing_purple"
   | "carrots"
   | "flying_mudskipper"
@@ -59,6 +60,13 @@ export const BACKGROUNDS: BackgroundDef[] = [
     id: "flakes",
     desktopLabel: "FLAKE RAIN",
     mobileLabel: "GRID",
+    kind: "css",
+  },
+  {
+    id: "tnt_rain",
+    desktopLabel: "TNT RAIN",
+    mobileLabel: "TNT",
+    requiresAchievementId: "first_win",
     kind: "css",
   },
   {

@@ -17,6 +17,7 @@ import {
   FlyingMudskipper,
   EmojiRain,
   LetterPile,
+  TntRain,
 } from "../../lazyComponents";
 
 type Props = {
@@ -241,6 +242,19 @@ export const BackgroundStage = ({
             maxGuesses={maxChallenges}
             guesses={guesses}
           />
+        </Suspense>
+      );
+    case "tnt_rain":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#0d1322", zIndex: 0 }}
+            />
+          }
+        >
+          <TntRain keyboardRef={keyboardRef} />
         </Suspense>
       );
     default:
