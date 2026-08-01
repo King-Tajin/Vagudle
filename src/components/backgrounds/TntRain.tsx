@@ -43,8 +43,8 @@ const EXPLOSION_COUNT_MIN = 2;
 const EXPLOSION_COUNT_MAX = 4;
 const EXPLOSION_SIZE_MIN = 60;
 const EXPLOSION_SIZE_MAX = 100;
-const EXPLOSION_SPREAD_MIN = 0;
-const EXPLOSION_SPREAD_MAX = 14;
+const EXPLOSION_SPREAD_MIN = 24;
+const EXPLOSION_SPREAD_MAX = 32;
 const EXPLOSION_SPEED_MS = 35;
 
 const WHITE_DUST_COUNT_MIN = 4;
@@ -205,7 +205,7 @@ function SpriteParticle({
       frameDurationMs
     );
     return () => clearTimeout(timer);
-  }, [finished, frameDurationMs]);
+  }, [frameIndex, finished, frameDurationMs]);
 
   return (
     <m.img
