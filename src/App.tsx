@@ -318,6 +318,7 @@ function App() {
       guessCount: guesses.length,
       hardMode,
       guesses,
+      solution,
     });
     if (newly.length > 0) {
       // Depends on the side-effecting recordWin() result, so it can't be derived during render.
@@ -330,7 +331,7 @@ function App() {
     isDuelMode,
     isChallengeMode,
     isDailyMode,
-    solution.length,
+    solution,
     guesses,
     hardMode,
     recordWin,

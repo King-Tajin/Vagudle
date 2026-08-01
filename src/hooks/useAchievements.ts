@@ -28,6 +28,7 @@ type WinEvent = {
   guessCount: number;
   hardMode: boolean;
   guesses: string[];
+  solution: string;
 };
 
 const getRealTotalWins = (): number => {
@@ -74,6 +75,24 @@ export const computeNoLetterReuseWin = (guesses: string[]): boolean => {
       seenAtPosition.add(letter);
       seenLettersByPosition.set(position, seenAtPosition);
     }
+  }
+
+  return true;
+};
+
+export const computeMostlyGraysWin = (
+  guesses: string[],
+  solution: string
+): boolean => {
+  const priorGuesses = guesses.slice(0, -1);
+  const greenPositions = new Set<number>();
+
+  for (const guess of priorGuesses) {
+    const statuses = getGuessStatuses(solution, guess);
+    statuses.forEach((status, position) => {
+      if (status === "correct") greenPositions.add(position);
+    });
+    if (greenPositions.size > 1) return false;
   }
 
   return true;
@@ -216,6 +235,8 @@ export const useAchievements = () => {
     if (event.guessCount === maxChallenges) next.wonOnFinalGuessEver = true;
     if (computeNoLetterReuseWin(event.guesses))
       next.wonWithoutReusingLettersEver = true;
+    if (computeMostlyGraysWin(event.guesses, event.solution))
+      next.wonWithMostlyGraysEver = true;
 
     const ctx: AchievementContext = {
       totalWins: getRealTotalWins(),
@@ -224,6 +245,7 @@ export const useAchievements = () => {
       wonWith7LettersEver: next.wonWith7LettersEver,
       wonOnFinalGuessEver: next.wonOnFinalGuessEver,
       wonWithoutReusingLettersEver: next.wonWithoutReusingLettersEver,
+      wonWithMostlyGraysEver: next.wonWithMostlyGraysEver,
       lastGuess: "",
       uniqueWordCount,
       gotCloseCallStreak: false,
@@ -277,6 +299,7 @@ export const useAchievements = () => {
       wonWith7LettersEver: base.wonWith7LettersEver,
       wonOnFinalGuessEver: base.wonOnFinalGuessEver,
       wonWithoutReusingLettersEver: base.wonWithoutReusingLettersEver,
+      wonWithMostlyGraysEver: base.wonWithMostlyGraysEver,
       lastGuess: normalized,
       uniqueWordCount: currentUniqueCount,
       gotCloseCallStreak,

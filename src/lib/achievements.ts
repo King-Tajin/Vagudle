@@ -5,6 +5,7 @@ export type AchievementContext = {
   wonWith7LettersEver: boolean;
   wonOnFinalGuessEver: boolean;
   wonWithoutReusingLettersEver: boolean;
+  wonWithMostlyGraysEver: boolean;
   lastGuess: string;
   uniqueWordCount: number;
   gotCloseCallStreak: boolean;
@@ -28,6 +29,7 @@ export type AchievementProgress = {
   wonWith7LettersEver: boolean;
   wonOnFinalGuessEver: boolean;
   wonWithoutReusingLettersEver: boolean;
+  wonWithMostlyGraysEver: boolean;
 };
 
 const defaultProgress = (): AchievementProgress => ({
@@ -37,6 +39,7 @@ const defaultProgress = (): AchievementProgress => ({
   wonWith7LettersEver: false,
   wonOnFinalGuessEver: false,
   wonWithoutReusingLettersEver: false,
+  wonWithMostlyGraysEver: false,
 });
 
 export const COMPLETIONIST_ID = "completionist";
@@ -150,6 +153,14 @@ export const ACHIEVEMENTS: Achievement[] = [
       "Win in 3+ guesses without repeating a letter's position across your earlier guesses (excluding solution)",
     hidden: false,
     check: (ctx) => ctx.wonWithoutReusingLettersEver,
+  },
+  {
+    id: "blind_faith",
+    title: "Blind Faith",
+    description:
+      "Win a game where only one letter position is ever correct before your winning guess",
+    hidden: true,
+    check: (ctx) => ctx.wonWithMostlyGraysEver,
   },
   {
     id: COMPLETIONIST_ID,

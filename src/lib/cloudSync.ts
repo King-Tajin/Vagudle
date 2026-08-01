@@ -123,6 +123,7 @@ const mergeAchievementProgress = (
   wonOnFinalGuessEver: a.wonOnFinalGuessEver || b.wonOnFinalGuessEver,
   wonWithoutReusingLettersEver:
     a.wonWithoutReusingLettersEver || b.wonWithoutReusingLettersEver,
+  wonWithMostlyGraysEver: a.wonWithMostlyGraysEver || b.wonWithMostlyGraysEver,
 });
 
 const mergeWordConnoisseurLists = (a: string[], b: string[]): string[] =>
