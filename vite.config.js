@@ -20,6 +20,15 @@ export default defineConfig({
           groups: [
             { name: "vendor-react", test: /node_modules\/(react|react-dom)\// },
             { name: "vendor-framer", test: /node_modules\/framer-motion\// },
+            { name: "vendor-lottie", test: /node_modules\/lottie-web\// },
+            {
+              name: "vendor-twemoji",
+              test: /node_modules\/(twemoji|unicode-emoji-json)\//,
+            },
+            {
+              name: "vendor-fluid",
+              test: /node_modules\/webgl-fluid-enhanced\//,
+            },
           ],
         },
       },
