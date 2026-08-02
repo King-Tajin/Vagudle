@@ -24,8 +24,8 @@ export type BackgroundId =
   | "mouse_eating"
   | "emoji_rain"
   | "fireworks"
-  | "spinning_seal"
-  | "liquid_ripple";
+  | "liquid_ripple"
+  | "spinning_seal";
 
 export type AttributionCredit = {
   role: string;
@@ -208,6 +208,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
     id: "liquid_ripple",
     desktopLabel: "LIQUID RIPPLES",
     mobileLabel: "RIPPLES",
+    requiresAchievementId: "diversify",
     kind: "css",
   },
   {

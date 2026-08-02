@@ -31,7 +31,7 @@ const FLUID_CONFIG = {
   bloom: true,
   bloomIterations: 8,
   bloomResolution: 256,
-  bloomIntensity: 0.5,
+  bloomIntensity: 0.3,
   bloomThreshold: 0.3,
   bloomSoftKnee: 0.7,
   sunrays: true,
@@ -42,12 +42,12 @@ const FLUID_CONFIG = {
 const REVEAL_DELAY_MS = 260;
 const REVEAL_TRANSITION_MS = 300;
 const RIPPLE_MAX_FORCE = 5400;
-const HEAD_COLOR_INTENSITY = 5;
-const TRAIL_COLOR_INTENSITY = 2.5;
+const HEAD_COLOR_INTENSITY = 4;
+const TRAIL_COLOR_INTENSITY = 2.25;
 const TRAIL_FORCE_SCALE = 0.55;
 const TRAIL_OFFSET = 46;
 
-const AUTO_COLOR_EXPONENT = 2.2;
+const AUTO_COLOR_EXPONENT = 2.15;
 const AUTO_FORCE_EXPONENT = 1.15;
 const AUTO_RADIUS_EXPONENT = 1.45;
 
