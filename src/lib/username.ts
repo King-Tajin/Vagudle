@@ -59,6 +59,7 @@ export const updateUsername = async (
         body: JSON.stringify({ username }),
         signal,
       });
+      if (!res.ok) return { status: "error" };
       const data = (await res.json()) as
         | { success: true; username: string; canChangeAt: string | null }
         | { success: false; error: string; retryAt?: string };
