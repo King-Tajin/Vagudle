@@ -76,7 +76,7 @@ import {
   loadSettingsFromLocalStorage,
 } from "./lib/localStorage";
 import { loadStats } from "./lib/stats";
-import { isDiscordActivity, activityMode } from "./lib/discord";
+import { isDiscordActivity } from "./lib/discord";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
@@ -212,7 +212,7 @@ function App() {
   );
   const [isMalformedDuel, setIsMalformedDuel] = useState(false);
   const [isDuelExpired, setIsDuelExpired] = useState(false);
-  const [isActivityNotFound, setIsActivityNotFound] = useState(false);
+  const [isActivityNotFound] = useState(false);
   const [isActivityWrongPlayer, setIsActivityWrongPlayer] = useState(false);
   const [isActivityServerError, setIsActivityServerError] = useState(false);
   const [isActivityAccountChoicePending, setIsActivityAccountChoicePending] =
@@ -431,8 +431,7 @@ function App() {
     if (!value) clearAutoGray();
   };
   useDailyActivityResult({
-    isDailyActivityMode:
-      isDiscordActivity && activityMode === "daily" && isDailyMode,
+    isDailyActivityMode: isDiscordActivity && isDailyMode,
     activityAccessToken,
     isGameWon,
     isGameLost,
@@ -440,8 +439,7 @@ function App() {
     submittedRef: dailyActivitySubmittedRef,
   });
   useDailyActivityGuessSync({
-    isDailyActivityMode:
-      isDiscordActivity && activityMode === "daily" && isDailyMode,
+    isDailyActivityMode: isDiscordActivity && isDailyMode,
     activityAccessToken,
     guesses,
   });
@@ -561,7 +559,6 @@ function App() {
     setIsMalformedChallenge,
     setIsMalformedDuel,
     setIsDuelExpired,
-    setIsActivityNotFound,
     setIsActivityWrongPlayer,
     setIsActivityServerError,
     setIsActivityAccountChoicePending,

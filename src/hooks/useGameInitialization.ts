@@ -55,7 +55,6 @@ type Params = {
   setIsMalformedChallenge: (v: boolean) => void;
   setIsMalformedDuel: (v: boolean) => void;
   setIsDuelExpired: (v: boolean) => void;
-  setIsActivityNotFound: (v: boolean) => void;
   setIsActivityWrongPlayer: (v: boolean) => void;
   setIsActivityServerError: (v: boolean) => void;
   setIsActivityAccountChoicePending: (v: boolean) => void;
@@ -96,7 +95,6 @@ export const useGameInitialization = ({
   setIsMalformedChallenge,
   setIsMalformedDuel,
   setIsDuelExpired,
-  setIsActivityNotFound,
   setIsActivityWrongPlayer,
   setIsActivityServerError,
   setIsActivityAccountChoicePending,
@@ -276,15 +274,15 @@ export const useGameInitialization = ({
         return won || lost;
       };
 
-      if (isDiscordActivity && activityMode === "daily") {
-        const boot = await startDailyActivity(false);
+      const bootDailyActivity = async (): Promise<void> => {
+        const dailyBoot = await startDailyActivity(false);
 
-        if (!boot.ok) {
-          if (boot.reason === "account_not_linked") {
-            setActivityAccessToken(boot.accessToken);
+        if (!dailyBoot.ok) {
+          if (dailyBoot.reason === "account_not_linked") {
+            setActivityAccessToken(dailyBoot.accessToken);
             setIsActivityAccountChoicePending(true);
-          } else if (boot.reason === "already_attempted") {
-            setActivityAlreadyPlayedPlatform(boot.platform);
+          } else if (dailyBoot.reason === "already_attempted") {
+            setActivityAlreadyPlayedPlatform(dailyBoot.platform);
             setIsActivityAlreadyPlayed(true);
           } else {
             setIsActivityServerError(true);
@@ -293,9 +291,13 @@ export const useGameInitialization = ({
           return;
         }
 
-        setActivityAccessToken(boot.accessToken);
-        applyDailyActivityPayload(boot.payload);
+        setActivityAccessToken(dailyBoot.accessToken);
+        applyDailyActivityPayload(dailyBoot.payload);
         setIsLoading(false);
+      };
+
+      if (isDiscordActivity && activityMode === "daily") {
+        await bootDailyActivity();
         return;
       }
 
@@ -303,9 +305,11 @@ export const useGameInitialization = ({
         const boot = await bootActivity();
 
         if (!boot.ok) {
-          if (boot.reason === "not_found") setIsActivityNotFound(true);
-          else if (boot.reason === "wrong_player")
-            setIsActivityWrongPlayer(true);
+          if (boot.reason === "not_found") {
+            await bootDailyActivity();
+            return;
+          }
+          if (boot.reason === "wrong_player") setIsActivityWrongPlayer(true);
           else setIsActivityServerError(true);
           setIsLoading(false);
           return;
