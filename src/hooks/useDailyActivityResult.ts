@@ -29,33 +29,37 @@ export const useDailyActivityResult = ({
     if (submittedRef.current) return;
     submittedRef.current = true;
 
-    let cancelled = false;
+    const controller = new AbortController();
 
     const submit = async () => {
-      if (cancelled) return;
       setSaveStatus("saving");
+
       for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) await new Promise((r) => setTimeout(r, 2000));
-        if (cancelled) return;
+        if (attempt > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          if (controller.signal.aborted) return;
+        }
+
         const ok = await submitActivityDailyResult(
           activityAccessToken,
-          guesses
+          guesses,
+          controller.signal
         );
-        if (cancelled) return;
+        const aborted = controller.signal.aborted;
+        if (aborted) return;
+
         if (ok) {
           setSaveStatus("saved");
           return;
         }
       }
-      if (cancelled) return;
+
       setSaveStatus("failed");
     };
 
     void submit();
 
-    return () => {
-      cancelled = true;
-    };
+    return () => controller.abort();
   }, [
     isGameWon,
     isGameLost,

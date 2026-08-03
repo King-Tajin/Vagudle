@@ -97,10 +97,13 @@ export const fetchDailyConfig = async (): Promise<DailyConfig | null> => {
 
 export const submitActivityDailyResult = async (
   accessToken: string,
-  guesses: string[]
+  guesses: string[],
+  signal?: AbortSignal
 ): Promise<boolean> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
+  const onExternalAbort = () => controller.abort();
+  signal?.addEventListener("abort", onExternalAbort);
   try {
     const res = await fetch("/api/activity-daily-result", {
       method: "POST",
@@ -118,6 +121,7 @@ export const submitActivityDailyResult = async (
     return false;
   } finally {
     clearTimeout(timeout);
+    signal?.removeEventListener("abort", onExternalAbort);
   }
 };
 

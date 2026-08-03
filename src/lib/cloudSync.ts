@@ -255,6 +255,62 @@ export const pushCloudSave = async (
   }
 };
 
+export type LinkDiscordResult =
+  { status: "linked" } | { status: "error"; message: string };
+
+const requestDiscordLink = async (
+  idToken: string,
+  linkToken: string,
+  signal?: AbortSignal
+): Promise<LinkDiscordResult> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const onExternalAbort = () => controller.abort();
+  signal?.addEventListener("abort", onExternalAbort);
+  try {
+    const res = await fetch("/api/link-discord", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ link_token: linkToken }),
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      return { status: "error", message: "Could not link your account." };
+    }
+    const data = (await res.json()) as { success: boolean; error?: string };
+    if (data.success) return { status: "linked" };
+    return {
+      status: "error",
+      message: data.error ?? "Could not link your account.",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Could not link your account. Please try again.",
+    };
+  } finally {
+    clearTimeout(timeout);
+    signal?.removeEventListener("abort", onExternalAbort);
+  }
+};
+
+export const linkDiscordWithCurrentUser = async (
+  linkToken: string,
+  signal?: AbortSignal
+): Promise<LinkDiscordResult> => {
+  const idToken = await getIdTokenForCurrentUser();
+  if (!idToken) {
+    return {
+      status: "error",
+      message: "Could not verify your sign-in. Please try again.",
+    };
+  }
+  return requestDiscordLink(idToken, linkToken, signal);
+};
+
 export const deleteCloudSave = async (idToken: string): Promise<boolean> => {
   try {
     const controller = new AbortController();

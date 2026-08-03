@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import { title } from "./screenHelpers";
-import { getIdTokenForCurrentUser } from "../../lib/cloudSync";
+import { linkDiscordWithCurrentUser } from "../../lib/cloudSync";
 import {
   completeEmailLinkSignIn,
   useCloudAuth,
@@ -54,43 +54,26 @@ export const LinkDiscordPage = () => {
     if (user.providerId === "discord.com") return;
     linkedRef.current = true;
 
+    const controller = new AbortController();
+
     const run = async () => {
       setLinkStatus("linking");
-      const idToken = await getIdTokenForCurrentUser();
-      if (!idToken) {
+      const result = await linkDiscordWithCurrentUser(token, controller.signal);
+      const aborted = controller.signal.aborted;
+      if (aborted) return;
+
+      if (result.status === "linked") {
+        setLinkStatus("linked");
+      } else {
         setLinkStatus("error");
-        setLinkError("Could not verify your sign-in. Please try again.");
-        linkedRef.current = false;
-        return;
-      }
-      try {
-        const res = await fetch("/api/link-discord", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({ link_token: token }),
-        });
-        const data = (await res.json()) as {
-          success: boolean;
-          error?: string;
-        };
-        if (data.success) {
-          setLinkStatus("linked");
-        } else {
-          setLinkStatus("error");
-          setLinkError(data.error ?? "Could not link your account.");
-          linkedRef.current = false;
-        }
-      } catch {
-        setLinkStatus("error");
-        setLinkError("Could not link your account. Please try again.");
+        setLinkError(result.message);
         linkedRef.current = false;
       }
     };
 
     void run();
+
+    return () => controller.abort();
   }, [token, user]);
 
   const renderBody = () => {
@@ -168,7 +151,14 @@ export const LinkDiscordPage = () => {
           </button>
         </div>
         <div className="flex flex-col gap-2">
+          <label
+            htmlFor="link-discord-email"
+            className="font-pixel text-xs text-crown-gold tracking-widest"
+          >
+            EMAIL
+          </label>
           <input
+            id="link-discord-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
