@@ -38,6 +38,8 @@ import {
   ActivityNotFoundScreen,
   ActivityWrongPlayerScreen,
   ActivityServerErrorScreen,
+  ActivityAccountChoiceScreen,
+  ActivityAlreadyPlayedScreen,
 } from "./lazyComponents";
 
 import { LoadingScreen } from "./components/screens/GameScreens";
@@ -48,6 +50,8 @@ import { usePageChrome } from "./hooks/usePageChrome";
 import { useDiscourageInAppBrowser } from "./hooks/useDiscourageInAppBrowser";
 import { useTilePainting } from "./hooks/useTilePainting";
 import { useDuelResult } from "./hooks/useDuelResult";
+import { useDailyActivityResult } from "./hooks/useDailyActivityResult";
+import { useDailyActivityGuessSync } from "./hooks/useDailyActivityGuessSync";
 import { useGameOutcome } from "./hooks/useGameOutcome";
 import { useGameInitialization } from "./hooks/useGameInitialization";
 import { useGameFlow } from "./hooks/useGameFlow";
@@ -72,7 +76,7 @@ import {
   loadSettingsFromLocalStorage,
 } from "./lib/localStorage";
 import { loadStats } from "./lib/stats";
-import { isDiscordActivity } from "./lib/discord";
+import { isDiscordActivity, activityMode } from "./lib/discord";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
@@ -211,6 +215,11 @@ function App() {
   const [isActivityNotFound, setIsActivityNotFound] = useState(false);
   const [isActivityWrongPlayer, setIsActivityWrongPlayer] = useState(false);
   const [isActivityServerError, setIsActivityServerError] = useState(false);
+  const [isActivityAccountChoicePending, setIsActivityAccountChoicePending] =
+    useState(false);
+  const [isActivityAlreadyPlayed, setIsActivityAlreadyPlayed] = useState(false);
+  const [activityAlreadyPlayedPlatform, setActivityAlreadyPlayedPlatform] =
+    useState<string | undefined>(undefined);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
   const [isDailyActive, setIsDailyActive] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
@@ -266,6 +275,7 @@ function App() {
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
   const duelSubmittedRef = useRef(false);
+  const dailyActivitySubmittedRef = useRef(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
   const achievementCheckedRef = useRef(false);
   const achievementRevealPendingRef = useRef(false);
@@ -420,6 +430,21 @@ function App() {
     setAutoGray(value);
     if (!value) clearAutoGray();
   };
+  useDailyActivityResult({
+    isDailyActivityMode:
+      isDiscordActivity && activityMode === "daily" && isDailyMode,
+    activityAccessToken,
+    isGameWon,
+    isGameLost,
+    guesses,
+    submittedRef: dailyActivitySubmittedRef,
+  });
+  useDailyActivityGuessSync({
+    isDailyActivityMode:
+      isDiscordActivity && activityMode === "daily" && isDailyMode,
+    activityAccessToken,
+    guesses,
+  });
   const duelSaveStatus = useDuelResult({
     isDuelMode,
     duelToken,
@@ -526,7 +551,7 @@ function App() {
     },
     onDailyComplete: handleDailyComplete,
   });
-  useGameInitialization({
+  const { resolveDailyActivityAccount } = useGameInitialization({
     challengeParam,
     duelParam,
     isDailyRoute,
@@ -539,6 +564,9 @@ function App() {
     setIsActivityNotFound,
     setIsActivityWrongPlayer,
     setIsActivityServerError,
+    setIsActivityAccountChoicePending,
+    setIsActivityAlreadyPlayed,
+    setActivityAlreadyPlayedPlatform,
     setChallengeConfig,
     setDuelConfig,
     setDuelToken,
@@ -638,6 +666,21 @@ function App() {
     return (
       <Suspense fallback={screenFallback}>
         <ActivityServerErrorScreen />
+      </Suspense>
+    );
+  if (isActivityAccountChoicePending && activityAccessToken)
+    return (
+      <Suspense fallback={screenFallback}>
+        <ActivityAccountChoiceScreen
+          accessToken={activityAccessToken}
+          onResolved={resolveDailyActivityAccount}
+        />
+      </Suspense>
+    );
+  if (isActivityAlreadyPlayed)
+    return (
+      <Suspense fallback={screenFallback}>
+        <ActivityAlreadyPlayedScreen platform={activityAlreadyPlayedPlatform} />
       </Suspense>
     );
   if (isMalformedChallenge)

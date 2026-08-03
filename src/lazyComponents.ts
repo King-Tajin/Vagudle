@@ -171,6 +171,16 @@ export const ActivityServerErrorScreen = lazy(() =>
     default: m.ActivityServerErrorScreen,
   }))
 );
+export const ActivityAccountChoiceScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.ActivityAccountChoiceScreen,
+  }))
+);
+export const ActivityAlreadyPlayedScreen = lazy(() =>
+  import("./components/screens/ErrorScreens").then((m) => ({
+    default: m.ActivityAlreadyPlayedScreen,
+  }))
+);
 export const CloudSaveConflictModal = lazy(() =>
   import("./components/modals/CloudSaveConflictModal").then((m) => ({
     default: m.CloudSaveConflictModal,

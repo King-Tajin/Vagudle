@@ -52,3 +52,16 @@ export const isValidDiscordSession = (payload) =>
   payload.uid.startsWith("discord:") &&
   typeof payload.exp === "number" &&
   payload.exp > Date.now();
+
+export const fetchChannelGroup = async (channelId, botToken) => {
+  const res = await fetch(`${DISCORD_API}/channels/${channelId}`, {
+    headers: { Authorization: `Bot ${botToken}` },
+  });
+  if (!res.ok) throw new Error("Failed to resolve channel.");
+  const channel = await res.json();
+
+  if (channel.guild_id)
+    return { groupId: channel.guild_id, groupType: "server" };
+  if (channel.type === 3) return { groupId: channelId, groupType: "group_dm" };
+  return { groupId: channelId, groupType: "dm" };
+};

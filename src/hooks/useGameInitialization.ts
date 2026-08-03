@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import type { CharStatus } from "../lib/statuses";
 import { initWordLists, isWordInDict, getRandomWord } from "../lib/words";
 import {
@@ -18,7 +18,14 @@ import {
   pruneOldDuelStates,
   type DuelConfig,
 } from "../lib/duel";
-import { isDiscordActivity, bootActivity } from "../lib/discord";
+import {
+  isDiscordActivity,
+  activityMode,
+  bootActivity,
+  startDailyActivity,
+  type DailyActivityPayload,
+  type DailyActivityStartResult,
+} from "../lib/discord";
 import { runStorageOptimization } from "../lib/storageOptimizer";
 import {
   fetchDailyConfig,
@@ -51,6 +58,9 @@ type Params = {
   setIsActivityNotFound: (v: boolean) => void;
   setIsActivityWrongPlayer: (v: boolean) => void;
   setIsActivityServerError: (v: boolean) => void;
+  setIsActivityAccountChoicePending: (v: boolean) => void;
+  setIsActivityAlreadyPlayed: (v: boolean) => void;
+  setActivityAlreadyPlayedPlatform: (v: string | undefined) => void;
   setChallengeConfig: (v: ChallengeConfig) => void;
   setDuelConfig: (v: DuelConfig) => void;
   setDuelToken: (v: string) => void;
@@ -89,6 +99,9 @@ export const useGameInitialization = ({
   setIsActivityNotFound,
   setIsActivityWrongPlayer,
   setIsActivityServerError,
+  setIsActivityAccountChoicePending,
+  setIsActivityAlreadyPlayed,
+  setActivityAlreadyPlayedPlatform,
   setChallengeConfig,
   setDuelConfig,
   setDuelToken,
@@ -111,6 +124,106 @@ export const useGameInitialization = ({
   onDailyRestoredComplete,
   showErrorAlert,
 }: Params) => {
+  const applyDailyActivityPayload = useCallback(
+    (payload: DailyActivityPayload) => {
+      const config: DailyConfig = {
+        date: payload.date,
+        word: payload.word,
+        wordLength: payload.wordLength,
+        hardMode: payload.hardMode,
+        originDate: payload.originDate,
+      };
+      setDailyConfig(config);
+      setIsDailyActive(true);
+
+      const existingResult = loadDailyResult(config.date);
+      if (existingResult) {
+        setDailyResult(existingResult);
+        setDailyModalMode("complete");
+        setIsDailyModalOpen(true);
+        return;
+      }
+
+      const progress = loadDailyProgress(config.date);
+      const dailyMaxChallenges = config.hardMode
+        ? HARD_MODE_MAX_CHALLENGES
+        : NORMAL_MODE_MAX_CHALLENGES;
+      const restoredGuesses = progress?.guesses ?? [];
+      const wordUpper = config.word.toUpperCase();
+      const won = restoredGuesses.some((g) => g.toUpperCase() === wordUpper);
+      const lost = !won && restoredGuesses.length >= dailyMaxChallenges;
+
+      setSolution(wordUpper);
+      setGuesses(restoredGuesses);
+      setCellColors(
+        (progress?.cellColors as { [key: string]: CharStatus }) ?? {}
+      );
+      if (won || lost) restoredGameRef.current = true;
+      setIsGameWon(won);
+      setIsGameLost(lost);
+
+      if (won || lost) {
+        const result: DailyResult = {
+          date: config.date,
+          won,
+          guessCount: restoredGuesses.length,
+          maxGuesses: dailyMaxChallenges,
+          wordLength: config.wordLength,
+          completedAt: Date.now(),
+          guesses: restoredGuesses,
+          cellColors: progress?.cellColors,
+        };
+        saveDailyResult(result);
+        setDailyResult(result);
+        setDailyStats(recordDailyStats(config.date, won));
+        clearDailyProgress(config.date);
+        setDailyModalMode("complete");
+      } else {
+        setDailyModalMode("play");
+      }
+      setIsDailyModalOpen(true);
+    },
+    [
+      restoredGameRef,
+      setCellColors,
+      setDailyConfig,
+      setDailyModalMode,
+      setDailyResult,
+      setDailyStats,
+      setGuesses,
+      setIsDailyActive,
+      setIsDailyModalOpen,
+      setIsGameLost,
+      setIsGameWon,
+      setSolution,
+    ]
+  );
+
+  const resolveDailyActivityAccount = useCallback(
+    (result: DailyActivityStartResult) => {
+      setIsActivityAccountChoicePending(false);
+      if (!result.ok) {
+        if (result.reason === "already_attempted") {
+          setActivityAlreadyPlayedPlatform(result.platform);
+          setIsActivityAlreadyPlayed(true);
+        } else {
+          setIsActivityServerError(true);
+        }
+        return;
+      }
+      setActivityAccessToken(result.accessToken);
+      applyDailyActivityPayload(result.payload);
+    },
+    [
+      applyDailyActivityPayload,
+      setActivityAccessToken,
+      setActivityAlreadyPlayedPlatform,
+      setIsActivityAccountChoicePending,
+      setIsActivityAlreadyPlayed,
+      setIsActivityServerError,
+    ]
+  );
+
   useEffect(() => {
     let cancelled = false;
     let modalTimeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -162,6 +275,29 @@ export const useGameInitialization = ({
         }
         return won || lost;
       };
+
+      if (isDiscordActivity && activityMode === "daily") {
+        const boot = await startDailyActivity(false);
+
+        if (!boot.ok) {
+          if (boot.reason === "account_not_linked") {
+            setActivityAccessToken(boot.accessToken);
+            setIsActivityAccountChoicePending(true);
+          } else if (boot.reason === "already_attempted") {
+            setActivityAlreadyPlayedPlatform(boot.platform);
+            setIsActivityAlreadyPlayed(true);
+          } else {
+            setIsActivityServerError(true);
+          }
+          setIsLoading(false);
+          return;
+        }
+
+        setActivityAccessToken(boot.accessToken);
+        applyDailyActivityPayload(boot.payload);
+        setIsLoading(false);
+        return;
+      }
 
       if (isDiscordActivity) {
         const boot = await bootActivity();
@@ -417,4 +553,6 @@ export const useGameInitialization = ({
     // Game initialization should only run once on mount, not re-run on prop changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  return { resolveDailyActivityAccount };
 };

@@ -95,6 +95,52 @@ export const fetchDailyConfig = async (): Promise<DailyConfig | null> => {
   }
 };
 
+export const submitActivityDailyResult = async (
+  accessToken: string,
+  guesses: string[]
+): Promise<boolean> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch("/api/activity-daily-result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_token: accessToken,
+        guesses,
+      }),
+      signal: controller.signal,
+    });
+    if (!res.ok) return false;
+    const data = (await res.json()) as { success: boolean };
+    return data.success;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+export const submitActivityDailyGuess = async (
+  accessToken: string,
+  guess: string,
+  guessNumber: number
+): Promise<void> => {
+  try {
+    await fetch("/api/activity-daily-guess", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_token: accessToken,
+        guess,
+        guess_number: guessNumber,
+      }),
+    });
+  } catch {
+    return;
+  }
+};
+
 const progressKey = (date: string) => `daily_progress_${date}`;
 
 export const saveDailyProgress = (

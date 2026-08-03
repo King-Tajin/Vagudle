@@ -5,6 +5,9 @@ import "./index.css";
 import App from "./App";
 import { AlertProvider } from "./context/AlertContext";
 import { initDiscordSDK } from "./lib/discord";
+import { LinkDiscordPage } from "./components/screens/LinkDiscordPage";
+
+const isLinkDiscordRoute = window.location.pathname === "/link-discord";
 
 async function bootstrap() {
   await initDiscordSDK();
@@ -13,7 +16,7 @@ async function bootstrap() {
       <LazyMotion features={domAnimation} strict>
         <MotionConfig reducedMotion="user">
           <AlertProvider>
-            <App />
+            {isLinkDiscordRoute ? <LinkDiscordPage /> : <App />}
           </AlertProvider>
         </MotionConfig>
       </LazyMotion>

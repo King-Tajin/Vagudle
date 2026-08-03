@@ -9,7 +9,7 @@ export async function onRequest(context) {
     return Response.redirect(url.toString(), 301);
   }
 
-  if (url.pathname === "/daily") {
+  if (url.pathname === "/daily" || url.pathname === "/link-discord") {
     const assetUrl = new URL(context.request.url);
     assetUrl.pathname = "/";
     const assetRequest = new Request(assetUrl.toString(), context.request);

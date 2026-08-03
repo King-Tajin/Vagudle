@@ -3,6 +3,7 @@ import type { DiscordSDK } from "@discord/embedded-app-sdk";
 const params = new URLSearchParams(window.location.search);
 const frameId = params.get("frame_id");
 export const activityChannelId = params.get("channel_id");
+export const activityMode = params.get("mode");
 export const isDiscordActivity =
   window.self !== window.top && frameId !== null && activityChannelId !== null;
 
@@ -50,9 +51,6 @@ export type ActivityBootResult =
       reason: "not_found" | "wrong_player" | "server_error";
     };
 
-let _bootResult: ActivityBootResult | null = null;
-let _bootPromise: Promise<ActivityBootResult> | null = null;
-
 const _logErr = (label: string, err: unknown): void => {
   console.error(`[Discord] ${label}:`, err);
   try {
@@ -68,57 +66,24 @@ const _logErr = (label: string, err: unknown): void => {
   }
 };
 
-const DUEL_FETCH_RETRY_DELAYS = [0, 750, 1500, 3000];
-
-const _fetchActivityDuel = async (
-  channelId: string,
-  access_token: string
-): Promise<Response> => {
-  let lastRes: Response | null = null;
-
-  for (let i = 0; i < DUEL_FETCH_RETRY_DELAYS.length; i++) {
-    const delay = DUEL_FETCH_RETRY_DELAYS[i];
-    if (delay > 0) {
-      console.warn(
-        `[Discord] /api/activity-duel not found, retrying in ${delay}ms (attempt ${
-          i + 1
-        }/${DUEL_FETCH_RETRY_DELAYS.length - 1})...`
-      );
-      await new Promise<void>((resolve) => setTimeout(resolve, delay));
+type ActivityAuthResult =
+  | {
+      ok: true;
+      instanceId: string;
+      accessToken: string;
+      discordUserId: string;
     }
+  | { ok: false; reason: "server_error" };
 
-    try {
-      const res = await fetch("/api/activity-duel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ channel_id: channelId, access_token }),
-      });
+let _authResult: ActivityAuthResult | null = null;
+let _authPromise: Promise<ActivityAuthResult> | null = null;
 
-      if (res.status !== 404) return res;
-      lastRes = res;
-    } catch (err) {
-      _logErr(`/api/activity-duel fetch attempt ${i + 1} threw`, err);
-      if (i === DUEL_FETCH_RETRY_DELAYS.length - 1) throw err;
-    }
-  }
-
-  if (!lastRes) {
-    throw new Error("[Discord] No response received from /api/activity-duel");
-  }
-  return lastRes;
-};
-
-const _doBootActivity = async (): Promise<ActivityBootResult> => {
+const _doAuthenticateActivity = async (): Promise<ActivityAuthResult> => {
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
   if (!clientId) {
     console.error(
       "[Discord] VITE_DISCORD_CLIENT_ID is not set — must be configured as a Cloudflare Pages build variable"
     );
-    return { ok: false, reason: "server_error" };
-  }
-
-  if (!activityChannelId) {
-    console.error("[Discord] channel_id is missing from URL params");
     return { ok: false, reason: "server_error" };
   }
 
@@ -135,12 +100,7 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    console.warn(
-      "[Discord] Authorizing, clientId:",
-      clientId,
-      "channelId:",
-      activityChannelId
-    );
+    console.warn("[Discord] Authorizing, clientId:", clientId);
 
     let code: string;
     try {
@@ -188,9 +148,81 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "server_error" };
     }
 
-    const discordUserId: string = auth.user.id;
+    return {
+      ok: true,
+      instanceId,
+      accessToken: access_token,
+      discordUserId: auth.user.id,
+    };
+  } catch (err) {
+    _logErr("authenticateActivity failed (unexpected)", err);
+    return { ok: false, reason: "server_error" };
+  }
+};
 
-    const duelRes = await _fetchActivityDuel(activityChannelId, access_token);
+const _authenticateActivity = (): Promise<ActivityAuthResult> => {
+  if (_authResult) return Promise.resolve(_authResult);
+  if (_authPromise) return _authPromise;
+  _authPromise = _doAuthenticateActivity().then((result) => {
+    if (result.ok) _authResult = result;
+    _authPromise = null;
+    return result;
+  });
+  return _authPromise;
+};
+
+const DUEL_FETCH_RETRY_DELAYS = [0, 750, 1500, 3000];
+
+const _fetchActivityDuel = async (
+  channelId: string,
+  access_token: string
+): Promise<Response> => {
+  let lastRes: Response | null = null;
+
+  for (let i = 0; i < DUEL_FETCH_RETRY_DELAYS.length; i++) {
+    const delay = DUEL_FETCH_RETRY_DELAYS[i];
+    if (delay > 0) {
+      console.warn(
+        `[Discord] /api/activity-duel not found, retrying in ${delay}ms (attempt ${
+          i + 1
+        }/${DUEL_FETCH_RETRY_DELAYS.length - 1})...`
+      );
+      await new Promise<void>((resolve) => setTimeout(resolve, delay));
+    }
+
+    try {
+      const res = await fetch("/api/activity-duel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channel_id: channelId, access_token }),
+      });
+
+      if (res.status !== 404) return res;
+      lastRes = res;
+    } catch (err) {
+      _logErr(`/api/activity-duel fetch attempt ${i + 1} threw`, err);
+      if (i === DUEL_FETCH_RETRY_DELAYS.length - 1) throw err;
+    }
+  }
+
+  if (!lastRes) {
+    throw new Error("[Discord] No response received from /api/activity-duel");
+  }
+  return lastRes;
+};
+
+const _doBootActivity = async (): Promise<ActivityBootResult> => {
+  if (!activityChannelId) {
+    console.error("[Discord] channel_id is missing from URL params");
+    return { ok: false, reason: "server_error" };
+  }
+
+  const auth = await _authenticateActivity();
+  if (!auth.ok) return { ok: false, reason: "server_error" };
+  const { instanceId, accessToken, discordUserId } = auth;
+
+  try {
+    const duelRes = await _fetchActivityDuel(activityChannelId, accessToken);
 
     if (duelRes.status === 404) {
       console.error(
@@ -212,18 +244,15 @@ const _doBootActivity = async (): Promise<ActivityBootResult> => {
       return { ok: false, reason: "wrong_player" };
     }
 
-    return {
-      ok: true,
-      instanceId,
-      accessToken: access_token,
-      discordUserId,
-      payload,
-    };
+    return { ok: true, instanceId, accessToken, discordUserId, payload };
   } catch (err) {
     _logErr("bootActivity failed (unexpected)", err);
     return { ok: false, reason: "server_error" };
   }
 };
+
+let _bootResult: ActivityBootResult | null = null;
+let _bootPromise: Promise<ActivityBootResult> | null = null;
 
 export const bootActivity = (): Promise<ActivityBootResult> => {
   if (_bootResult) return Promise.resolve(_bootResult);
@@ -234,4 +263,152 @@ export const bootActivity = (): Promise<ActivityBootResult> => {
     return result;
   });
   return _bootPromise;
+};
+
+export interface DailyActivityPayload {
+  date: string;
+  word: string;
+  wordLength: number;
+  hardMode: boolean;
+  originDate: string;
+  groupId: string;
+  groupType: string;
+}
+
+export type DailyActivityStartResult =
+  | {
+      ok: true;
+      accessToken: string;
+      discordUserId: string;
+      payload: DailyActivityPayload;
+    }
+  | {
+      ok: false;
+      reason: "account_not_linked";
+      accessToken: string;
+      discordUserId: string;
+    }
+  | {
+      ok: false;
+      reason: "already_attempted";
+      platform?: string;
+    }
+  | { ok: false; reason: "server_error" };
+
+export const startDailyActivity = async (
+  standalone = false
+): Promise<DailyActivityStartResult> => {
+  if (!activityChannelId) {
+    console.error("[Discord] channel_id is missing from URL params");
+    return { ok: false, reason: "server_error" };
+  }
+
+  const auth = await _authenticateActivity();
+  if (!auth.ok) return { ok: false, reason: "server_error" };
+  const { accessToken, discordUserId } = auth;
+
+  try {
+    const res = await fetch("/api/activity-daily-start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_token: accessToken,
+        channel_id: activityChannelId,
+        standalone,
+      }),
+    });
+
+    if (res.status === 409) {
+      const data = (await res.json().catch(() => null)) as {
+        error?: string;
+        platform?: string;
+      } | null;
+      if (data?.error === "account_not_linked")
+        return {
+          ok: false,
+          reason: "account_not_linked",
+          accessToken,
+          discordUserId,
+        };
+      return {
+        ok: false,
+        reason: "already_attempted",
+        platform: data?.platform,
+      };
+    }
+
+    if (!res.ok) {
+      console.error(
+        `[Discord] /api/activity-daily-start failed: ${res.status}`
+      );
+      return { ok: false, reason: "server_error" };
+    }
+
+    const data = (await res.json()) as {
+      date: string;
+      word: string;
+      wordLength: number;
+      hardMode: boolean;
+      originDate: string;
+      groupId: string;
+      groupType: string;
+    };
+
+    return {
+      ok: true,
+      accessToken,
+      discordUserId,
+      payload: {
+        date: data.date,
+        word: data.word,
+        wordLength: data.wordLength,
+        hardMode: data.hardMode,
+        originDate: data.originDate,
+        groupId: data.groupId,
+        groupType: data.groupType,
+      },
+    };
+  } catch (err) {
+    _logErr("startDailyActivity failed", err);
+    return { ok: false, reason: "server_error" };
+  }
+};
+
+export const checkActivityAccountStatus = async (
+  accessToken: string
+): Promise<boolean | null> => {
+  try {
+    const res = await fetch("/api/activity-account-status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ access_token: accessToken }),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      success: boolean;
+      resolved?: boolean;
+    };
+    if (!data.success) return null;
+    return data.resolved ?? false;
+  } catch {
+    return null;
+  }
+};
+
+export const fetchActivityLinkUrl = async (
+  accessToken: string
+): Promise<string | null> => {
+  try {
+    const res = await fetch("/api/activity-link-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ access_token: accessToken }),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { success: boolean; url?: string };
+    if (!data.success || !data.url) return null;
+    return data.url;
+  } catch {
+    return null;
+  }
 };
