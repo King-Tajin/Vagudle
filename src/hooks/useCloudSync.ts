@@ -23,7 +23,6 @@ export const useCloudSync = (isMobile: boolean) => {
   const [isUpToDate, setIsUpToDate] = useState(true);
   const resolvedUidRef = useRef<string | null>(null);
   const lastPushedAtRef = useRef<string | null>(null);
-  const pushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -90,6 +89,7 @@ export const useCloudSync = (isMobile: boolean) => {
     if (!user || pendingCloudSave) return;
 
     let ignore = false;
+    let pushTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const interval = setInterval(() => {
       const latest = getLocalMaxUpdatedAt();
@@ -98,8 +98,8 @@ export const useCloudSync = (isMobile: boolean) => {
         return;
       }
       setIsUpToDate(false);
-      if (pushTimerRef.current) clearTimeout(pushTimerRef.current);
-      pushTimerRef.current = setTimeout(() => {
+      if (pushTimeoutId) clearTimeout(pushTimeoutId);
+      pushTimeoutId = setTimeout(() => {
         const run = async () => {
           const idToken = await getIdTokenForCurrentUser();
           if (ignore) return;
@@ -127,7 +127,7 @@ export const useCloudSync = (isMobile: boolean) => {
     return () => {
       ignore = true;
       clearInterval(interval);
-      if (pushTimerRef.current) clearTimeout(pushTimerRef.current);
+      if (pushTimeoutId) clearTimeout(pushTimeoutId);
     };
   }, [user, pendingCloudSave, isMobile]);
 
