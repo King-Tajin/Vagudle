@@ -226,21 +226,18 @@ export const Navbar = ({
             )}
 
             <div className="right-icons">
-              {!isActivityMode && (
-                <m.button
-                  title={leaveLabel}
-                  onClick={onNewGameClick}
-                  className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95, rotate: 180 }}
-                  aria-label={leaveLabel}
-                >
-                  <ArrowPathIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
-                </m.button>
-              )}
+              <m.button
+                title={leaveLabel}
+                onClick={onNewGameClick}
+                className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95, rotate: 180 }}
+                aria-label={leaveLabel}
+              >
+                <ArrowPathIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
+              </m.button>
 
-              {!isActivityMode &&
-                (gameMode === "normal" || gameMode === "daily") &&
+              {(gameMode === "normal" || gameMode === "daily") &&
                 onOpenDaily && (
                   <m.button
                     onClick={onOpenDaily}
@@ -266,17 +263,15 @@ export const Navbar = ({
                   </m.button>
                 )}
 
-              {!isActivityMode && (
-                <m.button
-                  onClick={() => setIsStatsModalOpen(true)}
-                  className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label="Statistics"
-                >
-                  <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
-                </m.button>
-              )}
+              <m.button
+                onClick={() => setIsStatsModalOpen(true)}
+                className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="Statistics"
+              >
+                <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
+              </m.button>
 
               <div className="relative shrink-0">
                 <m.button

@@ -1,7 +1,11 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
 import { CORS_HEADERS, json, checkActivityRateLimit } from "../_shared/api.js";
-import { fetchDiscordUser, fetchChannelGroup } from "../_shared/discordAuth.js";
+import {
+  fetchDiscordUser,
+  fetchChannelGroup,
+  sanitizeDiscordUsername,
+} from "../_shared/discordAuth.js";
 import { getUtcDateString, getRotationForDate } from "../_shared/daily.js";
 
 const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/daily";
@@ -77,6 +81,66 @@ export async function onRequestPost(context) {
     else if (standalone === true) uid = `discord:${discordId}`;
     else return json({ success: false, error: "account_not_linked" }, 409);
 
+    const nowIso = new Date().toISOString();
+
+    if (uid.startsWith("discord:")) {
+      const leaderboardRow = await db
+        .prepare(`SELECT username FROM daily_leaderboard WHERE uid = ?`)
+        .bind(uid)
+        .first();
+
+      if (!leaderboardRow?.username) {
+        const autoUsername = sanitizeDiscordUsername(
+          discordUser.global_name || discordUser.username
+        );
+
+        if (autoUsername) {
+          await db
+            .prepare(
+              `INSERT OR IGNORE INTO daily_leaderboard
+                 (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
+               VALUES (?, NULL, 0, 0, 0, 0, NULL, ?)`
+            )
+            .bind(uid, nowIso)
+            .run();
+
+          const isUniqueViolation = (error) =>
+            String(error?.message ?? error)
+              .toLowerCase()
+              .includes("unique");
+
+          const withRandomSuffix = (base) =>
+            `${base.slice(0, 16)}${Math.floor(1000 + Math.random() * 9000)}`;
+
+          let candidate = autoUsername;
+          const maxAttempts = 5;
+
+          for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+              await db
+                .prepare(
+                  `UPDATE daily_leaderboard
+                   SET username = ?, username_updated_at = ?
+                   WHERE uid = ? AND username IS NULL`
+                )
+                .bind(candidate, nowIso, uid)
+                .run();
+              break;
+            } catch (error) {
+              if (!isUniqueViolation(error)) {
+                console.error(
+                  "[activity-daily-start] Auto-username error:",
+                  error
+                );
+                break;
+              }
+              candidate = withRandomSuffix(autoUsername);
+            }
+          }
+        }
+      }
+    }
+
     let group;
     try {
       group = await fetchChannelGroup(channel_id, botToken);
@@ -85,7 +149,6 @@ export async function onRequestPost(context) {
     }
 
     const date = getUtcDateString();
-    const startedAt = new Date().toISOString();
 
     const insertResult = await db
       .prepare(
@@ -93,7 +156,7 @@ export async function onRequestPost(context) {
          VALUES (?, ?, 'discord', ?, ?, ?)
          ON CONFLICT(uid, date) DO NOTHING`
       )
-      .bind(uid, date, group.groupId, group.groupType, startedAt)
+      .bind(uid, date, group.groupId, group.groupType, nowIso)
       .run();
 
     if (insertResult.meta.changes === 0) {

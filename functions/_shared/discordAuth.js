@@ -38,6 +38,18 @@ export const fetchDiscordUser = async (accessToken) => {
   return res.json();
 };
 
+const USERNAME_PATTERN = /^[A-Za-z0-9_ -]{3,20}$/;
+
+export const sanitizeDiscordUsername = (raw) => {
+  if (typeof raw !== "string") return null;
+  const cleaned = raw
+    .replace(/[^A-Za-z0-9_ -]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .slice(0, 20);
+  return USERNAME_PATTERN.test(cleaned) ? cleaned : null;
+};
+
 export const buildDiscordSessionPayload = (discordUser) => ({
   uid: `discord:${discordUser.id}`,
   username: discordUser.global_name || discordUser.username,

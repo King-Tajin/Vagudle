@@ -23,6 +23,8 @@ export const useCloudSync = (isMobile: boolean) => {
   const [isUpToDate, setIsUpToDate] = useState(true);
   const resolvedUidRef = useRef<string | null>(null);
   const lastPushedAtRef = useRef<string | null>(null);
+  const latestPendingRef = useRef<string | null>(null);
+  const [pendingPushTrigger, setPendingPushTrigger] = useState(0);
 
   useEffect(() => {
     if (!user) {
@@ -88,9 +90,6 @@ export const useCloudSync = (isMobile: boolean) => {
   useEffect(() => {
     if (!user || pendingCloudSave) return;
 
-    let ignore = false;
-    let pushTimeoutId: ReturnType<typeof setTimeout> | null = null;
-
     const interval = setInterval(() => {
       const latest = getLocalMaxUpdatedAt();
       if (!latest || latest === lastPushedAtRef.current) {
@@ -98,38 +97,48 @@ export const useCloudSync = (isMobile: boolean) => {
         return;
       }
       setIsUpToDate(false);
-      if (pushTimeoutId) clearTimeout(pushTimeoutId);
-      pushTimeoutId = setTimeout(() => {
-        const run = async () => {
-          const idToken = await getIdTokenForCurrentUser();
-          if (ignore) return;
-          if (!idToken) return;
-
-          const updatedAt = await pushCloudSave(
-            idToken,
-            buildCloudSavePayloadFromLocalStorage(isMobile)
-          );
-          if (ignore) return;
-
-          if (updatedAt) {
-            lastPushedAtRef.current = latest;
-            setCloudUpdatedAt(updatedAt);
-            setIsUpToDate(true);
-            setSyncError(null);
-          } else {
-            setSyncError("Couldn't sync to cloud.");
-          }
-        };
-        void run();
-      }, PUSH_DEBOUNCE_MS);
+      latestPendingRef.current = latest;
+      setPendingPushTrigger((n) => n + 1);
     }, POLL_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [user, pendingCloudSave]);
+
+  useEffect(() => {
+    if (!user || pendingCloudSave || pendingPushTrigger === 0) return;
+
+    let ignore = false;
+    const latest = latestPendingRef.current;
+
+    const timeoutId = setTimeout(() => {
+      const run = async () => {
+        const idToken = await getIdTokenForCurrentUser();
+        if (ignore) return;
+        if (!idToken) return;
+
+        const updatedAt = await pushCloudSave(
+          idToken,
+          buildCloudSavePayloadFromLocalStorage(isMobile)
+        );
+        if (ignore) return;
+
+        if (updatedAt) {
+          lastPushedAtRef.current = latest;
+          setCloudUpdatedAt(updatedAt);
+          setIsUpToDate(true);
+          setSyncError(null);
+        } else {
+          setSyncError("Couldn't sync to cloud.");
+        }
+      };
+      void run();
+    }, PUSH_DEBOUNCE_MS);
 
     return () => {
       ignore = true;
-      clearInterval(interval);
-      if (pushTimeoutId) clearTimeout(pushTimeoutId);
+      clearTimeout(timeoutId);
     };
-  }, [user, pendingCloudSave, isMobile]);
+  }, [user, pendingCloudSave, pendingPushTrigger, isMobile]);
 
   const resolvePendingCloudSave = () => {
     setPendingCloudSave(null);
