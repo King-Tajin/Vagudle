@@ -16,12 +16,14 @@ import {
   fetchDailyConfig,
   getDailyNumber,
   loadDailyProgress,
+  saveDailyProgress,
   saveDailyResult,
   loadDailyResult,
   clearDailyProgress,
   recordDailyStats,
   loadDailyStats,
   submitDailyResult,
+  fetchServerDailyProgress,
   DAILY_PATH,
   type DailyConfig,
   type DailyResult,
@@ -146,12 +148,23 @@ export const useDailyMode = ({
     setDailyModalMode("play");
   };
 
-  const handlePlayDaily = () => {
+  const handlePlayDaily = async () => {
     if (!dailyConfig) return;
     const dailyMaxChallenges = dailyConfig.hardMode
       ? HARD_MODE_MAX_CHALLENGES
       : NORMAL_MODE_MAX_CHALLENGES;
-    const progress = loadDailyProgress(dailyConfig.date);
+    let progress = loadDailyProgress(dailyConfig.date);
+    const idToken = await getIdTokenForCurrentUser();
+    if (idToken) {
+      const serverProgress = await fetchServerDailyProgress(idToken);
+      if (
+        serverProgress &&
+        serverProgress.guesses.length > (progress?.guesses.length ?? 0)
+      ) {
+        progress = serverProgress;
+        saveDailyProgress(dailyConfig.date, serverProgress);
+      }
+    }
     const restoredGuesses = progress?.guesses ?? [];
     const won = restoredGuesses.some(
       (guess) => guess.toUpperCase() === dailyConfig.word

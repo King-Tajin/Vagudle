@@ -31,13 +31,16 @@ import {
   fetchDailyConfig,
   loadDailyResult,
   loadDailyProgress,
+  saveDailyProgress,
   saveDailyResult,
   recordDailyStats,
   clearDailyProgress,
+  fetchServerDailyProgress,
   type DailyConfig,
   type DailyResult,
   type DailyStats,
 } from "../lib/daily";
+import { getIdTokenForCurrentUser } from "../lib/cloudSync";
 import { CORRECT_WORD_MESSAGE } from "../constants/strings";
 import {
   HARD_MODE_MAX_CHALLENGES,
@@ -142,7 +145,13 @@ export const useGameInitialization = ({
         return;
       }
 
-      const progress = loadDailyProgress(config.date);
+      const serverProgress = payload.guesses
+        ? { guesses: payload.guesses, cellColors: payload.cellColors ?? {} }
+        : null;
+      const progress = serverProgress ?? loadDailyProgress(config.date);
+      if (serverProgress) {
+        saveDailyProgress(config.date, serverProgress);
+      }
       const dailyMaxChallenges = config.hardMode
         ? HARD_MODE_MAX_CHALLENGES
         : NORMAL_MODE_MAX_CHALLENGES;
@@ -450,7 +459,18 @@ export const useGameInitialization = ({
             setDailyModalMode("complete");
             setIsDailyModalOpen(true);
           } else {
-            const progress = loadDailyProgress(config.date);
+            let progress = loadDailyProgress(config.date);
+            const idToken = await getIdTokenForCurrentUser();
+            if (idToken) {
+              const serverProgress = await fetchServerDailyProgress(idToken);
+              if (
+                serverProgress &&
+                serverProgress.guesses.length > (progress?.guesses.length ?? 0)
+              ) {
+                progress = serverProgress;
+                saveDailyProgress(config.date, serverProgress);
+              }
+            }
             if (progress) {
               const dailyMaxChallenges = config.hardMode
                 ? HARD_MODE_MAX_CHALLENGES

@@ -98,7 +98,7 @@ export async function onRequestPost(context) {
           await db
             .prepare(
               `INSERT OR IGNORE INTO daily_leaderboard
-                 (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
+               (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
                VALUES (?, NULL, 0, 0, 0, 0, NULL, ?)`
             )
             .bind(uid, nowIso)
@@ -159,24 +159,30 @@ export async function onRequestPost(context) {
       .bind(uid, date, group.groupId, group.groupType, nowIso)
       .run();
 
-    if (insertResult.meta.changes === 0) {
-      const existingAttempt = await db
+    const isNewAttempt = insertResult.meta.changes > 0;
+    let existingAttempt = null;
+
+    if (!isNewAttempt) {
+      existingAttempt = await db
         .prepare(
-          `SELECT platform, group_id, group_type, completed_at
+          `SELECT platform, group_id, group_type, completed_at, guesses, cell_colors
            FROM daily_attempts WHERE uid = ? AND date = ?`
         )
         .bind(uid, date)
         .first();
-      return json(
-        {
-          success: false,
-          error: "already_attempted",
-          platform: existingAttempt?.platform,
-          groupId: existingAttempt?.group_id,
-          groupType: existingAttempt?.group_type,
-        },
-        409
-      );
+
+      if (existingAttempt?.completed_at) {
+        return json(
+          {
+            success: false,
+            error: "already_attempted",
+            platform: existingAttempt?.platform,
+            groupId: existingAttempt?.group_id,
+            groupType: existingAttempt?.group_type,
+          },
+          409
+        );
+      }
     }
 
     const rotation = getRotationForDate(date);
@@ -207,23 +213,44 @@ export async function onRequestPost(context) {
       );
     }
 
-    const webhookSecret = context.env.DAILY_WEBHOOK_SECRET;
-    if (webhookSecret) {
-      await notifyWebhook(
-        {
-          event: "started",
-          uid,
-          discord_id: discordId,
-          group_id: group.groupId,
-          group_type: group.groupType,
-          date,
-        },
-        webhookSecret
-      );
-    } else {
-      console.error(
-        "[activity-daily-start] DAILY_WEBHOOK_SECRET not set — skipping webhook"
-      );
+    if (isNewAttempt) {
+      const webhookSecret = context.env.DAILY_WEBHOOK_SECRET;
+      if (webhookSecret) {
+        await notifyWebhook(
+          {
+            event: "started",
+            uid,
+            discord_id: discordId,
+            group_id: group.groupId,
+            group_type: group.groupType,
+            date,
+          },
+          webhookSecret
+        );
+      } else {
+        console.error(
+          "[activity-daily-start] DAILY_WEBHOOK_SECRET not set — skipping webhook"
+        );
+      }
+    }
+
+    let resumedGuesses = null;
+    let resumedCellColors = null;
+    if (existingAttempt) {
+      try {
+        resumedGuesses = existingAttempt.guesses
+          ? JSON.parse(existingAttempt.guesses)
+          : null;
+      } catch {
+        resumedGuesses = null;
+      }
+      try {
+        resumedCellColors = existingAttempt.cell_colors
+          ? JSON.parse(existingAttempt.cell_colors)
+          : null;
+      } catch {
+        resumedCellColors = null;
+      }
     }
 
     return json({
@@ -233,8 +260,10 @@ export async function onRequestPost(context) {
       word: wordRow.word.toUpperCase(),
       wordLength: wordRow.word_length,
       hardMode: Boolean(wordRow.hard_mode),
-      groupId: group.groupId,
-      groupType: group.groupType,
+      groupId: existingAttempt ? existingAttempt.group_id : group.groupId,
+      groupType: existingAttempt ? existingAttempt.group_type : group.groupType,
+      guesses: resumedGuesses,
+      cellColors: resumedCellColors,
     });
   } catch (error) {
     console.error("[activity-daily-start] Error:", error);

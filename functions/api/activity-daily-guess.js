@@ -2,7 +2,11 @@
 
 import { CORS_HEADERS, json, checkActivityRateLimit } from "../_shared/api.js";
 import { fetchDiscordUser } from "../_shared/discordAuth.js";
-import { getUtcDateString } from "../_shared/daily.js";
+import {
+  getUtcDateString,
+  isValidDailyProgressGuesses,
+  isValidDailyProgressCellColors,
+} from "../_shared/daily.js";
 import { getGuessStatuses } from "../_shared/wordStatus.js";
 
 const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/daily";
@@ -39,7 +43,7 @@ export async function onRequestPost(context) {
       return json({ success: false, error: "Database not configured." }, 500);
 
     const body = await context.request.json();
-    const { access_token, guess, guess_number } = body;
+    const { access_token, guess, guess_number, guesses, cell_colors } = body;
 
     if (
       !access_token ||
@@ -50,7 +54,10 @@ export async function onRequestPost(context) {
       guess.length > 10 ||
       typeof guess_number !== "number" ||
       !Number.isInteger(guess_number) ||
-      guess_number < 1
+      guess_number < 1 ||
+      (guesses !== undefined && !isValidDailyProgressGuesses(guesses)) ||
+      (cell_colors !== undefined &&
+        !isValidDailyProgressCellColors(cell_colors))
     )
       return json({ success: false, error: "Invalid request body." }, 400);
 
@@ -97,7 +104,29 @@ export async function onRequestPost(context) {
     if (!wordRow || guess.length !== wordRow.word_length)
       return json({ success: false, error: "Guess length mismatch." }, 400);
 
+    if (
+      guesses !== undefined &&
+      !isValidDailyProgressGuesses(guesses, wordRow.word_length)
+    )
+      return json({ success: false, error: "Invalid guesses snapshot." }, 400);
+
     const statuses = getGuessStatuses(wordRow.word, guess);
+
+    if (guesses !== undefined) {
+      await db
+        .prepare(
+          `UPDATE daily_attempts
+           SET guesses = ?, cell_colors = ?
+           WHERE uid = ? AND date = ? AND platform = 'discord' AND completed_at IS NULL`
+        )
+        .bind(
+          JSON.stringify(guesses),
+          JSON.stringify(cell_colors ?? {}),
+          uid,
+          today
+        )
+        .run();
+    }
 
     const webhookSecret = context.env.DAILY_WEBHOOK_SECRET;
     if (webhookSecret) {

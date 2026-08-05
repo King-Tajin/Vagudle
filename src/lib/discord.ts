@@ -1,4 +1,5 @@
 import type { DiscordSDK } from "@discord/embedded-app-sdk";
+import type { CharStatus } from "./statuses";
 
 const params = new URLSearchParams(window.location.search);
 const frameId = params.get("frame_id");
@@ -273,6 +274,8 @@ export interface DailyActivityPayload {
   originDate: string;
   groupId: string;
   groupType: string;
+  guesses: string[] | null;
+  cellColors: { [key: string]: CharStatus } | null;
 }
 
 export type DailyActivityStartResult =
@@ -352,6 +355,8 @@ export const startDailyActivity = async (
       originDate: string;
       groupId: string;
       groupType: string;
+      guesses?: string[] | null;
+      cellColors?: { [key: string]: CharStatus } | null;
     };
 
     return {
@@ -366,6 +371,8 @@ export const startDailyActivity = async (
         originDate: data.originDate,
         groupId: data.groupId,
         groupType: data.groupType,
+        guesses: data.guesses ?? null,
+        cellColors: data.cellColors ?? null,
       },
     };
   } catch (err) {

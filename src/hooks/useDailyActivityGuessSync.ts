@@ -1,16 +1,19 @@
 import { useEffect, useRef } from "react";
+import type { CharStatus } from "../lib/statuses";
 import { submitActivityDailyGuess } from "../lib/daily";
 
 type Params = {
   isDailyActivityMode: boolean;
   activityAccessToken: string | null;
   guesses: string[];
+  cellColors: { [key: string]: CharStatus };
 };
 
 export const useDailyActivityGuessSync = ({
   isDailyActivityMode,
   activityAccessToken,
   guesses,
+  cellColors,
 }: Params): void => {
   const sentCountRef = useRef(0);
 
@@ -26,8 +29,10 @@ export const useDailyActivityGuessSync = ({
       void submitActivityDailyGuess(
         activityAccessToken,
         guess,
-        startIndex + i + 1
+        startIndex + i + 1,
+        guesses,
+        cellColors
       );
     });
-  }, [guesses, isDailyActivityMode, activityAccessToken]);
+  }, [guesses, cellColors, isDailyActivityMode, activityAccessToken]);
 };

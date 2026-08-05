@@ -128,7 +128,9 @@ export const submitActivityDailyResult = async (
 export const submitActivityDailyGuess = async (
   accessToken: string,
   guess: string,
-  guessNumber: number
+  guessNumber: number,
+  guesses?: string[],
+  cellColors?: { [key: string]: string }
 ): Promise<void> => {
   try {
     await fetch("/api/activity-daily-guess", {
@@ -138,10 +140,51 @@ export const submitActivityDailyGuess = async (
         access_token: accessToken,
         guess,
         guess_number: guessNumber,
+        guesses,
+        cell_colors: cellColors,
       }),
     });
   } catch {
     return;
+  }
+};
+
+export const saveServerDailyProgress = async (
+  idToken: string,
+  guesses: string[],
+  cellColors: { [key: string]: string }
+): Promise<void> => {
+  try {
+    await fetch("/api/daily-progress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ guesses, cellColors }),
+    });
+  } catch {
+    return;
+  }
+};
+
+export const fetchServerDailyProgress = async (
+  idToken: string
+): Promise<DailyProgress | null> => {
+  try {
+    const res = await fetch("/api/daily-progress", {
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      success: boolean;
+      guesses?: string[] | null;
+      cellColors?: { [key: string]: string } | null;
+    };
+    if (!data.success || !data.guesses) return null;
+    return { guesses: data.guesses, cellColors: data.cellColors ?? {} };
+  } catch {
+    return null;
   }
 };
 

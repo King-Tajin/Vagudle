@@ -52,6 +52,7 @@ import { useTilePainting } from "./hooks/useTilePainting";
 import { useDuelResult } from "./hooks/useDuelResult";
 import { useDailyActivityResult } from "./hooks/useDailyActivityResult";
 import { useDailyActivityGuessSync } from "./hooks/useDailyActivityGuessSync";
+import { useDailyProgressSync } from "./hooks/useDailyProgressSync";
 import { useGameOutcome } from "./hooks/useGameOutcome";
 import { useGameInitialization } from "./hooks/useGameInitialization";
 import { useGameFlow } from "./hooks/useGameFlow";
@@ -442,6 +443,12 @@ function App() {
     isDailyActivityMode: isDiscordActivity && isDailyMode,
     activityAccessToken,
     guesses,
+    cellColors,
+  });
+  useDailyProgressSync({
+    isWebDailyMode: !isDiscordActivity && isDailyMode,
+    guesses,
+    cellColors,
   });
   const duelSaveStatus = useDuelResult({
     isDuelMode,
