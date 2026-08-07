@@ -45,6 +45,7 @@ export const useGameOutcome = ({
 }: Params) => {
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let scheduledOwnAlert = false;
 
     if (isGameWon) {
       if (restoredRef.current) {
@@ -68,6 +69,7 @@ export const useGameOutcome = ({
             else setIsStatsModalOpen(true);
           },
         });
+        scheduledOwnAlert = true;
       }
     }
 
@@ -91,7 +93,7 @@ export const useGameOutcome = ({
 
     return () => {
       clearTimeout(timeoutId);
-      cancelAlert();
+      if (scheduledOwnAlert) cancelAlert();
     };
     // Omitted refs and state setters are stable and don't need to be listed as deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
