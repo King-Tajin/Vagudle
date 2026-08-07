@@ -52,22 +52,32 @@ for (const filePath of sortedFiles) {
         `${diag.plugin}/${diag.rule}`
     );
     console.log(`         ${diag.message}`);
-    if (diag.help) console.log(`         ${colors.dim}${diag.help}${colors.reset}`);
-    if (diag.url) console.log(`         ${colors.dim}${diag.url}${colors.reset}`);
+    if (diag.help)
+      console.log(`         ${colors.dim}${diag.help}${colors.reset}`);
+    if (diag.url)
+      console.log(`         ${colors.dim}${diag.url}${colors.reset}`);
   }
 }
 
-const errorCount = result.diagnostics.filter((d) => d.severity === "error").length;
-const warningCount = result.diagnostics.filter((d) => d.severity === "warning").length;
+const errorCount = result.diagnostics.filter(
+  (d) => d.severity === "error"
+).length;
+const warningCount = result.diagnostics.filter(
+  (d) => d.severity === "warning"
+).length;
 
 console.log(`\n${colors.bold}Summary${colors.reset}`);
 console.log(`  ${colors.red}${errorCount} error(s)${colors.reset}`);
 console.log(`  ${colors.yellow}${warningCount} warning(s)${colors.reset}`);
 if (result.score) {
-  console.log(`  ${colors.green}Score: ${result.score.score}/100 (${result.score.label})${colors.reset}`);
+  console.log(
+    `  ${colors.green}Score: ${result.score.score}/100 (${result.score.label})${colors.reset}`
+  );
 }
 if (result.skippedChecks.length) {
-  console.log(`  ${colors.dim}Skipped checks: ${result.skippedChecks.join(", ")}${colors.reset}`);
+  console.log(
+    `  ${colors.dim}Skipped checks: ${result.skippedChecks.join(", ")}${colors.reset}`
+  );
 }
 if (result.skippedCheckReasons) {
   for (const [check, reason] of Object.entries(result.skippedCheckReasons)) {

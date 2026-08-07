@@ -82,10 +82,15 @@
       }
 
       fetch("/privacy_policy.txt")
-        .then((r) => r.text())
-        .then(
-          (t) => (document.getElementById("content").innerHTML = render(t))
-        );
+        .then((r) => {
+          if (!r.ok) throw new Error("Failed to load privacy policy");
+          return r.text();
+        })
+        .then((t) => (document.getElementById("content").innerHTML = render(t)))
+        .catch(() => {
+          document.getElementById("content").textContent =
+            "Sorry, we couldn't load the privacy policy right now. Please try again later.";
+        });
     </script>
   </body>
 </html>
