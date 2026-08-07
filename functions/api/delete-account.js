@@ -25,7 +25,31 @@ export async function onRequestPost(context) {
       return json({ success: false, error: "Invalid auth token." }, 401);
     const { uid } = authResult;
 
-    await db.prepare(`DELETE FROM player_saves WHERE uid = ?`).bind(uid).run();
+    const existingRow = await db
+      .prepare(`SELECT discord_id FROM player_saves WHERE uid = ?`)
+      .bind(uid)
+      .first();
+
+    const discordId = uid.startsWith("discord:")
+      ? uid.slice("discord:".length)
+      : (existingRow?.discord_id ?? null);
+
+    const statements = [
+      db.prepare(`DELETE FROM player_saves WHERE uid = ?`).bind(uid),
+      db.prepare(`DELETE FROM daily_leaderboard WHERE uid = ?`).bind(uid),
+      db.prepare(`DELETE FROM daily_attempts WHERE uid = ?`).bind(uid),
+      db.prepare(`DELETE FROM group_daily_results WHERE uid = ?`).bind(uid),
+    ];
+
+    if (discordId) {
+      statements.push(
+        db
+          .prepare(`DELETE FROM duel_results WHERE discord_id = ?`)
+          .bind(discordId)
+      );
+    }
+
+    await db.batch(statements);
 
     return json({ success: true });
   } catch (error) {

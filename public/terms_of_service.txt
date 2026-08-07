@@ -1,6 +1,6 @@
 VAGUDLE TERMS OF SERVICE
 
-Last updated: July 2026
+Last updated: August 2026
 
 These Terms of Service ("Terms") govern your use of Vagudle, a free online
 word game available at vagudle.com ("the Game", "the Site"). By using the
@@ -34,6 +34,8 @@ Vagudle is a free word-guessing game. It offers:
   - On-demand word game in normal and hard modes
   - Custom challenge links you can share with other players
   - Duel mode, including integration with Discord Activities
+  - Daily mode, a once-a-day word with a public leaderboard, streak
+    tracking, and integration with Discord Activities
   - Optional cloud save, letting you sync progress across devices
 
 The Site is provided free of charge. We reserve the right to modify,
@@ -44,9 +46,13 @@ suspend, or discontinue any part of the Site at any time without notice.
 4. ACCOUNTS AND CLOUD SAVE
 
 You may optionally sign in to enable cloud save. Sign-in is provided through
-Firebase Authentication, using Google, GitHub, or a sign-in link sent to your
-email address. You are responsible for maintaining the security of the
-account you use to sign in and for any activity that occurs under it.
+Firebase Authentication, using Google, GitHub, Discord, or a sign-in link
+sent to your email address. You are responsible for maintaining the security
+of the account you use to sign in and for any activity that occurs under it.
+
+You may link a Discord account to an existing account so that progress and
+Discord-based features (such as Duel and Daily mode inside Discord) are
+associated with the same account.
 
 When you sign in on a new device, you may be asked to choose between your
 local progress and your cloud save if the two differ. We are not responsible
@@ -57,17 +63,43 @@ uninterrupted, or free from loss due to outages or issues with third-party
 providers such as Firebase or Cloudflare. Cloud save is provided as a
 convenience and not a guaranteed backup.
 
-Your use of Google or GitHub to sign in is also subject to that provider's
-own terms of service, separate from these Terms.
+Your use of Google, GitHub, or Discord to sign in is also subject to that
+provider's own terms of service, separate from these Terms.
+
+You may request deletion of your account and associated data at any time by
+contacting us using the information in Section 14. Certain group-level data,
+such as a Discord server's combined Daily mode streak, is not tied to any
+single individual and is not deleted as part of an individual account
+deletion request.
 
 ---
 
-5. ACCEPTABLE USE
+5. DAILY MODE AND LEADERBOARDS
+
+Daily mode features a leaderboard that is public and visible to anyone who
+visits the Site. If you play Daily mode and are signed in, or play via
+Discord, your chosen or automatically generated username, along with your
+wins, losses, and streaks, may be displayed publicly.
+
+If you play Daily mode inside Discord without having set a username, we
+will automatically generate one for you based on your Discord display name
+so that you can appear on the leaderboard. You can change this at any time
+from the username field in your account settings.
+
+If you do not want your activity displayed on the public leaderboard, you
+can play Daily mode on the web without signing in or setting a username, or
+avoid linking a Discord account.
+
+---
+
+6. ACCEPTABLE USE
 
 You agree not to:
 
   - Submit spam, repeated identical messages, or automated submissions
     through the feedback form or any other input on the Site
+  - Choose a username that is offensive, impersonates another person or
+    entity, or otherwise violates these Terms
   - Attempt to disrupt, overload, or interfere with the Site or its servers
   - Use the Site for any unlawful purpose
   - Attempt to reverse-engineer, scrape, or otherwise extract data from
@@ -75,25 +107,28 @@ You agree not to:
   - Attempt to access another user's account, cloud save data, or
     authentication credentials without authorization
 
-We reserve the right to disregard feedback or block access from sources
-that violate these rules.
+We reserve the right to disregard feedback, reset or remove a username, or
+block access from sources that violate these rules.
 
 ---
 
-6. USER-SUBMITTED CONTENT
+7. USER-SUBMITTED CONTENT
 
-The Site allows you to create custom challenge words and submit feedback.
-By submitting content, you confirm that it does not violate any applicable
-law and that you have the right to submit it.
+The Site allows you to create custom challenge words, choose a leaderboard
+username, and submit feedback. By submitting content, you confirm that it
+does not violate any applicable law and that you have the right to submit
+it.
 
 We do not monitor all submitted content in real time, but reserve the right
-to review and discard any submission at our discretion. Challenge words and
-feedback are not publicly displayed on the Site — challenge words are encoded
-in a shareable link and feedback is sent directly to us.
+to review and discard any submission, or reset any username, at our
+discretion. Challenge words and feedback are not publicly displayed on the
+Site — challenge words are encoded in a shareable link and feedback is sent
+directly to us. Leaderboard usernames, by contrast, are publicly visible as
+described in Section 5.
 
 ---
 
-7. MERCHANDISE
+8. MERCHANDISE
 
 The Site may contain a link to a third-party merchandise store. Purchases
 made through that store are subject to the third party's own terms and
@@ -102,16 +137,16 @@ any disputes arising from purchases made on third-party platforms.
 
 ---
 
-8. DISCORD INTEGRATION
+9. DISCORD INTEGRATION
 
-Duel mode on the Site uses Discord's Activity and OAuth features. Your use
-of those features is also subject to Discord's Terms of Service
-(discord.com/terms) and Privacy Policy (discord.com/privacy). We are not
-affiliated with or endorsed by Discord Inc.
+Duel mode and Daily mode on the Site use Discord's Activity and OAuth
+features. Your use of those features is also subject to Discord's Terms of
+Service (discord.com/terms) and Privacy Policy (discord.com/privacy). We are
+not affiliated with or endorsed by Discord Inc.
 
 ---
 
-9. INTELLECTUAL PROPERTY
+10. INTELLECTUAL PROPERTY
 
 The Vagudle source code is released under the MIT License. You are free to
 view, fork, and build upon it in accordance with that license. The MIT
@@ -123,7 +158,7 @@ otherwise stated.
 
 ---
 
-10. DISCLAIMERS
+11. DISCLAIMERS
 
 THE SITE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY
 KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
@@ -134,7 +169,7 @@ OF HARMFUL COMPONENTS.
 
 ---
 
-11. LIMITATION OF LIABILITY
+12. LIMITATION OF LIABILITY
 
 TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, THE OPERATOR SHALL NOT
 BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE
@@ -147,7 +182,7 @@ claim arising from your use of the Site shall not exceed zero dollars ($0).
 
 ---
 
-12. GOVERNING LAW
+13. GOVERNING LAW
 
 These Terms are governed by the laws of the United States and the State of
 Wisconsin, without regard to conflict-of-law principles. Any dispute that
@@ -160,7 +195,7 @@ Terms to the extent permitted by your local law.
 
 ---
 
-13. CHANGES TO THESE TERMS
+14. CHANGES TO THESE TERMS
 
 We may update these Terms from time to time. When we do, we will update the
 "Last updated" date at the top of this document. Continued use of the Site
@@ -168,7 +203,7 @@ after any changes constitutes acceptance of the updated Terms.
 
 ---
 
-14. CONTACT
+15. CONTACT
 
 If you have questions about these Terms, contact us at:
 

@@ -1,6 +1,6 @@
 VAGUDLE PRIVACY POLICY
 
-Last updated: July 2026
+Last updated: August 2026
 
 Vagudle (https://vagudle.king-tajin.dev) is operated by Roland Shikoski.
 
@@ -29,12 +29,16 @@ You can sign in with:
   - Google
   - GitHub
   - A sign-in link sent to your email address
+  - Discord
 
 When you sign in, we store the following in a database to power cloud save:
 
-  - Your account identifier, issued by Firebase
+  - Your account identifier, issued by Firebase (or, for Discord sign-in,
+    derived from your Discord user ID)
   - Your email address and/or display name, depending on the sign-in method
     you use
+  - For Discord sign-in specifically: your Discord user ID, username, and
+    avatar image URL
   - Your achievement progress, word statistics, settings, and selected
     background
 
@@ -43,8 +47,13 @@ your cloud save or account data, contact us at the email addresses above.
 
 Your browser may also store a local sign-in session (using localStorage or
 IndexedDB, not cookies) so you stay signed in between visits. If you sign
-in with Google or GitHub, that sign-in is also subject to the provider's own
-privacy policy. We never receive your password from these providers.
+in with Google, GitHub, or Discord, that sign-in is also subject to the
+provider's own privacy policy. We never receive your password from these
+providers.
+
+You may link a Discord account to an existing Google/GitHub/email account
+that already has cloud save progress. Once linked, your Discord ID is
+associated with that same account.
 
 ---
 
@@ -61,6 +70,68 @@ the leaderboard:
 
 This data is retained indefinitely. To request deletion of your data, contact
 us at the email addresses above.
+
+---
+
+DAILY MODE
+
+Daily mode is available on the web and inside Discord (as a Discord
+Activity). What we store depends on how you play:
+
+  On the web, without signing in:
+    Your progress is stored locally in your browser only.
+
+  Signed in, or playing via Discord:
+    - A public daily leaderboard entry containing a username, wins, losses,
+      current streak, and best streak, tied to your account
+    - If you play Daily mode inside Discord and have not chosen a username,
+      we automatically generate one from your Discord display name so you
+      can appear on the leaderboard. You can change this at any time from
+      the username field in your account settings.
+    - Which Discord server and channel (or "standalone" if played outside a
+      server) you played in, and the platform used
+    - A snapshot of your in-progress guesses and letter colors, so you can
+      resume a game you haven't finished
+    - If you play as part of a Discord server or group, that group's
+      combined win streak (not tied to your individual identity)
+
+  Retention:
+    - Leaderboard entries (username, wins, losses, streaks) and group streaks
+      are retained indefinitely, similar to duel results
+    - In-progress guess snapshots, and which group/channel you played in for
+      a given day, are retained for a maximum of 4 weeks, after which they
+      are deleted automatically
+
+  Visibility:
+    - The daily leaderboard is public and visible to anyone who visits the
+      Site, showing username, wins, losses, and streaks
+    - If you don't want to appear on the public leaderboard, you can play
+      Daily mode on the web without signing in, or without setting a
+      username, or without linking a Discord account
+
+  Internal use of gameplay events:
+    When you play Daily mode through Discord, gameplay events (such as your
+    Discord ID, the group you're playing in, and your guesses) are sent in
+    real time to an internal service we operate, which powers Discord bot
+    features like activity notifications. This service is run by us and is
+    not shared with any outside company.
+
+---
+
+ACCOUNT DELETION
+
+You can request deletion of your account and associated data at any time by
+contacting us at the email addresses above. When you do, we delete:
+
+  - Your cloud save data (achievements, stats, settings, background)
+  - Your daily leaderboard entry (username, wins, losses, streaks)
+  - Your in-progress daily attempts and guess snapshots
+  - Your duel results and group daily results
+
+Group-level data that isn't tied to a single identifiable person, such as a
+Discord server's combined streak, is not deleted as part of an individual
+account deletion request, since it reflects the group as a whole rather than
+any one player.
 
 ---
 
