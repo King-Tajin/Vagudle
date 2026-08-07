@@ -14,6 +14,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.js\" \"*.{html,json,js,cjs,md}\" \"public/**/*.{html,json}\" \".github/**/*.md\" \"scripts/*.mjs\"",
     "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && react-doctor --verbose",
     "doctor": "pnpm dlx react-doctor@latest --verbose",
+    "doctor:report": "node scripts/doctor-report.mjs",
     "check:overrides": "node scripts/check-unused-overrides.mjs"
   },
   "dependencies": {
