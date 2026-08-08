@@ -3,7 +3,7 @@
 import {
   CORS_HEADERS,
   json,
-  decode,
+  decodeChallengeToken,
   ONE_DAY_MS,
   validateDuelParsed,
   checkRateLimit,
@@ -18,19 +18,8 @@ export async function onRequestGet(context) {
     const rateLimited = await checkRateLimit(context);
     if (rateLimited) return rateLimited;
 
-    const key = context.env.CHALLENGE_KEY;
-    if (!key)
-      return json({ success: false, error: "Server misconfiguration." }, 500);
-
-    const token = new URL(context.request.url).searchParams.get("token");
-    if (!token) return json({ success: false, error: "Missing token." }, 400);
-
-    let parsed;
-    try {
-      parsed = await decode(token, key);
-    } catch {
-      return json({ success: false, error: "Invalid token." }, 400);
-    }
+    const { parsed, error } = await decodeChallengeToken(context);
+    if (error) return error;
 
     if (!validateDuelParsed(parsed))
       return json({ success: false, error: "Malformed duel data." }, 400);

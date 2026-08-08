@@ -6,7 +6,8 @@ import {
   VALID_GUESSES,
   checkActivityRateLimit,
 } from "../_shared/api.js";
-import { fetchDiscordUser } from "../_shared/discordAuth.js";
+import { requireDiscordUser } from "../_shared/discordAuth.js";
+import { resolveUidForDiscordId } from "../_shared/playerAccount.js";
 import {
   getUtcDateString,
   getPreviousUtcDateString,
@@ -61,27 +62,10 @@ export async function onRequestPost(context) {
     )
       return json({ success: false, error: "Invalid request body." }, 400);
 
-    let discordUser;
-    try {
-      discordUser = await fetchDiscordUser(access_token);
-    } catch {
-      return json(
-        { success: false, error: "Failed to verify Discord identity." },
-        401
-      );
-    }
+    const discordUser = await requireDiscordUser(access_token);
+    if (discordUser instanceof Response) return discordUser;
     const discordId = discordUser.id;
-    if (!discordId)
-      return json(
-        { success: false, error: "Could not resolve Discord user ID." },
-        401
-      );
-
-    const existingAccount = await db
-      .prepare(`SELECT uid FROM player_saves WHERE discord_id = ?`)
-      .bind(discordId)
-      .first();
-    const uid = existingAccount ? existingAccount.uid : `discord:${discordId}`;
+    const uid = await resolveUidForDiscordId(db, discordId);
 
     const today = getUtcDateString();
     const yesterday = getPreviousUtcDateString(today);

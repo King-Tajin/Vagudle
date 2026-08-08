@@ -2,7 +2,7 @@
 
 import { CORS_HEADERS, json, checkActivityRateLimit } from "../_shared/api.js";
 import {
-  fetchDiscordUser,
+  requireDiscordUser,
   fetchChannelGroup,
   sanitizeDiscordUsername,
 } from "../_shared/discordAuth.js";
@@ -55,21 +55,9 @@ export async function onRequestPost(context) {
         400
       );
 
-    let discordUser;
-    try {
-      discordUser = await fetchDiscordUser(access_token);
-    } catch {
-      return json(
-        { success: false, error: "Failed to verify Discord identity." },
-        401
-      );
-    }
+    const discordUser = await requireDiscordUser(access_token);
+    if (discordUser instanceof Response) return discordUser;
     const discordId = discordUser.id;
-    if (!discordId)
-      return json(
-        { success: false, error: "Could not resolve Discord user ID." },
-        401
-      );
 
     const existingAccount = await db
       .prepare(`SELECT uid FROM player_saves WHERE discord_id = ?`)

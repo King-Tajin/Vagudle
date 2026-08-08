@@ -83,6 +83,24 @@ export const decode = async (token, secret) => {
   return JSON.parse(textDecoder.decode(plaintext));
 };
 
+export const decodeChallengeToken = async (context) => {
+  const key = context.env.CHALLENGE_KEY;
+  if (!key)
+    return {
+      error: json({ success: false, error: "Server misconfiguration." }, 500),
+    };
+
+  const token = new URL(context.request.url).searchParams.get("token");
+  if (!token)
+    return { error: json({ success: false, error: "Missing token." }, 400) };
+
+  try {
+    return { parsed: await decode(token, key) };
+  } catch {
+    return { error: json({ success: false, error: "Invalid token." }, 400) };
+  }
+};
+
 export const VALID_DICTS = ["normal", "hard", "full"];
 export const VALID_GUESSES = [9, 11];
 

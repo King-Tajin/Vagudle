@@ -1,5 +1,5 @@
 import { verifyFirebaseIdToken, getBearerToken } from "./firebaseAuth.js";
-import { decode } from "./api.js";
+import { decode, json, checkRateLimit } from "./api.js";
 import { isValidDiscordSession } from "./discordAuth.js";
 
 export { getBearerToken };
@@ -32,4 +32,32 @@ export const verifyCloudSaveToken = async (request, env) => {
   }
 
   return null;
+};
+
+export const requireCloudAuth = async (context) => {
+  const rateLimited = await checkRateLimit(context);
+  if (rateLimited) return { error: rateLimited };
+
+  const db = context.env.DB;
+  if (!db)
+    return {
+      error: json(
+        { success: false, error: "Database not configured." },
+        500
+      ),
+    };
+
+  const token = getBearerToken(context.request);
+  if (!token)
+    return {
+      error: json({ success: false, error: "Missing auth token." }, 401),
+    };
+
+  const authResult = await verifyCloudSaveToken(context.request, context.env);
+  if (!authResult)
+    return {
+      error: json({ success: false, error: "Invalid auth token." }, 401),
+    };
+
+  return { db, uid: authResult.uid, username: authResult.username };
 };

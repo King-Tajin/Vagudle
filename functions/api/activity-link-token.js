@@ -6,7 +6,8 @@ import {
   encode,
   checkActivityRateLimit,
 } from "../_shared/api.js";
-import { fetchDiscordUser } from "../_shared/discordAuth.js";
+import { requireDiscordUserFromBody } from "../_shared/discordAuth.js";
+import { findPlayerSaveByDiscordId } from "../_shared/playerAccount.js";
 
 const LINK_TOKEN_TTL_MS = 15 * 60 * 1000;
 const LINK_URL_BASE = "https://vagudle.king-tajin.dev/link-discord";
@@ -25,31 +26,11 @@ export async function onRequestPost(context) {
     if (!db || !linkSecret)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
-    const body = await context.request.json();
-    const { access_token } = body;
-    if (!access_token || typeof access_token !== "string")
-      return json({ success: false, error: "Missing access_token." }, 400);
-
-    let discordUser;
-    try {
-      discordUser = await fetchDiscordUser(access_token);
-    } catch {
-      return json(
-        { success: false, error: "Failed to verify Discord identity." },
-        401
-      );
-    }
+    const discordUser = await requireDiscordUserFromBody(context);
+    if (discordUser instanceof Response) return discordUser;
     const discordId = discordUser.id;
-    if (!discordId)
-      return json(
-        { success: false, error: "Could not resolve Discord user ID." },
-        401
-      );
 
-    const existing = await db
-      .prepare(`SELECT uid FROM player_saves WHERE discord_id = ?`)
-      .bind(discordId)
-      .first();
+    const existing = await findPlayerSaveByDiscordId(db, discordId);
     if (existing)
       return json(
         { success: false, error: "This Discord account is already linked." },

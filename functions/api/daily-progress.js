@@ -1,7 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
-import { verifyCloudSaveToken, getBearerToken } from "../_shared/cloudAuth.js";
+import { CORS_HEADERS, json } from "../_shared/api.js";
+import { requireCloudAuth } from "../_shared/cloudAuth.js";
 import {
   getUtcDateString,
   isValidDailyProgressGuesses,
@@ -14,21 +14,8 @@ export async function onRequestOptions() {
 
 export async function onRequestGet(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
-    const db = context.env.DB;
-    if (!db)
-      return json({ success: false, error: "Database not configured." }, 500);
-
-    const token = getBearerToken(context.request);
-    if (!token)
-      return json({ success: false, error: "Missing auth token." }, 401);
-
-    const authResult = await verifyCloudSaveToken(context.request, context.env);
-    if (!authResult)
-      return json({ success: false, error: "Invalid auth token." }, 401);
-    const { uid } = authResult;
+    const { db, uid, error } = await requireCloudAuth(context);
+    if (error) return error;
 
     const date = getUtcDateString();
 
@@ -64,21 +51,8 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
-    const db = context.env.DB;
-    if (!db)
-      return json({ success: false, error: "Database not configured." }, 500);
-
-    const token = getBearerToken(context.request);
-    if (!token)
-      return json({ success: false, error: "Missing auth token." }, 401);
-
-    const authResult = await verifyCloudSaveToken(context.request, context.env);
-    if (!authResult)
-      return json({ success: false, error: "Invalid auth token." }, 401);
-    const { uid } = authResult;
+    const { db, uid, error } = await requireCloudAuth(context);
+    if (error) return error;
 
     const body = await context.request.json();
     const { guesses, cellColors } = body;

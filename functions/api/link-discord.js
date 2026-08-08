@@ -1,7 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, decode, checkRateLimit } from "../_shared/api.js";
-import { verifyCloudSaveToken, getBearerToken } from "../_shared/cloudAuth.js";
+import { CORS_HEADERS, json, decode } from "../_shared/api.js";
+import { requireCloudAuth } from "../_shared/cloudAuth.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -9,22 +9,12 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
-    const db = context.env.DB;
     const linkSecret = context.env.ACCOUNT_LINK_SECRET;
-    if (!db || !linkSecret)
+    if (!linkSecret)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
-    const token = getBearerToken(context.request);
-    if (!token)
-      return json({ success: false, error: "Missing auth token." }, 401);
-
-    const authResult = await verifyCloudSaveToken(context.request, context.env);
-    if (!authResult)
-      return json({ success: false, error: "Invalid auth token." }, 401);
-    const { uid } = authResult;
+    const { db, uid, error } = await requireCloudAuth(context);
+    if (error) return error;
 
     const body = await context.request.json();
     const { link_token } = body;

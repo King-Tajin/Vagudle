@@ -1,3 +1,5 @@
+import { json } from "./api.js";
+
 const DISCORD_API = "https://discord.com/api/v10";
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -36,6 +38,32 @@ export const fetchDiscordUser = async (accessToken) => {
   });
   if (!res.ok) throw new Error("Failed to fetch Discord user.");
   return res.json();
+};
+
+export const requireDiscordUser = async (accessToken) => {
+  let discordUser;
+  try {
+    discordUser = await fetchDiscordUser(accessToken);
+  } catch {
+    return json(
+      { success: false, error: "Failed to verify Discord identity." },
+      401
+    );
+  }
+  if (!discordUser.id)
+    return json(
+      { success: false, error: "Could not resolve Discord user ID." },
+      401
+    );
+  return discordUser;
+};
+
+export const requireDiscordUserFromBody = async (context) => {
+  const body = await context.request.json();
+  const { access_token } = body;
+  if (!access_token || typeof access_token !== "string")
+    return json({ success: false, error: "Missing access_token." }, 400);
+  return requireDiscordUser(access_token);
 };
 
 const USERNAME_PATTERN = /^[A-Za-z0-9_ -]{3,20}$/;

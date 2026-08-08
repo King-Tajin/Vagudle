@@ -3,6 +3,7 @@ import { AlertTriangle, Trash2, ShieldAlert } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { useCloudAuth } from "../../hooks/useCloudAuth";
+import type { DeleteAccountResult } from "../../hooks/useCloudAuth";
 import { getIdTokenForCurrentUser, deleteCloudSave } from "../../lib/cloudSync";
 
 type Props = {
@@ -73,6 +74,21 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
   const [reauthProviderId, setReauthProviderId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  const applyDeleteAccountResult = async (result: DeleteAccountResult) => {
+    if (result.status === "success") {
+      await deleteCloudSaveRow();
+      wipeLocalDataAndReload();
+      return;
+    }
+    if (result.status === "needs_reauth") {
+      setReauthProviderId(result.providerId);
+      setStage("reauth");
+      return;
+    }
+    setDeleteError(result.message);
+    setStage("confirm");
+  };
+
   if (isOpen !== prevIsOpen) {
     setPrevIsOpen(isOpen);
     if (!isOpen) {
@@ -104,36 +120,14 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
     setStage("deleting");
 
     const result = await deleteAccount();
-    if (result.status === "success") {
-      await deleteCloudSaveRow();
-      wipeLocalDataAndReload();
-      return;
-    }
-    if (result.status === "needs_reauth") {
-      setReauthProviderId(result.providerId);
-      setStage("reauth");
-      return;
-    }
-    setDeleteError(result.message);
-    setStage("confirm");
+    await applyDeleteAccountResult(result);
   };
 
   const handleAuthorizeReauth = async () => {
     setDeleteError(null);
     setStage("deleting");
     const result = await reauthenticateAndDeleteAccount();
-    if (result.status === "success") {
-      await deleteCloudSaveRow();
-      wipeLocalDataAndReload();
-      return;
-    }
-    if (result.status === "needs_reauth") {
-      setReauthProviderId(result.providerId);
-      setStage("reauth");
-      return;
-    }
-    setDeleteError(result.message);
-    setStage("confirm");
+    await applyDeleteAccountResult(result);
   };
 
   const handleCancelReauth = () => {
