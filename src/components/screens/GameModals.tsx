@@ -93,6 +93,7 @@ type Props = {
   isSettingsModalOpen: boolean;
   handleCloseSettings: () => void;
   settingsAccountJumpKey: number;
+  settingsBackgroundJumpKey: number;
   isChallengeModalOpen: boolean;
   handlePlayChallenge: () => void;
   isDuelModalOpen: boolean;
@@ -172,6 +173,7 @@ export const GameModals = ({
   isSettingsModalOpen,
   handleCloseSettings,
   settingsAccountJumpKey,
+  settingsBackgroundJumpKey,
   isChallengeModalOpen,
   handlePlayChallenge,
   isDuelModalOpen,
@@ -266,6 +268,7 @@ export const GameModals = ({
           cloudUpdatedAt={cloudUpdatedAt}
           isCloudUpToDate={isCloudUpToDate}
           jumpToAccountKey={settingsAccountJumpKey}
+          jumpToBackgroundKey={settingsBackgroundJumpKey}
         />
         {gameMode === "challenge" && challengeConfig && (
           <ChallengeAcceptModal

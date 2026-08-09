@@ -65,13 +65,24 @@ type Props = {
   cloudUpdatedAt?: string | null;
   isCloudUpToDate?: boolean;
   jumpToAccountKey?: number;
+  jumpToBackgroundKey?: number;
 };
 
-const isBgUnlocked = (bg: BackgroundDef, unlockedIds: string[]) =>
-  !bg.requiresAchievementId || unlockedIds.includes(bg.requiresAchievementId);
+const isBgUnlocked = (
+  bg: BackgroundDef,
+  unlockedIds: string[],
+  isActivityMode: boolean
+) =>
+  isActivityMode ||
+  !bg.requiresAchievementId ||
+  unlockedIds.includes(bg.requiresAchievementId);
 
-const getBgGroupRank = (bg: BackgroundDef, unlockedIds: string[]) => {
-  if (isBgUnlocked(bg, unlockedIds)) return 0;
+const getBgGroupRank = (
+  bg: BackgroundDef,
+  unlockedIds: string[],
+  isActivityMode: boolean
+) => {
+  if (isBgUnlocked(bg, unlockedIds, isActivityMode)) return 0;
   const requiredAchievement = bg.requiresAchievementId
     ? ACHIEVEMENTS.find((a) => a.id === bg.requiresAchievementId)
     : undefined;
@@ -82,17 +93,27 @@ const BackgroundDropdown = ({
   currentId,
   unlockedIds,
   isMobile,
+  isActivityMode,
+  forceOpenKey,
   onChange,
 }: {
   currentId: BackgroundId;
   unlockedIds: string[];
   isMobile: boolean;
+  isActivityMode: boolean;
+  forceOpenKey: number;
   onChange: (id: BackgroundId) => void;
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [prevForceOpenKey, setPrevForceOpenKey] = useState(forceOpenKey);
   const current = BACKGROUNDS.find((b) => b.id === currentId);
   const label = isMobile ? current?.mobileLabel : current?.desktopLabel;
+
+  if (forceOpenKey !== prevForceOpenKey) {
+    setPrevForceOpenKey(forceOpenKey);
+    if (forceOpenKey > 0) setOpen(true);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -133,9 +154,10 @@ const BackgroundDropdown = ({
         >
           {BACKGROUNDS.toSorted(
             (a, b) =>
-              getBgGroupRank(a, unlockedIds) - getBgGroupRank(b, unlockedIds)
+              getBgGroupRank(a, unlockedIds, isActivityMode) -
+              getBgGroupRank(b, unlockedIds, isActivityMode)
           ).map((bg) => {
-            const unlocked = isBgUnlocked(bg, unlockedIds);
+            const unlocked = isBgUnlocked(bg, unlockedIds, isActivityMode);
             const requiredAchievement = bg.requiresAchievementId
               ? ACHIEVEMENTS.find((a) => a.id === bg.requiresAchievementId)
               : undefined;
@@ -372,6 +394,7 @@ export const SettingsModal = ({
   cloudUpdatedAt = null,
   isCloudUpToDate = true,
   jumpToAccountKey = 0,
+  jumpToBackgroundKey = 0,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>("settings");
   const [settingsPage, setSettingsPage] = useState<1 | 2>(1);
@@ -385,6 +408,17 @@ export const SettingsModal = ({
     if (jumpToAccountKey > 0) {
       setActiveTab("settings");
       setSettingsPage(2);
+    }
+  }
+
+  const [prevJumpToBackgroundKey, setPrevJumpToBackgroundKey] =
+    useState(jumpToBackgroundKey);
+
+  if (jumpToBackgroundKey !== prevJumpToBackgroundKey) {
+    setPrevJumpToBackgroundKey(jumpToBackgroundKey);
+    if (jumpToBackgroundKey > 0) {
+      setActiveTab("settings");
+      setSettingsPage(1);
     }
   }
 
@@ -615,14 +649,17 @@ export const SettingsModal = ({
                     BACKGROUND
                   </p>
                   <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
-                    Choose your background style. New ones unlock via
-                    achievements.
+                    {isActivityMode
+                      ? "Choose your background style. All backgrounds are available in Discord activities."
+                      : "Choose your background style. New ones unlock via achievements."}
                   </p>
                 </div>
                 <BackgroundDropdown
                   currentId={settings.backgroundId}
                   unlockedIds={unlockedAchievementIds}
                   isMobile={isMobile}
+                  isActivityMode={isActivityMode}
+                  forceOpenKey={jumpToBackgroundKey}
                   onChange={settingsHandlers.setBackgroundId}
                 />
               </div>

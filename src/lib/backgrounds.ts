@@ -240,13 +240,17 @@ export const BACKGROUNDS: BackgroundDef[] = [
 export const BG_KEY = "vagudle-bg-theme:v1";
 const LEGACY_BG_KEY = "vagudle-bg-theme";
 
-export const loadBackgroundId = (isMobile: boolean): BackgroundId => {
+export const loadBackgroundId = (
+  isMobile: boolean,
+  isDiscordActivity = false
+): BackgroundId => {
   migrateLegacyStorageKey(LEGACY_BG_KEY, BG_KEY);
   try {
     const stored = localStorage.getItem(BG_KEY);
     if (stored && BACKGROUNDS.some((b) => b.id === stored))
       return stored as BackgroundId;
   } catch {}
+  if (isDiscordActivity) return "liquid_ripple";
   return isMobile ? "flakes" : "sprinkles";
 };
 

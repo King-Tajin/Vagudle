@@ -19,6 +19,7 @@ import { DisclaimerBanner } from "./components/layout/DisclaimerBanner";
 import { AttributionButton } from "./components/layout/AttributionButton";
 import { GameModals } from "./components/screens/GameModals";
 import { AchievementTrayToggle } from "./components/overlays/AchievementTrayToggle";
+import { BackgroundTrayToggle } from "./components/overlays/BackgroundTrayToggle";
 import { CloudSaveConflictOverlay } from "./components/overlays/CloudSaveConflictOverlay";
 import { WinCelebrationOverlay } from "./components/overlays/WinCelebrationOverlay";
 import { AchievementRevealOverlay } from "./components/overlays/AchievementRevealOverlay";
@@ -227,6 +228,7 @@ function App() {
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
+  const [settingsBackgroundJumpKey, setSettingsBackgroundJumpKey] = useState(0);
   const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
   const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
   const [isAttributionModalOpen, setIsAttributionModalOpen] = useState(false);
@@ -251,7 +253,7 @@ function App() {
     savedSettings.extraEffects ?? true
   );
   const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
-    loadBackgroundId(window.innerWidth < 640)
+    loadBackgroundId(window.innerWidth < 640, isDiscordActivity)
   );
   const autoGrayLetters = useMemo(
     () =>
@@ -733,6 +735,16 @@ function App() {
           onOpenAchievements={() => setIsAchievementsModalOpen(true)}
         />
       )}
+      {isDiscordActivity && (isChallengeMode || isDuelMode || isDailyMode) && (
+        <BackgroundTrayToggle
+          isTrayOpen={isTrayOpen}
+          onToggleTray={() => setIsTrayOpen((prev) => !prev)}
+          onOpenBackgrounds={() => {
+            setSettingsBackgroundJumpKey((prev) => prev + 1);
+            setIsSettingsModalOpen(true);
+          }}
+        />
+      )}
       <Navbar
         setIsInfoModalOpen={setIsInfoModalOpen}
         setIsStatsModalOpen={setIsStatsModalOpen}
@@ -867,6 +879,7 @@ function App() {
             if (isDailyMode) setIsDailyModalOpen(true);
           }}
           settingsAccountJumpKey={settingsAccountJumpKey}
+          settingsBackgroundJumpKey={settingsBackgroundJumpKey}
           isChallengeModalOpen={isChallengeModalOpen}
           handlePlayChallenge={() => setIsChallengeModalOpen(false)}
           isDuelModalOpen={isDuelModalOpen}
