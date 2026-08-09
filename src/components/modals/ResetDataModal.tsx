@@ -76,7 +76,6 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
 
   const applyDeleteAccountResult = async (result: DeleteAccountResult) => {
     if (result.status === "success") {
-      await deleteCloudSaveRow();
       wipeLocalDataAndReload();
       return;
     }
@@ -119,6 +118,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
     setDeleteError(null);
     setStage("deleting");
 
+    await deleteCloudSaveRow();
     const result = await deleteAccount();
     await applyDeleteAccountResult(result);
   };
@@ -126,6 +126,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
   const handleAuthorizeReauth = async () => {
     setDeleteError(null);
     setStage("deleting");
+    await deleteCloudSaveRow();
     const result = await reauthenticateAndDeleteAccount();
     await applyDeleteAccountResult(result);
   };
