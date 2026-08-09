@@ -108,10 +108,10 @@ export async function onRequestPost(context) {
               await db
                 .prepare(
                   `UPDATE daily_leaderboard
-                   SET username = ?, username_updated_at = ?
+                   SET username = ?, username_updated_at = NULL
                    WHERE uid = ? AND username IS NULL`
                 )
-                .bind(candidate, nowIso, uid)
+                .bind(candidate, uid)
                 .run();
               break;
             } catch (error) {
