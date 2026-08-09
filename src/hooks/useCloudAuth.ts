@@ -16,6 +16,7 @@ import {
   completeDiscordSignIn as exchangeDiscordSignIn,
   getStoredDiscordSession,
   clearDiscordSession,
+  maybeRenewDiscordSession,
   DISCORD_SESSION_STORAGE_KEY,
   type DiscordSession,
 } from "../lib/discordCloudAuth";
@@ -103,6 +104,16 @@ export const useCloudAuth = () => {
     };
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void maybeRenewDiscordSession().then((renewed) => {
+      if (!cancelled) setDiscordSession(renewed);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const signInWithGoogle = useCallback(async () => {

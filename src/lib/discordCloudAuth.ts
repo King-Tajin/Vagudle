@@ -29,19 +29,28 @@ const dispatchDiscordSessionSync = (): void => {
   } catch {}
 };
 
-export const getStoredDiscordSession = (): DiscordSession | null => {
+const RENEW_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000;
+
+export const getStoredDiscordSessionRaw = (): DiscordSession | null => {
   try {
     const raw = localStorage.getItem(DISCORD_SESSION_STORAGE_KEY);
     if (!raw) return null;
     const session = JSON.parse(raw) as DiscordSession;
-    if (!session.token || session.expiresAt <= Date.now()) {
-      localStorage.removeItem(DISCORD_SESSION_STORAGE_KEY);
-      return null;
-    }
+    if (!session.token) return null;
     return session;
   } catch {
     return null;
   }
+};
+
+export const getStoredDiscordSession = (): DiscordSession | null => {
+  const session = getStoredDiscordSessionRaw();
+  if (!session) return null;
+  if (session.expiresAt <= Date.now()) {
+    localStorage.removeItem(DISCORD_SESSION_STORAGE_KEY);
+    return null;
+  }
+  return session;
 };
 
 const storeDiscordSession = (session: DiscordSession): void => {
@@ -79,6 +88,56 @@ export const signInWithDiscord = (): void => {
   });
   window.location.href = `https://discord.com/api/oauth2/authorize?${params.toString()}`;
 };
+
+export const renewDiscordSession = async (
+  session: DiscordSession
+): Promise<DiscordSession | null> => {
+  try {
+    const res = await fetch("/api/discord-refresh", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.token}` },
+    });
+    if (!res.ok) {
+      clearDiscordSession();
+      return null;
+    }
+
+    const data = (await res.json()) as {
+      success: boolean;
+      token?: string;
+      user?: {
+        uid: string;
+        displayName: string;
+        avatarUrl: string | null;
+        expiresAt: number;
+      };
+    };
+    if (!data.success || !data.token || !data.user) {
+      clearDiscordSession();
+      return null;
+    }
+
+    const renewed: DiscordSession = {
+      token: data.token,
+      uid: data.user.uid,
+      displayName: data.user.displayName,
+      avatarUrl: data.user.avatarUrl,
+      expiresAt: data.user.expiresAt,
+    };
+    storeDiscordSession(renewed);
+    return renewed;
+  } catch {
+    return null;
+  }
+};
+
+export const maybeRenewDiscordSession =
+  async (): Promise<DiscordSession | null> => {
+    const session = getStoredDiscordSessionRaw();
+    if (!session) return null;
+    if (session.expiresAt - Date.now() > RENEW_THRESHOLD_MS) return session;
+    return renewDiscordSession(session);
+  };
 
 export const completeDiscordSignIn =
   async (): Promise<DiscordSession | null> => {

@@ -1,10 +1,18 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, encode, checkRateLimit } from "../_shared/api.js";
 import {
-  exchangeDiscordCode,
+  CORS_HEADERS,
+  json,
+  encode,
+  decode,
+  checkRateLimit,
+} from "../_shared/api.js";
+import { getBearerToken } from "../_shared/cloudAuth.js";
+import {
+  refreshDiscordToken,
   fetchDiscordUser,
   buildDiscordSessionPayload,
+  isRenewableDiscordSession,
 } from "../_shared/discordAuth.js";
 
 export async function onRequestOptions() {
@@ -22,43 +30,52 @@ export async function onRequestPost(context) {
     if (!clientId || !clientSecret || !sessionKey)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
-    const body = await context.request.json();
-    const { code, redirect_uri } = body;
-    if (
-      !code ||
-      typeof code !== "string" ||
-      !redirect_uri ||
-      typeof redirect_uri !== "string"
-    )
-      return json({ success: false, error: "Missing code." }, 400);
+    const token = getBearerToken(context.request);
+    if (!token)
+      return json({ success: false, error: "Missing session token." }, 401);
+
+    let payload;
+    try {
+      payload = await decode(token, sessionKey);
+    } catch {
+      return json({ success: false, error: "Invalid session token." }, 401);
+    }
+
+    if (!isRenewableDiscordSession(payload))
+      return json({ success: false, error: "Session cannot be renewed." }, 401);
 
     let accessToken, refreshToken;
     try {
-      ({ accessToken, refreshToken } = await exchangeDiscordCode(
-        code,
+      ({ accessToken, refreshToken } = await refreshDiscordToken(
+        payload.refreshToken,
         clientId,
-        clientSecret,
-        redirect_uri
+        clientSecret
       ));
     } catch (error) {
-      console.error("Discord login exchange error:", error);
-      return json({ success: false, error: "Discord sign-in failed." }, 400);
+      console.error("Discord refresh exchange error:", error);
+      return json(
+        { success: false, error: "Session expired. Please sign in again." },
+        401
+      );
     }
 
     let discordUser;
     try {
       discordUser = await fetchDiscordUser(accessToken);
     } catch (error) {
-      console.error("Discord login user fetch error:", error);
-      return json({ success: false, error: "Discord sign-in failed." }, 400);
+      console.error("Discord refresh user fetch error:", error);
+      return json(
+        { success: false, error: "Session expired. Please sign in again." },
+        401
+      );
     }
 
     const session = buildDiscordSessionPayload(discordUser, refreshToken);
-    const token = await encode(session, sessionKey);
+    const newToken = await encode(session, sessionKey);
 
     return json({
       success: true,
-      token,
+      token: newToken,
       user: {
         uid: session.uid,
         displayName: session.username,
@@ -69,7 +86,7 @@ export async function onRequestPost(context) {
       },
     });
   } catch (error) {
-    console.error("Discord login error:", error);
-    return json({ success: false, error: "Failed to sign in." }, 500);
+    console.error("Discord refresh error:", error);
+    return json({ success: false, error: "Failed to renew session." }, 500);
   }
 }

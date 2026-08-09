@@ -29,7 +29,34 @@ export const exchangeDiscordCode = async (
   }
 
   const data = await res.json();
-  return data.access_token;
+  return { accessToken: data.access_token, refreshToken: data.refresh_token };
+};
+
+export const refreshDiscordToken = async (
+  refreshToken,
+  clientId,
+  clientSecret
+) => {
+  const params = new URLSearchParams({
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+  });
+
+  const res = await fetch(`${DISCORD_API}/oauth2/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString(),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Discord token refresh failed: ${err}`);
+  }
+
+  const data = await res.json();
+  return { accessToken: data.access_token, refreshToken: data.refresh_token };
 };
 
 export const fetchDiscordUser = async (accessToken) => {
@@ -78,11 +105,12 @@ export const sanitizeDiscordUsername = (raw) => {
   return USERNAME_PATTERN.test(cleaned) ? cleaned : null;
 };
 
-export const buildDiscordSessionPayload = (discordUser) => ({
+export const buildDiscordSessionPayload = (discordUser, refreshToken) => ({
   uid: `discord:${discordUser.id}`,
   username: discordUser.global_name || discordUser.username,
   avatar: discordUser.avatar,
   discordId: discordUser.id,
+  refreshToken,
   exp: Date.now() + SESSION_TTL_MS,
 });
 
@@ -92,6 +120,14 @@ export const isValidDiscordSession = (payload) =>
   payload.uid.startsWith("discord:") &&
   typeof payload.exp === "number" &&
   payload.exp > Date.now();
+
+export const isRenewableDiscordSession = (payload) =>
+  !!payload &&
+  typeof payload.uid === "string" &&
+  payload.uid.startsWith("discord:") &&
+  typeof payload.discordId === "string" &&
+  typeof payload.refreshToken === "string" &&
+  payload.refreshToken.length > 0;
 
 export const fetchChannelGroup = async (channelId, botToken) => {
   const res = await fetch(`${DISCORD_API}/channels/${channelId}`, {
