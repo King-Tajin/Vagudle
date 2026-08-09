@@ -2,6 +2,7 @@
 
 import { CORS_HEADERS, json, decode } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
+import { ensurePlayerSaveExists } from "../_shared/playerAccount.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -35,19 +36,12 @@ export async function onRequestPost(context) {
     )
       return json({ success: false, error: "Invalid or expired link." }, 400);
 
+    await ensurePlayerSaveExists(db, uid);
+
     const existingRow = await db
       .prepare(`SELECT discord_id FROM player_saves WHERE uid = ?`)
       .bind(uid)
       .first();
-
-    if (!existingRow)
-      return json(
-        {
-          success: false,
-          error: "Save some progress on this account before linking.",
-        },
-        422
-      );
 
     if (existingRow.discord_id && existingRow.discord_id !== payload.discordId)
       return json(
