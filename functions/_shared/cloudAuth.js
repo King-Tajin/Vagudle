@@ -41,10 +41,7 @@ export const requireCloudAuth = async (context) => {
   const db = context.env.DB;
   if (!db)
     return {
-      error: json(
-        { success: false, error: "Database not configured." },
-        500
-      ),
+      error: json({ success: false, error: "Database not configured." }, 500),
     };
 
   const token = getBearerToken(context.request);
