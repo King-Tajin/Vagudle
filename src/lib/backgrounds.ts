@@ -208,7 +208,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
     id: "liquid_ripple",
     desktopLabel: "LIQUID RIPPLES",
     mobileLabel: "RIPPLES",
-    requiresAchievementId: "diversify",
+    requiresAchievementId: "blind_faith",
     kind: "css",
   },
   {

@@ -228,10 +228,6 @@ export const useDailyMode = ({
     }
   };
 
-  const handleCloseDailyModal = () => {
-    setIsDailyModalOpen(false);
-  };
-
   const handleOpenDailySchedule = () => {
     setIsDailyScheduleModalOpen(true);
   };
@@ -308,7 +304,6 @@ export const useDailyMode = ({
     handlePlayDaily,
     handleShareDaily,
     handleCloseDaily,
-    handleCloseDailyModal,
     handleOpenDailySchedule,
     handleCloseDailySchedule,
     handleViewDailyGame,

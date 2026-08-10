@@ -36,7 +36,6 @@ type Props = {
   onPlay: () => void;
   onShare: () => void;
   onClose: () => void;
-  onCloseModal: () => void;
   onOpenLeaderboard: () => void;
   onViewGame: () => void;
   onOpenSchedule: () => void;
@@ -354,7 +353,6 @@ export const DailyModal = ({
   onPlay,
   onShare,
   onClose,
-  onCloseModal,
   onOpenLeaderboard,
   onViewGame,
   onOpenSchedule,
@@ -418,7 +416,7 @@ export const DailyModal = ({
                 </button>
                 <button
                   type="button"
-                  onClick={onCloseModal}
+                  onClick={onClose}
                   className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
                   aria-label="Close"
                 >

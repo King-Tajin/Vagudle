@@ -53,7 +53,6 @@ type Props = {
   handlePlayDaily: () => void;
   handleShareDaily: () => void;
   handleCloseDaily: () => void;
-  handleCloseDailyModal: () => void;
   handleViewDailyGame: () => void;
   isDailyScheduleModalOpen: boolean;
   handleOpenDailySchedule: () => void;
@@ -134,7 +133,6 @@ export const GameModals = ({
   handlePlayDaily,
   handleShareDaily,
   handleCloseDaily,
-  handleCloseDailyModal,
   handleViewDailyGame,
   isDailyScheduleModalOpen,
   handleOpenDailySchedule,
@@ -207,7 +205,9 @@ export const GameModals = ({
           gameOutcome={getGameOutcome(isGameWon, isGameLost)}
           handleShareToClipboard={handleShareToClipboard}
           numberOfGuessesMade={guesses.length}
-          handleNewGame={() => handleNewGame()}
+          handleNewGame={
+            gameMode === "daily" ? handleReturnToNormal : () => handleNewGame()
+          }
           hardMode={hardMode}
           challengeConfig={gameMode === "challenge" ? challengeConfig : null}
           handleReturnToNormal={
@@ -314,7 +314,6 @@ export const GameModals = ({
           onPlay={handlePlayDaily}
           onShare={handleShareDaily}
           onClose={handleCloseDaily}
-          onCloseModal={handleCloseDailyModal}
           onOpenLeaderboard={handleOpenLeaderboard}
           onViewGame={handleViewDailyGame}
           onOpenSchedule={handleOpenDailySchedule}

@@ -377,7 +377,6 @@ function App() {
     handlePlayDaily,
     handleShareDaily,
     handleCloseDaily,
-    handleCloseDailyModal,
     handleOpenDailySchedule,
     handleCloseDailySchedule,
     handleViewDailyGame,
@@ -827,7 +826,6 @@ function App() {
           handlePlayDaily={handlePlayDaily}
           handleShareDaily={handleShareDaily}
           handleCloseDaily={handleCloseDaily}
-          handleCloseDailyModal={handleCloseDailyModal}
           handleViewDailyGame={handleViewDailyGame}
           isDailyScheduleModalOpen={isDailyScheduleModalOpen}
           handleOpenDailySchedule={handleOpenDailySchedule}
