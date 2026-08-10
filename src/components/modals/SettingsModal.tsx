@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useEffectEvent, useRef } from "react";
 import {
   AlertTriangle,
   BookOpen,
@@ -100,42 +100,39 @@ const BackgroundDropdown = ({
   unlockedIds,
   isMobile,
   isActivityMode,
-  forceOpenKey,
+  isOpen,
+  onOpenChange,
   onChange,
 }: {
   currentId: BackgroundId;
   unlockedIds: string[];
   isMobile: boolean;
   isActivityMode: boolean;
-  forceOpenKey: number;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
   onChange: (id: BackgroundId) => void;
 }) => {
-  const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const [prevForceOpenKey, setPrevForceOpenKey] = useState(forceOpenKey);
   const current = BACKGROUNDS.find((b) => b.id === currentId);
   const label = isMobile ? current?.mobileLabel : current?.desktopLabel;
 
-  if (forceOpenKey !== prevForceOpenKey) {
-    setPrevForceOpenKey(forceOpenKey);
-    if (forceOpenKey > 0) setOpen(true);
-  }
+  const handleOutsideClick = useEffectEvent(() => onOpenChange(false));
 
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
     const handleClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node))
-        setOpen(false);
+        handleOutsideClick();
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [open]);
+  }, [isOpen]);
 
   return (
     <div ref={ref} className="relative shrink-0">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => onOpenChange(!isOpen)}
         className="flex items-center gap-1.5 font-pixel text-xs tracking-widest px-2.5 py-2"
         style={{
           background: "rgba(255,255,255,0.05)",
@@ -148,7 +145,7 @@ const BackgroundDropdown = ({
         {label}
         <ChevronDown className="w-3 h-3 shrink-0 text-gray-500" />
       </button>
-      {open && (
+      {isOpen && (
         <div
           className="absolute right-0 bottom-full mb-1 z-50"
           style={{
@@ -183,7 +180,7 @@ const BackgroundDropdown = ({
                 onClick={() => {
                   if (!unlocked) return;
                   onChange(bg.id);
-                  setOpen(false);
+                  onOpenChange(false);
                 }}
                 className="w-full text-left font-pixel text-xs tracking-widest px-3 py-2 flex items-center gap-2"
                 style={{
@@ -492,13 +489,22 @@ export const SettingsModal = ({
 
   const [prevJumpToBackgroundKey, setPrevJumpToBackgroundKey] =
     useState(jumpToBackgroundKey);
+  const [isBackgroundDropdownOpen, setIsBackgroundDropdownOpen] =
+    useState(false);
 
   if (jumpToBackgroundKey !== prevJumpToBackgroundKey) {
     setPrevJumpToBackgroundKey(jumpToBackgroundKey);
     if (jumpToBackgroundKey > 0) {
       setActiveTab("settings");
       setSettingsPage(1);
+      setIsBackgroundDropdownOpen(true);
     }
+  }
+
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (!isOpen) setIsBackgroundDropdownOpen(false);
   }
 
   useEffect(() => {
@@ -738,7 +744,8 @@ export const SettingsModal = ({
                   unlockedIds={unlockedAchievementIds}
                   isMobile={isMobile}
                   isActivityMode={isActivityMode}
-                  forceOpenKey={jumpToBackgroundKey}
+                  isOpen={isBackgroundDropdownOpen}
+                  onOpenChange={setIsBackgroundDropdownOpen}
                   onChange={settingsHandlers.setBackgroundId}
                 />
               </div>
