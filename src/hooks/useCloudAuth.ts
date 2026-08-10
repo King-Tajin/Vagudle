@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   onAuthStateChanged,
   signInWithPopup,
@@ -225,11 +225,15 @@ export const useCloudAuth = () => {
       }
     }, [firebaseUser]);
 
-  const user = firebaseUser
-    ? toCloudAuthUser(firebaseUser)
-    : discordSession
-      ? toCloudAuthUserFromDiscord(discordSession)
-      : null;
+  const user = useMemo(
+    () =>
+      firebaseUser
+        ? toCloudAuthUser(firebaseUser)
+        : discordSession
+          ? toCloudAuthUserFromDiscord(discordSession)
+          : null,
+    [firebaseUser, discordSession]
+  );
 
   return {
     user,

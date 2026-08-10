@@ -259,7 +259,11 @@ const CloudSaveSection = ({
           support.
         </p>
       </div>
-      {authLoading ? (
+      {isActivityMode ? (
+        <p className="font-code text-xs text-gray-300">
+          Auto signed in via Discord.
+        </p>
+      ) : authLoading ? (
         <p className="font-code text-xs text-gray-500">
           Checking sign-in status...
         </p>

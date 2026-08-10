@@ -326,6 +326,7 @@ export const GameModals = ({
           idToken={leaderboardIdToken}
           onOpenSettings={handleOpenSettingsFromLeaderboard}
           onUsernameSaved={handleUsernameSaved}
+          isActivityMode={isActivityMode}
         />
         {currentBackground?.attribution && (
           <AttributionModal

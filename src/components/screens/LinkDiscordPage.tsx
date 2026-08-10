@@ -60,7 +60,10 @@ export const LinkDiscordPage = () => {
       setLinkStatus("linking");
       const result = await linkDiscordWithCurrentUser(token, controller.signal);
       const aborted = controller.signal.aborted;
-      if (aborted) return;
+      if (aborted) {
+        linkedRef.current = false;
+        return;
+      }
 
       if (result.status === "linked") {
         setLinkStatus("linked");

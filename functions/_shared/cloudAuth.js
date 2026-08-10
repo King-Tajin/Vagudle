@@ -1,6 +1,6 @@
 import { verifyFirebaseIdToken, getBearerToken } from "./firebaseAuth.js";
 import { decode, json, checkRateLimit } from "./api.js";
-import { isValidDiscordSession } from "./discordAuth.js";
+import { isValidDiscordSession, requireDiscordUser } from "./discordAuth.js";
 
 export { getBearerToken };
 
@@ -34,7 +34,7 @@ export const verifyCloudSaveToken = async (request, env) => {
   return null;
 };
 
-export const requireCloudAuth = async (context) => {
+const prepareCloudAuthContext = async (context) => {
   const rateLimited = await checkRateLimit(context);
   if (rateLimited) return { error: rateLimited };
 
@@ -50,6 +50,14 @@ export const requireCloudAuth = async (context) => {
       error: json({ success: false, error: "Missing auth token." }, 401),
     };
 
+  return { db, token };
+};
+
+export const requireCloudAuth = async (context) => {
+  const prepared = await prepareCloudAuthContext(context);
+  if (prepared.error) return prepared;
+  const { db } = prepared;
+
   const authResult = await verifyCloudSaveToken(context.request, context.env);
   if (!authResult)
     return {
@@ -57,4 +65,33 @@ export const requireCloudAuth = async (context) => {
     };
 
   return { db, uid: authResult.uid, username: authResult.username };
+};
+
+const resolveUidForDiscordAccessToken = async (accessToken, db) => {
+  const discordUser = await requireDiscordUser(accessToken);
+  if (discordUser instanceof Response) return null;
+
+  const existingAccount = await db
+    .prepare(`SELECT uid FROM player_saves WHERE discord_id = ?`)
+    .bind(discordUser.id)
+    .first();
+
+  return existingAccount ? existingAccount.uid : `discord:${discordUser.id}`;
+};
+
+export const requireUsernameAuth = async (context) => {
+  const prepared = await prepareCloudAuthContext(context);
+  if (prepared.error) return prepared;
+  const { db, token } = prepared;
+
+  const authResult = await verifyCloudSaveToken(context.request, context.env);
+  if (authResult)
+    return { db, uid: authResult.uid, username: authResult.username };
+
+  const discordUid = await resolveUidForDiscordAccessToken(token, db);
+  if (discordUid) return { db, uid: discordUid, username: null };
+
+  return {
+    error: json({ success: false, error: "Invalid auth token." }, 401),
+  };
 };

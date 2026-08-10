@@ -18,6 +18,7 @@ type Props = {
   idToken: string | null;
   onOpenSettings: () => void;
   onUsernameSaved: () => Promise<void>;
+  isActivityMode: boolean;
 };
 
 const formatCooldown = (canChangeAt: string): string => {
@@ -192,6 +193,7 @@ export const LeaderboardModal = ({
   idToken,
   onOpenSettings,
   onUsernameSaved,
+  isActivityMode,
 }: Props) => {
   const [
     {
@@ -311,7 +313,7 @@ export const LeaderboardModal = ({
 
       {status === "loaded" && data && (
         <div className="space-y-2">
-          {!idToken && (
+          {!idToken && !isActivityMode && (
             <div
               className="mb-2 p-3"
               style={{

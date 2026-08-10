@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { getIdTokenForCurrentUser } from "../lib/cloudSync";
 
 type Params = {
@@ -7,6 +7,7 @@ type Params = {
   setIsDailyModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsSettingsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSettingsAccountJumpKey: React.Dispatch<React.SetStateAction<number>>;
+  activityAccessToken: string | null;
 };
 
 export const useLeaderboardModal = ({
@@ -14,15 +15,19 @@ export const useLeaderboardModal = ({
   setIsDailyModalOpen,
   setIsSettingsModalOpen,
   setSettingsAccountJumpKey,
+  activityAccessToken,
 }: Params) => {
   const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
   const [leaderboardIdToken, setLeaderboardIdToken] = useState<string | null>(
     null
   );
+  const openRequestIdRef = useRef(0);
 
   const handleOpenLeaderboard = async () => {
+    const requestId = ++openRequestIdRef.current;
     const idToken = await getIdTokenForCurrentUser();
-    setLeaderboardIdToken(idToken ?? null);
+    if (openRequestIdRef.current !== requestId) return;
+    setLeaderboardIdToken(idToken ?? activityAccessToken ?? null);
     setIsDailyModalOpen(false);
     setIsLeaderboardModalOpen(true);
   };

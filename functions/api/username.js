@@ -1,7 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
 import { CORS_HEADERS, json } from "../_shared/api.js";
-import { requireCloudAuth } from "../_shared/cloudAuth.js";
+import { requireUsernameAuth } from "../_shared/cloudAuth.js";
 
 const USERNAME_PATTERN = /^[A-Za-z0-9_ -]{3,20}$/;
 const CHANGE_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -20,7 +20,7 @@ export async function onRequestOptions() {
 
 export async function onRequestGet(context) {
   try {
-    const { db, uid, error } = await requireCloudAuth(context);
+    const { db, uid, error } = await requireUsernameAuth(context);
     if (error) return error;
 
     const row = await db
@@ -49,7 +49,7 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   try {
-    const { db, uid, error } = await requireCloudAuth(context);
+    const { db, uid, error } = await requireUsernameAuth(context);
     if (error) return error;
 
     const body = await context.request.json();

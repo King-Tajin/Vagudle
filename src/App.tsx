@@ -522,6 +522,7 @@ function App() {
     setIsDailyModalOpen,
     setIsSettingsModalOpen,
     setSettingsAccountJumpKey,
+    activityAccessToken,
   });
   const { onChar, onDelete, onEnter } = useGuessInput({
     currentGuess,
