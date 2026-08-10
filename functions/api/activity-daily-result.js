@@ -113,30 +113,11 @@ export async function onRequestPost(context) {
     const guessesUsed = upperGuesses.length;
     const wonFlag = won ? 1 : 0;
 
-    await db
-      .prepare(
-        `INSERT INTO group_daily_results
-           (group_id, group_type, date, uid, discord_id, won, guesses_used, submitted_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-         ON CONFLICT(group_id, date, uid) DO NOTHING`
-      )
-      .bind(
-        groupId,
-        groupType,
-        today,
-        uid,
-        discordId,
-        wonFlag,
-        guessesUsed,
-        nowIso
-      )
-      .run();
-
     await db.batch([
       db
         .prepare(
           `INSERT OR IGNORE INTO group_streaks
-             (group_id, group_type, current_streak, best_streak, last_played_date, updated_at)
+           (group_id, group_type, current_streak, best_streak, last_played_date, updated_at)
            VALUES (?, ?, 0, 0, NULL, ?)`
         )
         .bind(groupId, groupType, nowIso),
@@ -164,7 +145,7 @@ export async function onRequestPost(context) {
         db
           .prepare(
             `INSERT OR IGNORE INTO daily_leaderboard
-               (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
+             (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
              VALUES (?, ?, 0, 0, 0, 0, NULL, ?)`
           )
           .bind(uid, username, nowIso),
@@ -176,13 +157,13 @@ export async function onRequestPost(context) {
                wins = wins + CASE WHEN ? = 1 THEN 1 ELSE 0 END,
                losses = losses + CASE WHEN ? = 1 THEN 0 ELSE 1 END,
                current_streak = CASE
-                 WHEN ? = 1 THEN (CASE WHEN last_result_date = ? THEN current_streak + 1 ELSE 1 END)
-                 ELSE 0
-               END,
+                                  WHEN ? = 1 THEN (CASE WHEN last_result_date = ? THEN current_streak + 1 ELSE 1 END)
+                                  ELSE 0
+                 END,
                best_streak = CASE
-                 WHEN ? = 1 THEN MAX(best_streak, CASE WHEN last_result_date = ? THEN current_streak + 1 ELSE 1 END)
-                 ELSE best_streak
-               END,
+                               WHEN ? = 1 THEN MAX(best_streak, CASE WHEN last_result_date = ? THEN current_streak + 1 ELSE 1 END)
+                               ELSE best_streak
+                 END,
                last_result_date = ?,
                updated_at = ?
              WHERE uid = ? AND (last_result_date IS NULL OR last_result_date <> ?)`

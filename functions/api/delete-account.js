@@ -25,7 +25,6 @@ export async function onRequestPost(context) {
       db.prepare(`DELETE FROM player_saves WHERE uid = ?`).bind(uid),
       db.prepare(`DELETE FROM daily_leaderboard WHERE uid = ?`).bind(uid),
       db.prepare(`DELETE FROM daily_attempts WHERE uid = ?`).bind(uid),
-      db.prepare(`DELETE FROM group_daily_results WHERE uid = ?`).bind(uid),
     ];
 
     if (discordId) {
