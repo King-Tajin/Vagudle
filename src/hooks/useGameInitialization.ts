@@ -284,7 +284,7 @@ export const useGameInitialization = ({
       };
 
       const bootDailyActivity = async (): Promise<void> => {
-        const dailyBoot = await startDailyActivity(false);
+        const dailyBoot = await startDailyActivity(true);
 
         if (!dailyBoot.ok) {
           if (dailyBoot.reason === "account_not_linked") {

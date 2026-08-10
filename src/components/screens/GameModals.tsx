@@ -36,6 +36,7 @@ type Props = {
   isCloudUpToDate: boolean;
   gameMode: GameMode;
   isActivityMode: boolean;
+  activityAccessToken: string | null;
   isMobile: boolean;
   isGameWon: boolean;
   isGameLost: boolean;
@@ -116,6 +117,7 @@ export const GameModals = ({
   isCloudUpToDate,
   gameMode,
   isActivityMode,
+  activityAccessToken,
   isMobile,
   isGameWon,
   isGameLost,
@@ -265,6 +267,7 @@ export const GameModals = ({
                   : null
           }
           isActivityMode={isActivityMode}
+          activityAccessToken={activityAccessToken}
           cloudUpdatedAt={cloudUpdatedAt}
           isCloudUpToDate={isCloudUpToDate}
           jumpToAccountKey={settingsAccountJumpKey}

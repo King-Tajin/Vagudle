@@ -29,6 +29,11 @@ import {
   type BackgroundDef,
 } from "../../lib/backgrounds";
 import { ACHIEVEMENTS } from "../../lib/achievements";
+import {
+  fetchActivityLinkUrl,
+  checkActivityAccountStatus,
+  openExternalLink,
+} from "../../lib/discord";
 
 type Tab = "settings" | "challenge";
 
@@ -62,6 +67,7 @@ type Props = {
   isMobile?: boolean;
   challengeConfig?: ChallengeConfig | DuelConfig | null;
   isActivityMode?: boolean;
+  activityAccessToken?: string | null;
   cloudUpdatedAt?: string | null;
   isCloudUpToDate?: boolean;
   jumpToAccountKey?: number;
@@ -213,14 +219,84 @@ const providerButtonStyle = {
   color: "#d1d5db",
 };
 
+const ActivityLinkSection = ({
+  accessToken,
+}: {
+  accessToken: string | null;
+}) => {
+  const [mode, setMode] = useState<"idle" | "linking" | "waiting" | "error">(
+    "idle"
+  );
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    },
+    []
+  );
+
+  const handleLink = async () => {
+    if (!accessToken) return;
+    setMode("linking");
+    const url = await fetchActivityLinkUrl(accessToken);
+    if (!url) {
+      setMode("error");
+      return;
+    }
+    openExternalLink(url);
+    setMode("waiting");
+
+    pollRef.current = setInterval(() => {
+      void (async () => {
+        const resolved = await checkActivityAccountStatus(accessToken);
+        if (resolved) {
+          if (pollRef.current) clearInterval(pollRef.current);
+          window.location.reload();
+        }
+      })();
+    }, 2500);
+  };
+
+  return (
+    <div className="space-y-2">
+      <p className="font-code text-xs text-gray-300">
+        Auto signed in via Discord.
+      </p>
+      {mode === "waiting" ? (
+        <p className="font-code text-xs text-gray-500 leading-snug">
+          Waiting for you to finish linking in your browser...
+        </p>
+      ) : (
+        <button
+          type="button"
+          onClick={() => void handleLink()}
+          disabled={mode === "linking" || !accessToken}
+          className="w-full font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
+          style={providerButtonStyle}
+        >
+          {mode === "linking" ? "OPENING LINK..." : "LINK EXISTING ACCOUNT"}
+        </button>
+      )}
+      {mode === "error" && (
+        <p className="font-code text-xs text-spice-red leading-snug">
+          Could not start linking. Please try again.
+        </p>
+      )}
+    </div>
+  );
+};
+
 const CloudSaveSection = ({
   cloudUpdatedAt,
   isCloudUpToDate,
   isActivityMode,
+  activityAccessToken,
 }: {
   cloudUpdatedAt: string | null;
   isCloudUpToDate: boolean;
   isActivityMode: boolean;
+  activityAccessToken: string | null;
 }) => {
   const {
     user,
@@ -260,9 +336,7 @@ const CloudSaveSection = ({
         </p>
       </div>
       {isActivityMode ? (
-        <p className="font-code text-xs text-gray-300">
-          Auto signed in via Discord.
-        </p>
+        <ActivityLinkSection accessToken={activityAccessToken} />
       ) : authLoading ? (
         <p className="font-code text-xs text-gray-500">
           Checking sign-in status...
@@ -395,6 +469,7 @@ export const SettingsModal = ({
   isMobile = false,
   challengeConfig,
   isActivityMode = false,
+  activityAccessToken = null,
   cloudUpdatedAt = null,
   isCloudUpToDate = true,
   jumpToAccountKey = 0,
@@ -682,6 +757,7 @@ export const SettingsModal = ({
                 cloudUpdatedAt={cloudUpdatedAt}
                 isCloudUpToDate={isCloudUpToDate}
                 isActivityMode={isActivityMode}
+                activityAccessToken={activityAccessToken}
               />
             </div>
           )}

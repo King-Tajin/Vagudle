@@ -810,6 +810,7 @@ function App() {
           isCloudUpToDate={isUpToDate}
           gameMode={gameMode}
           isActivityMode={isDiscordActivity}
+          activityAccessToken={activityAccessToken}
           isMobile={isMobile}
           isGameWon={isGameWon}
           isGameLost={isGameLost}
