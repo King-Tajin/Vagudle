@@ -6,6 +6,7 @@ import type { ShowOptions } from "../context/alert-context";
 import type { CloudAuthUser } from "./useCloudAuth";
 import { useUsernameStatus } from "./useUsernameStatus";
 import { handleReturnToNormal } from "./useGameFlow";
+import { isDiscordActivity } from "../lib/discord";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
@@ -222,7 +223,9 @@ export const useDailyMode = ({
   const handleCloseDaily = () => {
     setIsDailyModalOpen(false);
     if (isDailyMode) {
-      handleReturnToNormal();
+      if (!isDiscordActivity) {
+        handleReturnToNormal();
+      }
     } else if (window.location.pathname === DAILY_PATH) {
       window.history.pushState({}, "", "/");
     }
