@@ -72,7 +72,7 @@ export async function onRequestPost(context) {
            (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, daily_stats, settings, background_id, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(uid) DO UPDATE SET
-           discord_id = excluded.discord_id,
+           discord_id = COALESCE(excluded.discord_id, player_saves.discord_id),
            achievements = excluded.achievements,
            word_connoisseur = excluded.word_connoisseur,
            stats_normal = excluded.stats_normal,
