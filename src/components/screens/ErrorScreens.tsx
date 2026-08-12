@@ -15,6 +15,18 @@ type ReturnProps = {
   handleReturnToNormal: () => void;
 };
 
+export type ActivityErrorReason = "daily" | "daily_link" | "duel" | "duel_word";
+
+const activityErrorCopy: Record<ActivityErrorReason, string> = {
+  daily:
+    "Could not load today's daily. Try rejoining the activity from Discord.",
+  daily_link:
+    "Could not link your account. Try rejoining the activity from Discord.",
+  duel: "Could not load your duel. Try rejoining the activity from Discord.",
+  duel_word:
+    "Could not load this duel's word. Try rejoining the activity from Discord.",
+};
+
 export const MalformedChallengeScreen = ({
   handleReturnToNormal,
 }: ReturnProps) => (
@@ -310,7 +322,11 @@ export const ActivityAlreadyPlayedScreen = ({
   </div>
 );
 
-export const ActivityServerErrorScreen = () => (
+export const ActivityServerErrorScreen = ({
+  reason,
+}: {
+  reason: ActivityErrorReason;
+}) => (
   <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
     <BackgroundGrid />
     {emptyNavbar(true)}
@@ -330,7 +346,7 @@ export const ActivityServerErrorScreen = () => (
           SOMETHING WENT WRONG
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-1">
-          Could not load your duel. Try rejoining the activity from Discord.
+          {activityErrorCopy[reason]}
         </p>
         <p className="font-code text-xs text-gray-600 leading-relaxed mb-4">
           If this keeps happening, check the browser console for details.

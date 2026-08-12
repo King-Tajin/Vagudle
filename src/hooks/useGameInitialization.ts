@@ -1,6 +1,7 @@
 import type React from "react";
 import { useEffect, useCallback } from "react";
 import type { CharStatus } from "../lib/statuses";
+import type { ActivityErrorReason } from "../components/screens/ErrorScreens";
 import { initWordLists, isWordInDict, getRandomWord } from "../lib/words";
 import {
   loadGameStateFromLocalStorage,
@@ -59,7 +60,7 @@ type Params = {
   setIsMalformedDuel: (v: boolean) => void;
   setIsDuelExpired: (v: boolean) => void;
   setIsActivityWrongPlayer: (v: boolean) => void;
-  setIsActivityServerError: (v: boolean) => void;
+  setIsActivityServerError: (v: ActivityErrorReason) => void;
   setIsActivityAccountChoicePending: (v: boolean) => void;
   setIsActivityAlreadyPlayed: (v: boolean) => void;
   setActivityAlreadyPlayedPlatform: (v: string | undefined) => void;
@@ -214,7 +215,7 @@ export const useGameInitialization = ({
           setActivityAlreadyPlayedPlatform(result.platform);
           setIsActivityAlreadyPlayed(true);
         } else {
-          setIsActivityServerError(true);
+          setIsActivityServerError("daily_link");
         }
         return;
       }
@@ -294,7 +295,7 @@ export const useGameInitialization = ({
             setActivityAlreadyPlayedPlatform(dailyBoot.platform);
             setIsActivityAlreadyPlayed(true);
           } else {
-            setIsActivityServerError(true);
+            setIsActivityServerError("daily");
           }
           setIsLoading(false);
           return;
@@ -319,7 +320,7 @@ export const useGameInitialization = ({
             return;
           }
           if (boot.reason === "wrong_player") setIsActivityWrongPlayer(true);
-          else setIsActivityServerError(true);
+          else setIsActivityServerError("duel");
           setIsLoading(false);
           return;
         }
@@ -341,7 +342,7 @@ export const useGameInitialization = ({
           console.error(
             `[Activity] Word "${wordUpper}" not found in dict "${config.dict}"`
           );
-          setIsActivityServerError(true);
+          setIsActivityServerError("duel_word");
           setIsLoading(false);
           return;
         }

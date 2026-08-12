@@ -82,6 +82,7 @@ import { isDiscordActivity } from "./lib/discord";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
+import type { ActivityErrorReason } from "./components/screens/ErrorScreens";
 import type { GameMode } from "./lib/gameMode";
 import {
   gameRoundReducer,
@@ -216,7 +217,8 @@ function App() {
   const [isDuelExpired, setIsDuelExpired] = useState(false);
   const [isActivityNotFound] = useState(false);
   const [isActivityWrongPlayer, setIsActivityWrongPlayer] = useState(false);
-  const [isActivityServerError, setIsActivityServerError] = useState(false);
+  const [isActivityServerError, setIsActivityServerError] =
+    useState<ActivityErrorReason | null>(null);
   const [isActivityAccountChoicePending, setIsActivityAccountChoicePending] =
     useState(false);
   const [isActivityAlreadyPlayed, setIsActivityAlreadyPlayed] = useState(false);
@@ -671,7 +673,7 @@ function App() {
   if (isActivityServerError)
     return (
       <Suspense fallback={screenFallback}>
-        <ActivityServerErrorScreen />
+        <ActivityServerErrorScreen reason={isActivityServerError} />
       </Suspense>
     );
   if (isActivityAccountChoicePending && activityAccessToken)
