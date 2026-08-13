@@ -173,7 +173,11 @@ export const Navbar = ({
             {isActivityMode ? (
               <m.button
                 type="button"
-                onClick={() => openExternalLink("https://King-Tajin.dev")}
+                onClick={() =>
+                  openExternalLink(
+                    "https://King-Tajin.dev/yellow-skipper-games"
+                  )
+                }
                 className="flex items-center gap-1.5 sm:gap-3 select-none min-w-0"
                 whileHover={{ scale: 1.02 }}
               >
