@@ -67,6 +67,7 @@ type Props = {
   isMobile?: boolean;
   challengeConfig?: ChallengeConfig | DuelConfig | null;
   isActivityMode?: boolean;
+  freeBackgroundsMode?: boolean;
   activityAccessToken?: string | null;
   cloudUpdatedAt?: string | null;
   isCloudUpToDate?: boolean;
@@ -77,18 +78,18 @@ type Props = {
 const isBgUnlocked = (
   bg: BackgroundDef,
   unlockedIds: string[],
-  isActivityMode: boolean
+  freeBackgroundsMode: boolean
 ) =>
-  isActivityMode ||
+  freeBackgroundsMode ||
   !bg.requiresAchievementId ||
   unlockedIds.includes(bg.requiresAchievementId);
 
 const getBgGroupRank = (
   bg: BackgroundDef,
   unlockedIds: string[],
-  isActivityMode: boolean
+  freeBackgroundsMode: boolean
 ) => {
-  if (isBgUnlocked(bg, unlockedIds, isActivityMode)) return 0;
+  if (isBgUnlocked(bg, unlockedIds, freeBackgroundsMode)) return 0;
   const requiredAchievement = bg.requiresAchievementId
     ? ACHIEVEMENTS.find((a) => a.id === bg.requiresAchievementId)
     : undefined;
@@ -99,7 +100,7 @@ const BackgroundDropdown = ({
   currentId,
   unlockedIds,
   isMobile,
-  isActivityMode,
+  freeBackgroundsMode,
   isOpen,
   onOpenChange,
   onChange,
@@ -107,7 +108,7 @@ const BackgroundDropdown = ({
   currentId: BackgroundId;
   unlockedIds: string[];
   isMobile: boolean;
-  isActivityMode: boolean;
+  freeBackgroundsMode: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onChange: (id: BackgroundId) => void;
@@ -157,10 +158,10 @@ const BackgroundDropdown = ({
         >
           {BACKGROUNDS.toSorted(
             (a, b) =>
-              getBgGroupRank(a, unlockedIds, isActivityMode) -
-              getBgGroupRank(b, unlockedIds, isActivityMode)
+              getBgGroupRank(a, unlockedIds, freeBackgroundsMode) -
+              getBgGroupRank(b, unlockedIds, freeBackgroundsMode)
           ).map((bg) => {
-            const unlocked = isBgUnlocked(bg, unlockedIds, isActivityMode);
+            const unlocked = isBgUnlocked(bg, unlockedIds, freeBackgroundsMode);
             const requiredAchievement = bg.requiresAchievementId
               ? ACHIEVEMENTS.find((a) => a.id === bg.requiresAchievementId)
               : undefined;
@@ -466,6 +467,7 @@ export const SettingsModal = ({
   isMobile = false,
   challengeConfig,
   isActivityMode = false,
+  freeBackgroundsMode = false,
   activityAccessToken = null,
   cloudUpdatedAt = null,
   isCloudUpToDate = true,
@@ -734,8 +736,8 @@ export const SettingsModal = ({
                     BACKGROUND
                   </p>
                   <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
-                    {isActivityMode
-                      ? "Choose your background style. All backgrounds are available in Discord activities."
+                    {freeBackgroundsMode
+                      ? "Choose your background style. All backgrounds are available in this mode."
                       : "Choose your background style. New ones unlock via achievements."}
                   </p>
                 </div>
@@ -743,7 +745,7 @@ export const SettingsModal = ({
                   currentId={settings.backgroundId}
                   unlockedIds={unlockedAchievementIds}
                   isMobile={isMobile}
-                  isActivityMode={isActivityMode}
+                  freeBackgroundsMode={freeBackgroundsMode}
                   isOpen={isBackgroundDropdownOpen}
                   onOpenChange={setIsBackgroundDropdownOpen}
                   onChange={settingsHandlers.setBackgroundId}

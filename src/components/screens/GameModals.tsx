@@ -267,6 +267,7 @@ export const GameModals = ({
                   : null
           }
           isActivityMode={isActivityMode}
+          freeBackgroundsMode={isActivityMode && gameMode !== "normal"}
           activityAccessToken={activityAccessToken}
           cloudUpdatedAt={cloudUpdatedAt}
           isCloudUpToDate={isCloudUpToDate}
