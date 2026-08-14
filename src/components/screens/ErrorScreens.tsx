@@ -10,22 +10,35 @@ import {
   type DailyActivityStartResult,
 } from "../../lib/discord";
 import { emptyNavbar, title, returnButton, retryButton } from "./screenHelpers";
+import {
+  ERROR_INVALID_CHALLENGE_TITLE,
+  ERROR_INVALID_CHALLENGE_DESCRIPTION,
+  ERROR_INVALID_DUEL_TITLE,
+  ERROR_INVALID_DUEL_DESCRIPTION,
+  ERROR_DUEL_EXPIRED_TITLE,
+  ERROR_DUEL_EXPIRED_DESCRIPTION,
+  ERROR_ACTIVITY_DUEL_EXPIRED_DESCRIPTION,
+  ERROR_WRONG_ACCOUNT_TITLE,
+  ERROR_WRONG_ACCOUNT_DESCRIPTION,
+  ERROR_HAVE_YOU_PLAYED_TITLE,
+  ERROR_LINK_ACCOUNT_DESCRIPTION,
+  ERROR_LINK_EXISTING_BUTTON_TEXT,
+  ERROR_START_FRESH_BUTTON_TEXT,
+  ERROR_LINKING_IN_PROGRESS_DESCRIPTION,
+  ERROR_LINKING_FAILED_DESCRIPTION,
+  ERROR_ALREADY_PLAYED_TITLE,
+  ERROR_ALREADY_PLAYED_WEB_DESCRIPTION,
+  ERROR_ALREADY_PLAYED_DEFAULT_DESCRIPTION,
+  ERROR_SOMETHING_WRONG_TITLE,
+  ERROR_SOMETHING_WRONG_HINT,
+  ACTIVITY_ERROR_MESSAGES,
+} from "../../constants/strings";
 
 type ReturnProps = {
   handleReturnToNormal: () => void;
 };
 
-export type ActivityErrorReason = "daily" | "daily_link" | "duel" | "duel_word";
-
-const activityErrorCopy: Record<ActivityErrorReason, string> = {
-  daily:
-    "Could not load today's daily. Try rejoining the activity from Discord.",
-  daily_link:
-    "Could not link your account. Try rejoining the activity from Discord.",
-  duel: "Could not load your duel. Try rejoining the activity from Discord.",
-  duel_word:
-    "Could not load this duel's word. Try rejoining the activity from Discord.",
-};
+export type ActivityErrorReason = keyof typeof ACTIVITY_ERROR_MESSAGES;
 
 export const MalformedChallengeScreen = ({
   handleReturnToNormal,
@@ -46,11 +59,10 @@ export const MalformedChallengeScreen = ({
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          INVALID CHALLENGE LINK
+          {ERROR_INVALID_CHALLENGE_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-          This challenge link is broken or has been tampered with. Ask the
-          sender to share it again.
+          {ERROR_INVALID_CHALLENGE_DESCRIPTION}
         </p>
         {returnButton(handleReturnToNormal)}
       </m.div>
@@ -75,11 +87,10 @@ export const MalformedDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          INVALID DUEL LINK
+          {ERROR_INVALID_DUEL_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-          This duel link is broken or has been tampered with. Ask for a new
-          link.
+          {ERROR_INVALID_DUEL_DESCRIPTION}
         </p>
         {!isDiscordActivity && returnButton(handleReturnToNormal)}
       </m.div>
@@ -104,11 +115,10 @@ export const ExpiredDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          DUEL EXPIRED
+          {ERROR_DUEL_EXPIRED_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-          This duel link has expired. Duel links are only valid for 24 hours.
-          Ask for a new duel to be created.
+          {ERROR_DUEL_EXPIRED_DESCRIPTION}
         </p>
         {!isDiscordActivity && returnButton(handleReturnToNormal)}
       </m.div>
@@ -133,11 +143,10 @@ export const ActivityNotFoundScreen = () => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          DUEL EXPIRED
+          {ERROR_DUEL_EXPIRED_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          This duel has expired. Activity duels are only valid for 24 hours. Ask
-          for a new duel to be sent in Discord.
+          {ERROR_ACTIVITY_DUEL_EXPIRED_DESCRIPTION}
         </p>
       </m.div>
     </div>
@@ -161,11 +170,10 @@ export const ActivityWrongPlayerScreen = () => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          WRONG ACCOUNT
+          {ERROR_WRONG_ACCOUNT_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          This duel was not sent to your Discord account. Make sure you are
-          logged in as the right user.
+          {ERROR_WRONG_ACCOUNT_DESCRIPTION}
         </p>
       </m.div>
     </div>
@@ -234,13 +242,12 @@ export const ActivityAccountChoiceScreen = ({
           }}
         >
           <p className="font-pixel text-xs text-crown-gold tracking-widest mb-2">
-            HAVE YOU PLAYED BEFORE?
+            {ERROR_HAVE_YOU_PLAYED_TITLE}
           </p>
           {mode === "choice" && (
             <>
               <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-                Link your existing Vagudle account to keep your stats, or start
-                a new one just for Discord.
+                {ERROR_LINK_ACCOUNT_DESCRIPTION}
               </p>
               <div className="flex flex-col gap-2">
                 <button
@@ -253,7 +260,7 @@ export const ActivityAccountChoiceScreen = ({
                     color: "#d4af37",
                   }}
                 >
-                  I&apos;VE PLAYED BEFORE
+                  {ERROR_LINK_EXISTING_BUTTON_TEXT}
                 </button>
                 <button
                   type="button"
@@ -265,20 +272,19 @@ export const ActivityAccountChoiceScreen = ({
                     color: "#aaa",
                   }}
                 >
-                  START FRESH
+                  {ERROR_START_FRESH_BUTTON_TEXT}
                 </button>
               </div>
             </>
           )}
           {mode === "linking" && (
             <p className="font-code text-sm text-gray-400 leading-relaxed">
-              Finish signing in from the page that just opened, then come back
-              here — this will pick it up automatically.
+              {ERROR_LINKING_IN_PROGRESS_DESCRIPTION}
             </p>
           )}
           {mode === "error" && (
             <p className="font-code text-sm text-gray-400 leading-relaxed">
-              Could not start linking right now. Try again in a moment.
+              {ERROR_LINKING_FAILED_DESCRIPTION}
             </p>
           )}
         </m.div>
@@ -310,12 +316,12 @@ export const ActivityAlreadyPlayedScreen = ({
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          ALREADY PLAYED TODAY
+          {ERROR_ALREADY_PLAYED_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
           {platform === "web"
-            ? "You already played today's daily on the website."
-            : "You've already played today's daily."}
+            ? ERROR_ALREADY_PLAYED_WEB_DESCRIPTION
+            : ERROR_ALREADY_PLAYED_DEFAULT_DESCRIPTION}
         </p>
       </m.div>
     </div>
@@ -343,13 +349,13 @@ export const ActivityServerErrorScreen = ({
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          SOMETHING WENT WRONG
+          {ERROR_SOMETHING_WRONG_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-1">
-          {activityErrorCopy[reason]}
+          {ACTIVITY_ERROR_MESSAGES[reason]}
         </p>
         <p className="font-code text-xs text-gray-600 leading-relaxed mb-4">
-          If this keeps happening, check the browser console for details.
+          {ERROR_SOMETHING_WRONG_HINT}
         </p>
         {retryButton()}
       </m.div>

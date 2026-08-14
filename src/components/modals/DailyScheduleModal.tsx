@@ -19,6 +19,7 @@ import {
   getDailyCalendarHttpsUrl,
   getDailyCalendarWebcalUrl,
 } from "../../lib/daily";
+import { MODAL_TITLE_DAILY_SCHEDULE } from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -94,7 +95,7 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
 
   return (
     <BaseModal
-      title="Daily Schedule"
+      title={MODAL_TITLE_DAILY_SCHEDULE}
       isOpen={isOpen}
       handleClose={handleClose}
       maxWidthClass="sm:max-w-sm"

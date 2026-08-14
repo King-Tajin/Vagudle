@@ -210,10 +210,12 @@ export const useDailyMode = ({
     const dailyMaxChallenges = dailyConfig.hardMode
       ? HARD_MODE_MAX_CHALLENGES
       : NORMAL_MODE_MAX_CHALLENGES;
+    const sharedGuesses = dailyResult?.guesses ?? guesses;
+    const sharedLost = dailyResult ? !dailyResult.won : isGameLost;
     void shareDailyResult(
       dailyConfig.word,
-      guesses,
-      isGameLost,
+      sharedGuesses,
+      sharedLost,
       dailyNumber,
       dailyResult?.maxGuesses ?? dailyMaxChallenges,
       () => showSuccessAlert(GAME_COPIED_MESSAGE)

@@ -1,6 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import type { BackgroundAttribution } from "../../lib/backgrounds";
+import { MODAL_TITLE_VIDEO_ATTRIBUTION } from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -19,7 +20,7 @@ export const AttributionModal = ({
 }: Props) => {
   return (
     <BaseModal
-      title="Video Attribution"
+      title={MODAL_TITLE_VIDEO_ATTRIBUTION}
       isOpen={isOpen}
       handleClose={handleClose}
     >

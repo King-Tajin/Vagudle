@@ -11,6 +11,7 @@ import {
   USERNAME_PATTERN,
   type UsernameStatus,
 } from "../../lib/username";
+import { MODAL_TITLE_DAILY_LEADERBOARD } from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -291,7 +292,7 @@ export const LeaderboardModal = ({
 
   return (
     <BaseModal
-      title="Daily Leaderboard"
+      title={MODAL_TITLE_DAILY_LEADERBOARD}
       isOpen={isOpen}
       handleClose={handleClose}
       maxWidthClass="sm:max-w-md"

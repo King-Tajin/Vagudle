@@ -16,6 +16,27 @@ import {
 import { openExternalLink } from "../../lib/discord";
 import type { GameMode } from "../../lib/gameMode";
 import MudskipperIcon from "@/assets/icons/mudskipper.svg?react";
+import {
+  NAVBAR_BRAND_URL,
+  NAVBAR_BRAND_URL_ACTIVITY,
+} from "../../constants/settings";
+import {
+  NAVBAR_LEAVE_DUEL_LABEL,
+  NAVBAR_LEAVE_CHALLENGE_LABEL,
+  NAVBAR_LEAVE_DAILY_LABEL,
+  NAVBAR_NEW_GAME_LABEL,
+  NAVBAR_LEAVE_DUEL_TITLE,
+  NAVBAR_LEAVE_DUEL_DESCRIPTION,
+  NAVBAR_LEAVE_DAILY_TITLE,
+  NAVBAR_LEAVE_DAILY_DESCRIPTION,
+  NAVBAR_LEAVE_CHALLENGE_TITLE,
+  NAVBAR_LEAVE_CHALLENGE_DESCRIPTION,
+  NAVBAR_ABANDON_GAME_TITLE,
+  NAVBAR_ABANDON_GAME_DESCRIPTION,
+  NAVBAR_ABANDON_BUTTON_TEXT,
+  NAVBAR_LEAVE_BUTTON_TEXT,
+  NAVBAR_KEEP_PLAYING_BUTTON_TEXT,
+} from "../../constants/strings";
 
 const SETTINGS_NUDGE_KEY = "vagudle-settings-nudge-dismissed";
 
@@ -148,12 +169,12 @@ export const Navbar = ({
 
   const leaveLabel =
     gameMode === "duel"
-      ? "Leave Duel"
+      ? NAVBAR_LEAVE_DUEL_LABEL
       : gameMode === "challenge"
-        ? "Leave Challenge"
+        ? NAVBAR_LEAVE_CHALLENGE_LABEL
         : gameMode === "daily"
-          ? "Leave Daily"
-          : "New Game";
+          ? NAVBAR_LEAVE_DAILY_LABEL
+          : NAVBAR_NEW_GAME_LABEL;
 
   return (
     <div className="navbar">
@@ -173,11 +194,7 @@ export const Navbar = ({
             {isActivityMode ? (
               <m.button
                 type="button"
-                onClick={() =>
-                  openExternalLink(
-                    "https://King-Tajin.dev/yellow-skipper-games"
-                  )
-                }
+                onClick={() => openExternalLink(NAVBAR_BRAND_URL_ACTIVITY)}
                 className="flex items-center gap-1.5 sm:gap-3 select-none min-w-0"
                 whileHover={{ scale: 1.02 }}
               >
@@ -202,7 +219,7 @@ export const Navbar = ({
               </m.button>
             ) : (
               <m.a
-                href="https://King-Tajin.dev"
+                href={NAVBAR_BRAND_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 sm:gap-3 select-none min-w-0"
@@ -376,40 +393,37 @@ export const Navbar = ({
             {gameMode === "duel" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  LEAVE DUEL?
+                  {NAVBAR_LEAVE_DUEL_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  Your progress for this duel is saved for 24 hours. You can
-                  return to this link any time.
+                  {NAVBAR_LEAVE_DUEL_DESCRIPTION}
                 </p>
               </>
             ) : gameMode === "daily" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  LEAVE DAILY?
+                  {NAVBAR_LEAVE_DAILY_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  Your progress on today's daily is saved. You still only get
-                  one attempt, so come back and finish it before the reset.
+                  {NAVBAR_LEAVE_DAILY_DESCRIPTION}
                 </p>
               </>
             ) : gameMode === "challenge" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  LEAVE CHALLENGE?
+                  {NAVBAR_LEAVE_CHALLENGE_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  Your progress for this challenge is saved. You can return to
-                  this link any time.
+                  {NAVBAR_LEAVE_CHALLENGE_DESCRIPTION}
                 </p>
               </>
             ) : (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  ABANDON GAME?
+                  {NAVBAR_ABANDON_GAME_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  This will count as a loss and reset your current streak.
+                  {NAVBAR_ABANDON_GAME_DESCRIPTION}
                 </p>
               </>
             )}
@@ -424,7 +438,9 @@ export const Navbar = ({
                   color: "#f87171",
                 }}
               >
-                {gameMode === "normal" ? "ABANDON" : "LEAVE"}
+                {gameMode === "normal"
+                  ? NAVBAR_ABANDON_BUTTON_TEXT
+                  : NAVBAR_LEAVE_BUTTON_TEXT}
               </button>
               <button
                 type="button"
@@ -436,7 +452,7 @@ export const Navbar = ({
                   color: "#fbbf24",
                 }}
               >
-                KEEP PLAYING
+                {NAVBAR_KEEP_PLAYING_BUTTON_TEXT}
               </button>
             </div>
           </div>

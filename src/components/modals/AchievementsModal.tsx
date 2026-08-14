@@ -9,6 +9,7 @@ import {
 import { BaseModal } from "./BaseModal";
 import { ACHIEVEMENTS, type Achievement } from "../../lib/achievements";
 import { BACKGROUNDS } from "../../lib/backgrounds";
+import { MODAL_TITLE_ACHIEVEMENTS } from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -287,7 +288,7 @@ export const AchievementsModal = (props: Props) => {
 
   return (
     <BaseModal
-      title="Achievements"
+      title={MODAL_TITLE_ACHIEVEMENTS}
       isOpen={isOpen}
       handleClose={handleClose}
       maxWidthClass="sm:max-w-md"

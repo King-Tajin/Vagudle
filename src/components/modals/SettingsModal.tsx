@@ -34,6 +34,22 @@ import {
   checkActivityAccountStatus,
   openExternalLink,
 } from "../../lib/discord";
+import {
+  MODAL_TITLE_SETTINGS,
+  SETTINGS_HARD_MODE_LABEL,
+  SETTINGS_HARD_MODE_DESCRIPTION,
+  SETTINGS_SHOW_GRAY_COUNT_LABEL,
+  SETTINGS_SHOW_GRAY_COUNT_DESCRIPTION,
+  SETTINGS_AUTO_GRAY_LABEL,
+  SETTINGS_AUTO_GRAY_DESCRIPTION,
+  SETTINGS_AUTO_GREEN_LABEL,
+  SETTINGS_AUTO_GREEN_DESCRIPTION,
+  SETTINGS_EXTRA_EFFECTS_LABEL,
+  SETTINGS_EXTRA_EFFECTS_DESCRIPTION,
+  SETTINGS_BACKGROUND_LABEL,
+  SETTINGS_BACKGROUND_DESCRIPTION_FREE,
+  SETTINGS_BACKGROUND_DESCRIPTION_LOCKED,
+} from "../../constants/strings";
 
 type Tab = "settings" | "challenge";
 
@@ -538,7 +554,11 @@ export const SettingsModal = ({
   };
 
   return (
-    <BaseModal title="Settings" isOpen={isOpen} handleClose={handleClose}>
+    <BaseModal
+      title={MODAL_TITLE_SETTINGS}
+      isOpen={isOpen}
+      handleClose={handleClose}
+    >
       <div className="flex gap-2 mb-4">
         <button
           type="button"
@@ -703,42 +723,42 @@ export const SettingsModal = ({
                   </div>
 
                   <SettingsToggle
-                    settingName="Hard Mode"
+                    settingName={SETTINGS_HARD_MODE_LABEL}
                     flag={settings.hardMode}
                     handleFlag={handleHardModeChange}
-                    description="Only 9 tries to guess the uncommon English word."
+                    description={SETTINGS_HARD_MODE_DESCRIPTION}
                   />
                 </>
               )}
 
               <SettingsToggle
-                settingName="Show Gray Count"
+                settingName={SETTINGS_SHOW_GRAY_COUNT_LABEL}
                 flag={settings.showGrayCount}
                 handleFlag={settingsHandlers.setShowGrayCount}
-                description="Show the number of gray (absent) letters next to each guess."
+                description={SETTINGS_SHOW_GRAY_COUNT_DESCRIPTION}
               />
               <SettingsToggle
-                settingName="Auto Gray"
+                settingName={SETTINGS_AUTO_GRAY_LABEL}
                 flag={settings.autoGray}
                 handleFlag={settingsHandlers.setAutoGray}
-                description="Fully-gray rows auto-gray matching letters everywhere. Auto-grayed cells are protected and persist through resets."
+                description={SETTINGS_AUTO_GRAY_DESCRIPTION}
               />
               <SettingsToggle
-                settingName="Auto Green"
+                settingName={SETTINGS_AUTO_GREEN_LABEL}
                 flag={settings.autoGreen}
                 handleFlag={settingsHandlers.setAutoGreen}
-                description="Painting a cell green auto-greens the same letter in that column. Changing a green cell clears those auto-greens."
+                description={SETTINGS_AUTO_GREEN_DESCRIPTION}
               />
 
               <div className="flex justify-between gap-4 py-3">
                 <div className="text-left mt-1">
                   <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                    BACKGROUND
+                    {SETTINGS_BACKGROUND_LABEL}
                   </p>
                   <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
                     {freeBackgroundsMode
-                      ? "Choose your background style. All backgrounds are available in this mode."
-                      : "Choose your background style. New ones unlock via achievements."}
+                      ? SETTINGS_BACKGROUND_DESCRIPTION_FREE
+                      : SETTINGS_BACKGROUND_DESCRIPTION_LOCKED}
                   </p>
                 </div>
                 <BackgroundDropdown
@@ -757,10 +777,10 @@ export const SettingsModal = ({
           {settingsPage === 2 && (
             <div className="flex flex-col divide-y divide-obsidian-700">
               <SettingsToggle
-                settingName="Extra Sounds & Animations"
+                settingName={SETTINGS_EXTRA_EFFECTS_LABEL}
                 flag={settings.extraEffects}
                 handleFlag={settingsHandlers.setExtraEffects}
-                description="Toggles win fireworks, a loss trombone, an achievement chest reveal, and video background audio."
+                description={SETTINGS_EXTRA_EFFECTS_DESCRIPTION}
               />
               <CloudSaveSection
                 cloudUpdatedAt={cloudUpdatedAt}

@@ -6,6 +6,15 @@ import type { DuelConfig } from "../../lib/duel";
 import type { DailyConfig } from "../../lib/daily";
 import type { GameMode } from "../../lib/gameMode";
 import React from "react";
+import {
+  BANNER_LABEL_CUSTOM_CHALLENGE,
+  BANNER_LABEL_DUEL,
+  BANNER_LABEL_DAILY_PREFIX,
+  BANNER_DIFFICULTY_HARD_TEXT,
+  BANNER_DIFFICULTY_NORMAL_TEXT,
+  BANNER_DAILY_ATTEMPT_TEXT,
+  BANNER_DUEL_WINDOW_TEXT,
+} from "../../constants/strings";
 
 const BannerFrame = ({ children }: { children: React.ReactNode }) => (
   <m.div
@@ -49,7 +58,7 @@ const BannerDivider = () => (
 
 const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
   <BannerFrame>
-    <BannerLabel>CUSTOM CHALLENGE</BannerLabel>
+    <BannerLabel>{BANNER_LABEL_CUSTOM_CHALLENGE}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
         {config.length} letters
@@ -68,7 +77,7 @@ const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
 
 const DuelBanner = ({ config }: { config: DuelConfig }) => (
   <BannerFrame>
-    <BannerLabel>DUEL</BannerLabel>
+    <BannerLabel>{BANNER_LABEL_DUEL}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
         {config.length} letters
@@ -83,7 +92,7 @@ const DuelBanner = ({ config }: { config: DuelConfig }) => (
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<Swords className="w-3 h-3 text-crown-amber" />}>
-        24h
+        {BANNER_DUEL_WINDOW_TEXT}
       </BannerStat>
     </div>
   </BannerFrame>
@@ -99,18 +108,23 @@ const DailyBanner = ({
   usernameWarning: string | null;
 }) => (
   <BannerFrame>
-    <BannerLabel>DAILY #{dailyNumber}</BannerLabel>
+    <BannerLabel>
+      {BANNER_LABEL_DAILY_PREFIX}
+      {dailyNumber}
+    </BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
         {config.wordLength} letters
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
-        {config.hardMode ? "Hard" : "Normal"}
+        {config.hardMode
+          ? BANNER_DIFFICULTY_HARD_TEXT
+          : BANNER_DIFFICULTY_NORMAL_TEXT}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<CalendarDays className="w-3 h-3 text-crown-amber" />}>
-        1 attempt/day
+        {BANNER_DAILY_ATTEMPT_TEXT}
       </BannerStat>
     </div>
     {usernameWarning && (

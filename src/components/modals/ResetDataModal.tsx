@@ -5,6 +5,7 @@ import { SettingsToggle } from "./SettingsToggle";
 import { useCloudAuth } from "../../hooks/useCloudAuth";
 import type { DeleteAccountResult } from "../../hooks/useCloudAuth";
 import { getIdTokenForCurrentUser, deleteCloudSave } from "../../lib/cloudSync";
+import { MODAL_TITLE_RESET_ALL_DATA } from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -140,7 +141,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
   if (stage === "reauth") {
     return (
       <BaseModal
-        title="Reset All Data"
+        title={MODAL_TITLE_RESET_ALL_DATA}
         isOpen={isOpen}
         handleClose={handleClose}
       >
@@ -199,7 +200,11 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
   const isDeleting = stage === "deleting";
 
   return (
-    <BaseModal title="Reset All Data" isOpen={isOpen} handleClose={handleClose}>
+    <BaseModal
+      title={MODAL_TITLE_RESET_ALL_DATA}
+      isOpen={isOpen}
+      handleClose={handleClose}
+    >
       <div className="space-y-4">
         <div
           className="flex items-start gap-2.5 p-3"
