@@ -1,4 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
+
+import { applyDailySeo } from "./_shared/dailySeo.js";
+
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
@@ -14,6 +17,12 @@ export async function onRequest(context) {
     assetUrl.pathname = "/";
     const assetRequest = new Request(assetUrl.toString(), context.request);
     const response = await context.env.ASSETS.fetch(assetRequest);
+
+    if (url.pathname === "/daily") {
+      const html = await response.text();
+      return new Response(applyDailySeo(html), response);
+    }
+
     return new Response(response.body, response);
   }
 
