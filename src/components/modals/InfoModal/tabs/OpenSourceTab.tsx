@@ -1,11 +1,12 @@
 import { ActivityLink } from "../../../ActivityLink";
+import { SOURCE_CODE_URL } from "../../../../constants/settings";
 
 export const OpenSourceTab = () => {
   return (
     <div className="space-y-4">
       <p className="font-code text-sm text-gray-400 leading-relaxed">
         <ActivityLink
-          href="https://github.com/King-Tajin/Vagudle"
+          href={SOURCE_CODE_URL}
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
           Vagudle

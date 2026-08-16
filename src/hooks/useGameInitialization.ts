@@ -47,6 +47,7 @@ import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
   WELCOME_INFO_MODAL_MS,
+  MIN_LOADING_WORDS_TIME_MS,
 } from "../constants/settings";
 
 type Params = {
@@ -527,7 +528,7 @@ export const useGameInitialization = ({
       }
 
       const elapsed = Date.now() - loadStart;
-      const remaining = Math.max(0, 1750 - elapsed);
+      const remaining = Math.max(0, MIN_LOADING_WORDS_TIME_MS - elapsed);
       await new Promise((r) => setTimeout(r, remaining));
 
       if (savedState) {
