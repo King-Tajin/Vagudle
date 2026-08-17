@@ -1,0 +1,33 @@
+# Vagudle
+
+> Vagudle is a free word game with more challenge: unlimited plays, harder dictionaries, up to 11 tries, custom word challenges, plus a daily mode with a leaderboard.
+
+Vagudle is a free word-guessing game inspired by Hardle, built for more challenge: unlimited plays, harder dictionaries, and no pesky daily limit to get in your way. There's also an optional daily mode with its own leaderboard. Built and maintained by [King-Tajin](https://King-Tajin.dev).
+
+## How to Play
+
+Type a word and press Enter to submit a guess. You have 11 tries to find the hidden word. Select a brush, then click or drag cells to mark what you know: green for the right letter in the right spot, yellow for the right letter in the wrong spot, and gray for letters not in the word.
+
+## Features
+
+- Variable Word Length: Play with anywhere between 4 and 7-letter words via Settings.
+- Hard Mode: Solutions are selected from uncommon words and the player is limited to 9 guesses.
+- Daily: A new word unlocks once a day, alternating between 4- and 5-letter, normal and hard mode. Track your streak on the leaderboard, and subscribe to a calendar reminder so you never miss one.
+- Cell Painting: Select a brush and click or drag across cells to color them.
+- Auto-Gray: Automatically grays out letters from fully-gray rows.
+- Auto-Green: Fills in user marked correct letters across all rows automatically.
+- Custom Challenges: Open Settings and go to the Challenge tab. Pick a dictionary, choose how many guesses to allow, type your secret word, and hit Generate Link. Share the link to let others play your custom word with exactly the settings you chose. Results never count toward the recipient's stats.
+- Discord Integration: Use the /vagudle_challenge slash command to generate a challenge link directly from Discord, or compete in head-to-head Duels on a live leaderboard.
+
+## Pages
+
+- [Vagudle](https://vagudle.king-tajin.dev/): The main game. Unlimited plays, harder dictionaries, up to 11 tries, and custom word challenges.
+- [Vagudle Daily](https://vagudle.king-tajin.dev/daily): Vagudle Daily is a free once-a-day word puzzle. A new word unlocks every day at 08:00 UTC, rotating between 4- and 5-letter, normal and hard mode. Track your streak on the leaderboard and subscribe to a calendar reminder so you never miss one.
+
+## Open Source
+
+Vagudle is [open source on GitHub](https://github.com/King-Tajin/Vagudle) and based on [react-wordle](https://github.com/markzither/react-wordle). Contributions and feedback are welcome.
+
+## Optional
+
+- [Discord](https://discord.gg/sU2XRxK8EB): Community server.
