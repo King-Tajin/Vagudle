@@ -9,7 +9,7 @@ import {
   checkRateLimit,
 } from "../_shared/api.js";
 
-const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/duel";
+const WEBHOOK_URL = "https://vagudle-webhook.king-tajin.dev/webhook/duel";
 
 const notifyWebhook = async (duelId, webhookSecret) => {
   try {

@@ -16,7 +16,7 @@ import { getGuessStatuses } from "../_shared/wordStatus.js";
 
 const MAX_GUESSES = Math.max(...VALID_GUESSES);
 
-const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/daily";
+const WEBHOOK_URL = "https://vagudle-webhook.king-tajin.dev/webhook/daily";
 
 const notifyWebhook = async (payload, webhookSecret) => {
   try {

@@ -8,7 +8,7 @@ import {
 } from "../_shared/discordAuth.js";
 import { getUtcDateString, getRotationForDate } from "../_shared/daily.js";
 
-const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/daily";
+const WEBHOOK_URL = "https://vagudle-webhook.king-tajin.dev/webhook/daily";
 
 const notifyWebhook = async (payload, webhookSecret) => {
   try {

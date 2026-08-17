@@ -10,7 +10,7 @@ import {
 } from "../_shared/daily.js";
 import { getGuessStatuses } from "../_shared/wordStatus.js";
 
-const WEBHOOK_URL = "https://discord-webhook.king-tajin.dev/webhook/daily";
+const WEBHOOK_URL = "https://vagudle-webhook.king-tajin.dev/webhook/daily";
 
 const notifyWebhook = async (payload, webhookSecret) => {
   try {
