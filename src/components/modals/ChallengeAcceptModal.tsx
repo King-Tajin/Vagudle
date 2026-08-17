@@ -53,9 +53,9 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
               style={{ background: "rgba(10,0,20,0.97)" }}
             >
               <Swords className="w-5 h-5 text-crown-gold" />
-              <h3 className="font-pixel text-sm text-crown-amber tracking-widest">
+              <h2 className="font-pixel text-sm text-crown-amber tracking-widest">
                 CUSTOM CHALLENGE
-              </h3>
+              </h2>
             </div>
 
             <div className="px-5 py-5 space-y-4">

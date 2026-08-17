@@ -29,6 +29,10 @@ export default defineConfig({
               name: "vendor-fluid",
               test: /node_modules\/webgl-fluid-enhanced\//,
             },
+            {
+              name: "vendor-firebase",
+              test: /node_modules\/(@firebase|firebase)\//,
+            },
           ],
         },
       },

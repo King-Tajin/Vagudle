@@ -73,9 +73,9 @@ export const FeedbackTab = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12 text-center">
         <CheckCircle className="w-14 h-14 text-spice-lime mb-4" />
-        <h2 className="font-pixel text-sm text-crown-gold mb-2 tracking-widest">
+        <h3 className="font-pixel text-sm text-crown-gold mb-2 tracking-widest">
           FEEDBACK RECEIVED!
-        </h2>
+        </h3>
         <p className="font-code text-sm text-gray-400">
           Thanks for helping improve Vagudle.
         </p>

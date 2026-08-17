@@ -1,4 +1,4 @@
-import { auth } from "./firebase";
+import { loadFirebaseAuth } from "./firebase";
 import { getStoredDiscordSession } from "./discordCloudAuth";
 import {
   loadSettingsFromLocalStorage,
@@ -69,6 +69,7 @@ const emptyStats: GameStats = {
 };
 
 export const getIdTokenForCurrentUser = async (): Promise<string | null> => {
+  const { auth } = await loadFirebaseAuth();
   const user = auth.currentUser;
   if (user) {
     try {

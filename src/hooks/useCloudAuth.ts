@@ -1,16 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-  deleteUser,
-  reauthenticateWithPopup,
-  type User,
-} from "firebase/auth";
-import { auth, googleProvider, githubProvider } from "../lib/firebase";
+import type { User } from "firebase/auth";
+import { loadFirebaseAuth, scheduleFirebaseAuthPreload } from "../lib/firebase";
 import {
   signInWithDiscord as redirectToDiscord,
   completeDiscordSignIn as exchangeDiscordSignIn,
@@ -51,8 +41,14 @@ const toCloudAuthUserFromDiscord = (
   providerId: "discord.com",
 });
 
+const looksLikeEmailSignInLink = (href: string): boolean =>
+  href.includes("mode=signIn");
+
 export const completeEmailLinkSignIn = async (): Promise<void> => {
-  if (!isSignInWithEmailLink(auth, window.location.href)) return;
+  if (!looksLikeEmailSignInLink(window.location.href)) return;
+
+  const { auth, authModule } = await loadFirebaseAuth();
+  if (!authModule.isSignInWithEmailLink(auth, window.location.href)) return;
 
   let email: string | null = null;
   try {
@@ -65,7 +61,7 @@ export const completeEmailLinkSignIn = async (): Promise<void> => {
   if (!email) return;
 
   try {
-    await signInWithEmailLink(auth, email, window.location.href);
+    await authModule.signInWithEmailLink(auth, email, window.location.href);
     try {
       localStorage.removeItem(EMAIL_LINK_STORAGE_KEY);
     } catch {}
@@ -88,14 +84,25 @@ export const useCloudAuth = () => {
   const [actionError, setActionError] = useState<string | null>(null);
   const [emailLinkSent, setEmailLinkSent] = useState(false);
 
-  useEffect(
-    () =>
-      onAuthStateChanged(auth, (user) => {
+  useEffect(() => {
+    let cancelled = false;
+    let unsubscribe: (() => void) | undefined;
+
+    scheduleFirebaseAuthPreload();
+
+    void loadFirebaseAuth().then(({ auth, authModule }) => {
+      if (cancelled) return;
+      unsubscribe = authModule.onAuthStateChanged(auth, (user) => {
         setFirebaseUser(user);
         setAuthLoading(false);
-      }),
-    []
-  );
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, []);
 
   useEffect(() => {
     const handler = (event: StorageEvent) => {
@@ -119,7 +126,8 @@ export const useCloudAuth = () => {
   const signInWithGoogle = useCallback(async () => {
     setActionError(null);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const { auth, googleProvider, authModule } = await loadFirebaseAuth();
+      await authModule.signInWithPopup(auth, googleProvider);
     } catch {
       setActionError("Google sign-in failed. Please try again.");
     }
@@ -128,7 +136,8 @@ export const useCloudAuth = () => {
   const signInWithGithub = useCallback(async () => {
     setActionError(null);
     try {
-      await signInWithPopup(auth, githubProvider);
+      const { auth, githubProvider, authModule } = await loadFirebaseAuth();
+      await authModule.signInWithPopup(auth, githubProvider);
     } catch {
       setActionError("GitHub sign-in failed. Please try again.");
     }
@@ -143,7 +152,8 @@ export const useCloudAuth = () => {
     setActionError(null);
     setEmailLinkSent(false);
     try {
-      await sendSignInLinkToEmail(auth, email, {
+      const { auth, authModule } = await loadFirebaseAuth();
+      await authModule.sendSignInLinkToEmail(auth, email, {
         url: window.location.href,
         handleCodeInApp: true,
       });
@@ -159,7 +169,8 @@ export const useCloudAuth = () => {
   const signOutUser = useCallback(async () => {
     setActionError(null);
     try {
-      await signOut(auth);
+      const { auth, authModule } = await loadFirebaseAuth();
+      await authModule.signOut(auth);
       clearDiscordSession();
       setDiscordSession(null);
     } catch {
@@ -170,7 +181,8 @@ export const useCloudAuth = () => {
   const deleteAccount = useCallback(async (): Promise<DeleteAccountResult> => {
     if (firebaseUser) {
       try {
-        await deleteUser(firebaseUser);
+        const { authModule } = await loadFirebaseAuth();
+        await authModule.deleteUser(firebaseUser);
         return { status: "success" };
       } catch (error) {
         const code = (error as { code?: string })?.code;
@@ -199,23 +211,26 @@ export const useCloudAuth = () => {
         return { status: "error", message: "No signed-in account found." };
 
       const providerId = firebaseUser.providerData[0]?.providerId;
-      const provider =
-        providerId === "google.com"
-          ? googleProvider
-          : providerId === "github.com"
-            ? githubProvider
-            : null;
-
-      if (!provider)
-        return {
-          status: "error",
-          message:
-            "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.",
-        };
 
       try {
-        await reauthenticateWithPopup(firebaseUser, provider);
-        await deleteUser(firebaseUser);
+        const { authModule, googleProvider, githubProvider } =
+          await loadFirebaseAuth();
+        const provider =
+          providerId === "google.com"
+            ? googleProvider
+            : providerId === "github.com"
+              ? githubProvider
+              : null;
+
+        if (!provider)
+          return {
+            status: "error",
+            message:
+              "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.",
+          };
+
+        await authModule.reauthenticateWithPopup(firebaseUser, provider);
+        await authModule.deleteUser(firebaseUser);
         return { status: "success" };
       } catch {
         return {

@@ -65,7 +65,7 @@ export const BaseModal = ({
             <div className="flex items-center gap-3">
               <HatIcon className="w-12 h-12 text-crown-gold" />
               <DialogTitle
-                as="h3"
+                as="h2"
                 className="font-pixel text-sm text-crown-amber tracking-widest"
               >
                 {title.toUpperCase()}
