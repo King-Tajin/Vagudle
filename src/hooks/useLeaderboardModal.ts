@@ -1,6 +1,7 @@
 import type React from "react";
 import { useRef, useState } from "react";
 import { getIdTokenForCurrentUser } from "../lib/cloudSync";
+import { DAILY_PATH } from "../lib/daily";
 
 type Params = {
   isDailyMode: boolean;
@@ -34,7 +35,11 @@ export const useLeaderboardModal = ({
 
   const handleCloseLeaderboard = () => {
     setIsLeaderboardModalOpen(false);
-    if (isDailyMode) setIsDailyModalOpen(true);
+    if (isDailyMode) {
+      setIsDailyModalOpen(true);
+    } else if (window.location.pathname === DAILY_PATH) {
+      window.history.pushState({}, "", "/");
+    }
   };
 
   const handleOpenSettingsFromLeaderboard = () => {

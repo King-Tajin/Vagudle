@@ -10,6 +10,22 @@ For questions or data requests contact:
 
 ---
 
+ANDROID APP
+
+Vagudle is also available as an Android app. The app displays the same
+Vagudle experience described in this policy and follows the same data
+practices; it does not collect any additional data of its own.
+
+The app requests the following Android permission:
+
+  - Internet access, required to load the game and sync cloud save data
+
+The app does not include any analytics, advertising, or crash-reporting
+software. It does integrate with Google Play Games Services to offer
+Play Games sign-in, described in the CLOUD SAVE ACCOUNTS section below.
+
+---
+
 LOCAL STORAGE
 
 Your game state, settings, and progress are stored locally in your browser
@@ -30,15 +46,19 @@ You can sign in with:
   - GitHub
   - A sign-in link sent to your email address
   - Discord
+  - Google Play Games (Android app only)
 
 When you sign in, we store the following in a database to power cloud save:
 
-  - Your account identifier, issued by Firebase (or, for Discord sign-in,
-    derived from your Discord user ID)
+  - Your account identifier, issued by Firebase (or, for Discord and Play
+    Games sign-in, derived from your Discord user ID or Play Games player
+    ID, respectively)
   - Your email address and/or display name, depending on the sign-in method
     you use
   - For Discord sign-in specifically: your Discord user ID, username, and
     avatar image URL
+  - For Play Games sign-in specifically: your Play Games player ID, display
+    name, and avatar image URL
   - Your achievement progress, word statistics, settings, and selected
     background
 
@@ -47,9 +67,9 @@ your cloud save or account data, contact us at the email addresses above.
 
 Your browser may also store a local sign-in session (using localStorage or
 IndexedDB, not cookies) so you stay signed in between visits. If you sign
-in with Google, GitHub, or Discord, that sign-in is also subject to the
-provider's own privacy policy. We never receive your password from these
-providers.
+in with Google, GitHub, Discord, or Play Games, that sign-in is also
+subject to the provider's own privacy policy. We never receive your
+password from these providers.
 
 You may link a Discord account to an existing Google/GitHub/email account
 that already has cloud save progress. Once linked, your Discord ID is
