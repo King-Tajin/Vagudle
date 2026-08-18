@@ -1,5 +1,6 @@
 import { loadFirebaseAuth } from "./firebase";
 import { getStoredDiscordSession } from "./discordCloudAuth";
+import { getStoredPlayGamesSession } from "./playGamesCloudAuth";
 import {
   loadSettingsFromLocalStorage,
   saveSettingsToLocalStorage,
@@ -79,7 +80,10 @@ export const getIdTokenForCurrentUser = async (): Promise<string | null> => {
     }
   }
   const discordSession = getStoredDiscordSession();
-  return discordSession ? discordSession.token : null;
+  if (discordSession) return discordSession.token;
+
+  const playGamesSession = getStoredPlayGamesSession();
+  return playGamesSession ? playGamesSession.token : null;
 };
 
 export const buildCloudSavePayloadFromLocalStorage = (

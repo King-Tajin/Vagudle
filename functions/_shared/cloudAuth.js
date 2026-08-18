@@ -1,6 +1,9 @@
+// noinspection JSUnresolvedReference
+
 import { verifyFirebaseIdToken, getBearerToken } from "./firebaseAuth.js";
 import { decode, json, checkRateLimit } from "./api.js";
 import { isValidDiscordSession, requireDiscordUser } from "./discordAuth.js";
+import { isValidPlayGamesSession } from "./playGamesAuth.js";
 
 export { getBearerToken };
 
@@ -23,6 +26,18 @@ export const verifyCloudSaveToken = async (request, env) => {
     try {
       const payload = await decode(token, env.DISCORD_SESSION_KEY);
       if (isValidDiscordSession(payload))
+        return {
+          uid: payload.uid,
+          username:
+            typeof payload.username === "string" ? payload.username : null,
+        };
+    } catch {}
+  }
+
+  if (env.PLAYGAMES_SESSION_KEY) {
+    try {
+      const payload = await decode(token, env.PLAYGAMES_SESSION_KEY);
+      if (isValidPlayGamesSession(payload))
         return {
           uid: payload.uid,
           username:

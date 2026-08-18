@@ -10,6 +10,15 @@ import {
   DISCORD_SESSION_STORAGE_KEY,
   type DiscordSession,
 } from "../lib/discordCloudAuth";
+import {
+  signInWithPlayGames as triggerPlayGamesSignIn,
+  getStoredPlayGamesSession,
+  clearPlayGamesSession,
+  maybeRenewPlayGamesSession,
+  isPlayGamesAvailable,
+  PLAYGAMES_SESSION_STORAGE_KEY,
+  type PlayGamesSession,
+} from "../lib/playGamesCloudAuth";
 
 const EMAIL_LINK_STORAGE_KEY = "vagudle-email-link-address:v1";
 
@@ -40,6 +49,17 @@ const toCloudAuthUserFromDiscord = (
   displayName: session.displayName,
   providerId: "discord.com",
 });
+
+const toCloudAuthUserFromPlayGames = (
+  session: PlayGamesSession
+): CloudAuthUser => ({
+  uid: session.uid,
+  email: null,
+  displayName: session.displayName,
+  providerId: "playgames.google.com",
+});
+
+export { isPlayGamesAvailable };
 
 const looksLikeEmailSignInLink = (href: string): boolean =>
   href.includes("mode=signIn");
@@ -80,6 +100,8 @@ export const useCloudAuth = () => {
   const [discordSession, setDiscordSession] = useState<DiscordSession | null>(
     () => getStoredDiscordSession()
   );
+  const [playGamesSession, setPlayGamesSession] =
+    useState<PlayGamesSession | null>(() => getStoredPlayGamesSession());
   const [authLoading, setAuthLoading] = useState(true);
   const [actionError, setActionError] = useState<string | null>(null);
   const [emailLinkSent, setEmailLinkSent] = useState(false);
@@ -106,8 +128,12 @@ export const useCloudAuth = () => {
 
   useEffect(() => {
     const handler = (event: StorageEvent) => {
-      if (event.key !== DISCORD_SESSION_STORAGE_KEY) return;
-      setDiscordSession(getStoredDiscordSession());
+      if (event.key === DISCORD_SESSION_STORAGE_KEY) {
+        setDiscordSession(getStoredDiscordSession());
+      }
+      if (event.key === PLAYGAMES_SESSION_STORAGE_KEY) {
+        setPlayGamesSession(getStoredPlayGamesSession());
+      }
     };
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
@@ -117,6 +143,16 @@ export const useCloudAuth = () => {
     let cancelled = false;
     void maybeRenewDiscordSession().then((renewed) => {
       if (!cancelled) setDiscordSession(renewed);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void maybeRenewPlayGamesSession().then((renewed) => {
+      if (!cancelled) setPlayGamesSession(renewed);
     });
     return () => {
       cancelled = true;
@@ -148,6 +184,20 @@ export const useCloudAuth = () => {
     redirectToDiscord();
   }, []);
 
+  const signInWithPlayGames = useCallback(async () => {
+    setActionError(null);
+    try {
+      const session = await triggerPlayGamesSignIn();
+      if (!session) {
+        setActionError("Play Games sign-in failed. Please try again.");
+        return;
+      }
+      setPlayGamesSession(session);
+    } catch {
+      setActionError("Play Games sign-in failed. Please try again.");
+    }
+  }, []);
+
   const sendEmailLink = useCallback(async (email: string) => {
     setActionError(null);
     setEmailLinkSent(false);
@@ -173,6 +223,8 @@ export const useCloudAuth = () => {
       await authModule.signOut(auth);
       clearDiscordSession();
       setDiscordSession(null);
+      clearPlayGamesSession();
+      setPlayGamesSession(null);
     } catch {
       setActionError("Sign-out failed. Please try again.");
     }
@@ -202,8 +254,13 @@ export const useCloudAuth = () => {
       setDiscordSession(null);
       return { status: "success" };
     }
+    if (playGamesSession) {
+      clearPlayGamesSession();
+      setPlayGamesSession(null);
+      return { status: "success" };
+    }
     return { status: "error", message: "No signed-in account found." };
-  }, [firebaseUser, discordSession]);
+  }, [firebaseUser, discordSession, playGamesSession]);
 
   const reauthenticateAndDeleteAccount =
     useCallback(async (): Promise<DeleteAccountResult> => {
@@ -246,8 +303,10 @@ export const useCloudAuth = () => {
         ? toCloudAuthUser(firebaseUser)
         : discordSession
           ? toCloudAuthUserFromDiscord(discordSession)
-          : null,
-    [firebaseUser, discordSession]
+          : playGamesSession
+            ? toCloudAuthUserFromPlayGames(playGamesSession)
+            : null,
+    [firebaseUser, discordSession, playGamesSession]
   );
 
   return {
@@ -258,6 +317,7 @@ export const useCloudAuth = () => {
     signInWithGoogle,
     signInWithGithub,
     signInWithDiscord,
+    signInWithPlayGames,
     sendEmailLink,
     signOutUser,
     deleteAccount,

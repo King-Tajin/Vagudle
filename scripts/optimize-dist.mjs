@@ -6,9 +6,10 @@ import { optimize } from "svgo";
 import ffmpegPath from "ffmpeg-static";
 import { exiftool } from "exiftool-vendored";
 
-const runFfmpeg = (file, args) =>
-  new Promise((resolve, reject) => {
-    execFile(file, args, (error, stdout, stderr) => {
+const runFfmpeg = (file, args) => {
+  let child;
+  const promise = new Promise((resolve, reject) => {
+    child = execFile(file, args, (error, stdout, stderr) => {
       if (error) {
         reject(error);
         return;
@@ -16,6 +17,21 @@ const runFfmpeg = (file, args) =>
       resolve({ stdout, stderr });
     });
   });
+  return { promise, child };
+};
+
+const OPERATION_TIMEOUT_MS = 60000;
+
+const withTimeout = (promise, label, onTimeout) => {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      onTimeout?.();
+      reject(new Error(`timed out after ${OPERATION_TIMEOUT_MS}ms: ${label}`));
+    }, OPERATION_TIMEOUT_MS);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+};
 
 if (!ffmpegPath) {
   throw new Error(
@@ -77,7 +93,7 @@ const minifyJson = async (filePath) => {
 const stripVideoMetadata = async (filePath) => {
   const before = (await stat(filePath)).size;
   const tempPath = `${filePath}.stripped${path.extname(filePath)}`;
-  await runFfmpeg(ffmpegBinary, [
+  const { promise, child } = runFfmpeg(ffmpegBinary, [
     "-y",
     "-i",
     filePath,
@@ -89,6 +105,7 @@ const stripVideoMetadata = async (filePath) => {
     "copy",
     tempPath,
   ]);
+  await withTimeout(promise, filePath, () => child.kill());
   await rename(tempPath, filePath);
   const after = (await stat(filePath)).size;
   return { before, after };
@@ -97,7 +114,7 @@ const stripVideoMetadata = async (filePath) => {
 const stripSoundMetadata = async (filePath) => {
   const before = (await stat(filePath)).size;
   const tempPath = `${filePath}.stripped${path.extname(filePath)}`;
-  await runFfmpeg(ffmpegBinary, [
+  const { promise, child } = runFfmpeg(ffmpegBinary, [
     "-y",
     "-i",
     filePath,
@@ -107,6 +124,7 @@ const stripSoundMetadata = async (filePath) => {
     "copy",
     tempPath,
   ]);
+  await withTimeout(promise, filePath, () => child.kill());
   await rename(tempPath, filePath);
   const after = (await stat(filePath)).size;
   return { before, after };
@@ -114,16 +132,21 @@ const stripSoundMetadata = async (filePath) => {
 
 const stripImageMetadata = async (filePath) => {
   const before = (await stat(filePath)).size;
-  await exiftool.write(
-    filePath,
-    {},
-    { writeArgs: ["-overwrite_original", "-all="] }
+  await withTimeout(
+    exiftool.write(
+      filePath,
+      {},
+      { writeArgs: ["-overwrite_original", "-all="] }
+    ),
+    filePath
   );
   const after = (await stat(filePath)).size;
   return { before, after };
 };
 
 const run = async () => {
+  const startedAt = Date.now();
+
   let files;
   try {
     files = await walk(distDir);
@@ -228,8 +251,9 @@ const run = async () => {
   await exiftool.end().catch(() => {});
 
   const savedKb = ((totalBefore - totalAfter) / 1024).toFixed(1);
+  const elapsedSec = ((Date.now() - startedAt) / 1000).toFixed(1);
   console.log(
-    `optimize-dist: optimized ${svgCount} svg + ${jsonCount} json file(s), stripped metadata from ${videoCount} video + ${imageCount} image file(s) in backgrounds/ and ${soundCount} sound file(s) in sounds/, saved ${savedKb} KB`
+    `optimize-dist: optimized ${svgCount} svg + ${jsonCount} json file(s), stripped metadata from ${videoCount} video + ${imageCount} image file(s) in backgrounds/ and ${soundCount} sound file(s) in sounds/, saved ${savedKb} KB in ${elapsedSec}s`
   );
 };
 

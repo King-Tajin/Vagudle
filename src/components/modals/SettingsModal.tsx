@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useEffectEvent, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useMemo,
+} from "react";
 import {
   AlertTriangle,
   BookOpen,
@@ -12,10 +18,11 @@ import {
 import GoogleIcon from "../../assets/icons/google.svg?react";
 import GithubIcon from "../../assets/icons/github.svg?react";
 import DiscordIcon from "../../assets/icons/discord.svg?react";
+import PlayGamesIcon from "../../assets/icons/playgames.svg?react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { ChallengeCreatorModal } from "./ChallengeCreatorModal";
-import { useCloudAuth } from "../../hooks/useCloudAuth";
+import { useCloudAuth, isPlayGamesAvailable } from "../../hooks/useCloudAuth";
 import { formatRelativeTime } from "../../lib/cloudSync";
 import {
   DICT_LABELS,
@@ -320,10 +327,12 @@ const CloudSaveSection = ({
     signInWithGoogle,
     signInWithGithub,
     signInWithDiscord,
+    signInWithPlayGames,
     sendEmailLink,
     signOutUser,
   } = useCloudAuth();
   const [email, setEmail] = useState("");
+  const playGamesAvailable = useMemo(() => isPlayGamesAvailable(), []);
 
   return (
     <div className="py-3">
@@ -418,6 +427,20 @@ const CloudSaveSection = ({
             >
               <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
               CONTINUE WITH DISCORD
+            </button>
+          )}
+          {playGamesAvailable && (
+            <button
+              type="button"
+              onClick={() => void signInWithPlayGames()}
+              className="w-full relative flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+              style={providerButtonStyle}
+            >
+              <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+              CONTINUE WITH PLAY GAMES
+              <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
+                BETA
+              </span>
             </button>
           )}
           <div className="flex gap-2 pt-1">
