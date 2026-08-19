@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, Trash2, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Trash2, ShieldAlert, Info } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { useCloudAuth } from "../../hooks/useCloudAuth";
@@ -53,6 +53,28 @@ const providerLabel = (providerId: string): string => {
   return "your provider";
 };
 
+const DELETION_DETAILS_STEPS = [
+  "Sign in with the account linked to your Vagudle data (Google, GitHub, email, or Discord).",
+  'Press "Delete My Data" (or turn on "Also delete my account" here, then confirm).',
+  "Confirm then your data is deleted immediately.",
+];
+
+const DELETION_DETAILS_DELETED = [
+  "Your sign-in (Google, GitHub, email link, Discord, or Play Games).",
+  "Your saved game: stats, achievements, settings, and background.",
+  "Your daily-leaderboard entry and streak.",
+  "Your daily-attempt history.",
+  "Your individual duel match history, if linked to Discord.",
+];
+
+const DELETION_DETAILS_KEPT =
+  "If you've used Vagudle's Discord integration, some data tied to your " +
+  "Discord ID is kept permanently to preserve other players' match " +
+  "history and your Discord server's group leaderboards/streaks: " +
+  "aggregate duel win/loss standings, and group daily-challenge " +
+  "participation records. This is not deleted by the steps above, and " +
+  "there is no expiry period for it.";
+
 type Stage = "confirm" | "deleting" | "reauth";
 
 const wipeLocalDataAndReload = () => {
@@ -74,6 +96,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
   const [stage, setStage] = useState<Stage>("confirm");
   const [reauthProviderId, setReauthProviderId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const applyDeleteAccountResult = (result: DeleteAccountResult) => {
     if (result.status === "success") {
@@ -233,21 +256,35 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
           ))}
         </div>
 
-        {user && (
-          <div
-            className="pt-1"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
-          >
-            <SettingsToggle
-              settingName="Also delete my account"
-              flag={alsoDeleteAccount}
-              handleFlag={setAlsoDeleteAccount}
-              description={`Permanently deletes your ${providerLabel(
-                user.providerId
-              )} sign-in link to Vagudle and erases your cloud save. This cannot be undone.`}
-            />
-          </div>
-        )}
+        <div
+          className="pt-1"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <SettingsToggle
+            settingName="Also delete my account"
+            flag={!!user && alsoDeleteAccount}
+            handleFlag={setAlsoDeleteAccount}
+            disabled={!user}
+            labelExtra={
+              <button
+                type="button"
+                onClick={() => setIsDetailsOpen(true)}
+                aria-label="What gets deleted and what's kept"
+                className="flex items-center gap-1 shrink-0 p-0.5 text-[10px] font-medium leading-none text-gray-500 hover:text-crown-amber transition-colors"
+              >
+                <Info className="w-3 h-3" />
+                DETAILS
+              </button>
+            }
+            description={
+              user
+                ? `Permanently deletes your ${providerLabel(
+                    user.providerId
+                  )} sign-in link to Vagudle and erases your cloud save. This cannot be undone.`
+                : "Not signed in so there's no account to delete."
+            }
+          />
+        </div>
 
         {deleteError && (
           <p className="font-code text-xs text-spice-red">{deleteError}</p>
@@ -292,6 +329,69 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
           </button>
         </div>
       </div>
+
+      <BaseModal
+        title="ACCOUNT DELETION DETAILS"
+        isOpen={isDetailsOpen}
+        handleClose={() => setIsDetailsOpen(false)}
+        zIndexClass="z-[70]"
+      >
+        <div className="space-y-4 text-left">
+          <div>
+            <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-1.5">
+              HOW TO DELETE
+            </p>
+            <ol className="list-decimal list-inside space-y-1">
+              {DELETION_DETAILS_STEPS.map((step) => (
+                <li
+                  key={step}
+                  className="font-code text-xs text-gray-400 leading-snug"
+                >
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div>
+            <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-1.5">
+              WHAT GETS DELETED
+            </p>
+            <ul className="list-disc list-inside space-y-1">
+              {DELETION_DETAILS_DELETED.map((item) => (
+                <li
+                  key={item}
+                  className="font-code text-xs text-gray-400 leading-snug"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-1.5">
+              WHAT'S KEPT
+            </p>
+            <p className="font-code text-xs text-gray-400 leading-snug">
+              {DELETION_DETAILS_KEPT}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsDetailsOpen(false)}
+            className="w-full py-2.5 font-pixel text-xs tracking-widest transition-colors"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "2px solid rgba(255,255,255,0.12)",
+              color: "#9ca3af",
+            }}
+          >
+            CLOSE
+          </button>
+        </div>
+      </BaseModal>
     </BaseModal>
   );
 };

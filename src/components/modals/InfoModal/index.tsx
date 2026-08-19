@@ -17,6 +17,7 @@ type Props = {
   handleClose: () => void;
   hasHiddenAttributions: boolean;
   onRestoreHiddenAttributions: () => void;
+  autoOpenReset?: boolean;
 };
 
 type Tab =
@@ -48,9 +49,12 @@ export const InfoModal = ({
   handleClose,
   hasHiddenAttributions,
   onRestoreHiddenAttributions,
+  autoOpenReset = false,
 }: Props) => {
-  const [activeTab, setActiveTab] = useState<Tab>("howto");
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>(
+    autoOpenReset ? "about" : "howto"
+  );
+  const [isResetModalOpen, setIsResetModalOpen] = useState(autoOpenReset);
 
   return (
     <>

@@ -1,8 +1,12 @@
+import React from "react";
+
 type Props = {
   settingName: string;
   flag: boolean;
   handleFlag: (value: boolean) => void;
   description?: string;
+  disabled?: boolean;
+  labelExtra?: React.ReactNode;
 };
 
 export const SettingsToggle = ({
@@ -10,13 +14,21 @@ export const SettingsToggle = ({
   flag,
   handleFlag,
   description,
+  disabled = false,
+  labelExtra,
 }: Props) => {
   return (
     <div className="flex justify-between gap-4 py-3">
       <div className="text-left mt-1">
-        <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-          {settingName.toUpperCase()}
-        </p>
+        <div className="flex items-center gap-1.5">
+          <p
+            className="font-pixel text-xs tracking-widest leading-none"
+            style={{ color: disabled ? "#6b7280" : "#d4af37" }}
+          >
+            {settingName.toUpperCase()}
+          </p>
+          {labelExtra}
+        </div>
         {description && (
           <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
             {description}
@@ -25,8 +37,13 @@ export const SettingsToggle = ({
       </div>
       <button
         type="button"
-        onClick={() => handleFlag(!flag)}
+        onClick={() => {
+          if (disabled) return;
+          handleFlag(!flag);
+        }}
         aria-label={settingName}
+        aria-disabled={disabled}
+        disabled={disabled}
         className="shrink-0 w-14 h-8 transition-colors duration-300 ease-in-out pixel-border-sm"
         style={{
           background: flag
@@ -37,6 +54,8 @@ export const SettingsToggle = ({
           alignItems: "center",
           justifyContent: flag ? "flex-end" : "flex-start",
           padding: "0 4px",
+          opacity: disabled ? 0.5 : 1,
+          cursor: disabled ? "not-allowed" : "pointer",
         }}
         aria-pressed={flag}
       >

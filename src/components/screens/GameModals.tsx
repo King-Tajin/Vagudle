@@ -88,6 +88,7 @@ type Props = {
   handleShareToClipboard: () => void;
   isInfoModalOpen: boolean;
   handleCloseInfo: () => void;
+  infoModalAutoOpenReset?: boolean;
   isStatsModalOpen: boolean;
   handleCloseStats: () => void;
   isSettingsModalOpen: boolean;
@@ -168,6 +169,7 @@ export const GameModals = ({
   handleShareToClipboard,
   isInfoModalOpen,
   handleCloseInfo,
+  infoModalAutoOpenReset,
   isStatsModalOpen,
   handleCloseStats,
   isSettingsModalOpen,
@@ -191,6 +193,7 @@ export const GameModals = ({
           handleClose={handleCloseInfo}
           hasHiddenAttributions={hiddenAttributionIds.length > 0}
           onRestoreHiddenAttributions={handleRestoreHiddenAttributions}
+          autoOpenReset={infoModalAutoOpenReset}
         />
       </Suspense>
 

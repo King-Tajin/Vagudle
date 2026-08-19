@@ -227,7 +227,17 @@ function App() {
     useState<string | undefined>(undefined);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
   const [isDailyActive, setIsDailyActive] = useState(false);
-  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [isDeleteAccountRoute] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.location.pathname === "/delete-account"
+  );
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(isDeleteAccountRoute);
+
+  useEffect(() => {
+    if (isDeleteAccountRoute) window.history.replaceState({}, "", "/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
@@ -874,6 +884,7 @@ function App() {
           handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
           isInfoModalOpen={isInfoModalOpen}
           handleCloseInfo={() => setIsInfoModalOpen(false)}
+          infoModalAutoOpenReset={isDeleteAccountRoute}
           isStatsModalOpen={isStatsModalOpen}
           handleCloseStats={() => setIsStatsModalOpen(false)}
           isSettingsModalOpen={isSettingsModalOpen}

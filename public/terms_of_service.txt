@@ -47,8 +47,9 @@ suspend, or discontinue any part of the Site at any time without notice.
 
 You may optionally sign in to enable cloud save. Sign-in is provided through
 Firebase Authentication, using Google, GitHub, Discord, or a sign-in link
-sent to your email address. You are responsible for maintaining the security
-of the account you use to sign in and for any activity that occurs under it.
+sent to your email address, or through Google Play Games on the Android
+app. You are responsible for maintaining the security of the account you
+use to sign in and for any activity that occurs under it.
 
 You may link a Discord account to an existing account so that progress and
 Discord-based features (such as Duel and Daily mode inside Discord) are
@@ -63,11 +64,12 @@ uninterrupted, or free from loss due to outages or issues with third-party
 providers such as Firebase or Cloudflare. Cloud save is provided as a
 convenience and not a guaranteed backup.
 
-Your use of Google, GitHub, or Discord to sign in is also subject to that
-provider's own terms of service, separate from these Terms.
+Your use of Google, GitHub, Discord, or Google Play Games to sign in is
+also subject to that provider's own terms of service, separate from these
+Terms.
 
 You may request deletion of your account and associated data at any time by
-contacting us using the information in Section 14. Certain group-level data,
+contacting us using the information in Section 16. Certain group-level data,
 such as a Discord server's combined Daily mode streak, is not tied to any
 single individual and is not deleted as part of an individual account
 deletion request.
@@ -146,7 +148,19 @@ not affiliated with or endorsed by Discord Inc.
 
 ---
 
-10. INTELLECTUAL PROPERTY
+10. ANDROID APP
+
+Vagudle is also available as an Android app on Google Play. Your use of the
+app is also subject to Google Play's Terms of Service. The app provides the
+same Game described in these Terms; it does not offer any additional
+features beyond what is described here, aside from Google Play Games
+sign-in as described in Section 4.
+
+We are not affiliated with or endorsed by Google LLC.
+
+---
+
+11. INTELLECTUAL PROPERTY
 
 The Vagudle source code is released under the MIT License. You are free to
 view, fork, and build upon it in accordance with that license. The MIT
@@ -158,7 +172,7 @@ otherwise stated.
 
 ---
 
-11. DISCLAIMERS
+12. DISCLAIMERS
 
 THE SITE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY
 KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
@@ -169,7 +183,7 @@ OF HARMFUL COMPONENTS.
 
 ---
 
-12. LIMITATION OF LIABILITY
+13. LIMITATION OF LIABILITY
 
 TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, THE OPERATOR SHALL NOT
 BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE
@@ -182,7 +196,7 @@ claim arising from your use of the Site shall not exceed zero dollars ($0).
 
 ---
 
-13. GOVERNING LAW
+14. GOVERNING LAW
 
 These Terms are governed by the laws of the United States and the State of
 Wisconsin, without regard to conflict-of-law principles. Any dispute that
@@ -195,7 +209,7 @@ Terms to the extent permitted by your local law.
 
 ---
 
-14. CHANGES TO THESE TERMS
+15. CHANGES TO THESE TERMS
 
 We may update these Terms from time to time. When we do, we will update the
 "Last updated" date at the top of this document. Continued use of the Site
@@ -203,7 +217,7 @@ after any changes constitutes acceptance of the updated Terms.
 
 ---
 
-15. CONTACT
+16. CONTACT
 
 If you have questions about these Terms, contact us at:
 
