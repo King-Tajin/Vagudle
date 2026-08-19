@@ -186,3 +186,8 @@ export const CloudSaveConflictModal = lazy(() =>
     default: m.CloudSaveConflictModal,
   }))
 );
+export const OfflineModeModal = lazy(() =>
+  import("./components/modals/OfflineModeModal").then((m) => ({
+    default: m.OfflineModeModal,
+  }))
+);

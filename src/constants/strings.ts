@@ -30,6 +30,24 @@ export const MODAL_TITLE_DAILY_SCHEDULE = "Daily Schedule";
 export const MODAL_TITLE_DAILY_LEADERBOARD = "Daily Leaderboard";
 export const MODAL_TITLE_RESET_ALL_DATA = "Reset All Data";
 export const MODAL_TITLE_CREATE_CHALLENGE = "Create Challenge";
+export const MODAL_TITLE_OFFLINE_MODE = "You're Offline";
+
+export const OFFLINE_MODE_INTRO_TEXT =
+  "We couldn't reach the Vagudle servers. You can still play the base game offline.";
+export const OFFLINE_MODE_AVAILABLE_HEADING = "STILL AVAILABLE";
+export const OFFLINE_MODE_AVAILABLE_ITEMS = [
+  "Unlimited normal and hard mode games",
+  "Word length and gameplay settings",
+  "Backgrounds and sound effects",
+  "Local stats and achievements",
+];
+export const OFFLINE_MODE_UNAVAILABLE_HEADING = "MAY NOT WORK";
+export const OFFLINE_MODE_UNAVAILABLE_ITEMS = [
+  "Daily mode and the daily leaderboard",
+  "Duels and challenge links",
+  "Cloud save and account sign-in",
+];
+export const OFFLINE_MODE_DISMISS_BUTTON_TEXT = "PLAY OFFLINE";
 
 export const SETTINGS_HARD_MODE_LABEL = "Hard Mode";
 export const SETTINGS_HARD_MODE_DESCRIPTION =

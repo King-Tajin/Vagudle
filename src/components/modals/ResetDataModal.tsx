@@ -79,6 +79,9 @@ type Stage = "confirm" | "deleting" | "reauth";
 
 const wipeLocalDataAndReload = () => {
   localStorage.clear();
+  if (window.location.pathname === "/delete-account") {
+    window.history.replaceState({}, "", "/");
+  }
   window.location.reload();
 };
 

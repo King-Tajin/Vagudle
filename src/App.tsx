@@ -41,6 +41,7 @@ import {
   ActivityServerErrorScreen,
   ActivityAccountChoiceScreen,
   ActivityAlreadyPlayedScreen,
+  OfflineModeModal,
 } from "./lazyComponents";
 
 import { LoadingScreen } from "./components/screens/GameScreens";
@@ -49,6 +50,7 @@ import { useAlert } from "./context/alert-context";
 import { useIsMobile } from "./hooks/useIsMobile";
 import { usePageChrome } from "./hooks/usePageChrome";
 import { useDiscourageInAppBrowser } from "./hooks/useDiscourageInAppBrowser";
+import { useOfflineModeCheck } from "./hooks/useOfflineModeCheck";
 import { useTilePainting } from "./hooks/useTilePainting";
 import { useDuelResult } from "./hooks/useDuelResult";
 import { useDailyActivityResult } from "./hooks/useDailyActivityResult";
@@ -233,11 +235,6 @@ function App() {
       window.location.pathname === "/delete-account"
   );
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(isDeleteAccountRoute);
-
-  useEffect(() => {
-    if (isDeleteAccountRoute) window.history.replaceState({}, "", "/");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
@@ -665,6 +662,7 @@ function App() {
   });
   usePageChrome({ isDuelMode, isChallengeMode, isDailyMode });
   useDiscourageInAppBrowser({ showErrorAlert });
+  const { isOfflineModalOpen, handleCloseOfflineModal } = useOfflineModeCheck();
   if (isLoading) return <LoadingScreen />;
   const screenFallback = (
     <div className="h-screen" style={{ background: "#0A0A0A" }} />
@@ -904,6 +902,12 @@ function App() {
           handleCloseAchievements={() => setIsAchievementsModalOpen(false)}
         />
         <AlertContainer />
+        <Suspense fallback={null}>
+          <OfflineModeModal
+            isOpen={isOfflineModalOpen}
+            handleClose={handleCloseOfflineModal}
+          />
+        </Suspense>
       </div>
       {pendingCloudSave && (
         <CloudSaveConflictOverlay

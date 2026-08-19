@@ -1,4 +1,4 @@
-import { Fragment, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { Transition, TransitionChild } from "@headlessui/react";
 import { X, Gamepad2, Info, Sparkles, Code2, Send, Swords } from "lucide-react";
 import HatIcon from "@/assets/icons/propeller-hat.svg?react";
@@ -55,6 +55,35 @@ export const InfoModal = ({
     autoOpenReset ? "about" : "howto"
   );
   const [isResetModalOpen, setIsResetModalOpen] = useState(autoOpenReset);
+  const previousPathRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !isResetModalOpen) return;
+
+    if (window.location.pathname !== "/delete-account") {
+      previousPathRef.current =
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+      window.history.pushState({}, "", "/delete-account");
+    } else {
+      previousPathRef.current = "/";
+    }
+
+    const handlePopState = () => {
+      if (window.location.pathname !== "/delete-account") {
+        setIsResetModalOpen(false);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      if (window.location.pathname === "/delete-account") {
+        window.history.replaceState({}, "", previousPathRef.current ?? "/");
+      }
+    };
+  }, [isResetModalOpen]);
 
   return (
     <>

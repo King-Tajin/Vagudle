@@ -1,4 +1,14 @@
+import { PLAY_GAMES_ACHIEVEMENT_MAP } from "./playGamesAchievementMap";
+import {
+  loadAchievementProgress,
+  loadWordConnoisseurList,
+  getEffectiveUnlockedIds,
+} from "./achievements";
+import { loadStats } from "./stats";
+
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
+const PENDING_UNLOCKS_KEY = "vagudle-playgames-pending-unlocks:v1";
+const PENDING_STEPS_KEY = "vagudle-playgames-pending-steps:v1";
 
 export type PlayGamesSession = {
   token: string;
@@ -8,8 +18,20 @@ export type PlayGamesSession = {
   expiresAt: number;
 };
 
+export type PlayGamesProgressSnapshot = {
+  unlockedIds: string[];
+  totalWins: number;
+  bestCurrentStreak: number;
+  uniqueWordCount: number;
+};
+
 type CapacitorPlayGamesPlugin = {
   signIn: () => Promise<{ serverAuthCode: string }>;
+  unlockAchievement: (options: { achievementId: string }) => Promise<void>;
+  setAchievementSteps: (options: {
+    achievementId: string;
+    steps: number;
+  }) => Promise<void>;
 };
 
 declare global {
@@ -126,6 +148,7 @@ export const signInWithPlayGames =
     if (!session) return null;
 
     storePlayGamesSession(session);
+    backfillPlayGamesAchievements();
     return session;
   };
 
@@ -152,6 +175,7 @@ export const renewPlayGamesSession = async (
     }
 
     storePlayGamesSession(renewed);
+    flushPendingPlayGamesAchievements();
     return renewed;
   } catch {
     return null;
@@ -165,3 +189,181 @@ export const maybeRenewPlayGamesSession =
     if (session.expiresAt - Date.now() > RENEW_THRESHOLD_MS) return session;
     return renewPlayGamesSession(session);
   };
+
+const loadPendingUnlocks = (): string[] => {
+  try {
+    const raw = localStorage.getItem(PENDING_UNLOCKS_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const savePendingUnlocks = (ids: string[]): void => {
+  try {
+    localStorage.setItem(PENDING_UNLOCKS_KEY, JSON.stringify(ids));
+  } catch {}
+};
+
+const queuePendingUnlock = (localId: string): void => {
+  const pending = loadPendingUnlocks();
+  if (!pending.includes(localId)) {
+    savePendingUnlocks([...pending, localId]);
+  }
+};
+
+const removePendingUnlock = (localId: string): void => {
+  const pending = loadPendingUnlocks();
+  savePendingUnlocks(pending.filter((id) => id !== localId));
+};
+
+const loadPendingSteps = (): Record<string, number> => {
+  try {
+    const raw = localStorage.getItem(PENDING_STEPS_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+  } catch {
+    return {};
+  }
+};
+
+const savePendingSteps = (steps: Record<string, number>): void => {
+  try {
+    localStorage.setItem(PENDING_STEPS_KEY, JSON.stringify(steps));
+  } catch {}
+};
+
+const queuePendingSteps = (localId: string, steps: number): void => {
+  const pending = loadPendingSteps();
+  const existing = pending[localId] ?? 0;
+  if (steps > existing) {
+    savePendingSteps({ ...pending, [localId]: steps });
+  }
+};
+
+const removePendingSteps = (localId: string): void => {
+  const pending = loadPendingSteps();
+  delete pending[localId];
+  savePendingSteps(pending);
+};
+
+const pushAchievementUnlock = async (
+  localId: string,
+  playGamesId: string
+): Promise<void> => {
+  if (!isPlayGamesAvailable()) {
+    queuePendingUnlock(localId);
+    return;
+  }
+
+  try {
+    const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
+    await plugin?.unlockAchievement({ achievementId: playGamesId });
+    removePendingUnlock(localId);
+  } catch {
+    queuePendingUnlock(localId);
+  }
+};
+
+const pushAchievementSteps = async (
+  localId: string,
+  playGamesId: string,
+  steps: number
+): Promise<void> => {
+  if (!isPlayGamesAvailable()) {
+    queuePendingSteps(localId, steps);
+    return;
+  }
+
+  try {
+    const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
+    await plugin?.setAchievementSteps({ achievementId: playGamesId, steps });
+    removePendingSteps(localId);
+  } catch {
+    queuePendingSteps(localId, steps);
+  }
+};
+
+export const flushPendingPlayGamesAchievements = (): void => {
+  if (!isPlayGamesAvailable()) return;
+
+  for (const localId of loadPendingUnlocks()) {
+    const entry = PLAY_GAMES_ACHIEVEMENT_MAP[localId];
+    if (entry?.type === "unlock") {
+      void pushAchievementUnlock(localId, entry.playGamesId);
+    }
+  }
+
+  const pendingSteps = loadPendingSteps();
+  for (const localId of Object.keys(pendingSteps)) {
+    const entry = PLAY_GAMES_ACHIEVEMENT_MAP[localId];
+    if (entry?.type === "incremental") {
+      void pushAchievementSteps(
+        localId,
+        entry.playGamesId,
+        pendingSteps[localId]
+      );
+    }
+  }
+};
+
+const getIncrementalSteps = (
+  localId: string,
+  snapshot: PlayGamesProgressSnapshot
+): number => {
+  switch (localId) {
+    case "win_15":
+    case "win_50":
+      return snapshot.totalWins;
+    case "on_a_roll":
+    case "unstoppable":
+      return snapshot.bestCurrentStreak;
+    case "word_connoisseur":
+      return snapshot.uniqueWordCount;
+    case "completionist":
+      return snapshot.unlockedIds.filter((id) => id !== "completionist").length;
+    default:
+      return 0;
+  }
+};
+
+export const backfillPlayGamesAchievements = (): void => {
+  const progress = loadAchievementProgress();
+  const normal = loadStats(false);
+  const hard = loadStats(true);
+  const totalWins =
+    normal.totalGames -
+    normal.gamesFailed +
+    (hard.totalGames - hard.gamesFailed);
+  const bestCurrentStreak = Math.max(normal.currentStreak, hard.currentStreak);
+  const uniqueWordCount = progress.unlockedIds.includes("word_connoisseur")
+    ? 200
+    : loadWordConnoisseurList().length;
+
+  syncPlayGamesAchievements({
+    unlockedIds: getEffectiveUnlockedIds(progress.unlockedIds),
+    totalWins,
+    bestCurrentStreak,
+    uniqueWordCount,
+  });
+};
+
+export const syncPlayGamesAchievements = (
+  snapshot: PlayGamesProgressSnapshot
+): void => {
+  const unlockedSet = new Set(snapshot.unlockedIds);
+
+  for (const [localId, entry] of Object.entries(PLAY_GAMES_ACHIEVEMENT_MAP)) {
+    if (entry.type === "unlock") {
+      if (unlockedSet.has(localId)) {
+        void pushAchievementUnlock(localId, entry.playGamesId);
+      }
+      continue;
+    }
+
+    const steps = Math.min(
+      getIncrementalSteps(localId, snapshot),
+      entry.target
+    );
+    void pushAchievementSteps(localId, entry.playGamesId, steps);
+  }
+};

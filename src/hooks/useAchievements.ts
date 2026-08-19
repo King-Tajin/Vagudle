@@ -18,6 +18,7 @@ import {
 import { loadStats } from "../lib/stats";
 import { getGuessStatuses } from "../lib/statuses";
 import { useStorageSync } from "./useStorageSync";
+import { syncPlayGamesAchievements } from "../lib/playGamesCloudAuth";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
@@ -215,6 +216,15 @@ export const useAchievements = () => {
       const completionist = ACHIEVEMENTS.find((a) => a.id === COMPLETIONIST_ID);
       if (completionist) result.push(completionist);
     }
+
+    try {
+      syncPlayGamesAchievements({
+        unlockedIds: getEffectiveUnlockedIds(next.unlockedIds),
+        totalWins: ctx.totalWins,
+        bestCurrentStreak: ctx.bestCurrentStreak,
+        uniqueWordCount: ctx.uniqueWordCount,
+      });
+    } catch {}
 
     return result;
   };
