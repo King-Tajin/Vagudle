@@ -23,3 +23,4 @@ yarn-error.log*
 /--cache-location/
 /worker-configuration.d.ts
 /workers/streak-reset-cron/.wrangler/
+/workers/streak-reset-cron/node_modules/
