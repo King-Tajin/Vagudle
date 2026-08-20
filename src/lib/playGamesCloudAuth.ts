@@ -5,6 +5,7 @@ import {
   getEffectiveUnlockedIds,
 } from "./achievements";
 import { loadStats } from "./stats";
+import type { CapacitorFirebaseAuthPlugin } from "./googleNativeAuth";
 
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
 const PENDING_UNLOCKS_KEY = "vagudle-playgames-pending-unlocks:v1";
@@ -46,6 +47,7 @@ declare global {
       Plugins?: {
         PlayGamesAuth?: CapacitorPlayGamesPlugin;
         Browser?: CapacitorBrowserPlugin;
+        FirebaseAuthentication?: CapacitorFirebaseAuthPlugin;
       };
     };
   }
@@ -56,11 +58,11 @@ const RENEW_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000;
 const dispatchPlayGamesSessionSync = (): void => {
   try {
     window.dispatchEvent(
-      new StorageEvent("storage", {
-        key: PLAYGAMES_SESSION_STORAGE_KEY,
-        newValue: localStorage.getItem(PLAYGAMES_SESSION_STORAGE_KEY),
-        storageArea: localStorage,
-      })
+        new StorageEvent("storage", {
+          key: PLAYGAMES_SESSION_STORAGE_KEY,
+          newValue: localStorage.getItem(PLAYGAMES_SESSION_STORAGE_KEY),
+          storageArea: localStorage,
+        })
     );
   } catch {}
 };
@@ -90,8 +92,8 @@ export const getStoredPlayGamesSession = (): PlayGamesSession | null => {
 const storePlayGamesSession = (session: PlayGamesSession): void => {
   try {
     localStorage.setItem(
-      PLAYGAMES_SESSION_STORAGE_KEY,
-      JSON.stringify(session)
+        PLAYGAMES_SESSION_STORAGE_KEY,
+        JSON.stringify(session)
     );
   } catch {}
   dispatchPlayGamesSessionSync();
@@ -132,33 +134,33 @@ const sessionFromResponse = (data: {
 };
 
 export const signInWithPlayGames =
-  async (): Promise<PlayGamesSession | null> => {
-    const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
-    if (!plugin) return null;
+    async (): Promise<PlayGamesSession | null> => {
+      const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
+      if (!plugin) return null;
 
-    const { serverAuthCode } = await plugin.signIn();
-    if (!serverAuthCode) return null;
+      const { serverAuthCode } = await plugin.signIn();
+      if (!serverAuthCode) return null;
 
-    const res = await fetch("/api/playgames-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverAuthCode }),
-    });
-    if (!res.ok) return null;
+      const res = await fetch("/api/playgames-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ serverAuthCode }),
+      });
+      if (!res.ok) return null;
 
-    const data = (await res.json()) as Parameters<
-      typeof sessionFromResponse
-    >[0];
-    const session = sessionFromResponse(data);
-    if (!session) return null;
+      const data = (await res.json()) as Parameters<
+          typeof sessionFromResponse
+      >[0];
+      const session = sessionFromResponse(data);
+      if (!session) return null;
 
-    storePlayGamesSession(session);
-    backfillPlayGamesAchievements();
-    return session;
-  };
+      storePlayGamesSession(session);
+      backfillPlayGamesAchievements();
+      return session;
+    };
 
 export const fetchPlayGamesLinkUrl = async (
-  session: PlayGamesSession
+    session: PlayGamesSession
 ): Promise<{ url: string } | { error: string }> => {
   try {
     const res = await fetch("/api/playgames-link-token", {
@@ -180,7 +182,7 @@ export const fetchPlayGamesLinkUrl = async (
 };
 
 export const openPlayGamesLinkFlow = async (
-  session: PlayGamesSession
+    session: PlayGamesSession
 ): Promise<{ opened: true } | { error: string }> => {
   const result = await fetchPlayGamesLinkUrl(session);
   if ("error" in result) return result;
@@ -193,7 +195,7 @@ export const openPlayGamesLinkFlow = async (
 };
 
 export const renewPlayGamesSession = async (
-  session: PlayGamesSession
+    session: PlayGamesSession
 ): Promise<PlayGamesSession | null> => {
   try {
     const res = await fetch("/api/playgames-refresh", {
@@ -206,7 +208,7 @@ export const renewPlayGamesSession = async (
     }
 
     const data = (await res.json()) as Parameters<
-      typeof sessionFromResponse
+        typeof sessionFromResponse
     >[0];
     const renewed = sessionFromResponse(data);
     if (!renewed) {
@@ -223,12 +225,12 @@ export const renewPlayGamesSession = async (
 };
 
 export const maybeRenewPlayGamesSession =
-  async (): Promise<PlayGamesSession | null> => {
-    const session = getStoredPlayGamesSessionRaw();
-    if (!session) return null;
-    if (session.expiresAt - Date.now() > RENEW_THRESHOLD_MS) return session;
-    return renewPlayGamesSession(session);
-  };
+    async (): Promise<PlayGamesSession | null> => {
+      const session = getStoredPlayGamesSessionRaw();
+      if (!session) return null;
+      if (session.expiresAt - Date.now() > RENEW_THRESHOLD_MS) return session;
+      return renewPlayGamesSession(session);
+    };
 
 const loadPendingUnlocks = (): string[] => {
   try {
@@ -287,8 +289,8 @@ const removePendingSteps = (localId: string): void => {
 };
 
 const pushAchievementUnlock = async (
-  localId: string,
-  playGamesId: string
+    localId: string,
+    playGamesId: string
 ): Promise<void> => {
   if (!isPlayGamesAvailable()) {
     queuePendingUnlock(localId);
@@ -305,9 +307,9 @@ const pushAchievementUnlock = async (
 };
 
 const pushAchievementSteps = async (
-  localId: string,
-  playGamesId: string,
-  steps: number
+    localId: string,
+    playGamesId: string,
+    steps: number
 ): Promise<void> => {
   if (!isPlayGamesAvailable()) {
     queuePendingSteps(localId, steps);
@@ -338,17 +340,17 @@ export const flushPendingPlayGamesAchievements = (): void => {
     const entry = PLAY_GAMES_ACHIEVEMENT_MAP[localId];
     if (entry?.type === "incremental") {
       void pushAchievementSteps(
-        localId,
-        entry.playGamesId,
-        pendingSteps[localId]
+          localId,
+          entry.playGamesId,
+          pendingSteps[localId]
       );
     }
   }
 };
 
 const getIncrementalSteps = (
-  localId: string,
-  snapshot: PlayGamesProgressSnapshot
+    localId: string,
+    snapshot: PlayGamesProgressSnapshot
 ): number => {
   switch (localId) {
     case "win_15":
@@ -371,13 +373,13 @@ export const backfillPlayGamesAchievements = (): void => {
   const normal = loadStats(false);
   const hard = loadStats(true);
   const totalWins =
-    normal.totalGames -
-    normal.gamesFailed +
-    (hard.totalGames - hard.gamesFailed);
+      normal.totalGames -
+      normal.gamesFailed +
+      (hard.totalGames - hard.gamesFailed);
   const bestCurrentStreak = Math.max(normal.currentStreak, hard.currentStreak);
   const uniqueWordCount = progress.unlockedIds.includes("word_connoisseur")
-    ? 200
-    : loadWordConnoisseurList().length;
+      ? 200
+      : loadWordConnoisseurList().length;
 
   syncPlayGamesAchievements({
     unlockedIds: getEffectiveUnlockedIds(progress.unlockedIds),
@@ -388,7 +390,7 @@ export const backfillPlayGamesAchievements = (): void => {
 };
 
 export const syncPlayGamesAchievements = (
-  snapshot: PlayGamesProgressSnapshot
+    snapshot: PlayGamesProgressSnapshot
 ): void => {
   const unlockedSet = new Set(snapshot.unlockedIds);
 
@@ -401,8 +403,8 @@ export const syncPlayGamesAchievements = (
     }
 
     const steps = Math.min(
-      getIncrementalSteps(localId, snapshot),
-      entry.target
+        getIncrementalSteps(localId, snapshot),
+        entry.target
     );
     void pushAchievementSteps(localId, entry.playGamesId, steps);
   }

@@ -19,6 +19,10 @@ import {
   PLAYGAMES_SESSION_STORAGE_KEY,
   type PlayGamesSession,
 } from "../lib/playGamesCloudAuth";
+import {
+  isGoogleNativeAvailable,
+  signInWithGoogleNative,
+} from "../lib/googleNativeAuth";
 
 const EMAIL_LINK_STORAGE_KEY = "vagudle-email-link-address:v1";
 
@@ -30,9 +34,9 @@ export type CloudAuthUser = {
 };
 
 export type DeleteAccountResult =
-  | { status: "success" }
-  | { status: "needs_reauth"; providerId: string }
-  | { status: "error"; message: string };
+    | { status: "success" }
+    | { status: "needs_reauth"; providerId: string }
+    | { status: "error"; message: string };
 
 const toCloudAuthUser = (user: User): CloudAuthUser => ({
   uid: user.uid,
@@ -42,7 +46,7 @@ const toCloudAuthUser = (user: User): CloudAuthUser => ({
 });
 
 const toCloudAuthUserFromDiscord = (
-  session: DiscordSession
+    session: DiscordSession
 ): CloudAuthUser => ({
   uid: session.uid,
   email: null,
@@ -51,7 +55,7 @@ const toCloudAuthUserFromDiscord = (
 });
 
 const toCloudAuthUserFromPlayGames = (
-  session: PlayGamesSession
+    session: PlayGamesSession
 ): CloudAuthUser => ({
   uid: session.uid,
   email: null,
@@ -62,7 +66,7 @@ const toCloudAuthUserFromPlayGames = (
 export { isPlayGamesAvailable };
 
 const looksLikeEmailSignInLink = (href: string): boolean =>
-  href.includes("mode=signIn");
+    href.includes("mode=signIn");
 
 export const completeEmailLinkSignIn = async (): Promise<void> => {
   if (!looksLikeEmailSignInLink(window.location.href)) return;
@@ -98,10 +102,10 @@ export const completeDiscordSignIn = async (): Promise<void> => {
 export const useCloudAuth = () => {
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const [discordSession, setDiscordSession] = useState<DiscordSession | null>(
-    () => getStoredDiscordSession()
+      () => getStoredDiscordSession()
   );
   const [playGamesSession, setPlayGamesSession] =
-    useState<PlayGamesSession | null>(() => getStoredPlayGamesSession());
+      useState<PlayGamesSession | null>(() => getStoredPlayGamesSession());
   const [authLoading, setAuthLoading] = useState(true);
   const [actionError, setActionError] = useState<string | null>(null);
   const [emailLinkSent, setEmailLinkSent] = useState(false);
@@ -163,6 +167,18 @@ export const useCloudAuth = () => {
     setActionError(null);
     try {
       const { auth, googleProvider, authModule } = await loadFirebaseAuth();
+
+      if (isGoogleNativeAvailable()) {
+        const idToken = await signInWithGoogleNative();
+        if (!idToken) {
+          setActionError("Google sign-in failed. Please try again.");
+          return;
+        }
+        const credential = authModule.GoogleAuthProvider.credential(idToken);
+        await authModule.signInWithCredential(auth, credential);
+        return;
+      }
+
       await authModule.signInWithPopup(auth, googleProvider);
     } catch {
       setActionError("Google sign-in failed. Please try again.");
@@ -240,7 +256,7 @@ export const useCloudAuth = () => {
         const code = (error as { code?: string })?.code;
         if (code === "auth/requires-recent-login") {
           const providerId =
-            firebaseUser.providerData[0]?.providerId ?? "unknown";
+              firebaseUser.providerData[0]?.providerId ?? "unknown";
           return { status: "needs_reauth", providerId };
         }
         return {
@@ -263,50 +279,50 @@ export const useCloudAuth = () => {
   }, [firebaseUser, discordSession, playGamesSession]);
 
   const reauthenticateAndDeleteAccount =
-    useCallback(async (): Promise<DeleteAccountResult> => {
-      if (!firebaseUser)
-        return { status: "error", message: "No signed-in account found." };
+      useCallback(async (): Promise<DeleteAccountResult> => {
+        if (!firebaseUser)
+          return { status: "error", message: "No signed-in account found." };
 
-      const providerId = firebaseUser.providerData[0]?.providerId;
+        const providerId = firebaseUser.providerData[0]?.providerId;
 
-      try {
-        const { authModule, googleProvider, githubProvider } =
-          await loadFirebaseAuth();
-        const provider =
-          providerId === "google.com"
-            ? googleProvider
-            : providerId === "github.com"
-              ? githubProvider
-              : null;
+        try {
+          const { authModule, googleProvider, githubProvider } =
+              await loadFirebaseAuth();
+          const provider =
+              providerId === "google.com"
+                  ? googleProvider
+                  : providerId === "github.com"
+                      ? githubProvider
+                      : null;
 
-        if (!provider)
+          if (!provider)
+            return {
+              status: "error",
+              message:
+                  "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.",
+            };
+
+          await authModule.reauthenticateWithPopup(firebaseUser, provider);
+          await authModule.deleteUser(firebaseUser);
+          return { status: "success" };
+        } catch {
           return {
             status: "error",
-            message:
-              "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.",
+            message: "Re-authorization failed. Please try again.",
           };
-
-        await authModule.reauthenticateWithPopup(firebaseUser, provider);
-        await authModule.deleteUser(firebaseUser);
-        return { status: "success" };
-      } catch {
-        return {
-          status: "error",
-          message: "Re-authorization failed. Please try again.",
-        };
-      }
-    }, [firebaseUser]);
+        }
+      }, [firebaseUser]);
 
   const user = useMemo(
-    () =>
-      firebaseUser
-        ? toCloudAuthUser(firebaseUser)
-        : discordSession
-          ? toCloudAuthUserFromDiscord(discordSession)
-          : playGamesSession
-            ? toCloudAuthUserFromPlayGames(playGamesSession)
-            : null,
-    [firebaseUser, discordSession, playGamesSession]
+      () =>
+          firebaseUser
+              ? toCloudAuthUser(firebaseUser)
+              : discordSession
+                  ? toCloudAuthUserFromDiscord(discordSession)
+                  : playGamesSession
+                      ? toCloudAuthUserFromPlayGames(playGamesSession)
+                      : null,
+      [firebaseUser, discordSession, playGamesSession]
   );
 
   return {
