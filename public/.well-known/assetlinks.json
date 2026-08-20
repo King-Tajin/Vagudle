@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "com.yellowskippergames.vagudle",
       "sha256_cert_fingerprints": [
-        "50:6B:5D:91:79:CB:91:21:21:44:1C:26:C1:64:71:EB:70:FE:78:CA"
+        "50:6B:5D:91:79:CB:91:21:21:44:1C:26:C1:64:71:EB:70:FE:78:CA",
+        "DC:3D:59:08:25:07:14:67:E0:EB:21:4B:23:D5:D0:06:1F:A0:8E:EF:47:57:50:8C:A5:C9:BA:03:A3:E1:6C:5E"
       ]
     }
   }

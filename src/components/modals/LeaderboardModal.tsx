@@ -1,5 +1,11 @@
 import { useEffect, useReducer } from "react";
-import { Loader, Pencil } from "lucide-react";
+import {
+  Loader,
+  Pencil,
+  ChevronLeft,
+  ChevronRight,
+  Target,
+} from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import {
   fetchDailyLeaderboard,
@@ -108,6 +114,7 @@ type LeaderboardState = {
   inputValue: string;
   isSubmitting: boolean;
   submitError: string | null;
+  isPageLoading: boolean;
 };
 
 const initialLeaderboardState: LeaderboardState = {
@@ -118,6 +125,7 @@ const initialLeaderboardState: LeaderboardState = {
   inputValue: "",
   isSubmitting: false,
   submitError: null,
+  isPageLoading: false,
 };
 
 type LeaderboardAction =
@@ -140,7 +148,10 @@ type LeaderboardAction =
   | { type: "submitError"; message: string }
   | { type: "setInputValue"; value: string }
   | { type: "startEditing" }
-  | { type: "cancelEditing"; inputValue: string };
+  | { type: "cancelEditing"; inputValue: string }
+  | { type: "pageLoadStart" }
+  | { type: "pageLoadSuccess"; data: DailyLeaderboardResponse }
+  | { type: "pageLoadError" };
 
 function leaderboardReducer(
   state: LeaderboardState,
@@ -185,6 +196,12 @@ function leaderboardReducer(
         inputValue: action.inputValue,
         submitError: null,
       };
+    case "pageLoadStart":
+      return { ...state, isPageLoading: true };
+    case "pageLoadSuccess":
+      return { ...state, isPageLoading: false, data: action.data };
+    case "pageLoadError":
+      return { ...state, isPageLoading: false };
   }
 }
 
@@ -205,6 +222,7 @@ export const LeaderboardModal = ({
       inputValue,
       isSubmitting,
       submitError,
+      isPageLoading,
     },
     dispatch,
   ] = useReducer(leaderboardReducer, initialLeaderboardState);
@@ -216,7 +234,7 @@ export const LeaderboardModal = ({
     const loadLeaderboard = async () => {
       dispatch({ type: "loadStart" });
       const [leaderboard, username] = await Promise.all([
-        fetchDailyLeaderboard(idToken),
+        fetchDailyLeaderboard(idToken, 1),
         idToken ? fetchUsernameStatus(idToken) : Promise.resolve(null),
       ]);
       if (cancelled) return;
@@ -238,6 +256,24 @@ export const LeaderboardModal = ({
       cancelled = true;
     };
   }, [isOpen, idToken]);
+
+  const goToPage = async (page: number) => {
+    if (isPageLoading || !data) return;
+    const clamped = Math.min(Math.max(1, page), data.totalPages);
+    if (clamped === data.page) return;
+    dispatch({ type: "pageLoadStart" });
+    const leaderboard = await fetchDailyLeaderboard(idToken, clamped);
+    if (!leaderboard) {
+      dispatch({ type: "pageLoadError" });
+      return;
+    }
+    dispatch({ type: "pageLoadSuccess", data: leaderboard });
+  };
+
+  const selfPage =
+    data?.self && data.pageSize > 0
+      ? Math.ceil(data.self.rank / data.pageSize)
+      : null;
 
   const handleSubmitUsername = async () => {
     if (!idToken || isSubmitting) return;
@@ -263,7 +299,7 @@ export const LeaderboardModal = ({
         inputValue: outcome.username,
       });
       await onUsernameSaved();
-      const refreshed = await fetchDailyLeaderboard(idToken);
+      const refreshed = await fetchDailyLeaderboard(idToken, data?.page ?? 1);
       if (refreshed) dispatch({ type: "refreshData", data: refreshed });
       return;
     }
@@ -442,17 +478,48 @@ export const LeaderboardModal = ({
             </p>
           )}
 
-          {data.top.map((entry, i) => (
-            <LeaderboardRow
-              key={entry.username}
-              rank={i + 1}
-              username={entry.username}
-              wins={entry.wins}
-              losses={entry.losses}
-              currentStreak={entry.currentStreak}
-              bestStreak={entry.bestStreak}
-            />
-          ))}
+          <div
+            className="space-y-2 transition-opacity"
+            style={{ opacity: isPageLoading ? 0.5 : 1 }}
+          >
+            {data.top.map((entry, i) => (
+              <LeaderboardRow
+                key={entry.username}
+                rank={(data.page - 1) * data.pageSize + i + 1}
+                username={entry.username}
+                wins={entry.wins}
+                losses={entry.losses}
+                currentStreak={entry.currentStreak}
+                bestStreak={entry.bestStreak}
+              />
+            ))}
+          </div>
+
+          {data.totalPages > 1 && (
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => void goToPage(data.page - 1)}
+                disabled={data.page <= 1 || isPageLoading}
+                className="flex items-center gap-1 px-2 py-1.5 font-pixel text-[9px] tracking-widest text-gray-400 hover:text-crown-amber disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
+              >
+                <ChevronLeft className="w-3 h-3" />
+                PREV
+              </button>
+              <p className="font-code text-xs text-gray-500">
+                Page {data.page} / {data.totalPages}
+              </p>
+              <button
+                type="button"
+                onClick={() => void goToPage(data.page + 1)}
+                disabled={data.page >= data.totalPages || isPageLoading}
+                className="flex items-center gap-1 px-2 py-1.5 font-pixel text-[9px] tracking-widest text-gray-400 hover:text-crown-amber disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
+              >
+                NEXT
+                <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
+          )}
 
           {data.self && (
             <>
@@ -471,6 +538,17 @@ export const LeaderboardModal = ({
                 bestStreak={data.self.bestStreak}
                 highlight
               />
+              {selfPage !== null && selfPage !== data.page && (
+                <button
+                  type="button"
+                  onClick={() => void goToPage(selfPage)}
+                  disabled={isPageLoading}
+                  className="w-full flex items-center justify-center gap-1.5 py-1.5 font-pixel text-[9px] tracking-widest text-gray-400 hover:text-crown-amber disabled:opacity-30 transition-colors"
+                >
+                  <Target className="w-3 h-3" />
+                  JUMP TO MY PAGE
+                </button>
+              )}
             </>
           )}
         </div>

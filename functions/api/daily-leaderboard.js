@@ -3,7 +3,7 @@
 import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
 import { verifyCloudSaveToken, getBearerToken } from "../_shared/cloudAuth.js";
 
-const TOP_N = 10;
+const PAGE_SIZE = 8;
 
 const toEntry = (row) => ({
   username: row.username,
@@ -26,15 +26,31 @@ export async function onRequestGet(context) {
     if (!db)
       return json({ success: false, error: "Database not configured." }, 500);
 
+    const url = new URL(context.request.url);
+    const requestedPage = parseInt(url.searchParams.get("page") ?? "1", 10);
+
+    const countResult = await db
+      .prepare(
+        `SELECT COUNT(*) as count FROM daily_leaderboard WHERE username IS NOT NULL`
+      )
+      .first();
+    const totalEntries = countResult?.count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(totalEntries / PAGE_SIZE));
+    const page = Math.min(
+      Math.max(1, Number.isFinite(requestedPage) ? requestedPage : 1),
+      totalPages
+    );
+    const offset = (page - 1) * PAGE_SIZE;
+
     const topRows = await db
       .prepare(
         `SELECT uid, username, wins, losses, current_streak, best_streak
          FROM daily_leaderboard
          WHERE username IS NOT NULL
          ORDER BY best_streak DESC, wins DESC
-         LIMIT ?`
+         LIMIT ? OFFSET ?`
       )
-      .bind(TOP_N)
+      .bind(PAGE_SIZE, offset)
       .all();
 
     const top = (topRows.results ?? []).map(toEntry);
@@ -78,7 +94,15 @@ export async function onRequestGet(context) {
       }
     }
 
-    return json({ success: true, top, self });
+    return json({
+      success: true,
+      top,
+      self,
+      page,
+      totalPages,
+      totalEntries,
+      pageSize: PAGE_SIZE,
+    });
   } catch (error) {
     console.error("Daily leaderboard fetch error:", error);
     return json({ success: false, error: "Failed to load leaderboard." }, 500);
