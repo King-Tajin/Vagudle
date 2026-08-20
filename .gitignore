@@ -22,3 +22,4 @@ yarn-error.log*
 .eslintcache
 /--cache-location/
 /worker-configuration.d.ts
+/workers/streak-reset-cron/.wrangler/

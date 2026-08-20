@@ -1,0 +1,11 @@
+name = "vagudle-streak-reset-cron"
+main = "src/index.js"
+compatibility_date = "2026-05-14"
+
+[triggers]
+crons = ["15 8 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vagudle-data"
+database_id = "035d8b7e-e796-467a-8c7c-29a0230d4f6c"
