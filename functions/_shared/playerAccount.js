@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 export const EMPTY_ACHIEVEMENTS = JSON.stringify({
   unlockedIds: [],
   wonInHardMode5Plus: false,

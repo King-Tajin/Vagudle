@@ -4,7 +4,9 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.yellowskippergames.vagudle",
-      "sha256_cert_fingerprints": ["WAITING_ON_PLAY_DEVELOPER_ACCOUNT"]
+      "sha256_cert_fingerprints": [
+        "50:6B:5D:91:79:CB:91:21:21:44:1C:26:C1:64:71:EB:70:FE:78:CA"
+      ]
     }
   }
 ]

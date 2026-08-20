@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 import { decode, json } from "./api.js";
 import { getBearerToken } from "./firebaseAuth.js";
 
