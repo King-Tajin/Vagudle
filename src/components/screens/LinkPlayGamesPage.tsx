@@ -83,6 +83,17 @@ export const LinkPlayGamesPage = () => {
     return () => controller.abort();
   }, [token, user]);
 
+  useEffect(() => {
+    if (linkStatus !== "linked") return;
+    if (!window.Capacitor?.isNativePlatform?.()) return;
+
+    const timeout = setTimeout(() => {
+      window.location.href = "https://vagudle.king-tajin.dev/";
+    }, 1500);
+
+    return () => clearTimeout(timeout);
+  }, [linkStatus]);
+
   const renderBody = () => {
     if (!token)
       return (
