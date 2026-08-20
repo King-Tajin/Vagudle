@@ -66,3 +66,14 @@ export const resolveUidForDiscordId = async (db, discordId) => {
   const existingAccount = await findPlayerSaveByDiscordId(db, discordId);
   return existingAccount ? existingAccount.uid : `discord:${discordId}`;
 };
+
+export const findPlayerSaveByPlayGamesId = async (db, playGamesId) =>
+  db
+    .prepare(`SELECT uid FROM player_saves WHERE play_games_id = ?`)
+    .bind(playGamesId)
+    .first();
+
+export const resolveUidForPlayGamesId = async (db, playGamesId) => {
+  const existingAccount = await findPlayerSaveByPlayGamesId(db, playGamesId);
+  return existingAccount ? existingAccount.uid : `playgames:${playGamesId}`;
+};

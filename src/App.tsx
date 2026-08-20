@@ -123,6 +123,8 @@ function App() {
     cloudUpdatedAt,
     isUpToDate,
     resolvePendingCloudSave,
+    showPlayGamesLinkPrompt,
+    dismissPlayGamesLinkPrompt,
   } = useCloudSync(isMobile);
   const { user } = useCloudAuth();
 
@@ -818,6 +820,8 @@ function App() {
           setExtraEffects={setExtraEffects}
           cloudUpdatedAt={cloudUpdatedAt}
           isCloudUpToDate={isUpToDate}
+          showPlayGamesLinkPrompt={showPlayGamesLinkPrompt}
+          dismissPlayGamesLinkPrompt={dismissPlayGamesLinkPrompt}
           gameMode={gameMode}
           isActivityMode={isDiscordActivity}
           activityAccessToken={activityAccessToken}

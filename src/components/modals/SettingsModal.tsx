@@ -23,6 +23,10 @@ import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { ChallengeCreatorModal } from "./ChallengeCreatorModal";
 import { useCloudAuth, isPlayGamesAvailable } from "../../hooks/useCloudAuth";
+import {
+  getStoredPlayGamesSession,
+  openPlayGamesLinkFlow,
+} from "../../lib/playGamesCloudAuth";
 import { formatRelativeTime } from "../../lib/cloudSync";
 import {
   DICT_LABELS,
@@ -94,6 +98,8 @@ type Props = {
   activityAccessToken?: string | null;
   cloudUpdatedAt?: string | null;
   isCloudUpToDate?: boolean;
+  showPlayGamesLinkPrompt?: boolean;
+  dismissPlayGamesLinkPrompt?: () => void;
   jumpToAccountKey?: number;
   jumpToBackgroundKey?: number;
 };
@@ -308,16 +314,71 @@ const ActivityLinkSection = ({
   );
 };
 
+const PlayGamesLinkPrompt = ({ onDismiss }: { onDismiss: () => void }) => {
+  const [mode, setMode] = useState<"idle" | "opening" | "error">("idle");
+
+  const handleLink = async () => {
+    const session = getStoredPlayGamesSession();
+    if (!session) {
+      setMode("error");
+      return;
+    }
+    setMode("opening");
+    const result = await openPlayGamesLinkFlow(session);
+    if ("error" in result) {
+      setMode("error");
+      return;
+    }
+    onDismiss();
+  };
+
+  return (
+    <div className="space-y-2 mb-3 p-3" style={providerButtonStyle}>
+      <p className="font-code text-xs text-gray-300 leading-snug">
+        Have an existing Vagudle account? Link it so your progress carries over.
+      </p>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => void handleLink()}
+          disabled={mode === "opening"}
+          className="flex-1 font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
+          style={providerButtonStyle}
+        >
+          {mode === "opening" ? "OPENING..." : "LINK ACCOUNT"}
+        </button>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="flex-1 font-pixel text-xs tracking-widest px-3 py-2"
+          style={providerButtonStyle}
+        >
+          SKIP
+        </button>
+      </div>
+      {mode === "error" && (
+        <p className="font-code text-xs text-spice-red leading-snug">
+          Could not start linking. Please try again.
+        </p>
+      )}
+    </div>
+  );
+};
+
 const CloudSaveSection = ({
   cloudUpdatedAt,
   isCloudUpToDate,
   isActivityMode,
   activityAccessToken,
+  showPlayGamesLinkPrompt,
+  dismissPlayGamesLinkPrompt,
 }: {
   cloudUpdatedAt: string | null;
   isCloudUpToDate: boolean;
   isActivityMode: boolean;
   activityAccessToken: string | null;
+  showPlayGamesLinkPrompt: boolean;
+  dismissPlayGamesLinkPrompt: () => void;
 }) => {
   const {
     user,
@@ -366,6 +427,10 @@ const CloudSaveSection = ({
         </p>
       ) : user ? (
         <div className="space-y-2">
+          {user.providerId === "playgames.google.com" &&
+            showPlayGamesLinkPrompt && (
+              <PlayGamesLinkPrompt onDismiss={dismissPlayGamesLinkPrompt} />
+            )}
           <p className="font-code text-xs text-gray-300">
             Signed in as{" "}
             <span className="text-spice-lime">
@@ -510,6 +575,8 @@ export const SettingsModal = ({
   activityAccessToken = null,
   cloudUpdatedAt = null,
   isCloudUpToDate = true,
+  showPlayGamesLinkPrompt = false,
+  dismissPlayGamesLinkPrompt = () => {},
   jumpToAccountKey = 0,
   jumpToBackgroundKey = 0,
 }: Props) => {
@@ -810,6 +877,8 @@ export const SettingsModal = ({
                 isCloudUpToDate={isCloudUpToDate}
                 isActivityMode={isActivityMode}
                 activityAccessToken={activityAccessToken}
+                showPlayGamesLinkPrompt={showPlayGamesLinkPrompt}
+                dismissPlayGamesLinkPrompt={dismissPlayGamesLinkPrompt}
               />
             </div>
           )}

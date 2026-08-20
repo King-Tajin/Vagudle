@@ -4,6 +4,7 @@ import { verifyFirebaseIdToken, getBearerToken } from "./firebaseAuth.js";
 import { decode, json, checkRateLimit } from "./api.js";
 import { isValidDiscordSession, requireDiscordUser } from "./discordAuth.js";
 import { isValidPlayGamesSession } from "./playGamesAuth.js";
+import { findPlayerSaveByPlayGamesId } from "./playerAccount.js";
 
 export { getBearerToken };
 
@@ -37,12 +38,19 @@ export const verifyCloudSaveToken = async (request, env) => {
   if (env.PLAYGAMES_SESSION_KEY) {
     try {
       const payload = await decode(token, env.PLAYGAMES_SESSION_KEY);
-      if (isValidPlayGamesSession(payload))
-        return {
-          uid: payload.uid,
-          username:
-            typeof payload.username === "string" ? payload.username : null,
-        };
+      if (isValidPlayGamesSession(payload)) {
+        const username =
+          typeof payload.username === "string" ? payload.username : null;
+        let uid = payload.uid;
+        if (env.DB && typeof payload.playGamesId === "string") {
+          const linkedAccount = await findPlayerSaveByPlayGamesId(
+            env.DB,
+            payload.playGamesId
+          );
+          if (linkedAccount) uid = linkedAccount.uid;
+        }
+        return { uid, username };
+      }
     } catch {}
   }
 

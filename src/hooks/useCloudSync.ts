@@ -21,6 +21,7 @@ export const useCloudSync = (isMobile: boolean) => {
   const [syncError, setSyncError] = useState<string | null>(null);
   const [cloudUpdatedAt, setCloudUpdatedAt] = useState<string | null>(null);
   const [isUpToDate, setIsUpToDate] = useState(true);
+  const [showPlayGamesLinkPrompt, setShowPlayGamesLinkPrompt] = useState(false);
   const resolvedUidRef = useRef<string | null>(null);
   const lastPushedAtRef = useRef<string | null>(null);
   const latestPendingRef = useRef<string | null>(null);
@@ -61,6 +62,9 @@ export const useCloudSync = (isMobile: boolean) => {
       }
 
       if (result.status === "not_found") {
+        if (user.providerId === "playgames.google.com") {
+          setShowPlayGamesLinkPrompt(true);
+        }
         const updatedAt = await pushCloudSave(
           idToken,
           buildCloudSavePayloadFromLocalStorage(isMobile)
@@ -147,11 +151,17 @@ export const useCloudSync = (isMobile: boolean) => {
     setIsUpToDate(true);
   };
 
+  const dismissPlayGamesLinkPrompt = () => {
+    setShowPlayGamesLinkPrompt(false);
+  };
+
   return {
     pendingCloudSave,
     syncError,
     cloudUpdatedAt: user ? cloudUpdatedAt : null,
     isUpToDate: user ? isUpToDate : true,
     resolvePendingCloudSave,
+    showPlayGamesLinkPrompt,
+    dismissPlayGamesLinkPrompt,
   };
 };

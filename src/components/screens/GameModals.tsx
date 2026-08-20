@@ -34,6 +34,8 @@ type Props = {
   setExtraEffects: (value: boolean) => void;
   cloudUpdatedAt: string | null;
   isCloudUpToDate: boolean;
+  showPlayGamesLinkPrompt: boolean;
+  dismissPlayGamesLinkPrompt: () => void;
   gameMode: GameMode;
   isActivityMode: boolean;
   activityAccessToken: string | null;
@@ -115,6 +117,8 @@ export const GameModals = ({
   setExtraEffects,
   cloudUpdatedAt,
   isCloudUpToDate,
+  showPlayGamesLinkPrompt,
+  dismissPlayGamesLinkPrompt,
   gameMode,
   isActivityMode,
   activityAccessToken,
@@ -274,6 +278,8 @@ export const GameModals = ({
           activityAccessToken={activityAccessToken}
           cloudUpdatedAt={cloudUpdatedAt}
           isCloudUpToDate={isCloudUpToDate}
+          showPlayGamesLinkPrompt={showPlayGamesLinkPrompt}
+          dismissPlayGamesLinkPrompt={dismissPlayGamesLinkPrompt}
           jumpToAccountKey={settingsAccountJumpKey}
           jumpToBackgroundKey={settingsBackgroundJumpKey}
         />

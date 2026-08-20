@@ -1,3 +1,6 @@
+import { decode, json } from "./api.js";
+import { getBearerToken } from "./firebaseAuth.js";
+
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const PLAY_GAMES_PLAYER_URL =
   "https://games.googleapis.com/games/v1/players/me";
@@ -89,3 +92,25 @@ export const isRenewablePlayGamesSession = (payload) =>
   typeof payload.playGamesId === "string" &&
   typeof payload.refreshToken === "string" &&
   payload.refreshToken.length > 0;
+
+export const requirePlayGamesSession = async (context) => {
+  const sessionKey = context.env.PLAYGAMES_SESSION_KEY;
+  if (!sessionKey)
+    return json({ success: false, error: "Server misconfiguration." }, 500);
+
+  const token = getBearerToken(context.request);
+  if (!token)
+    return json({ success: false, error: "Missing auth token." }, 401);
+
+  try {
+    const payload = await decode(token, sessionKey);
+    if (
+      !isValidPlayGamesSession(payload) ||
+      typeof payload.playGamesId !== "string"
+    )
+      return json({ success: false, error: "Invalid auth token." }, 401);
+    return payload;
+  } catch {
+    return json({ success: false, error: "Invalid auth token." }, 401);
+  }
+};

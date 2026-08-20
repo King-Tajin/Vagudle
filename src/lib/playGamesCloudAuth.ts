@@ -34,6 +34,10 @@ type CapacitorPlayGamesPlugin = {
   }) => Promise<void>;
 };
 
+type CapacitorBrowserPlugin = {
+  open: (options: { url: string; presentationStyle?: string }) => Promise<void>;
+};
+
 declare global {
   interface Window {
     Capacitor?: {
@@ -41,6 +45,7 @@ declare global {
       getPlatform?: () => string;
       Plugins?: {
         PlayGamesAuth?: CapacitorPlayGamesPlugin;
+        Browser?: CapacitorBrowserPlugin;
       };
     };
   }
@@ -151,6 +156,41 @@ export const signInWithPlayGames =
     backfillPlayGamesAchievements();
     return session;
   };
+
+export const fetchPlayGamesLinkUrl = async (
+  session: PlayGamesSession
+): Promise<{ url: string } | { error: string }> => {
+  try {
+    const res = await fetch("/api/playgames-link-token", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.token}` },
+    });
+    const data = (await res.json()) as {
+      success: boolean;
+      url?: string;
+      error?: string;
+    };
+    if (!res.ok || !data.success || !data.url) {
+      return { error: data.error ?? "Could not start linking." };
+    }
+    return { url: data.url };
+  } catch {
+    return { error: "Could not start linking. Please try again." };
+  }
+};
+
+export const openPlayGamesLinkFlow = async (
+  session: PlayGamesSession
+): Promise<{ opened: true } | { error: string }> => {
+  const result = await fetchPlayGamesLinkUrl(session);
+  if ("error" in result) return result;
+
+  const browser = window.Capacitor?.Plugins?.Browser;
+  if (!browser) return { error: "Linking is not available on this device." };
+
+  await browser.open({ url: result.url, presentationStyle: "popover" });
+  return { opened: true };
+};
 
 export const renewPlayGamesSession = async (
   session: PlayGamesSession
