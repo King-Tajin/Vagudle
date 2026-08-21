@@ -60,7 +60,19 @@ import {
   SETTINGS_BACKGROUND_LABEL,
   SETTINGS_BACKGROUND_DESCRIPTION_FREE,
   SETTINGS_BACKGROUND_DESCRIPTION_LOCKED,
+  SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL,
+  SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION,
+  SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL,
+  SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION,
+  SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL,
+  SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION,
+  SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX,
 } from "../../constants/strings";
+import {
+  ENABLE_NOTIFICATION_SETTINGS,
+  INACTIVITY_NUDGE_MIN_DAYS,
+  INACTIVITY_NUDGE_MAX_DAYS,
+} from "../../constants/settings";
 
 type Tab = "settings" | "challenge";
 
@@ -71,6 +83,13 @@ export type GameSettingsValues = {
   autoGreen: boolean;
   extraEffects: boolean;
   backgroundId: BackgroundId;
+  dailyStreakRemindersEnabled: boolean;
+  customReminderTimeEnabled: boolean;
+  customReminderHour: number;
+  customReminderMinute: number;
+  customReminderPeriod: "AM" | "PM";
+  inactivityReminderEnabled: boolean;
+  inactivityReminderDays: number;
 };
 
 export type GameSettingsHandlers = {
@@ -80,6 +99,13 @@ export type GameSettingsHandlers = {
   setAutoGreen: (value: boolean) => void;
   setExtraEffects: (value: boolean) => void;
   setBackgroundId: (value: BackgroundId) => void;
+  setDailyStreakRemindersEnabled: (value: boolean) => void;
+  setCustomReminderTimeEnabled: (value: boolean) => void;
+  setCustomReminderHour: (value: number) => void;
+  setCustomReminderMinute: (value: number) => void;
+  setCustomReminderPeriod: (value: "AM" | "PM") => void;
+  setInactivityReminderEnabled: (value: boolean) => void;
+  setInactivityReminderDays: (value: number) => void;
 };
 
 type Props = {
@@ -244,6 +270,227 @@ const providerButtonStyle = {
   background: "rgba(255,255,255,0.05)",
   border: "2px solid #3a3a4a",
   color: "#d1d5db",
+};
+
+type DropdownOption = { value: string; label: string };
+
+const CompactDropdown = ({
+  value,
+  options,
+  disabled = false,
+  onChange,
+  ariaLabel,
+}: {
+  value: string;
+  options: DropdownOption[];
+  disabled?: boolean;
+  onChange: (value: string) => void;
+  ariaLabel: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const current = options.find((o) => o.value === value);
+
+  const handleOutsideClick = useEffectEvent(() => setIsOpen(false));
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        handleOutsideClick();
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [isOpen]);
+
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={ariaLabel}
+        className="flex items-center gap-1.5 font-pixel text-xs tracking-widest px-2.5 py-2"
+        style={{
+          background: "rgba(255,255,255,0.05)",
+          border: "2px solid #3a3a4a",
+          color: disabled ? "#4b5563" : "#d4af37",
+          cursor: disabled ? "not-allowed" : "pointer",
+          minWidth: 0,
+        }}
+      >
+        {current?.label ?? value}
+        <ChevronDown className="w-3 h-3 shrink-0 text-gray-500" />
+      </button>
+      {isOpen && !disabled && (
+        <div
+          className="absolute left-0 bottom-full mb-1 z-50"
+          style={{
+            background: "#0d1322",
+            border: "2px solid #3a3a4a",
+            whiteSpace: "nowrap",
+            minWidth: "100%",
+            maxHeight: "12rem",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
+        >
+          {options.map((opt) => {
+            const isSelected = opt.value === value;
+            return (
+              <button
+                type="button"
+                key={opt.value}
+                onClick={() => {
+                  onChange(opt.value);
+                  setIsOpen(false);
+                }}
+                className="w-full text-left font-pixel text-xs tracking-widest px-3 py-2 flex items-center gap-2"
+                style={{
+                  color: isSelected ? "#d4af37" : "#9ca3af",
+                  cursor: "pointer",
+                  background: isSelected ? "rgba(80,0,170,0.2)" : "transparent",
+                }}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const HOUR_OPTIONS: DropdownOption[] = Array.from(
+  { length: 12 },
+  (_, i) => i + 1
+).map((h) => ({ value: String(h), label: String(h).padStart(2, "0") }));
+
+const MINUTE_OPTIONS: DropdownOption[] = Array.from(
+  { length: 12 },
+  (_, i) => i * 5
+).map((m) => ({ value: String(m), label: String(m).padStart(2, "0") }));
+
+const PERIOD_OPTIONS: DropdownOption[] = [
+  { value: "AM", label: "AM" },
+  { value: "PM", label: "PM" },
+];
+
+const NotificationTimePicker = ({
+  hour,
+  minute,
+  period,
+  disabled = false,
+  onHourChange,
+  onMinuteChange,
+  onPeriodChange,
+}: {
+  hour: number;
+  minute: number;
+  period: "AM" | "PM";
+  disabled?: boolean;
+  onHourChange: (value: number) => void;
+  onMinuteChange: (value: number) => void;
+  onPeriodChange: (value: "AM" | "PM") => void;
+}) => {
+  return (
+    <div
+      className="flex items-center gap-1.5"
+      style={{ opacity: disabled ? 0.5 : 1 }}
+    >
+      <CompactDropdown
+        value={String(hour)}
+        options={HOUR_OPTIONS}
+        disabled={disabled}
+        onChange={(v) => onHourChange(Number(v))}
+        ariaLabel="Reminder hour"
+      />
+      <span className="font-pixel text-xs text-gray-500">:</span>
+      <CompactDropdown
+        value={String(minute)}
+        options={MINUTE_OPTIONS}
+        disabled={disabled}
+        onChange={(v) => onMinuteChange(Number(v))}
+        ariaLabel="Reminder minute"
+      />
+      <CompactDropdown
+        value={period}
+        options={PERIOD_OPTIONS}
+        disabled={disabled}
+        onChange={(v) => onPeriodChange(v as "AM" | "PM")}
+        ariaLabel="Reminder AM or PM"
+      />
+    </div>
+  );
+};
+
+const clampInactivityDays = (n: number) =>
+  Math.min(INACTIVITY_NUDGE_MAX_DAYS, Math.max(INACTIVITY_NUDGE_MIN_DAYS, n));
+
+const InactivityDaysInput = ({
+  value,
+  disabled = false,
+  onChange,
+}: {
+  value: number;
+  disabled?: boolean;
+  onChange: (value: number) => void;
+}) => {
+  const atMin = value <= INACTIVITY_NUDGE_MIN_DAYS;
+  const atMax = value >= INACTIVITY_NUDGE_MAX_DAYS;
+
+  return (
+    <div
+      className="flex items-center gap-1.5"
+      style={{ opacity: disabled ? 0.5 : 1 }}
+    >
+      <button
+        type="button"
+        disabled={disabled || atMin}
+        onClick={() => onChange(clampInactivityDays(value - 1))}
+        aria-label="Decrease days"
+        className="w-7 h-7 font-pixel text-sm flex items-center justify-center"
+        style={{
+          background: "rgba(255,255,255,0.05)",
+          border: "2px solid #3a3a4a",
+          color: disabled || atMin ? "#4b5563" : "#d4af37",
+          cursor: disabled || atMin ? "not-allowed" : "pointer",
+        }}
+      >
+        −
+      </button>
+      <span
+        className="font-pixel text-xs tracking-widest px-3 py-1.5 text-center"
+        style={{
+          background: "rgba(255,255,255,0.05)",
+          border: "2px solid #3a3a4a",
+          color: "#d4af37",
+          minWidth: "2.5rem",
+        }}
+      >
+        {value}
+      </span>
+      <button
+        type="button"
+        disabled={disabled || atMax}
+        onClick={() => onChange(clampInactivityDays(value + 1))}
+        aria-label="Increase days"
+        className="w-7 h-7 font-pixel text-sm flex items-center justify-center"
+        style={{
+          background: "rgba(255,255,255,0.05)",
+          border: "2px solid #3a3a4a",
+          color: disabled || atMax ? "#4b5563" : "#d4af37",
+          cursor: disabled || atMax ? "not-allowed" : "pointer",
+        }}
+      >
+        +
+      </button>
+      <span className="font-code text-xs text-gray-500">
+        {SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX}
+      </span>
+    </div>
+  );
 };
 
 const ActivityLinkSection = ({
@@ -581,7 +828,7 @@ export const SettingsModal = ({
   jumpToBackgroundKey = 0,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>("settings");
-  const [settingsPage, setSettingsPage] = useState<1 | 2>(1);
+  const [settingsPage, setSettingsPage] = useState<1 | 2 | 3>(1);
   const [errorMessage, setErrorMessage] = useState("");
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [prevJumpToAccountKey, setPrevJumpToAccountKey] =
@@ -883,8 +1130,148 @@ export const SettingsModal = ({
             </div>
           )}
 
+          {ENABLE_NOTIFICATION_SETTINGS && settingsPage === 3 && (
+            <div className="flex flex-col divide-y divide-obsidian-700">
+              <SettingsToggle
+                settingName={SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL}
+                flag={settings.dailyStreakRemindersEnabled}
+                handleFlag={settingsHandlers.setDailyStreakRemindersEnabled}
+                description={SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION}
+              />
+
+              <div className="flex justify-between gap-4 py-3">
+                <div className="text-left mt-1">
+                  <div className="flex items-center gap-1.5">
+                    <p
+                      className="font-pixel text-xs tracking-widest leading-none"
+                      style={{
+                        color: settings.customReminderTimeEnabled
+                          ? "#d4af37"
+                          : "#6b7280",
+                      }}
+                    >
+                      {SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL.toUpperCase()}
+                    </p>
+                  </div>
+                  <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
+                    {SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION}
+                  </p>
+                  <div className="mt-2.5">
+                    <NotificationTimePicker
+                      hour={settings.customReminderHour}
+                      minute={settings.customReminderMinute}
+                      period={settings.customReminderPeriod}
+                      disabled={!settings.customReminderTimeEnabled}
+                      onHourChange={settingsHandlers.setCustomReminderHour}
+                      onMinuteChange={settingsHandlers.setCustomReminderMinute}
+                      onPeriodChange={settingsHandlers.setCustomReminderPeriod}
+                    />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    settingsHandlers.setCustomReminderTimeEnabled(
+                      !settings.customReminderTimeEnabled
+                    )
+                  }
+                  aria-label={SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL}
+                  className="shrink-0 w-14 h-8 transition-colors duration-300 ease-in-out pixel-border-sm"
+                  style={{
+                    background: settings.customReminderTimeEnabled
+                      ? "linear-gradient(180deg, #5000aa 0%, #28007c 100%)"
+                      : "rgba(255,255,255,0.05)",
+                    border: `2px solid ${
+                      settings.customReminderTimeEnabled ? "#5000aa" : "#3a3a4a"
+                    }`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: settings.customReminderTimeEnabled
+                      ? "flex-end"
+                      : "flex-start",
+                    padding: "0 4px",
+                    cursor: "pointer",
+                  }}
+                  aria-pressed={settings.customReminderTimeEnabled}
+                >
+                  <span
+                    className="w-5 h-5 shrink-0 transition-colors duration-300"
+                    style={{
+                      background: settings.customReminderTimeEnabled
+                        ? "#d4af37"
+                        : "#555570",
+                    }}
+                  />
+                </button>
+              </div>
+
+              <div className="flex justify-between gap-4 py-3">
+                <div className="text-left mt-1">
+                  <p
+                    className="font-pixel text-xs tracking-widest leading-none"
+                    style={{
+                      color: settings.inactivityReminderEnabled
+                        ? "#d4af37"
+                        : "#6b7280",
+                    }}
+                  >
+                    {SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL.toUpperCase()}
+                  </p>
+                  <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
+                    {SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION}
+                  </p>
+                  <div className="mt-2.5">
+                    <InactivityDaysInput
+                      value={settings.inactivityReminderDays}
+                      disabled={!settings.inactivityReminderEnabled}
+                      onChange={settingsHandlers.setInactivityReminderDays}
+                    />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    settingsHandlers.setInactivityReminderEnabled(
+                      !settings.inactivityReminderEnabled
+                    )
+                  }
+                  aria-label={SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL}
+                  className="shrink-0 w-14 h-8 transition-colors duration-300 ease-in-out pixel-border-sm"
+                  style={{
+                    background: settings.inactivityReminderEnabled
+                      ? "linear-gradient(180deg, #5000aa 0%, #28007c 100%)"
+                      : "rgba(255,255,255,0.05)",
+                    border: `2px solid ${
+                      settings.inactivityReminderEnabled ? "#5000aa" : "#3a3a4a"
+                    }`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: settings.inactivityReminderEnabled
+                      ? "flex-end"
+                      : "flex-start",
+                    padding: "0 4px",
+                    cursor: "pointer",
+                  }}
+                  aria-pressed={settings.inactivityReminderEnabled}
+                >
+                  <span
+                    className="w-5 h-5 shrink-0 transition-colors duration-300"
+                    style={{
+                      background: settings.inactivityReminderEnabled
+                        ? "#d4af37"
+                        : "#555570",
+                    }}
+                  />
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-center gap-2 pt-4">
-            {([1, 2] as const).map((page) => (
+            {(ENABLE_NOTIFICATION_SETTINGS
+              ? ([1, 2, 3] as const)
+              : ([1, 2] as const)
+            ).map((page) => (
               <button
                 key={page}
                 type="button"

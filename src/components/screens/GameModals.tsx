@@ -73,6 +73,20 @@ type Props = {
   setAutoGreen: (value: boolean) => void;
   backgroundId: BackgroundId;
   setBackgroundId: (value: BackgroundId) => void;
+  dailyStreakRemindersEnabled: boolean;
+  setDailyStreakRemindersEnabled: (value: boolean) => void;
+  customReminderTimeEnabled: boolean;
+  setCustomReminderTimeEnabled: (value: boolean) => void;
+  customReminderHour: number;
+  setCustomReminderHour: (value: number) => void;
+  customReminderMinute: number;
+  setCustomReminderMinute: (value: number) => void;
+  customReminderPeriod: "AM" | "PM";
+  setCustomReminderPeriod: (value: "AM" | "PM") => void;
+  inactivityReminderEnabled: boolean;
+  setInactivityReminderEnabled: (value: boolean) => void;
+  inactivityReminderDays: number;
+  setInactivityReminderDays: (value: number) => void;
   unlockedIds: string[];
   newlyUnlockedAchievements: Achievement[];
   onAchievementsViewed: () => void;
@@ -156,6 +170,20 @@ export const GameModals = ({
   setAutoGreen,
   backgroundId,
   setBackgroundId,
+  dailyStreakRemindersEnabled,
+  setDailyStreakRemindersEnabled,
+  customReminderTimeEnabled,
+  setCustomReminderTimeEnabled,
+  customReminderHour,
+  setCustomReminderHour,
+  customReminderMinute,
+  setCustomReminderMinute,
+  customReminderPeriod,
+  setCustomReminderPeriod,
+  inactivityReminderEnabled,
+  setInactivityReminderEnabled,
+  inactivityReminderDays,
+  setInactivityReminderDays,
   unlockedIds,
   newlyUnlockedAchievements,
   onAchievementsViewed,
@@ -245,6 +273,13 @@ export const GameModals = ({
             autoGreen,
             extraEffects,
             backgroundId,
+            dailyStreakRemindersEnabled,
+            customReminderTimeEnabled,
+            customReminderHour,
+            customReminderMinute,
+            customReminderPeriod,
+            inactivityReminderEnabled,
+            inactivityReminderDays,
           }}
           settingsHandlers={{
             setShowGrayCount,
@@ -253,6 +288,13 @@ export const GameModals = ({
             setAutoGreen,
             setExtraEffects,
             setBackgroundId,
+            setDailyStreakRemindersEnabled,
+            setCustomReminderTimeEnabled,
+            setCustomReminderHour,
+            setCustomReminderMinute,
+            setCustomReminderPeriod,
+            setInactivityReminderEnabled,
+            setInactivityReminderDays,
           }}
           unlockedAchievementIds={unlockedIds}
           isMobile={isMobile}

@@ -82,6 +82,13 @@ export type StoredSettings = {
   autoGray: boolean;
   autoGreen: boolean;
   extraEffects: boolean;
+  dailyStreakRemindersEnabled: boolean;
+  customReminderTimeEnabled: boolean;
+  customReminderHour: number;
+  customReminderMinute: number;
+  customReminderPeriod: "AM" | "PM";
+  inactivityReminderEnabled: boolean;
+  inactivityReminderDays: number;
 };
 
 const prefersReducedMotion = (): boolean =>
@@ -96,6 +103,13 @@ const defaultSettings: StoredSettings = {
   autoGray: true,
   autoGreen: false,
   extraEffects: !prefersReducedMotion(),
+  dailyStreakRemindersEnabled: true,
+  customReminderTimeEnabled: false,
+  customReminderHour: 9,
+  customReminderMinute: 0,
+  customReminderPeriod: "AM",
+  inactivityReminderEnabled: true,
+  inactivityReminderDays: 3,
 };
 
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {

@@ -23,6 +23,13 @@ type Params = {
   autoGray: boolean;
   autoGreen: boolean;
   extraEffects: boolean;
+  dailyStreakRemindersEnabled: boolean;
+  customReminderTimeEnabled: boolean;
+  customReminderHour: number;
+  customReminderMinute: number;
+  customReminderPeriod: "AM" | "PM";
+  inactivityReminderEnabled: boolean;
+  inactivityReminderDays: number;
   isDuelMode: boolean;
   duelConfig: DuelConfig | null;
   isChallengeMode: boolean;
@@ -43,6 +50,13 @@ export const useSaveGameState = ({
   autoGray,
   autoGreen,
   extraEffects,
+  dailyStreakRemindersEnabled,
+  customReminderTimeEnabled,
+  customReminderHour,
+  customReminderMinute,
+  customReminderPeriod,
+  inactivityReminderEnabled,
+  inactivityReminderDays,
   isDuelMode,
   duelConfig,
   isChallengeMode,
@@ -59,6 +73,13 @@ export const useSaveGameState = ({
       autoGray,
       autoGreen,
       extraEffects,
+      dailyStreakRemindersEnabled,
+      customReminderTimeEnabled,
+      customReminderHour,
+      customReminderMinute,
+      customReminderPeriod,
+      inactivityReminderEnabled,
+      inactivityReminderDays,
     });
   }, [
     isLoading,
@@ -68,6 +89,13 @@ export const useSaveGameState = ({
     autoGray,
     autoGreen,
     extraEffects,
+    dailyStreakRemindersEnabled,
+    customReminderTimeEnabled,
+    customReminderHour,
+    customReminderMinute,
+    customReminderPeriod,
+    inactivityReminderEnabled,
+    inactivityReminderDays,
   ]);
 
   useEffect(() => {

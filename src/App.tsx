@@ -264,6 +264,26 @@ function App() {
   const [extraEffects, setExtraEffects] = useState(
     savedSettings.extraEffects ?? true
   );
+  const [dailyStreakRemindersEnabled, setDailyStreakRemindersEnabled] =
+    useState(savedSettings.dailyStreakRemindersEnabled ?? true);
+  const [customReminderTimeEnabled, setCustomReminderTimeEnabled] = useState(
+    savedSettings.customReminderTimeEnabled ?? false
+  );
+  const [customReminderHour, setCustomReminderHour] = useState(
+    savedSettings.customReminderHour ?? 9
+  );
+  const [customReminderMinute, setCustomReminderMinute] = useState(
+    savedSettings.customReminderMinute ?? 0
+  );
+  const [customReminderPeriod, setCustomReminderPeriod] = useState<"AM" | "PM">(
+    savedSettings.customReminderPeriod ?? "AM"
+  );
+  const [inactivityReminderEnabled, setInactivityReminderEnabled] = useState(
+    savedSettings.inactivityReminderEnabled ?? true
+  );
+  const [inactivityReminderDays, setInactivityReminderDays] = useState(
+    savedSettings.inactivityReminderDays ?? 3
+  );
   const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
     loadBackgroundId(window.innerWidth < 640, isDiscordActivity)
   );
@@ -621,6 +641,13 @@ function App() {
     autoGray,
     autoGreen,
     extraEffects,
+    dailyStreakRemindersEnabled,
+    customReminderTimeEnabled,
+    customReminderHour,
+    customReminderMinute,
+    customReminderPeriod,
+    inactivityReminderEnabled,
+    inactivityReminderDays,
     isDuelMode,
     duelConfig,
     isChallengeMode,
@@ -865,6 +892,20 @@ function App() {
           setAutoGreen={setAutoGreen}
           backgroundId={backgroundId}
           setBackgroundId={setBackgroundId}
+          dailyStreakRemindersEnabled={dailyStreakRemindersEnabled}
+          setDailyStreakRemindersEnabled={setDailyStreakRemindersEnabled}
+          customReminderTimeEnabled={customReminderTimeEnabled}
+          setCustomReminderTimeEnabled={setCustomReminderTimeEnabled}
+          customReminderHour={customReminderHour}
+          setCustomReminderHour={setCustomReminderHour}
+          customReminderMinute={customReminderMinute}
+          setCustomReminderMinute={setCustomReminderMinute}
+          customReminderPeriod={customReminderPeriod}
+          setCustomReminderPeriod={setCustomReminderPeriod}
+          inactivityReminderEnabled={inactivityReminderEnabled}
+          setInactivityReminderEnabled={setInactivityReminderEnabled}
+          inactivityReminderDays={inactivityReminderDays}
+          setInactivityReminderDays={setInactivityReminderDays}
           unlockedIds={unlockedIds}
           newlyUnlockedAchievements={newlyUnlockedAchievements}
           onAchievementsViewed={() => setNewlyUnlockedAchievements([])}

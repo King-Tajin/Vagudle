@@ -70,6 +70,18 @@ export const SETTINGS_BACKGROUND_DESCRIPTION_FREE =
 export const SETTINGS_BACKGROUND_DESCRIPTION_LOCKED =
   "Choose your background style. New ones unlock via achievements.";
 
+export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL =
+  "Daily Streak Reminders";
+export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION =
+  "Get reminded to play before your daily streak resets.";
+export const SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL = "Custom Reminder Time";
+export const SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION =
+  "Pick a specific time each day to get a reminder to play.";
+export const SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL = "Inactivity Reminder";
+export const SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION =
+  "Get nudged if you haven't played in a while.";
+export const SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX = "days";
+
 export const NAVBAR_LEAVE_DUEL_LABEL = "Leave Duel";
 export const NAVBAR_LEAVE_CHALLENGE_LABEL = "Leave Challenge";
 export const NAVBAR_LEAVE_DAILY_LABEL = "Leave Daily";
