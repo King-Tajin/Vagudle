@@ -1,4 +1,3 @@
-import { useEffect, useReducer } from "react";
 import {
   Loader,
   Pencil,
@@ -6,18 +5,10 @@ import {
   ChevronRight,
   Target,
 } from "lucide-react";
-import { BaseModal } from "./BaseModal";
-import {
-  fetchDailyLeaderboard,
-  type DailyLeaderboardResponse,
-} from "../../lib/daily";
-import {
-  fetchUsernameStatus,
-  updateUsername,
-  USERNAME_PATTERN,
-  type UsernameStatus,
-} from "../../lib/username";
-import { MODAL_TITLE_DAILY_LEADERBOARD } from "../../constants/strings";
+import { BaseModal } from "../BaseModal";
+import { MODAL_TITLE_DAILY_LEADERBOARD } from "../../../constants/strings";
+import { useLeaderboardData, formatCooldown } from "./useLeaderboardData";
+import { LeaderboardRow } from "./LeaderboardRow";
 
 type Props = {
   isOpen: boolean;
@@ -28,183 +19,6 @@ type Props = {
   isActivityMode: boolean;
 };
 
-const formatCooldown = (canChangeAt: string): string => {
-  const ms = new Date(canChangeAt).getTime() - Date.now();
-  const days = Math.max(1, Math.ceil(ms / (24 * 60 * 60 * 1000)));
-  return `${days} day${days === 1 ? "" : "s"}`;
-};
-
-const RankBadge = ({ rank }: { rank: number }) => {
-  const medal =
-    rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
-  return (
-    <span
-      className="font-pixel text-xs w-6 text-center shrink-0"
-      style={{ color: medal ? undefined : "#6b7280" }}
-    >
-      {medal ?? rank}
-    </span>
-  );
-};
-
-const LeaderboardRow = ({
-  rank,
-  username,
-  wins,
-  losses,
-  currentStreak,
-  bestStreak,
-  highlight,
-}: {
-  rank: number;
-  username: string;
-  wins: number;
-  losses: number;
-  currentStreak: number;
-  bestStreak: number;
-  highlight?: boolean;
-}) => (
-  <div
-    className="flex items-center gap-3 px-3 py-2.5"
-    style={{
-      background: highlight ? "rgba(80,0,170,0.18)" : "rgba(255,255,255,0.02)",
-      border: `1px solid ${
-        highlight ? "rgba(80,0,170,0.5)" : "rgba(255,255,255,0.06)"
-      }`,
-    }}
-  >
-    <RankBadge rank={rank} />
-    <span className="font-code text-sm text-gray-200 flex-1 min-w-0 truncate">
-      {username}
-    </span>
-    <div className="flex items-center gap-3 shrink-0">
-      <div className="text-center">
-        <p className="font-pixel text-[8px] text-gray-500 tracking-widest">
-          W/L
-        </p>
-        <p className="font-code text-base font-semibold text-gray-300">
-          {wins}/{losses}
-        </p>
-      </div>
-      <div className="text-center">
-        <p className="font-pixel text-[8px] text-gray-500 tracking-widest">
-          STREAK
-        </p>
-        <p className="font-code text-base font-semibold text-gray-300">
-          {currentStreak}
-        </p>
-      </div>
-      <div className="text-center">
-        <p className="font-pixel text-[8px] text-crown-amber tracking-widest">
-          BEST
-        </p>
-        <p className="font-code text-base font-semibold text-crown-amber">
-          {bestStreak}
-        </p>
-      </div>
-    </div>
-  </div>
-);
-
-type LeaderboardState = {
-  status: "loading" | "error" | "loaded";
-  data: DailyLeaderboardResponse | null;
-  usernameStatus: UsernameStatus | null;
-  isEditing: boolean;
-  inputValue: string;
-  isSubmitting: boolean;
-  submitError: string | null;
-  isPageLoading: boolean;
-};
-
-const initialLeaderboardState: LeaderboardState = {
-  status: "loading",
-  data: null,
-  usernameStatus: null,
-  isEditing: false,
-  inputValue: "",
-  isSubmitting: false,
-  submitError: null,
-  isPageLoading: false,
-};
-
-type LeaderboardAction =
-  | { type: "loadStart" }
-  | {
-      type: "loadSuccess";
-      data: DailyLeaderboardResponse;
-      usernameStatus: UsernameStatus | null;
-      isEditing: boolean;
-      inputValue: string;
-    }
-  | { type: "loadError" }
-  | { type: "submitStart" }
-  | {
-      type: "submitSuccess";
-      usernameStatus: UsernameStatus;
-      inputValue: string;
-    }
-  | { type: "refreshData"; data: DailyLeaderboardResponse }
-  | { type: "submitError"; message: string }
-  | { type: "setInputValue"; value: string }
-  | { type: "startEditing" }
-  | { type: "cancelEditing"; inputValue: string }
-  | { type: "pageLoadStart" }
-  | { type: "pageLoadSuccess"; data: DailyLeaderboardResponse }
-  | { type: "pageLoadError" };
-
-function leaderboardReducer(
-  state: LeaderboardState,
-  action: LeaderboardAction
-): LeaderboardState {
-  switch (action.type) {
-    case "loadStart":
-      return { ...state, status: "loading", submitError: null };
-    case "loadSuccess":
-      return {
-        ...state,
-        status: "loaded",
-        data: action.data,
-        usernameStatus: action.usernameStatus,
-        isEditing: action.isEditing,
-        inputValue: action.inputValue,
-      };
-    case "loadError":
-      return { ...state, status: "error" };
-    case "submitStart":
-      return { ...state, isSubmitting: true, submitError: null };
-    case "submitSuccess":
-      return {
-        ...state,
-        isSubmitting: false,
-        usernameStatus: action.usernameStatus,
-        inputValue: action.inputValue,
-        isEditing: false,
-      };
-    case "refreshData":
-      return { ...state, data: action.data };
-    case "submitError":
-      return { ...state, isSubmitting: false, submitError: action.message };
-    case "setInputValue":
-      return { ...state, inputValue: action.value };
-    case "startEditing":
-      return { ...state, isEditing: true };
-    case "cancelEditing":
-      return {
-        ...state,
-        isEditing: false,
-        inputValue: action.inputValue,
-        submitError: null,
-      };
-    case "pageLoadStart":
-      return { ...state, isPageLoading: true };
-    case "pageLoadSuccess":
-      return { ...state, isPageLoading: false, data: action.data };
-    case "pageLoadError":
-      return { ...state, isPageLoading: false };
-  }
-}
-
 export const LeaderboardModal = ({
   isOpen,
   handleClose,
@@ -213,118 +27,20 @@ export const LeaderboardModal = ({
   onUsernameSaved,
   isActivityMode,
 }: Props) => {
-  const [
-    {
-      status,
-      data,
-      usernameStatus,
-      isEditing,
-      inputValue,
-      isSubmitting,
-      submitError,
-      isPageLoading,
-    },
+  const {
+    status,
+    data,
+    usernameStatus,
+    isEditing,
+    inputValue,
+    isSubmitting,
+    submitError,
+    isPageLoading,
+    selfPage,
     dispatch,
-  ] = useReducer(leaderboardReducer, initialLeaderboardState);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    let cancelled = false;
-
-    const loadLeaderboard = async () => {
-      dispatch({ type: "loadStart" });
-      const [leaderboard, username] = await Promise.all([
-        fetchDailyLeaderboard(idToken, 1),
-        idToken ? fetchUsernameStatus(idToken) : Promise.resolve(null),
-      ]);
-      if (cancelled) return;
-      if (!leaderboard) {
-        dispatch({ type: "loadError" });
-        return;
-      }
-      dispatch({
-        type: "loadSuccess",
-        data: leaderboard,
-        usernameStatus: username,
-        isEditing: !!idToken && !username?.username,
-        inputValue: username?.username ?? "",
-      });
-    };
-
-    void loadLeaderboard();
-    return () => {
-      cancelled = true;
-    };
-  }, [isOpen, idToken]);
-
-  const goToPage = async (page: number) => {
-    if (isPageLoading || !data) return;
-    const clamped = Math.min(Math.max(1, page), data.totalPages);
-    if (clamped === data.page) return;
-    dispatch({ type: "pageLoadStart" });
-    const leaderboard = await fetchDailyLeaderboard(idToken, clamped);
-    if (!leaderboard) {
-      dispatch({ type: "pageLoadError" });
-      return;
-    }
-    dispatch({ type: "pageLoadSuccess", data: leaderboard });
-  };
-
-  const selfPage =
-    data?.self && data.pageSize > 0
-      ? Math.ceil(data.self.rank / data.pageSize)
-      : null;
-
-  const handleSubmitUsername = async () => {
-    if (!idToken || isSubmitting) return;
-    const trimmed = inputValue.trim().replace(/\s+/g, " ");
-    if (!USERNAME_PATTERN.test(trimmed)) {
-      dispatch({
-        type: "submitError",
-        message: "3-20 characters: letters, numbers, spaces, - or _",
-      });
-      return;
-    }
-
-    dispatch({ type: "submitStart" });
-    const outcome = await updateUsername(idToken, trimmed);
-
-    if (outcome.status === "updated") {
-      dispatch({
-        type: "submitSuccess",
-        usernameStatus: {
-          username: outcome.username,
-          canChangeAt: outcome.canChangeAt,
-        },
-        inputValue: outcome.username,
-      });
-      await onUsernameSaved();
-      const refreshed = await fetchDailyLeaderboard(idToken, data?.page ?? 1);
-      if (refreshed) dispatch({ type: "refreshData", data: refreshed });
-      return;
-    }
-
-    if (outcome.status === "invalid")
-      dispatch({
-        type: "submitError",
-        message: "3-20 characters: letters, numbers, spaces, - or _",
-      });
-    else if (outcome.status === "taken")
-      dispatch({
-        type: "submitError",
-        message: "That username is already taken.",
-      });
-    else if (outcome.status === "rate_limited")
-      dispatch({
-        type: "submitError",
-        message: `You can change your name again in ${formatCooldown(outcome.retryAt)}.`,
-      });
-    else
-      dispatch({
-        type: "submitError",
-        message: "Something went wrong. Please try again.",
-      });
-  };
+    goToPage,
+    handleSubmitUsername,
+  } = useLeaderboardData({ isOpen, idToken, onUsernameSaved });
 
   return (
     <BaseModal
