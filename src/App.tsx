@@ -667,7 +667,10 @@ function App() {
   const { isOfflineModalOpen, handleCloseOfflineModal } = useOfflineModeCheck();
   if (isLoading) return <LoadingScreen />;
   const screenFallback = (
-    <div className="h-screen" style={{ background: "#0A0A0A" }} />
+    <div
+      className="h-screen pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+      style={{ background: "#0A0A0A" }}
+    />
   );
   if (isActivityNotFound)
     return (
@@ -722,7 +725,10 @@ function App() {
     );
 
   return (
-    <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
+    <div
+      className="h-screen flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+      style={{ background: "#0A0A0A" }}
+    >
       {SHOW_KING_TAJIN_DISCLAIMER && <DisclaimerBanner />}
       <BackgroundStage
         backgroundId={backgroundId}
