@@ -7,6 +7,8 @@ type Props = {
   description?: string;
   disabled?: boolean;
   labelExtra?: React.ReactNode;
+  dimLabelWhenOff?: boolean;
+  children?: React.ReactNode;
 };
 
 export const SettingsToggle = ({
@@ -16,14 +18,18 @@ export const SettingsToggle = ({
   description,
   disabled = false,
   labelExtra,
+  dimLabelWhenOff = false,
+  children,
 }: Props) => {
+  const isLabelDimmed = disabled || (dimLabelWhenOff && !flag);
+
   return (
     <div className="flex justify-between gap-4 py-3">
       <div className="text-left mt-1">
         <div className="flex items-center gap-1.5">
           <p
             className="font-pixel text-xs tracking-widest leading-none"
-            style={{ color: disabled ? "#6b7280" : "#d4af37" }}
+            style={{ color: isLabelDimmed ? "#6b7280" : "#d4af37" }}
           >
             {settingName.toUpperCase()}
           </p>
@@ -34,6 +40,7 @@ export const SettingsToggle = ({
             {description}
           </p>
         )}
+        {children && <div className="mt-2.5">{children}</div>}
       </div>
       <button
         type="button"
