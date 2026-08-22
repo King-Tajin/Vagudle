@@ -317,15 +317,21 @@ export const GameModals = ({
                     }
                   : null
           }
-          isActivityMode={isActivityMode}
-          freeBackgroundsMode={isActivityMode && gameMode !== "normal"}
-          activityAccessToken={activityAccessToken}
-          cloudUpdatedAt={cloudUpdatedAt}
-          isCloudUpToDate={isCloudUpToDate}
-          showPlayGamesLinkPrompt={showPlayGamesLinkPrompt}
-          dismissPlayGamesLinkPrompt={dismissPlayGamesLinkPrompt}
-          jumpToAccountKey={settingsAccountJumpKey}
-          jumpToBackgroundKey={settingsBackgroundJumpKey}
+          activityContext={{
+            isActivityMode,
+            freeBackgroundsMode: isActivityMode && gameMode !== "normal",
+            activityAccessToken,
+          }}
+          cloudSyncStatus={{
+            updatedAt: cloudUpdatedAt,
+            isUpToDate: isCloudUpToDate,
+            showPlayGamesLinkPrompt,
+            dismissPlayGamesLinkPrompt,
+          }}
+          jumpKeys={{
+            account: settingsAccountJumpKey,
+            background: settingsBackgroundJumpKey,
+          }}
         />
         {gameMode === "challenge" && challengeConfig && (
           <ChallengeAcceptModal

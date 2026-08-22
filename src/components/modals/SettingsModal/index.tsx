@@ -56,15 +56,21 @@ type Props = {
   unlockedAchievementIds: string[];
   isMobile?: boolean;
   challengeConfig?: ChallengeConfig | DuelConfig | null;
-  isActivityMode?: boolean;
-  freeBackgroundsMode?: boolean;
-  activityAccessToken?: string | null;
-  cloudUpdatedAt?: string | null;
-  isCloudUpToDate?: boolean;
-  showPlayGamesLinkPrompt?: boolean;
-  dismissPlayGamesLinkPrompt?: () => void;
-  jumpToAccountKey?: number;
-  jumpToBackgroundKey?: number;
+  activityContext?: {
+    isActivityMode: boolean;
+    freeBackgroundsMode: boolean;
+    activityAccessToken: string | null;
+  };
+  cloudSyncStatus?: {
+    updatedAt: string | null;
+    isUpToDate: boolean;
+    showPlayGamesLinkPrompt: boolean;
+    dismissPlayGamesLinkPrompt: () => void;
+  };
+  jumpKeys?: {
+    account: number;
+    background: number;
+  };
 };
 
 export const SettingsModal = ({
@@ -78,16 +84,26 @@ export const SettingsModal = ({
   unlockedAchievementIds,
   isMobile = false,
   challengeConfig,
-  isActivityMode = false,
-  freeBackgroundsMode = false,
-  activityAccessToken = null,
-  cloudUpdatedAt = null,
-  isCloudUpToDate = true,
-  showPlayGamesLinkPrompt = false,
-  dismissPlayGamesLinkPrompt = () => {},
-  jumpToAccountKey = 0,
-  jumpToBackgroundKey = 0,
+  activityContext,
+  cloudSyncStatus,
+  jumpKeys,
 }: Props) => {
+  const {
+    isActivityMode = false,
+    freeBackgroundsMode = false,
+    activityAccessToken = null,
+  } = activityContext ?? {};
+
+  const {
+    updatedAt: cloudUpdatedAt = null,
+    isUpToDate: isCloudUpToDate = true,
+    showPlayGamesLinkPrompt = false,
+    dismissPlayGamesLinkPrompt = () => {},
+  } = cloudSyncStatus ?? {};
+
+  const { account: jumpToAccountKey = 0, background: jumpToBackgroundKey = 0 } =
+    jumpKeys ?? {};
+
   const [activeTab, setActiveTab] = useState<Tab>("settings");
   const [settingsPage, setSettingsPage] = useState<1 | 2 | 3>(1);
   const [errorMessage, setErrorMessage] = useState("");
