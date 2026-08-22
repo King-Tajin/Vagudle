@@ -3,7 +3,7 @@ import {
   Pencil,
   ChevronLeft,
   ChevronRight,
-  Target,
+  MapPin,
 } from "lucide-react";
 import { BaseModal } from "../BaseModal";
 import { MODAL_TITLE_DAILY_LEADERBOARD } from "../../../constants/strings";
@@ -261,7 +261,7 @@ export const LeaderboardModal = ({
                   disabled={isPageLoading}
                   className="w-full flex items-center justify-center gap-1.5 py-1.5 font-pixel text-[9px] tracking-widest text-gray-400 hover:text-crown-amber disabled:opacity-30 transition-colors"
                 >
-                  <Target className="w-3 h-3" />
+                  <MapPin className="w-3 h-3" />
                   JUMP TO MY PAGE
                 </button>
               )}

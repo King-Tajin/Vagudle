@@ -36,6 +36,7 @@ type Props = {
   onPlay: () => void;
   onShare: () => void;
   onClose: () => void;
+  onLeaveDaily: () => void;
   onOpenLeaderboard: () => void;
   onViewGame: () => void;
   onOpenSchedule: () => void;
@@ -72,13 +73,13 @@ const DailyModalPlayContent = ({
   dailyStats,
   origin,
   onPlay,
-  onClose,
+  onLeaveDaily,
 }: {
   config: DailyConfig;
   dailyStats: DailyStats;
   origin: DailyOrigin;
   onPlay: () => void;
-  onClose: () => void;
+  onLeaveDaily: () => void;
 }) => {
   const isDailyMode = origin.type === "daily";
 
@@ -152,7 +153,7 @@ const DailyModalPlayContent = ({
       {isDailyMode ? (
         <button
           type="button"
-          onClick={onClose}
+          onClick={onLeaveDaily}
           className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
           style={{
             background: "rgba(255,255,255,0.04)",
@@ -201,7 +202,7 @@ const DailyModalCompleteContent = ({
   countdown,
   onViewGame,
   onShare,
-  onClose,
+  onLeaveDaily,
 }: {
   result: DailyModalResult;
   origin: DailyOrigin;
@@ -209,7 +210,7 @@ const DailyModalCompleteContent = ({
   countdown: string;
   onViewGame: () => void;
   onShare: () => void;
-  onClose: () => void;
+  onLeaveDaily: () => void;
 }) => {
   const isDailyMode = origin.type === "daily";
   const canViewGame = origin.type === "normal" && origin.canViewGame;
@@ -320,7 +321,7 @@ const DailyModalCompleteContent = ({
       {isDailyMode && (
         <button
           type="button"
-          onClick={onClose}
+          onClick={onLeaveDaily}
           className="w-full flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
           style={{
             background: "rgba(255,255,255,0.04)",
@@ -353,6 +354,7 @@ export const DailyModal = ({
   onPlay,
   onShare,
   onClose,
+  onLeaveDaily,
   onOpenLeaderboard,
   onViewGame,
   onOpenSchedule,
@@ -461,7 +463,7 @@ export const DailyModal = ({
                   dailyStats={dailyStats}
                   origin={origin}
                   onPlay={onPlay}
-                  onClose={onClose}
+                  onLeaveDaily={onLeaveDaily}
                 />
               )}
 
@@ -473,7 +475,7 @@ export const DailyModal = ({
                   countdown={countdown}
                   onViewGame={onViewGame}
                   onShare={onShare}
-                  onClose={onClose}
+                  onLeaveDaily={onLeaveDaily}
                 />
               )}
 

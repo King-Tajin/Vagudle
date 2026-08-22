@@ -224,12 +224,15 @@ export const useDailyMode = ({
 
   const handleCloseDaily = () => {
     setIsDailyModalOpen(false);
-    if (isDailyMode) {
-      if (!isDiscordActivity) {
-        handleReturnToNormal();
-      }
-    } else if (window.location.pathname === DAILY_PATH) {
+    if (!isDailyMode && window.location.pathname === DAILY_PATH) {
       window.history.pushState({}, "", "/");
+    }
+  };
+
+  const handleLeaveDaily = () => {
+    setIsDailyModalOpen(false);
+    if (!isDiscordActivity) {
+      handleReturnToNormal();
     }
   };
 
@@ -309,6 +312,7 @@ export const useDailyMode = ({
     handlePlayDaily,
     handleShareDaily,
     handleCloseDaily,
+    handleLeaveDaily,
     handleOpenDailySchedule,
     handleCloseDailySchedule,
     handleViewDailyGame,

@@ -413,6 +413,7 @@ function App() {
     handlePlayDaily,
     handleShareDaily,
     handleCloseDaily,
+    handleLeaveDaily,
     handleOpenDailySchedule,
     handleCloseDailySchedule,
     handleViewDailyGame,
@@ -913,6 +914,7 @@ function App() {
           handlePlayDaily={handlePlayDaily}
           handleShareDaily={handleShareDaily}
           handleCloseDaily={handleCloseDaily}
+          handleLeaveDaily={handleLeaveDaily}
           handleViewDailyGame={handleViewDailyGame}
           isDailyScheduleModalOpen={isDailyScheduleModalOpen}
           handleOpenDailySchedule={handleOpenDailySchedule}
@@ -978,7 +980,7 @@ function App() {
           isSettingsModalOpen={isSettingsModalOpen}
           handleCloseSettings={() => {
             setIsSettingsModalOpen(false);
-            if (isDailyMode) setIsDailyModalOpen(true);
+            if (isDailyMode) void handleOpenDaily();
           }}
           settingsAccountJumpKey={settingsAccountJumpKey}
           settingsBackgroundJumpKey={settingsBackgroundJumpKey}

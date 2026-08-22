@@ -55,6 +55,7 @@ type Props = {
   handlePlayDaily: () => void;
   handleShareDaily: () => void;
   handleCloseDaily: () => void;
+  handleLeaveDaily: () => void;
   handleViewDailyGame: () => void;
   isDailyScheduleModalOpen: boolean;
   handleOpenDailySchedule: () => void;
@@ -152,6 +153,7 @@ export const GameModals = ({
   handlePlayDaily,
   handleShareDaily,
   handleCloseDaily,
+  handleLeaveDaily,
   handleViewDailyGame,
   isDailyScheduleModalOpen,
   handleOpenDailySchedule,
@@ -366,6 +368,7 @@ export const GameModals = ({
           onPlay={handlePlayDaily}
           onShare={handleShareDaily}
           onClose={handleCloseDaily}
+          onLeaveDaily={handleLeaveDaily}
           onOpenLeaderboard={handleOpenLeaderboard}
           onViewGame={handleViewDailyGame}
           onOpenSchedule={handleOpenDailySchedule}
