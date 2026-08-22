@@ -82,6 +82,10 @@ import {
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
+import {
+  runNotificationPrimerFlow,
+  syncNotificationSchedule,
+} from "./lib/notifications";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
 import type { ActivityErrorReason } from "./components/screens/ErrorScreens";
@@ -431,6 +435,41 @@ function App() {
     setIsGameWon,
     setIsGameLost,
   });
+  const hasSyncedNotificationsRef = useRef(false);
+  useEffect(() => {
+    const notificationSettings = {
+      dailyStreakRemindersEnabled,
+      customReminderTimeEnabled,
+      customReminderHour,
+      customReminderMinute,
+      customReminderPeriod,
+      inactivityReminderEnabled,
+      inactivityReminderDays,
+    };
+
+    if (!hasSyncedNotificationsRef.current) {
+      hasSyncedNotificationsRef.current = true;
+      void runNotificationPrimerFlow(
+        notificationSettings,
+        dailyStats.lastCompletedDate
+      );
+      return;
+    }
+
+    void syncNotificationSchedule(
+      notificationSettings,
+      dailyStats.lastCompletedDate
+    );
+  }, [
+    dailyStreakRemindersEnabled,
+    customReminderTimeEnabled,
+    customReminderHour,
+    customReminderMinute,
+    customReminderPeriod,
+    inactivityReminderEnabled,
+    inactivityReminderDays,
+    dailyStats.lastCompletedDate,
+  ]);
   const openPostGameModal = () => {
     if (isDuelMode) setIsDuelModalOpen(true);
     else if (isDailyMode) setIsDailyModalOpen(true);

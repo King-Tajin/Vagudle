@@ -1,13 +1,10 @@
-import { SettingsToggle } from "../SettingsToggle";
-import { CloudSaveSection } from "./CloudSaveSection";
+import { SettingsToggle } from "../../SettingsToggle";
+import { CloudSaveSection } from "../CloudSaveSection";
 import {
   SETTINGS_EXTRA_EFFECTS_LABEL,
   SETTINGS_EXTRA_EFFECTS_DESCRIPTION,
-} from "../../../constants/strings";
-import type {
-  GameSettingsValues,
-  GameSettingsHandlers,
-} from "../SettingsModal";
+} from "../../../../constants/strings";
+import type { GameSettingsValues, GameSettingsHandlers } from "../index";
 
 export const AccountPage = ({
   settings,

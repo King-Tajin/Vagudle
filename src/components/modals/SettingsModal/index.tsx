@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BaseModal } from "./BaseModal";
-import { ChallengeCreatorModal } from "./ChallengeCreatorModal";
-import { GeneralSettingsPage } from "./settings/GeneralSettingsPage";
-import { AccountPage } from "./settings/AccountPage";
-import { NotificationsPage } from "./settings/NotificationsPage";
-import { tabBase, activeTabStyle, inactiveTabStyle } from "./settings/styles";
-import { type ChallengeConfig } from "../../lib/challenge";
-import type { DuelConfig } from "../../lib/duel";
-import type { BackgroundId } from "../../lib/backgrounds";
-import { MODAL_TITLE_SETTINGS } from "../../constants/strings";
-import { ENABLE_NOTIFICATION_SETTINGS } from "../../constants/settings";
+import { BaseModal } from "../BaseModal";
+import { ChallengeCreatorModal } from "../ChallengeCreatorModal";
+import { GeneralSettingsPage } from "./pages/GeneralSettingsPage";
+import { AccountPage } from "./pages/AccountPage";
+import { NotificationsPage } from "./pages/NotificationsPage";
+import { tabBase, activeTabStyle, inactiveTabStyle } from "./styles";
+import { type ChallengeConfig } from "../../../lib/challenge";
+import type { DuelConfig } from "../../../lib/duel";
+import type { BackgroundId } from "../../../lib/backgrounds";
+import { MODAL_TITLE_SETTINGS } from "../../../constants/strings";
+import { ENABLE_NOTIFICATION_SETTINGS } from "../../../constants/settings";
 
 type Tab = "settings" | "challenge";
 

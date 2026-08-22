@@ -1,13 +1,13 @@
 import React from "react";
 import { Hash, BookOpen, Target } from "lucide-react";
-import { SettingsToggle } from "../SettingsToggle";
-import { BackgroundDropdown } from "./BackgroundDropdown";
+import { SettingsToggle } from "../../SettingsToggle";
+import { BackgroundDropdown } from "../BackgroundDropdown";
 import {
   DICT_LABELS,
   DICT_DESCRIPTIONS,
   type ChallengeConfig,
-} from "../../../lib/challenge";
-import type { DuelConfig } from "../../../lib/duel";
+} from "../../../../lib/challenge";
+import type { DuelConfig } from "../../../../lib/duel";
 import {
   SETTINGS_HARD_MODE_LABEL,
   SETTINGS_HARD_MODE_DESCRIPTION,
@@ -20,11 +20,8 @@ import {
   SETTINGS_BACKGROUND_LABEL,
   SETTINGS_BACKGROUND_DESCRIPTION_FREE,
   SETTINGS_BACKGROUND_DESCRIPTION_LOCKED,
-} from "../../../constants/strings";
-import type {
-  GameSettingsValues,
-  GameSettingsHandlers,
-} from "../SettingsModal";
+} from "../../../../constants/strings";
+import type { GameSettingsValues, GameSettingsHandlers } from "../index";
 
 export const GeneralSettingsPage = ({
   wordLength,

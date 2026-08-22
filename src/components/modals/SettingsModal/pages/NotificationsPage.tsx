@@ -1,6 +1,6 @@
-import { SettingsToggle } from "../SettingsToggle";
-import { NotificationTimePicker } from "./NotificationTimePicker";
-import { InactivityDaysInput } from "./InactivityDaysInput";
+import { SettingsToggle } from "../../SettingsToggle";
+import { NotificationTimePicker } from "../NotificationTimePicker";
+import { InactivityDaysInput } from "../InactivityDaysInput";
 import {
   SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL,
   SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION,
@@ -8,11 +8,8 @@ import {
   SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION,
   SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL,
   SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION,
-} from "../../../constants/strings";
-import type {
-  GameSettingsValues,
-  GameSettingsHandlers,
-} from "../SettingsModal";
+} from "../../../../constants/strings";
+import type { GameSettingsValues, GameSettingsHandlers } from "../index";
 
 export const NotificationsPage = ({
   settings,
