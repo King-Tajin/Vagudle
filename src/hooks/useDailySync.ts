@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import type React from "react";
+import { useEffect, useRef } from "react";
 import type { CharStatus } from "../lib/statuses";
 import type { DailyConfig } from "../lib/daily";
 import { fetchServerDailyProgress, saveDailyProgress } from "../lib/daily";
