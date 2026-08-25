@@ -9,7 +9,7 @@ export default {
   ignore: {
     overrides: [
       {
-        // Cleanup already clears every timer/interval pushed into local arrays; the rule
+        // Cleanup already clears every timer/interval pushed into local arrays but the rule
         // can't trace timers registered inside nested closures.
         files: ["**/src/components/screens/AchievementReveal.tsx"],
         rules: ["react-doctor/effect-needs-cleanup"],
@@ -49,9 +49,9 @@ export default {
       },
       {
         // The reconnect timer is scheduled inside a nested WebSocket "close"
-        // handler; the rule can't trace it back to the effect's own cleanup,
+        // handler but the rule can't trace it back to the effect's own cleanup,
         // which does clear it via clearTimeout(reconnectTimeoutId).
-        files: ["**/src/hooks/useDailySync.ts", "**/src/hooks/useDuelSync.ts"],
+        files: ["**/src/hooks/useSyncSocket.ts"],
         rules: ["react-doctor/effect-needs-cleanup"],
       },
       {
@@ -63,7 +63,7 @@ export default {
       },
       {
         // Setters only fire after real async work (storage reads, network
-        // calls, decoding) — there's no synchronous value to derive instead.
+        // calls, decoding) so there's no synchronous value to derive instead.
         files: ["**/src/hooks/useGameInitialization.ts"],
         rules: ["react-doctor/no-pass-live-state-to-parent"],
       },

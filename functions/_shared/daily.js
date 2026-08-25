@@ -60,3 +60,22 @@ export const isValidDailyProgressCellColors = (cellColors) => {
       /^\d{1,2}-\d{1,2}$/.test(key) && VALID_CELL_STATUSES.has(cellColors[key])
   );
 };
+
+export const parseProgressRow = (row) => {
+  if (!row || !row.guesses) return { guesses: null, cellColors: null };
+
+  let guesses;
+  try {
+    guesses = JSON.parse(row.guesses);
+  } catch {
+    guesses = null;
+  }
+  let cellColors;
+  try {
+    cellColors = row.cell_colors ? JSON.parse(row.cell_colors) : null;
+  } catch {
+    cellColors = null;
+  }
+
+  return { guesses, cellColors };
+};

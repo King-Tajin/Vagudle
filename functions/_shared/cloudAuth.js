@@ -4,7 +4,10 @@ import { verifyFirebaseIdToken, getBearerToken } from "./firebaseAuth.js";
 import { decode, json, checkRateLimit } from "./api.js";
 import { isValidDiscordSession, requireDiscordUser } from "./discordAuth.js";
 import { isValidPlayGamesSession } from "./playGamesAuth.js";
-import { findPlayerSaveByPlayGamesId } from "./playerAccount.js";
+import {
+  findPlayerSaveByPlayGamesId,
+  ensurePlayerSaveExists,
+} from "./playerAccount.js";
 
 export { getBearerToken };
 
@@ -88,6 +91,46 @@ export const requireCloudAuth = async (context) => {
     };
 
   return { db, uid: authResult.uid, username: authResult.username };
+};
+
+export const resolveAccountLinkToken = async (context, payloadField) => {
+  const linkSecret = context.env.ACCOUNT_LINK_SECRET;
+  if (!linkSecret)
+    return {
+      error: json({ success: false, error: "Server misconfiguration." }, 500),
+    };
+
+  const { db, uid, error } = await requireCloudAuth(context);
+  if (error) return { error };
+
+  const body = await context.request.json();
+  const { link_token } = body;
+  if (!link_token || typeof link_token !== "string")
+    return {
+      error: json({ success: false, error: "Missing link_token." }, 400),
+    };
+
+  let payload;
+  try {
+    payload = await decode(link_token, linkSecret);
+  } catch {
+    return {
+      error: json({ success: false, error: "Invalid or expired link." }, 400),
+    };
+  }
+  if (
+    !payload ||
+    typeof payload[payloadField] !== "string" ||
+    typeof payload.exp !== "number" ||
+    payload.exp <= Date.now()
+  )
+    return {
+      error: json({ success: false, error: "Invalid or expired link." }, 400),
+    };
+
+  await ensurePlayerSaveExists(db, uid);
+
+  return { db, uid, payload };
 };
 
 const resolveUidForDiscordAccessToken = async (accessToken, db) => {

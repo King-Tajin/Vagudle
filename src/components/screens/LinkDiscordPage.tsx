@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import { title } from "./screenHelpers";
@@ -7,8 +7,7 @@ import {
   completeEmailLinkSignIn,
   useCloudAuth,
 } from "../../hooks/useCloudAuth";
-
-type LinkStatus = "idle" | "linking" | "linked" | "error";
+import { useAccountLinkFlow } from "../../hooks/useAccountLinkFlow";
 
 const cardStyle = {
   background: "rgba(255,215,0,0.06)",
@@ -32,9 +31,6 @@ export const LinkDiscordPage = () => {
     new URLSearchParams(window.location.search).get("token")
   );
   const [email, setEmail] = useState("");
-  const [linkStatus, setLinkStatus] = useState<LinkStatus>("idle");
-  const [linkError, setLinkError] = useState<string | null>(null);
-  const linkedRef = useRef(false);
 
   const {
     user,
@@ -49,35 +45,12 @@ export const LinkDiscordPage = () => {
     void completeEmailLinkSignIn();
   }, []);
 
-  useEffect(() => {
-    if (!token || !user || linkedRef.current) return;
-    if (user.providerId === "discord.com") return;
-    linkedRef.current = true;
-
-    const controller = new AbortController();
-
-    const run = async () => {
-      setLinkStatus("linking");
-      const result = await linkDiscordWithCurrentUser(token, controller.signal);
-      const aborted = controller.signal.aborted;
-      if (aborted) {
-        linkedRef.current = false;
-        return;
-      }
-
-      if (result.status === "linked") {
-        setLinkStatus("linked");
-      } else {
-        setLinkStatus("error");
-        setLinkError(result.message);
-        linkedRef.current = false;
-      }
-    };
-
-    void run();
-
-    return () => controller.abort();
-  }, [token, user]);
+  const { linkStatus, linkError, resetLinkStatus } = useAccountLinkFlow(
+    token,
+    user,
+    "discord.com",
+    linkDiscordWithCurrentUser
+  );
 
   const renderBody = () => {
     if (!token)
@@ -110,10 +83,7 @@ export const LinkDiscordPage = () => {
           </p>
           <button
             type="button"
-            onClick={() => {
-              setLinkStatus("idle");
-              setLinkError(null);
-            }}
+            onClick={resetLinkStatus}
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >

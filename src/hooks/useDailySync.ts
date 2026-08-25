@@ -8,9 +8,8 @@ import {
   requestDailySyncTicket,
   requestActivityDailySyncTicket,
   fetchServerActivityDailyProgress,
-  openSyncSocket,
-  notifySyncChanged,
 } from "../lib/sync";
+import { useSyncSocket } from "./useSyncSocket";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
@@ -32,9 +31,6 @@ type Params = {
   setIsGameLost: (v: boolean) => void;
 };
 
-const RECONNECT_DELAY_MS = 1500;
-const MAX_RECONNECT_ATTEMPTS = 2;
-
 export const useDailySync = ({
   isDailyMode,
   isDiscordActivity,
@@ -50,11 +46,6 @@ export const useDailySync = ({
   setIsGameWon,
   setIsGameLost,
 }: Params): void => {
-  const socketRef = useRef<WebSocket | null>(null);
-  const sentGuessCountRef = useRef(0);
-  const reconnectAttemptsRef = useRef(0);
-  const intentionalCloseRef = useRef(false);
-
   const reconcileFromServerRef = useRef<() => Promise<void>>(async () => {});
   useEffect(() => {
     reconcileFromServerRef.current = async () => {
@@ -100,76 +91,19 @@ export const useDailySync = ({
     !isGameLost &&
     (!isDiscordActivity || !!activityAccessToken);
 
-  useEffect(() => {
-    if (!active) return;
-
-    let cancelled = false;
-    let currentWs: WebSocket | null = null;
-    let reconnectTimeoutId: ReturnType<typeof setTimeout> | undefined;
-    intentionalCloseRef.current = false;
-    reconnectAttemptsRef.current = 0;
-
-    const handleOpen = () => {
-      reconnectAttemptsRef.current = 0;
-    };
-
-    const handleClose = () => {
-      if (socketRef.current === currentWs) socketRef.current = null;
-      if (
-        cancelled ||
-        intentionalCloseRef.current ||
-        reconnectAttemptsRef.current >= MAX_RECONNECT_ATTEMPTS
-      )
-        return;
-      reconnectAttemptsRef.current += 1;
-      reconnectTimeoutId = setTimeout(() => {
-        if (!cancelled && !intentionalCloseRef.current) void connect();
-      }, RECONNECT_DELAY_MS);
-    };
-
-    const connect = async () => {
-      const ticket = isDiscordActivity
+  useSyncSocket(
+    active,
+    () =>
+      isDiscordActivity
         ? activityAccessToken
-          ? await requestActivityDailySyncTicket(activityAccessToken)
-          : null
-        : await (async () => {
+          ? requestActivityDailySyncTicket(activityAccessToken)
+          : Promise.resolve(null)
+        : (async () => {
             const idToken = await getIdTokenForCurrentUser();
             return idToken ? requestDailySyncTicket(idToken) : null;
-          })();
-      if (!ticket || cancelled) return;
-
-      const ws = openSyncSocket(ticket, () => {
-        void reconcileFromServerRef.current();
-      });
-      currentWs = ws;
-      socketRef.current = ws;
-
-      ws.addEventListener("open", handleOpen);
-      ws.addEventListener("close", handleClose);
-    };
-
-    void connect();
-
-    return () => {
-      cancelled = true;
-      intentionalCloseRef.current = true;
-      clearTimeout(reconnectTimeoutId);
-      if (currentWs) {
-        currentWs.removeEventListener("open", handleOpen);
-        currentWs.removeEventListener("close", handleClose);
-        currentWs.close();
-      }
-      socketRef.current = null;
-    };
-  }, [active, isDiscordActivity, activityAccessToken]);
-
-  useEffect(() => {
-    if (!active) {
-      sentGuessCountRef.current = guesses.length;
-      return;
-    }
-    if (guesses.length <= sentGuessCountRef.current) return;
-    sentGuessCountRef.current = guesses.length;
-    notifySyncChanged(socketRef.current);
-  }, [active, guesses]);
+          })(),
+    () => void reconcileFromServerRef.current(),
+    [isDiscordActivity, activityAccessToken],
+    guesses
+  );
 };

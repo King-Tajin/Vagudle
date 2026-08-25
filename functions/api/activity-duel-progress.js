@@ -5,6 +5,7 @@ import { requireDiscordUser } from "../_shared/discordAuth.js";
 import {
   isValidDailyProgressGuesses,
   isValidDailyProgressCellColors,
+  parseProgressRow,
 } from "../_shared/daily.js";
 
 export async function onRequestOptions() {
@@ -40,21 +41,7 @@ export async function onRequestGet(context) {
       .bind(duelId, discordUser.id)
       .first();
 
-    if (!row || !row.guesses)
-      return json({ success: true, guesses: null, cellColors: null });
-
-    let guesses = null;
-    let cellColors = null;
-    try {
-      guesses = JSON.parse(row.guesses);
-    } catch {
-      guesses = null;
-    }
-    try {
-      cellColors = row.cell_colors ? JSON.parse(row.cell_colors) : null;
-    } catch {
-      cellColors = null;
-    }
+    const { guesses, cellColors } = parseProgressRow(row);
 
     return json({ success: true, guesses, cellColors });
   } catch (error) {

@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useRef } from "react";
+import { useRef } from "react";
 import { ChevronDown, Lock } from "lucide-react";
 import {
   BACKGROUNDS,
@@ -6,6 +6,7 @@ import {
   type BackgroundDef,
 } from "../../../lib/backgrounds";
 import { ACHIEVEMENTS } from "../../../lib/achievements";
+import { useCloseOnOutsideClick } from "../../../hooks/useCloseOnOutsideClick";
 
 const isBgUnlocked = (
   bg: BackgroundDef,
@@ -49,17 +50,7 @@ export const BackgroundDropdown = ({
   const current = BACKGROUNDS.find((b) => b.id === currentId);
   const label = isMobile ? current?.mobileLabel : current?.desktopLabel;
 
-  const handleOutsideClick = useEffectEvent(() => onOpenChange(false));
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        handleOutsideClick();
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [isOpen]);
+  useCloseOnOutsideClick(ref, isOpen, () => onOpenChange(false));
 
   return (
     <div ref={ref} className="relative shrink-0">

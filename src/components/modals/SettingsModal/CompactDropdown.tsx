@@ -1,5 +1,6 @@
-import { useState, useEffect, useEffectEvent, useRef } from "react";
+import { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
+import { useCloseOnOutsideClick } from "../../../hooks/useCloseOnOutsideClick";
 
 export type DropdownOption = { value: string; label: string };
 
@@ -20,17 +21,7 @@ export const CompactDropdown = ({
   const ref = useRef<HTMLDivElement>(null);
   const current = options.find((o) => o.value === value);
 
-  const handleOutsideClick = useEffectEvent(() => setIsOpen(false));
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        handleOutsideClick();
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [isOpen]);
+  useCloseOnOutsideClick(ref, isOpen, () => setIsOpen(false));
 
   return (
     <div ref={ref} className="relative shrink-0">
