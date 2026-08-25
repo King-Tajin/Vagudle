@@ -15,6 +15,7 @@ export type NotificationSettings = {
 export const DAILY_REMINDER_NOTIFICATION_ID = 19821;
 export const INACTIVITY_REMINDER_NOTIFICATION_ID = 19822;
 export const REMINDER_NOTIFICATION_CHANNEL_ID = "vagudle-reminders";
+export const REMINDER_NOTIFICATION_LARGE_ICON = "ic_notification_large";
 
 export const DEFAULT_DAILY_REMINDER_HOUR = 20;
 export const DEFAULT_DAILY_REMINDER_MINUTE = 0;
@@ -34,6 +35,7 @@ type CapacitorLocalNotification = {
   title: string;
   body: string;
   channelId?: string;
+  largeIcon?: string;
   schedule?: CapacitorLocalNotificationsSchedule;
 };
 
@@ -190,6 +192,7 @@ export const syncNotificationSchedule = async (
       title: "Don't lose your streak!",
       body: "Today's Vagudle is waiting for you.",
       channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
+      largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
       schedule: {
         on: { hour, minute },
         allowWhileIdle: true,
@@ -208,6 +211,7 @@ export const syncNotificationSchedule = async (
         title: "Haven't played in a while?",
         body: "Come back and pick up where you left off.",
         channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
+        largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
         schedule: {
           at: fireDate,
           allowWhileIdle: true,
