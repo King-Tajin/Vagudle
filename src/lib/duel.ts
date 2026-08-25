@@ -176,3 +176,57 @@ export const submitActivityDuelResult = async (
     clearTimeout(timeout);
   }
 };
+
+export const saveDuelProgress = async (
+  token: string,
+  guesses: string[],
+  cellColors: { [key: string]: string }
+): Promise<boolean> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch("/api/duel-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, guesses, cellColors }),
+      signal: controller.signal,
+    });
+    if (!res.ok) return false;
+    const data = (await res.json()) as { success: boolean };
+    return data.success;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+export const saveActivityDuelProgress = async (
+  accessToken: string,
+  duelId: string,
+  guesses: string[],
+  cellColors: { [key: string]: string }
+): Promise<boolean> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch("/api/activity-duel-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_token: accessToken,
+        duel_id: duelId,
+        guesses,
+        cell_colors: cellColors,
+      }),
+      signal: controller.signal,
+    });
+    if (!res.ok) return false;
+    const data = (await res.json()) as { success: boolean };
+    return data.success;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+};

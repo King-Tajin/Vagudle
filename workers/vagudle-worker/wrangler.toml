@@ -1,4 +1,4 @@
-name = "vagudle-streak-reset-cron"
+name = "vagudle-worker"
 main = "src/index.js"
 compatibility_date = "2026-05-14"
 
@@ -9,3 +9,11 @@ crons = ["15 8 * * *"]
 binding = "DB"
 database_name = "vagudle-data"
 database_id = "035d8b7e-e796-467a-8c7c-29a0230d4f6c"
+
+[[durable_objects.bindings]]
+name = "SYNC_ROOM"
+class_name = "SyncRoom"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["SyncRoom"]

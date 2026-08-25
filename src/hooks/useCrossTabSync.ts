@@ -14,7 +14,14 @@ import {
   type GameStats,
 } from "../lib/localStorage";
 import { loadStats } from "../lib/stats";
-import { dailyStatsKey, loadDailyStats, type DailyStats } from "../lib/daily";
+import {
+  dailyStatsKey,
+  loadDailyStats,
+  type DailyStats,
+  type DailyConfig,
+  dailyProgressKey,
+  loadDailyProgress,
+} from "../lib/daily";
 import {
   BG_KEY,
   ATTRIBUTION_HIDDEN_KEY,
@@ -36,6 +43,7 @@ type Params = {
   isDailyMode: boolean;
   duelConfig: DuelConfig | null;
   challengeConfig: ChallengeConfig | null;
+  dailyConfig: DailyConfig | null;
   solution: string;
   hardMode: boolean;
   restoredGameRef: React.RefObject<boolean>;
@@ -86,6 +94,7 @@ export const useCrossTabSync = ({
   isDailyMode,
   duelConfig,
   challengeConfig,
+  dailyConfig,
   solution,
   hardMode,
   restoredGameRef,
@@ -181,6 +190,28 @@ export const useCrossTabSync = ({
     setIsGameWon(won);
     setIsGameLost(lost);
   });
+
+  useStorageSync(
+    dailyConfig ? dailyProgressKey(dailyConfig.date) : "__no_active_daily__",
+    () => {
+      if (isLoading || !isDailyMode || !dailyConfig) return;
+      const saved = loadDailyProgress(dailyConfig.date);
+      if (!saved) return;
+      const wordUpper = dailyConfig.word.toUpperCase();
+      const won = saved.guesses.some((g) => g.toUpperCase() === wordUpper);
+      const maxChallenges = dailyConfig.hardMode
+        ? HARD_MODE_MAX_CHALLENGES
+        : NORMAL_MODE_MAX_CHALLENGES;
+      const lost = !won && saved.guesses.length >= maxChallenges;
+
+      markRestoredOutcome(won, lost, restoredGameRef, null, null);
+
+      setGuesses(saved.guesses);
+      setCellColors((saved.cellColors as { [key: string]: CharStatus }) ?? {});
+      setIsGameWon(won);
+      setIsGameLost(lost);
+    }
+  );
 
   useStorageSync(
     duelConfig

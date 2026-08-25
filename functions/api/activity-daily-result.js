@@ -75,7 +75,7 @@ export async function onRequestPost(context) {
       .prepare(
         `UPDATE daily_attempts
          SET completed_at = ?
-         WHERE uid = ? AND date = ? AND platform = 'discord' AND completed_at IS NULL
+         WHERE uid = ? AND date = ? AND completed_at IS NULL
          RETURNING group_id, group_type`
       )
       .bind(nowIso, uid, today)

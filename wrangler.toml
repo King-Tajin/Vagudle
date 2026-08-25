@@ -28,3 +28,8 @@ simple = { limit = 48, period = 10 }
 name = "FEEDBACK_RATE_LIMITER"
 namespace_id = "1003"
 simple = { limit = 2, period = 60 }
+
+[[durable_objects.bindings]]
+name = "SYNC_ROOM"
+class_name = "SyncRoom"
+script_name = "vagudle-worker"

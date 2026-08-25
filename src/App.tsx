@@ -56,6 +56,9 @@ import { useDuelResult } from "./hooks/useDuelResult";
 import { useDailyActivityResult } from "./hooks/useDailyActivityResult";
 import { useDailyActivityGuessSync } from "./hooks/useDailyActivityGuessSync";
 import { useDailyProgressSync } from "./hooks/useDailyProgressSync";
+import { useDailySync } from "./hooks/useDailySync";
+import { useDuelSync } from "./hooks/useDuelSync";
+import { useDuelProgressSync } from "./hooks/useDuelProgressSync";
 import { useGameOutcome } from "./hooks/useGameOutcome";
 import { useGameInitialization } from "./hooks/useGameInitialization";
 import { useGameFlow } from "./hooks/useGameFlow";
@@ -523,6 +526,21 @@ function App() {
     guesses,
     cellColors,
   });
+  useDailySync({
+    isDailyMode,
+    isDiscordActivity,
+    activityAccessToken,
+    isLoading,
+    dailyConfig,
+    guesses,
+    isGameWon,
+    isGameLost,
+    restoredGameRef,
+    setGuesses,
+    setCellColors,
+    setIsGameWon,
+    setIsGameLost,
+  });
   const duelSaveStatus = useDuelResult({
     isDuelMode,
     duelToken,
@@ -532,6 +550,29 @@ function App() {
     isGameLost,
     guessCount: guesses.length,
     submittedRef: duelSubmittedRef,
+  });
+  useDuelProgressSync({
+    isDuelMode,
+    duelToken,
+    activityAccessToken,
+    activityDuelId: duelConfig?.id ?? null,
+    guesses,
+    cellColors,
+  });
+  useDuelSync({
+    isDuelMode,
+    duelToken,
+    activityAccessToken,
+    duelConfig,
+    isLoading,
+    guesses,
+    isGameWon,
+    isGameLost,
+    restoredGameRef,
+    setGuesses,
+    setCellColors,
+    setIsGameWon,
+    setIsGameLost,
   });
   useGameOutcome({
     isGameWon,
@@ -703,6 +744,7 @@ function App() {
     isDailyMode,
     duelConfig,
     challengeConfig,
+    dailyConfig,
     solution,
     hardMode,
     restoredGameRef,

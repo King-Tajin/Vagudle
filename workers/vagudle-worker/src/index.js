@@ -25,6 +25,55 @@ export default {
   },
 };
 
+export class SyncRoom {
+  constructor(state, env) {
+    this.state = state;
+    this.env = env;
+    this.sockets = new Set();
+  }
+
+  async fetch(request) {
+    if (request.headers.get("Upgrade") !== "websocket") {
+      return new Response("Expected websocket upgrade.", { status: 426 });
+    }
+
+    const pair = new WebSocketPair();
+    const [client, server] = Object.values(pair);
+
+    server.accept();
+    this.sockets.add(server);
+
+    server.addEventListener("message", (event) => {
+      this.handleMessage(server, event.data);
+    });
+
+    const cleanup = () => this.sockets.delete(server);
+    server.addEventListener("close", cleanup);
+    server.addEventListener("error", cleanup);
+
+    return new Response(null, { status: 101, webSocket: client });
+  }
+
+  handleMessage(sender, raw) {
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (parsed?.type !== "changed") return;
+
+    for (const socket of this.sockets) {
+      if (socket === sender) continue;
+      try {
+        socket.send(JSON.stringify({ type: "sync" }));
+      } catch {
+        this.sockets.delete(socket);
+      }
+    }
+  }
+}
+
 export async function resetStaleStreaks(env) {
   const db = env.DB;
   if (!db) {

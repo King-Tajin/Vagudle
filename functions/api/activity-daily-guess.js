@@ -101,7 +101,7 @@ export async function onRequestPost(context) {
         .prepare(
           `UPDATE daily_attempts
            SET guesses = ?, cell_colors = ?
-           WHERE uid = ? AND date = ? AND platform = 'discord' AND completed_at IS NULL`
+           WHERE uid = ? AND date = ? AND completed_at IS NULL`
         )
         .bind(
           JSON.stringify(guesses),

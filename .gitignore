@@ -24,3 +24,5 @@ yarn-error.log*
 /worker-configuration.d.ts
 /workers/streak-reset-cron/.wrangler/
 /workers/streak-reset-cron/node_modules/
+/workers/vagudle-worker/.wrangler/
+/workers/vagudle-worker/node_modules/

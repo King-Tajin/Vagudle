@@ -48,6 +48,13 @@ export default {
         rules: ["react-doctor/effect-needs-cleanup"],
       },
       {
+        // The reconnect timer is scheduled inside a nested WebSocket "close"
+        // handler; the rule can't trace it back to the effect's own cleanup,
+        // which does clear it via clearTimeout(reconnectTimeoutId).
+        files: ["**/src/hooks/useDailySync.ts", "**/src/hooks/useDuelSync.ts"],
+        rules: ["react-doctor/effect-needs-cleanup"],
+      },
+      {
         // Loads local audio assets for the WebAudio API, not app data for
         // rendering. Already deduped/cached at module scope and guarded by
         // an active flag so results are dropped after unmount.
