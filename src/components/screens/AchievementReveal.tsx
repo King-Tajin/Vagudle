@@ -5,6 +5,7 @@ import ChestDoorLeft from "@/assets/icons/chest-door-left.svg";
 import ChestDoorRight from "@/assets/icons/chest-door-right.svg";
 import RibbonIcon from "@/assets/icons/ribon.svg?react";
 import { playRattle, playBurstSound } from "../../lib/sounds";
+import { triggerAchievementHaptic } from "../../lib/haptics";
 
 const TIME_SCALE = 1.6;
 
@@ -135,9 +136,10 @@ const buildShakeSteps = () => {
 
 type Props = {
   onDone: () => void;
+  hapticsEnabled: boolean;
 };
 
-export function AchievementReveal({ onDone }: Props) {
+export function AchievementReveal({ onDone, hapticsEnabled }: Props) {
   const [visible, setVisible] = useState(true);
   const [overlayOn, setOverlayOn] = useState(false);
   const [shaking, setShaking] = useState(false);
@@ -163,6 +165,11 @@ export function AchievementReveal({ onDone }: Props) {
 
   const notifyDone = useEffectEvent(() => {
     onDone();
+  });
+
+  const openChestEffect = useEffectEvent(() => {
+    playBurstSound();
+    triggerAchievementHaptic(hapticsEnabled);
   });
 
   useEffect(() => {
@@ -214,7 +221,7 @@ export function AchievementReveal({ onDone }: Props) {
     );
 
     const openChest = () => {
-      playBurstSound();
+      openChestEffect();
       setOpened(true);
 
       setFlashOn(true);

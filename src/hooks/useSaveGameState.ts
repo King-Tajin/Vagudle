@@ -30,6 +30,7 @@ type Params = {
   customReminderPeriod: "AM" | "PM";
   inactivityReminderEnabled: boolean;
   inactivityReminderDays: number;
+  hapticsEnabled: boolean;
   isDuelMode: boolean;
   duelConfig: DuelConfig | null;
   isChallengeMode: boolean;
@@ -57,6 +58,7 @@ export const useSaveGameState = ({
   customReminderPeriod,
   inactivityReminderEnabled,
   inactivityReminderDays,
+  hapticsEnabled,
   isDuelMode,
   duelConfig,
   isChallengeMode,
@@ -80,6 +82,7 @@ export const useSaveGameState = ({
       customReminderPeriod,
       inactivityReminderEnabled,
       inactivityReminderDays,
+      hapticsEnabled,
     });
   }, [
     isLoading,
@@ -96,6 +99,7 @@ export const useSaveGameState = ({
     customReminderPeriod,
     inactivityReminderEnabled,
     inactivityReminderDays,
+    hapticsEnabled,
   ]);
 
   useEffect(() => {

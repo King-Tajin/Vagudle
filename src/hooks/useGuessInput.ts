@@ -11,6 +11,7 @@ import {
   CORRECT_WORD_MESSAGE,
 } from "../constants/strings";
 import { REVEAL_TIME_MS } from "../constants/settings";
+import { triggerErrorHaptic } from "../lib/haptics";
 import type React from "react";
 
 type Params = {
@@ -33,6 +34,7 @@ type Params = {
   setIsGameLost: (v: boolean) => void;
   isMobileRef: React.RefObject<boolean>;
   hasAutoClosedTrayRef: React.RefObject<boolean>;
+  hapticsEnabledRef: React.RefObject<boolean>;
   setIsTrayOpen: (v: boolean) => void;
   setCellColors: React.Dispatch<
     React.SetStateAction<{ [key: string]: CharStatus }>
@@ -77,6 +79,7 @@ export const useGuessInput = ({
   setIsGameLost,
   isMobileRef,
   hasAutoClosedTrayRef,
+  hapticsEnabledRef,
   setIsTrayOpen,
   setCellColors,
   showErrorAlert,
@@ -116,6 +119,7 @@ export const useGuessInput = ({
     if (!isWordInWordList(currentGuess)) {
       setCurrentRowClass("");
       requestAnimationFrame(() => setCurrentRowClass("jiggle"));
+      triggerErrorHaptic(hapticsEnabledRef.current);
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
         onClose: clearCurrentRowClass,
       });

@@ -291,6 +291,9 @@ function App() {
   const [inactivityReminderDays, setInactivityReminderDays] = useState(
     savedSettings.inactivityReminderDays ?? 3
   );
+  const [hapticsEnabled, setHapticsEnabled] = useState(
+    savedSettings.hapticsEnabled ?? true
+  );
   const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
     loadBackgroundId(window.innerWidth < 640, isDiscordActivity)
   );
@@ -326,6 +329,10 @@ function App() {
   useEffect(() => {
     extraEffectsRef.current = extraEffects;
   }, [extraEffects]);
+  const hapticsEnabledRef = useRef(hapticsEnabled);
+  useEffect(() => {
+    hapticsEnabledRef.current = hapticsEnabled;
+  }, [hapticsEnabled]);
   const startNewGame = (newSolution: string) => {
     achievementCheckedRef.current = false;
     resetWinRecord();
@@ -583,6 +590,7 @@ function App() {
     isDailyMode,
     restoredRef: restoredGameRef,
     extraEffectsRef,
+    hapticsEnabledRef,
     achievementRevealPendingRef,
     showSuccessAlert,
     cancelAlert,
@@ -659,6 +667,7 @@ function App() {
     recordStats,
     isMobileRef,
     hasAutoClosedTrayRef,
+    hapticsEnabledRef,
     setIsTrayOpen,
     onGuessSubmit: (word) => {
       if (isChallengeMode || isDuelMode || isDailyMode) return;
@@ -729,6 +738,7 @@ function App() {
     customReminderPeriod,
     inactivityReminderEnabled,
     inactivityReminderDays,
+    hapticsEnabled,
     isDuelMode,
     duelConfig,
     isChallengeMode,
@@ -989,6 +999,8 @@ function App() {
           setInactivityReminderEnabled={setInactivityReminderEnabled}
           inactivityReminderDays={inactivityReminderDays}
           setInactivityReminderDays={setInactivityReminderDays}
+          hapticsEnabled={hapticsEnabled}
+          setHapticsEnabled={setHapticsEnabled}
           unlockedIds={unlockedIds}
           newlyUnlockedAchievements={newlyUnlockedAchievements}
           onAchievementsViewed={() => setNewlyUnlockedAchievements([])}
@@ -1057,7 +1069,10 @@ function App() {
         />
       )}
       {isRevealingAchievement && (
-        <AchievementRevealOverlay onDone={handleAchievementRevealDone} />
+        <AchievementRevealOverlay
+          onDone={handleAchievementRevealDone}
+          hapticsEnabled={hapticsEnabled}
+        />
       )}
     </div>
   );

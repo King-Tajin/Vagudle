@@ -88,6 +88,8 @@ type Props = {
   setInactivityReminderEnabled: (value: boolean) => void;
   inactivityReminderDays: number;
   setInactivityReminderDays: (value: number) => void;
+  hapticsEnabled: boolean;
+  setHapticsEnabled: (value: boolean) => void;
   unlockedIds: string[];
   newlyUnlockedAchievements: Achievement[];
   onAchievementsViewed: () => void;
@@ -186,6 +188,8 @@ export const GameModals = ({
   setInactivityReminderEnabled,
   inactivityReminderDays,
   setInactivityReminderDays,
+  hapticsEnabled,
+  setHapticsEnabled,
   unlockedIds,
   newlyUnlockedAchievements,
   onAchievementsViewed,
@@ -282,6 +286,7 @@ export const GameModals = ({
             customReminderPeriod,
             inactivityReminderEnabled,
             inactivityReminderDays,
+            hapticsEnabled,
           }}
           settingsHandlers={{
             setShowGrayCount,
@@ -297,6 +302,7 @@ export const GameModals = ({
             setCustomReminderPeriod,
             setInactivityReminderEnabled,
             setInactivityReminderDays,
+            setHapticsEnabled,
           }}
           unlockedAchievementIds={unlockedIds}
           isMobile={isMobile}

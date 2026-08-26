@@ -10,6 +10,7 @@ import type {
   CapacitorLocalNotificationsPlugin,
   CapacitorNotificationPrimerPlugin,
 } from "./notifications";
+import type { CapacitorHapticsPlugin } from "./haptics";
 
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
 const PENDING_UNLOCKS_KEY = "vagudle-playgames-pending-unlocks:v1";
@@ -54,6 +55,7 @@ declare global {
         FirebaseAuthentication?: CapacitorFirebaseAuthPlugin;
         LocalNotifications?: CapacitorLocalNotificationsPlugin;
         NotificationPrimer?: CapacitorNotificationPrimerPlugin;
+        Haptics?: CapacitorHapticsPlugin;
       };
     };
   }

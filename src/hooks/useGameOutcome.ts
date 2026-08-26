@@ -2,6 +2,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { REVEAL_TIME_MS } from "../constants/settings";
 import { WIN_MESSAGES, CHALLENGE_WIN_MESSAGES } from "../constants/strings";
+import { triggerSuccessHaptic, triggerLossHaptic } from "../lib/haptics";
 
 type Params = {
   isGameWon: boolean;
@@ -12,6 +13,7 @@ type Params = {
   isDailyMode: boolean;
   restoredRef: React.RefObject<boolean>;
   extraEffectsRef: React.RefObject<boolean>;
+  hapticsEnabledRef: React.RefObject<boolean>;
   achievementRevealPendingRef: React.RefObject<boolean>;
   showSuccessAlert: (
     message: string,
@@ -34,6 +36,7 @@ export const useGameOutcome = ({
   isDailyMode,
   restoredRef,
   extraEffectsRef,
+  hapticsEnabledRef,
   achievementRevealPendingRef,
   showSuccessAlert,
   cancelAlert,
@@ -52,6 +55,7 @@ export const useGameOutcome = ({
         restoredRef.current = false;
         return;
       }
+      triggerSuccessHaptic(hapticsEnabledRef.current);
       const delayMs = REVEAL_TIME_MS * solution.length;
       if (extraEffectsRef.current) {
         timeoutId = setTimeout(() => setIsCelebrating(true), delayMs + 250);
@@ -78,6 +82,7 @@ export const useGameOutcome = ({
         restoredRef.current = false;
         return;
       }
+      triggerLossHaptic(hapticsEnabledRef.current);
       const delay = (solution.length + 1) * REVEAL_TIME_MS;
       if (extraEffectsRef.current && achievementRevealPendingRef.current) {
         achievementRevealPendingRef.current = false;

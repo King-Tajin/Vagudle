@@ -89,6 +89,7 @@ export type StoredSettings = {
   customReminderPeriod: "AM" | "PM";
   inactivityReminderEnabled: boolean;
   inactivityReminderDays: number;
+  hapticsEnabled: boolean;
 };
 
 const prefersReducedMotion = (): boolean =>
@@ -110,6 +111,7 @@ const defaultSettings: StoredSettings = {
   customReminderPeriod: "AM",
   inactivityReminderEnabled: true,
   inactivityReminderDays: 3,
+  hapticsEnabled: true,
 };
 
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {

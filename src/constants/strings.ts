@@ -82,6 +82,10 @@ export const SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION =
   "Get nudged if you haven't played in a while.";
 export const SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX = "days";
 
+export const SETTINGS_HAPTICS_LABEL = "Haptic Feedback";
+export const SETTINGS_HAPTICS_DESCRIPTION =
+  "Feel a vibration on wins, losses, achievement unlocks, and invalid words.";
+
 export const NAVBAR_LEAVE_DUEL_LABEL = "Leave Duel";
 export const NAVBAR_LEAVE_CHALLENGE_LABEL = "Leave Challenge";
 export const NAVBAR_LEAVE_DAILY_LABEL = "Leave Daily";

@@ -9,7 +9,10 @@ import { type ChallengeConfig } from "../../../lib/challenge";
 import type { DuelConfig } from "../../../lib/duel";
 import type { BackgroundId } from "../../../lib/backgrounds";
 import { MODAL_TITLE_SETTINGS } from "../../../constants/strings";
-import { ENABLE_NOTIFICATION_SETTINGS } from "../../../constants/settings";
+import {
+  ENABLE_NOTIFICATION_SETTINGS,
+  ENABLE_HAPTICS_SETTINGS,
+} from "../../../constants/settings";
 
 type Tab = "settings" | "challenge";
 
@@ -27,6 +30,7 @@ export type GameSettingsValues = {
   customReminderPeriod: "AM" | "PM";
   inactivityReminderEnabled: boolean;
   inactivityReminderDays: number;
+  hapticsEnabled: boolean;
 };
 
 export type GameSettingsHandlers = {
@@ -43,6 +47,7 @@ export type GameSettingsHandlers = {
   setCustomReminderPeriod: (value: "AM" | "PM") => void;
   setInactivityReminderEnabled: (value: boolean) => void;
   setInactivityReminderDays: (value: number) => void;
+  setHapticsEnabled: (value: boolean) => void;
 };
 
 type Props = {
@@ -240,15 +245,16 @@ export const SettingsModal = ({
             />
           )}
 
-          {ENABLE_NOTIFICATION_SETTINGS && settingsPage === 3 && (
-            <NotificationsPage
-              settings={settings}
-              settingsHandlers={settingsHandlers}
-            />
-          )}
+          {(ENABLE_NOTIFICATION_SETTINGS || ENABLE_HAPTICS_SETTINGS) &&
+            settingsPage === 3 && (
+              <NotificationsPage
+                settings={settings}
+                settingsHandlers={settingsHandlers}
+              />
+            )}
 
           <div className="flex justify-center gap-2 pt-4">
-            {(ENABLE_NOTIFICATION_SETTINGS
+            {(ENABLE_NOTIFICATION_SETTINGS || ENABLE_HAPTICS_SETTINGS
               ? ([1, 2, 3] as const)
               : ([1, 2] as const)
             ).map((page) => (
