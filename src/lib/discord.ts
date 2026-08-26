@@ -1,5 +1,6 @@
 import type { DiscordSDK } from "@discord/embedded-app-sdk";
 import type { CharStatus } from "./statuses";
+import { DISCORD_CLIENT_ID } from "../constants/settings";
 
 const params = new URLSearchParams(window.location.search);
 const frameId = params.get("frame_id");
@@ -18,9 +19,9 @@ export const openExternalLink = (url: string): void => {
 
 export const initDiscordSDK = async (): Promise<void> => {
   if (!isDiscordActivity) return;
-  const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
+  const clientId = DISCORD_CLIENT_ID;
   if (!clientId) {
-    console.error("[Discord] VITE_DISCORD_CLIENT_ID is not set");
+    console.error("[Discord] DISCORD_CLIENT_ID is not set");
     return;
   }
   const { DiscordSDK } = await import("@discord/embedded-app-sdk");
@@ -80,11 +81,9 @@ let _authResult: ActivityAuthResult | null = null;
 let _authPromise: Promise<ActivityAuthResult> | null = null;
 
 const _doAuthenticateActivity = async (): Promise<ActivityAuthResult> => {
-  const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
+  const clientId = DISCORD_CLIENT_ID;
   if (!clientId) {
-    console.error(
-      "[Discord] VITE_DISCORD_CLIENT_ID is not set — must be configured as a Cloudflare Pages build variable"
-    );
+    console.error("[Discord] DISCORD_CLIENT_ID is not set");
     return { ok: false, reason: "server_error" };
   }
 
