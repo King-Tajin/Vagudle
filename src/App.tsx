@@ -89,6 +89,7 @@ import {
   runNotificationPrimerFlow,
   syncNotificationSchedule,
 } from "./lib/notifications";
+import { requestAppReviewForWins } from "./lib/appReview";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
 import type { ActivityErrorReason } from "./components/screens/ErrorScreens";
@@ -488,6 +489,10 @@ function App() {
   };
   const handleCelebrationDone = () => {
     setIsCelebrating(false);
+    void requestAppReviewForWins(
+      stats.totalGames - stats.gamesFailed,
+      hardStats.totalGames - hardStats.gamesFailed
+    );
     if (achievementRevealPendingRef.current) {
       achievementRevealPendingRef.current = false;
       setIsRevealingAchievement(true);
