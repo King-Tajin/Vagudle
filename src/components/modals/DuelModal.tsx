@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { DICT_LABELS, DICT_DESCRIPTIONS } from "../../lib/challenge";
 import type { DuelConfig, DuelSaveStatus } from "../../lib/duel";
+import { useBackButtonClose } from "../../lib/backButton";
 
 type Props = {
   isOpen: boolean;
@@ -30,6 +31,8 @@ export const DuelModal = ({
   saveStatus = "idle",
   isActivityMode = false,
 }: Props) => {
+  useBackButtonClose(isOpen, () => {});
+
   return (
     <Transition show={isOpen} as={Fragment}>
       <div className="fixed inset-0 z-70 flex items-center justify-center px-4">

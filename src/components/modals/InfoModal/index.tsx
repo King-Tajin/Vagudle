@@ -3,6 +3,7 @@ import { Transition, TransitionChild } from "@headlessui/react";
 import { X, Gamepad2, Info, Sparkles, Code2, Send, Swords } from "lucide-react";
 import HatIcon from "@/assets/icons/propeller-hat.svg?react";
 
+import { useBackButtonClose } from "../../../lib/backButton";
 import { ActivityLink } from "../../ActivityLink";
 import { ResetDataModal } from "../ResetDataModal";
 import { HowToTab } from "./tabs/HowToTab";
@@ -56,6 +57,8 @@ export const InfoModal = ({
   );
   const [isResetModalOpen, setIsResetModalOpen] = useState(autoOpenReset);
   const previousPathRef = useRef<string | null>(null);
+
+  useBackButtonClose(isOpen, handleClose);
 
   useEffect(() => {
     if (typeof window === "undefined" || !isResetModalOpen) return;

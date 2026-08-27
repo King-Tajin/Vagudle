@@ -4,6 +4,7 @@ import {
   type ChallengeConfig,
 } from "../../../lib/challenge";
 import { isWordInDict } from "../../../lib/words";
+import { doShare } from "../../../lib/share";
 
 export type WordStatus = "idle" | "valid" | "invalid-word" | "invalid-length";
 export type Generated = { word: string; url: string; config: ChallengeConfig };
@@ -131,16 +132,5 @@ export const shareChallenge = async (
     `(Results won't affect your stats)\n` +
     url;
 
-  try {
-    if (
-      typeof navigator.share === "function" &&
-      navigator.canShare?.({ text })
-    ) {
-      await navigator.share({ title: "Vagudle Challenge", text });
-      return;
-    }
-  } catch {}
-
-  await navigator.clipboard.writeText(text);
-  onCopied();
+  await doShare({ title: "Vagudle Challenge", text }, text, onCopied);
 };

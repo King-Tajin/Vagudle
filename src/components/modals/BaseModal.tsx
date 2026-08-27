@@ -7,6 +7,7 @@ import {
 } from "@headlessui/react";
 import { X } from "lucide-react";
 import HatIcon from "@/assets/icons/propeller-hat.svg?react";
+import { useBackButtonClose } from "../../lib/backButton";
 
 type Props = {
   title: string;
@@ -27,6 +28,8 @@ export const BaseModal = ({
   headerExtra,
   zIndexClass = "z-60",
 }: Props) => {
+  useBackButtonClose(isOpen, handleClose);
+
   return (
     <Dialog
       open={isOpen}

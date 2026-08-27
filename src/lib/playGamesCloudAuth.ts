@@ -12,6 +12,8 @@ import type {
 } from "./notifications";
 import type { CapacitorHapticsPlugin } from "./haptics";
 import type { CapacitorReviewPromptPlugin } from "./appReview";
+import type { CapacitorAppPlugin } from "./backButton";
+import type { CapacitorSharePlugin } from "./share";
 
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
 const PENDING_UNLOCKS_KEY = "vagudle-playgames-pending-unlocks:v1";
@@ -58,6 +60,8 @@ declare global {
         NotificationPrimer?: CapacitorNotificationPrimerPlugin;
         Haptics?: CapacitorHapticsPlugin;
         ReviewPrompt?: CapacitorReviewPromptPlugin;
+        App?: CapacitorAppPlugin;
+        Share?: CapacitorSharePlugin;
       };
     };
   }

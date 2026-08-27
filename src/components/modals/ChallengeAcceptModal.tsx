@@ -6,6 +6,7 @@ import {
   DICT_DESCRIPTIONS,
   type ChallengeConfig,
 } from "../../lib/challenge";
+import { useBackButtonClose } from "../../lib/backButton";
 
 type Props = {
   isOpen: boolean;
@@ -14,6 +15,8 @@ type Props = {
 };
 
 export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
+  useBackButtonClose(isOpen, () => {});
+
   return (
     <Transition show={isOpen} as={Fragment}>
       <div className="fixed inset-0 z-70 flex items-center justify-center px-4">

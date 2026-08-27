@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { DailyConfig, DailyStats } from "../../lib/daily";
 import { msUntilNextDailyRelease } from "../../lib/daily";
+import { useBackButtonClose } from "../../lib/backButton";
 
 export type DailyOrigin =
   { type: "daily" } | { type: "normal"; canViewGame: boolean };
@@ -360,6 +361,8 @@ export const DailyModal = ({
   onOpenSchedule,
 }: Props) => {
   const countdown = useCountdownToNextDaily();
+
+  useBackButtonClose(isOpen, onClose);
 
   return (
     <Transition show={isOpen} as={Fragment}>
