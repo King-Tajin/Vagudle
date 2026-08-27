@@ -7,13 +7,14 @@ import {
 } from "../lib/stats";
 import { getRandomWord } from "../lib/words";
 import { DAILY_PATH } from "../lib/daily";
+import { getPublicOrigin } from "../lib/publicOrigin";
 import type React from "react";
 
 export const handleReturnToNormal = () => {
   const isOnDailyRoute = window.location.pathname === DAILY_PATH;
   window.location.href = isOnDailyRoute
-    ? `${window.location.origin}/`
-    : window.location.origin + window.location.pathname;
+    ? `${getPublicOrigin()}/`
+    : getPublicOrigin() + window.location.pathname;
 };
 
 type Params = {

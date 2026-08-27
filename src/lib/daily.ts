@@ -1,4 +1,5 @@
 import { stampUpdatedAt, cloudSyncKey } from "./localStorage";
+import { getPublicOrigin } from "./publicOrigin";
 
 export type DailyConfig = {
   date: string;
@@ -452,7 +453,7 @@ export const getDailyCalendarHourLabel = (
 
 export const getDailyCalendarHttpsUrl = (fileName: string): string => {
   if (typeof window === "undefined") return `/calendar/${fileName}`;
-  return `${window.location.origin}/calendar/${fileName}`;
+  return `${getPublicOrigin()}/calendar/${fileName}`;
 };
 
 export const getDailyCalendarWebcalUrl = (fileName: string): string =>

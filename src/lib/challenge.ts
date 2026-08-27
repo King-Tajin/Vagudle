@@ -1,3 +1,5 @@
+import { getPublicOrigin } from "./publicOrigin";
+
 export type ChallengeDict = "normal" | "hard" | "full";
 
 export type ChallengeConfig = {
@@ -106,7 +108,7 @@ export const decodeChallenge = async (
 };
 
 export const buildChallengeUrl = (encoded: string): string =>
-  `${window.location.origin}${window.location.pathname}?challenge=${encoded}`;
+  `${getPublicOrigin()}${window.location.pathname}?challenge=${encoded}`;
 
 export const challengeStateKey = (id: string) => `chal_${id}`;
 

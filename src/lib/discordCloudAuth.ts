@@ -1,4 +1,5 @@
 import { DISCORD_CLIENT_ID } from "../constants/settings";
+import { getPublicOrigin } from "./publicOrigin";
 
 export const DISCORD_SESSION_STORAGE_KEY = "vagudle-discord-session:v1";
 const STATE_STORAGE_KEY = "vagudle-discord-oauth-state:v1";
@@ -12,7 +13,7 @@ export type DiscordSession = {
 };
 
 const getRedirectUri = (): string =>
-  `${window.location.origin}${window.location.pathname}`;
+  `${getPublicOrigin()}${window.location.pathname}`;
 
 const randomState = (): string => {
   const bytes = crypto.getRandomValues(new Uint8Array(16));

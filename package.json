@@ -56,7 +56,7 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260825.1",
+    "@cloudflare/workers-types": "^5.20260826.1",
     "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.3.0",
@@ -74,7 +74,7 @@
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.68.0",
-    "wrangler": "^4.126.0"
+    "wrangler": "^4.127.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",
