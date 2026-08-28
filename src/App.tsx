@@ -85,6 +85,7 @@ import {
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
+import { flushPendingPlayGamesAchievements } from "./lib/playGamesCloudAuth";
 import { getPendingDiscordLinkCode } from "./lib/discordCloudAuth";
 import { linkDiscordOAuthWithCurrentUser } from "./lib/cloudSync";
 import {
@@ -142,6 +143,7 @@ function App() {
     void completeEmailLinkSignIn();
     void completeDiscordSignIn();
     pruneOldDailyEntries();
+    flushPendingPlayGamesAchievements();
   }, []);
 
   const [isLoading, setIsLoading] = useState(true);
