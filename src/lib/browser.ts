@@ -14,3 +14,7 @@ export const isInAppBrowser = () => {
   const browser = new UAParser().getBrowser();
   return inAppBrowserNames.indexOf(browser.name ?? "") > -1;
 };
+
+export const isNativeApp = () =>
+  typeof window !== "undefined" &&
+  window.Capacitor?.isNativePlatform?.() === true;

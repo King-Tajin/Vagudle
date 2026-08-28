@@ -4,6 +4,7 @@ import { X, Gamepad2, Info, Sparkles, Code2, Send, Swords } from "lucide-react";
 import HatIcon from "@/assets/icons/propeller-hat.svg?react";
 
 import { useBackButtonClose } from "../../../lib/backButton";
+import { isNativeApp } from "../../../lib/browser";
 import { ActivityLink } from "../../ActivityLink";
 import { ResetDataModal } from "../ResetDataModal";
 import { HowToTab } from "./tabs/HowToTab";
@@ -132,7 +133,12 @@ export const InfoModal = ({
               >
                 <div
                   className="flex items-center justify-between px-5 py-4 border-b-2 border-obsidian-700 shrink-0"
-                  style={{ background: "rgba(10,0,20,0.97)" }}
+                  style={{
+                    background: "rgba(10,0,20,0.97)",
+                    ...(isNativeApp()
+                      ? { paddingTop: "calc(1rem + env(safe-area-inset-top))" }
+                      : {}),
+                  }}
                 >
                   <div className="flex items-center gap-3">
                     <HatIcon className="w-12 h-12 text-crown-gold" />
@@ -199,7 +205,15 @@ export const InfoModal = ({
 
                 <div
                   className="shrink-0 px-5 py-3 border-t border-obsidian-700"
-                  style={{ background: "rgba(10,0,20,0.97)" }}
+                  style={{
+                    background: "rgba(10,0,20,0.97)",
+                    ...(isNativeApp()
+                      ? {
+                          paddingBottom:
+                            "calc(0.75rem + env(safe-area-inset-bottom))",
+                        }
+                      : {}),
+                  }}
                 >
                   <p className="font-pixel text-xs text-obsidian-500 tracking-widest text-center">
                     <ActivityLink

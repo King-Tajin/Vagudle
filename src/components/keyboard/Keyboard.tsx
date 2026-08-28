@@ -3,6 +3,7 @@ import { Key } from "./Key";
 import React, { useEffect, useEffectEvent } from "react";
 import { ENTER_TEXT, DELETE_TEXT } from "../../constants/strings";
 import { localeAwareUpperCase } from "../../lib/words";
+import { isNativeApp } from "../../lib/browser";
 
 type Props = {
   onChar: (value: string) => void;
@@ -67,7 +68,9 @@ export const Keyboard = ({
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 z-50 pb-2 pt-1"
+      className={`fixed bottom-0 left-0 right-0 z-50 pt-1 ${
+        isNativeApp() ? "pb-[calc(0.5rem+env(safe-area-inset-bottom))]" : "pb-2"
+      }`}
     >
       <div className="flex justify-center mb-1">
         {["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"].map((key) => (
