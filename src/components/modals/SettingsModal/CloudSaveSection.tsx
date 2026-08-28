@@ -32,6 +32,17 @@ import {
 } from "../../../lib/discord";
 import { providerButtonStyle } from "./styles";
 
+const PROVIDER_LABELS: Record<string, string> = {
+  "google.com": "Google",
+  "github.com": "GitHub",
+  password: "Email",
+  "discord.com": "Discord",
+  "playgames.google.com": "Play Games",
+};
+
+const getProviderLabel = (providerId: string): string =>
+  PROVIDER_LABELS[providerId] ?? "Unknown";
+
 const ActivityLinkSection = ({
   accessToken,
 }: {
@@ -288,6 +299,32 @@ export const CloudSaveSection = ({
     user.providerId !== "discord.com" &&
     user.providerId !== "playgames.google.com";
 
+  const accountTypeLabel = user ? getProviderLabel(user.providerId) : "";
+
+  const linkedAccountsLabel = useMemo(() => {
+    if (!user || !linkStatus) return null;
+
+    const directAccount =
+      user.providerId !== "discord.com" &&
+      user.providerId !== "playgames.google.com";
+
+    if (directAccount) {
+      const linked: string[] = [];
+      if (linkStatus.discordLinked) linked.push("Discord");
+      if (linkStatus.playGamesLinked) linked.push("Play Games");
+      return linked.length > 0 ? `Also linked: ${linked.join(", ")}` : null;
+    }
+
+    const nativeLinked =
+      user.providerId === "discord.com"
+        ? linkStatus.discordLinked
+        : user.providerId === "playgames.google.com"
+          ? linkStatus.playGamesLinked
+          : false;
+
+    return nativeLinked ? "Linked to a direct account" : null;
+  }, [user, linkStatus]);
+
   return (
     <div className="py-3">
       <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none mb-2">
@@ -324,11 +361,13 @@ export const CloudSaveSection = ({
             showPlayGamesLinkPrompt && (
               <PlayGamesLinkPrompt onDismiss={dismissPlayGamesLinkPrompt} />
             )}
-          <p className="font-code text-xs text-gray-300">
+          <p className="font-code text-xs text-gray-300 leading-snug">
             Signed in as{" "}
             <span className="text-spice-lime">
               {user.email ?? user.displayName ?? user.uid}
-            </span>
+            </span>{" "}
+            — {accountTypeLabel} account
+            {linkedAccountsLabel && <> · {linkedAccountsLabel}</>}
           </p>
           <p className="font-code text-xs text-gray-500">
             {isCloudUpToDate ? (
