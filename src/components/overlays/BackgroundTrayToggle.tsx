@@ -16,7 +16,7 @@ export const BackgroundTrayToggle = ({
 }: Props) => (
   <m.div
     className="fixed left-0 z-20 flex items-stretch"
-    style={{ top: "calc(5rem + 6px)" }}
+    style={{ top: "calc(5rem + 6px + env(safe-area-inset-top))" }}
     initial={false}
     animate={{ x: isTrayOpen ? 0 : -BACKGROUND_TRAY_WIDTH }}
     transition={{ type: "spring", stiffness: 280, damping: 28 }}
