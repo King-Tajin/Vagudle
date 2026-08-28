@@ -1,4 +1,5 @@
-import { json } from "./api.js";
+import { decode, json } from "./api.js";
+import { getBearerToken } from "./firebaseAuth.js";
 
 const DISCORD_API = "https://discord.com/api/v10";
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
@@ -128,6 +129,28 @@ export const isRenewableDiscordSession = (payload) =>
   typeof payload.discordId === "string" &&
   typeof payload.refreshToken === "string" &&
   payload.refreshToken.length > 0;
+
+export const requireDiscordSession = async (context) => {
+  const sessionKey = context.env.DISCORD_SESSION_KEY;
+  if (!sessionKey)
+    return json({ success: false, error: "Server misconfiguration." }, 500);
+
+  const token = getBearerToken(context.request);
+  if (!token)
+    return json({ success: false, error: "Missing auth token." }, 401);
+
+  try {
+    const payload = await decode(token, sessionKey);
+    if (
+      !isValidDiscordSession(payload) ||
+      typeof payload.discordId !== "string"
+    )
+      return json({ success: false, error: "Invalid auth token." }, 401);
+    return payload;
+  } catch {
+    return json({ success: false, error: "Invalid auth token." }, 401);
+  }
+};
 
 export const fetchChannelGroup = async (channelId, botToken) => {
   const res = await fetch(`${DISCORD_API}/channels/${channelId}`, {

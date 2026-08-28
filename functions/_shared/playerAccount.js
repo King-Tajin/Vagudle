@@ -75,6 +75,31 @@ export const findPlayerSaveByPlayGamesId = async (db, playGamesId) =>
     .bind(playGamesId)
     .first();
 
+export const linkProviderIdToAccount = async (db, uid, column, providerId) => {
+  const existingRow = await db
+    .prepare(`SELECT ${column} AS value FROM player_saves WHERE uid = ?`)
+    .bind(uid)
+    .first();
+
+  if (existingRow?.value && existingRow.value !== providerId)
+    return { ok: false };
+
+  try {
+    const result = await db
+      .prepare(
+        `UPDATE player_saves SET ${column} = ? WHERE uid = ? AND ${column} IS NULL`
+      )
+      .bind(providerId, uid)
+      .run();
+
+    if (result.meta.changes === 0 && !existingRow?.value) return { ok: false };
+  } catch {
+    return { ok: false };
+  }
+
+  return { ok: true };
+};
+
 export const resolveUidForPlayGamesId = async (db, playGamesId) => {
   const existingAccount = await findPlayerSaveByPlayGamesId(db, playGamesId);
   return existingAccount ? existingAccount.uid : `playgames:${playGamesId}`;

@@ -372,6 +372,114 @@ export const linkPlayGamesWithCurrentUser = async (
   return requestPlayGamesLink(idToken, linkToken, signal);
 };
 
+export type LinkStatus = { discordLinked: boolean; playGamesLinked: boolean };
+
+export const fetchLinkStatus = async (
+  idToken: string
+): Promise<LinkStatus | null> => {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res = await fetch("/api/link-status", {
+      headers: { Authorization: `Bearer ${idToken}` },
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      success: boolean;
+      discordLinked?: boolean;
+      playGamesLinked?: boolean;
+    };
+    if (!data.success) return null;
+    return {
+      discordLinked: !!data.discordLinked,
+      playGamesLinked: !!data.playGamesLinked,
+    };
+  } catch {
+    return null;
+  }
+};
+
+export type LinkDiscordOAuthResult =
+  { status: "linked" } | { status: "error"; message: string };
+
+export const linkDiscordOAuthWithCurrentUser = async (
+  code: string,
+  redirectUri: string
+): Promise<LinkDiscordOAuthResult> => {
+  const idToken = await getIdTokenForCurrentUser();
+  if (!idToken)
+    return {
+      status: "error",
+      message: "Could not verify your sign-in. Please try again.",
+    };
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res = await fetch("/api/discord-link-oauth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ code, redirect_uri: redirectUri }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    const data = (await res.json()) as { success: boolean; error?: string };
+    if (data.success) return { status: "linked" };
+    return {
+      status: "error",
+      message: data.error ?? "Could not link your Discord account.",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Could not link your Discord account. Please try again.",
+    };
+  }
+};
+
+export type LinkPlayGamesOAuthResult =
+  { status: "linked" } | { status: "error"; message: string };
+
+export const linkPlayGamesOAuthWithCurrentUser = async (
+  serverAuthCode: string
+): Promise<LinkPlayGamesOAuthResult> => {
+  const idToken = await getIdTokenForCurrentUser();
+  if (!idToken)
+    return {
+      status: "error",
+      message: "Could not verify your sign-in. Please try again.",
+    };
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res = await fetch("/api/playgames-link-oauth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ serverAuthCode }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    const data = (await res.json()) as { success: boolean; error?: string };
+    if (data.success) return { status: "linked" };
+    return {
+      status: "error",
+      message: data.error ?? "Could not link your Play Games account.",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Could not link your Play Games account. Please try again.",
+    };
+  }
+};
+
 export const deleteCloudSave = async (idToken: string): Promise<boolean> => {
   try {
     const controller = new AbortController();

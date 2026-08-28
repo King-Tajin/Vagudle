@@ -173,6 +173,22 @@ export const signInWithPlayGames =
     return session;
   };
 
+export const startPlayGamesLinkAuthCode = async (): Promise<
+  { code: string } | { error: string }
+> => {
+  const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
+  if (!plugin) return { error: "Play Games is not available on this device." };
+
+  try {
+    const { serverAuthCode } = await plugin.signIn();
+    if (!serverAuthCode)
+      return { error: "Play Games sign-in failed. Please try again." };
+    return { code: serverAuthCode };
+  } catch {
+    return { error: "Play Games sign-in failed. Please try again." };
+  }
+};
+
 export const fetchPlayGamesLinkUrl = async (
   session: PlayGamesSession
 ): Promise<{ url: string } | { error: string }> => {

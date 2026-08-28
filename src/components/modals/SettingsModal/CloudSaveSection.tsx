@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { AlertTriangle, Mail, ShieldCheck } from "lucide-react";
 import GoogleIcon from "../../../assets/icons/google.svg?react";
 import GithubIcon from "../../../assets/icons/github.svg?react";
@@ -9,10 +9,22 @@ import {
   isPlayGamesAvailable,
 } from "../../../hooks/useCloudAuth";
 import {
+  getStoredDiscordSession,
+  openDiscordLinkFlow,
+  initiateDiscordLink,
+} from "../../../lib/discordCloudAuth";
+import {
   getStoredPlayGamesSession,
   openPlayGamesLinkFlow,
+  startPlayGamesLinkAuthCode,
 } from "../../../lib/playGamesCloudAuth";
-import { formatRelativeTime } from "../../../lib/cloudSync";
+import {
+  formatRelativeTime,
+  getIdTokenForCurrentUser,
+  fetchLinkStatus,
+  linkPlayGamesOAuthWithCurrentUser,
+  type LinkStatus,
+} from "../../../lib/cloudSync";
 import {
   fetchActivityLinkUrl,
   checkActivityAccountStatus,
@@ -139,6 +151,89 @@ const PlayGamesLinkPrompt = ({ onDismiss }: { onDismiss: () => void }) => {
   );
 };
 
+const LinkAccountButton = ({
+  label,
+  onLink,
+}: {
+  label: string;
+  onLink: () => Promise<{ opened: true } | { error: string }>;
+}) => {
+  const [mode, setMode] = useState<"idle" | "opening" | "error">("idle");
+
+  const handleClick = async () => {
+    setMode("opening");
+    const result = await onLink();
+    if ("error" in result) {
+      setMode("error");
+      return;
+    }
+    setMode("idle");
+  };
+
+  return (
+    <div className="space-y-1">
+      <button
+        type="button"
+        onClick={() => void handleClick()}
+        disabled={mode === "opening"}
+        className="w-full font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
+        style={providerButtonStyle}
+      >
+        {mode === "opening" ? "OPENING LINK..." : label}
+      </button>
+      {mode === "error" && (
+        <p className="font-code text-xs text-spice-red leading-snug">
+          Could not start linking. Please try again.
+        </p>
+      )}
+    </div>
+  );
+};
+
+const LinkPlayGamesToAccountButton = ({
+  onLinked,
+}: {
+  onLinked: () => void;
+}) => {
+  const [mode, setMode] = useState<"idle" | "linking" | "error">("idle");
+
+  const handleClick = async () => {
+    setMode("linking");
+    const codeResult = await startPlayGamesLinkAuthCode();
+    if ("error" in codeResult) {
+      setMode("error");
+      return;
+    }
+    const result = await linkPlayGamesOAuthWithCurrentUser(codeResult.code);
+    if (result.status === "error") {
+      setMode("error");
+      return;
+    }
+    setMode("idle");
+    onLinked();
+  };
+
+  return (
+    <div className="space-y-1">
+      <button
+        type="button"
+        onClick={() => void handleClick()}
+        disabled={mode === "linking"}
+        className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
+        style={providerButtonStyle}
+      >
+        <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+        {mode === "linking" ? "LINKING..." : "LINK PLAY GAMES"}
+      </button>
+      {mode === "error" && (
+        <p className="font-code text-xs text-spice-red leading-snug">
+          Could not link Play Games. Please try again.
+        </p>
+      )}
+    </div>
+  );
+};
+
 export const CloudSaveSection = ({
   cloudUpdatedAt,
   isCloudUpToDate,
@@ -167,7 +262,31 @@ export const CloudSaveSection = ({
     signOutUser,
   } = useCloudAuth();
   const [email, setEmail] = useState("");
+  const [linkStatus, setLinkStatus] = useState<LinkStatus | null>(null);
   const playGamesAvailable = useMemo(() => isPlayGamesAvailable(), []);
+
+  const refreshLinkStatus = useCallback(async () => {
+    const idToken = await getIdTokenForCurrentUser();
+    setLinkStatus(idToken ? await fetchLinkStatus(idToken) : null);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const idToken = await getIdTokenForCurrentUser();
+      if (cancelled) return;
+      const status = idToken ? await fetchLinkStatus(idToken) : null;
+      if (!cancelled) setLinkStatus(status);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  const isDirectAccount =
+    !!user &&
+    user.providerId !== "discord.com" &&
+    user.providerId !== "playgames.google.com";
 
   return (
     <div className="py-3">
@@ -221,6 +340,49 @@ export const CloudSaveSection = ({
               <> · Last saved {formatRelativeTime(cloudUpdatedAt)}</>
             )}
           </p>
+          {user.providerId === "discord.com" && !linkStatus?.discordLinked && (
+            <LinkAccountButton
+              label="LINK ACCOUNT"
+              onLink={async () => {
+                const session = getStoredDiscordSession();
+                if (!session)
+                  return {
+                    error: "Could not start linking. Please try again.",
+                  };
+                return openDiscordLinkFlow(session);
+              }}
+            />
+          )}
+          {user.providerId === "playgames.google.com" &&
+            !linkStatus?.playGamesLinked && (
+              <LinkAccountButton
+                label="LINK ACCOUNT"
+                onLink={async () => {
+                  const session = getStoredPlayGamesSession();
+                  if (!session)
+                    return {
+                      error: "Could not start linking. Please try again.",
+                    };
+                  return openPlayGamesLinkFlow(session);
+                }}
+              />
+            )}
+          {isDirectAccount && !linkStatus?.discordLinked && (
+            <button
+              type="button"
+              onClick={initiateDiscordLink}
+              className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+              style={providerButtonStyle}
+            >
+              <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+              LINK DISCORD
+            </button>
+          )}
+          {isDirectAccount &&
+            playGamesAvailable &&
+            !linkStatus?.playGamesLinked && (
+              <LinkPlayGamesToAccountButton onLinked={refreshLinkStatus} />
+            )}
           <button
             type="button"
             onClick={signOutUser}
@@ -238,6 +400,10 @@ export const CloudSaveSection = ({
           <p className="font-code text-xs text-gray-500 leading-snug mb-1">
             Sign in to keep your stats, achievements, and settings synced across
             devices.
+          </p>
+
+          <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-2 mb-1">
+            DIRECT SIGN-IN
           </p>
           <button
             type="button"
@@ -257,31 +423,6 @@ export const CloudSaveSection = ({
             <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
             CONTINUE WITH GITHUB
           </button>
-          {!isActivityMode && (
-            <button
-              type="button"
-              onClick={signInWithDiscord}
-              className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-              style={providerButtonStyle}
-            >
-              <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-              CONTINUE WITH DISCORD
-            </button>
-          )}
-          {playGamesAvailable && (
-            <button
-              type="button"
-              onClick={() => void signInWithPlayGames()}
-              className="w-full relative flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-              style={providerButtonStyle}
-            >
-              <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-              CONTINUE WITH PLAY GAMES
-              <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
-                BETA
-              </span>
-            </button>
-          )}
           <div className="flex gap-2 pt-1">
             <input
               type="email"
@@ -311,6 +452,50 @@ export const CloudSaveSection = ({
               Check your email for a sign-in link.
             </p>
           )}
+
+          {(!isActivityMode || playGamesAvailable) && (
+            <>
+              <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-3 mb-1">
+                FLEXIBLE SIGN-IN
+              </p>
+              <p className="font-code text-xs text-gray-500 leading-snug mb-1">
+                Works on its own, or link it to another account anytime from
+                here.
+              </p>
+              {!isActivityMode && (
+                <button
+                  type="button"
+                  onClick={signInWithDiscord}
+                  className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+                  style={providerButtonStyle}
+                >
+                  <DiscordIcon
+                    className="w-4 h-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                  CONTINUE WITH DISCORD
+                </button>
+              )}
+              {playGamesAvailable && (
+                <button
+                  type="button"
+                  onClick={() => void signInWithPlayGames()}
+                  className="w-full relative flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+                  style={providerButtonStyle}
+                >
+                  <PlayGamesIcon
+                    className="w-4 h-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                  CONTINUE WITH PLAY GAMES
+                  <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
+                    BETA
+                  </span>
+                </button>
+              )}
+            </>
+          )}
+
           {actionError && (
             <p className="font-code text-xs text-spice-red">{actionError}</p>
           )}

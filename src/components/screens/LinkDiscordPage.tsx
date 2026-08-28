@@ -63,9 +63,19 @@ export const LinkDiscordPage = () => {
 
     if (linkStatus === "linked")
       return (
-        <p className="font-code text-sm text-gray-400 leading-relaxed">
-          Your account is linked. You can close this tab and go back to Discord.
-        </p>
+        <div className="flex flex-col gap-3">
+          <p className="font-code text-sm text-gray-400 leading-relaxed">
+            Your account is linked. You can close this tab and go back to
+            Discord, or return to Vagudle below.
+          </p>
+          <a
+            href="https://vagudle.king-tajin.dev/"
+            className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors text-center"
+            style={buttonStyle}
+          >
+            RETURN TO VAGUDLE
+          </a>
+        </div>
       );
 
     if (linkStatus === "linking")

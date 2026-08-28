@@ -5,6 +5,7 @@ import { decode, json, checkRateLimit } from "./api.js";
 import { isValidDiscordSession, requireDiscordUser } from "./discordAuth.js";
 import { isValidPlayGamesSession } from "./playGamesAuth.js";
 import {
+  findPlayerSaveByDiscordId,
   findPlayerSaveByPlayGamesId,
   ensurePlayerSaveExists,
 } from "./playerAccount.js";
@@ -29,12 +30,19 @@ export const verifyCloudSaveToken = async (request, env) => {
   if (env.DISCORD_SESSION_KEY) {
     try {
       const payload = await decode(token, env.DISCORD_SESSION_KEY);
-      if (isValidDiscordSession(payload))
-        return {
-          uid: payload.uid,
-          username:
-            typeof payload.username === "string" ? payload.username : null,
-        };
+      if (isValidDiscordSession(payload)) {
+        const username =
+          typeof payload.username === "string" ? payload.username : null;
+        let uid = payload.uid;
+        if (env.DB && typeof payload.discordId === "string") {
+          const linkedAccount = await findPlayerSaveByDiscordId(
+            env.DB,
+            payload.discordId
+          );
+          if (linkedAccount) uid = linkedAccount.uid;
+        }
+        return { uid, username };
+      }
     } catch {}
   }
 

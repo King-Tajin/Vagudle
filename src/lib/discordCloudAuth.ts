@@ -3,6 +3,7 @@ import { getPublicOrigin } from "./publicOrigin";
 
 export const DISCORD_SESSION_STORAGE_KEY = "vagudle-discord-session:v1";
 const STATE_STORAGE_KEY = "vagudle-discord-oauth-state:v1";
+const MODE_STORAGE_KEY = "vagudle-discord-oauth-mode:v1";
 
 export type DiscordSession = {
   token: string;
@@ -70,7 +71,7 @@ export const clearDiscordSession = (): void => {
   dispatchDiscordSessionSync();
 };
 
-export const signInWithDiscord = (): void => {
+const beginDiscordOAuth = (mode: "signin" | "link"): void => {
   const clientId = DISCORD_CLIENT_ID;
   if (!clientId) {
     console.error("[DiscordAuth] DISCORD_CLIENT_ID is not set");
@@ -80,6 +81,7 @@ export const signInWithDiscord = (): void => {
   const state = randomState();
   try {
     sessionStorage.setItem(STATE_STORAGE_KEY, state);
+    sessionStorage.setItem(MODE_STORAGE_KEY, mode);
   } catch {}
 
   const params = new URLSearchParams({
@@ -90,6 +92,42 @@ export const signInWithDiscord = (): void => {
     state,
   });
   window.location.href = `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+};
+
+export const signInWithDiscord = (): void => beginDiscordOAuth("signin");
+
+export const initiateDiscordLink = (): void => beginDiscordOAuth("link");
+
+export const fetchDiscordLinkUrl = async (
+  session: DiscordSession
+): Promise<{ url: string } | { error: string }> => {
+  try {
+    const res = await fetch("/api/discord-link-token", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.token}` },
+    });
+    const data = (await res.json()) as {
+      success: boolean;
+      url?: string;
+      error?: string;
+    };
+    if (!res.ok || !data.success || !data.url) {
+      return { error: data.error ?? "Could not start linking." };
+    }
+    return { url: data.url };
+  } catch {
+    return { error: "Could not start linking. Please try again." };
+  }
+};
+
+export const openDiscordLinkFlow = async (
+  session: DiscordSession
+): Promise<{ opened: true } | { error: string }> => {
+  const result = await fetchDiscordLinkUrl(session);
+  if ("error" in result) return result;
+
+  window.location.href = result.url;
+  return { opened: true };
 };
 
 export const renewDiscordSession = async (
@@ -142,12 +180,51 @@ export const maybeRenewDiscordSession =
     return renewDiscordSession(session);
   };
 
+export const getPendingDiscordLinkCode = (): {
+  code: string;
+  redirectUri: string;
+} | null => {
+  const url = new URL(window.location.href);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  if (!code || !state) return null;
+
+  let mode: string | null = null;
+  try {
+    mode = sessionStorage.getItem(MODE_STORAGE_KEY);
+  } catch {}
+  if (mode !== "link") return null;
+
+  let expectedState: string | null = null;
+  try {
+    expectedState = sessionStorage.getItem(STATE_STORAGE_KEY);
+  } catch {}
+
+  url.searchParams.delete("code");
+  url.searchParams.delete("state");
+  window.history.replaceState({}, document.title, url.toString());
+
+  try {
+    sessionStorage.removeItem(STATE_STORAGE_KEY);
+    sessionStorage.removeItem(MODE_STORAGE_KEY);
+  } catch {}
+
+  if (!expectedState || expectedState !== state) return null;
+  return { code, redirectUri: getRedirectUri() };
+};
+
 export const completeDiscordSignIn =
   async (): Promise<DiscordSession | null> => {
     const url = new URL(window.location.href);
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
     if (!code || !state) return null;
+
+    let mode: string | null = null;
+    try {
+      mode = sessionStorage.getItem(MODE_STORAGE_KEY);
+    } catch {}
+    if (mode === "link") return null;
 
     let expectedState: string | null = null;
     try {

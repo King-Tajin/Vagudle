@@ -85,6 +85,8 @@ import {
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
+import { getPendingDiscordLinkCode } from "./lib/discordCloudAuth";
+import { linkDiscordOAuthWithCurrentUser } from "./lib/cloudSync";
 import {
   runNotificationPrimerFlow,
   syncNotificationSchedule,
@@ -247,6 +249,24 @@ function App() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(isDeleteAccountRoute);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const pendingLink = getPendingDiscordLinkCode();
+    if (!pendingLink) return;
+    void (async () => {
+      const result = await linkDiscordOAuthWithCurrentUser(
+        pendingLink.code,
+        pendingLink.redirectUri
+      );
+      if (result.status === "linked") {
+        showSuccessAlert("Discord account linked!");
+        setIsSettingsModalOpen(true);
+      } else {
+        showErrorAlert(result.message);
+      }
+    })();
+  }, [showSuccessAlert, showErrorAlert]);
+
   const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
   const [settingsBackgroundJumpKey, setSettingsBackgroundJumpKey] = useState(0);
   const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
