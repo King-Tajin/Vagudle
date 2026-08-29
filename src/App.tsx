@@ -85,7 +85,6 @@ import {
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
-import { flushPendingPlayGamesAchievements } from "./lib/playGamesCloudAuth";
 import { getPendingDiscordLinkCode } from "./lib/discordCloudAuth";
 import { linkDiscordOAuthWithCurrentUser } from "./lib/cloudSync";
 import {
@@ -143,7 +142,6 @@ function App() {
     void completeEmailLinkSignIn();
     void completeDiscordSignIn();
     pruneOldDailyEntries();
-    flushPendingPlayGamesAchievements();
   }, []);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -296,6 +294,9 @@ function App() {
   );
   const [dailyStreakRemindersEnabled, setDailyStreakRemindersEnabled] =
     useState(savedSettings.dailyStreakRemindersEnabled ?? true);
+  const [streakResetWarningHours, setStreakResetWarningHours] = useState(
+    savedSettings.streakResetWarningHours ?? 3
+  );
   const [customReminderTimeEnabled, setCustomReminderTimeEnabled] = useState(
     savedSettings.customReminderTimeEnabled ?? false
   );
@@ -473,6 +474,7 @@ function App() {
   useEffect(() => {
     const notificationSettings = {
       dailyStreakRemindersEnabled,
+      streakResetWarningHours,
       customReminderTimeEnabled,
       customReminderHour,
       customReminderMinute,
@@ -480,22 +482,26 @@ function App() {
       inactivityReminderEnabled,
       inactivityReminderDays,
     };
+    const currentDailyDate = dailyConfig?.date ?? null;
 
     if (!hasSyncedNotificationsRef.current) {
       hasSyncedNotificationsRef.current = true;
       void runNotificationPrimerFlow(
         notificationSettings,
-        dailyStats.lastCompletedDate
+        dailyStats.lastCompletedDate,
+        currentDailyDate
       );
       return;
     }
 
     void syncNotificationSchedule(
       notificationSettings,
-      dailyStats.lastCompletedDate
+      dailyStats.lastCompletedDate,
+      currentDailyDate
     );
   }, [
     dailyStreakRemindersEnabled,
+    streakResetWarningHours,
     customReminderTimeEnabled,
     customReminderHour,
     customReminderMinute,
@@ -503,6 +509,7 @@ function App() {
     inactivityReminderEnabled,
     inactivityReminderDays,
     dailyStats.lastCompletedDate,
+    dailyConfig?.date,
   ]);
   const openPostGameModal = () => {
     if (isDuelMode) setIsDuelModalOpen(true);
@@ -759,6 +766,7 @@ function App() {
     autoGreen,
     extraEffects,
     dailyStreakRemindersEnabled,
+    streakResetWarningHours,
     customReminderTimeEnabled,
     customReminderHour,
     customReminderMinute,
@@ -1014,6 +1022,8 @@ function App() {
           setBackgroundId={setBackgroundId}
           dailyStreakRemindersEnabled={dailyStreakRemindersEnabled}
           setDailyStreakRemindersEnabled={setDailyStreakRemindersEnabled}
+          streakResetWarningHours={streakResetWarningHours}
+          setStreakResetWarningHours={setStreakResetWarningHours}
           customReminderTimeEnabled={customReminderTimeEnabled}
           setCustomReminderTimeEnabled={setCustomReminderTimeEnabled}
           customReminderHour={customReminderHour}

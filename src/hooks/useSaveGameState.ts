@@ -24,6 +24,7 @@ type Params = {
   autoGreen: boolean;
   extraEffects: boolean;
   dailyStreakRemindersEnabled: boolean;
+  streakResetWarningHours: number;
   customReminderTimeEnabled: boolean;
   customReminderHour: number;
   customReminderMinute: number;
@@ -52,6 +53,7 @@ export const useSaveGameState = ({
   autoGreen,
   extraEffects,
   dailyStreakRemindersEnabled,
+  streakResetWarningHours,
   customReminderTimeEnabled,
   customReminderHour,
   customReminderMinute,
@@ -76,6 +78,7 @@ export const useSaveGameState = ({
       autoGreen,
       extraEffects,
       dailyStreakRemindersEnabled,
+      streakResetWarningHours,
       customReminderTimeEnabled,
       customReminderHour,
       customReminderMinute,
@@ -93,6 +96,7 @@ export const useSaveGameState = ({
     autoGreen,
     extraEffects,
     dailyStreakRemindersEnabled,
+    streakResetWarningHours,
     customReminderTimeEnabled,
     customReminderHour,
     customReminderMinute,

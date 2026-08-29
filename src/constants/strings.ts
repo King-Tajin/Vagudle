@@ -70,10 +70,10 @@ export const SETTINGS_BACKGROUND_DESCRIPTION_FREE =
 export const SETTINGS_BACKGROUND_DESCRIPTION_LOCKED =
   "Choose your background style. New ones unlock via achievements.";
 
-export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL =
-  "Daily Streak Reminders";
+export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL = "Streak Reset Warning";
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION =
-  "Get reminded to play before your daily streak resets.";
+  "Get warned before your streak resets, if you haven't played today's daily yet.";
+export const SETTINGS_NOTIFICATIONS_STREAK_HOURS_SUFFIX = "hours before reset";
 export const SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL = "Custom Reminder Time";
 export const SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION =
   "Pick a specific time each day to get a reminder to play.";

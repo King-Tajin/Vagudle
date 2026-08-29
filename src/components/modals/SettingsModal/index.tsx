@@ -24,6 +24,7 @@ export type GameSettingsValues = {
   extraEffects: boolean;
   backgroundId: BackgroundId;
   dailyStreakRemindersEnabled: boolean;
+  streakResetWarningHours: number;
   customReminderTimeEnabled: boolean;
   customReminderHour: number;
   customReminderMinute: number;
@@ -41,6 +42,7 @@ export type GameSettingsHandlers = {
   setExtraEffects: (value: boolean) => void;
   setBackgroundId: (value: BackgroundId) => void;
   setDailyStreakRemindersEnabled: (value: boolean) => void;
+  setStreakResetWarningHours: (value: number) => void;
   setCustomReminderTimeEnabled: (value: boolean) => void;
   setCustomReminderHour: (value: number) => void;
   setCustomReminderMinute: (value: number) => void;

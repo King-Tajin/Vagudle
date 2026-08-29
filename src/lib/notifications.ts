@@ -1,9 +1,11 @@
 import type { DailyStats } from "./daily";
+import { DAILY_RELEASE_HOUR_UTC } from "./daily";
 
 export type ReminderPeriod = "AM" | "PM";
 
 export type NotificationSettings = {
   dailyStreakRemindersEnabled: boolean;
+  streakResetWarningHours: number;
   customReminderTimeEnabled: boolean;
   customReminderHour: number;
   customReminderMinute: number;
@@ -12,7 +14,8 @@ export type NotificationSettings = {
   inactivityReminderDays: number;
 };
 
-export const DAILY_REMINDER_NOTIFICATION_ID = 19821;
+export const STREAK_RESET_WARNING_NOTIFICATION_ID = 19821;
+export const CUSTOM_TIME_REMINDER_NOTIFICATION_ID = 19823;
 export const INACTIVITY_REMINDER_NOTIFICATION_ID = 19822;
 export const REMINDER_NOTIFICATION_CHANNEL_ID = "vagudle-reminders";
 export const REMINDER_NOTIFICATION_LARGE_ICON = "ic_notification_large";
@@ -86,25 +89,35 @@ export const to24Hour = (hour12: number, period: ReminderPeriod): number => {
   return period === "PM" ? normalizedHour + 12 : normalizedHour;
 };
 
-export const getDailyReminderTime = (
+export const getCustomReminderTime = (
   settings: Pick<
     NotificationSettings,
-    | "customReminderTimeEnabled"
-    | "customReminderHour"
-    | "customReminderMinute"
-    | "customReminderPeriod"
+    "customReminderHour" | "customReminderMinute" | "customReminderPeriod"
   >
-): { hour: number; minute: number } => {
-  if (!settings.customReminderTimeEnabled) {
-    return {
-      hour: DEFAULT_DAILY_REMINDER_HOUR,
-      minute: DEFAULT_DAILY_REMINDER_MINUTE,
-    };
-  }
-  return {
-    hour: to24Hour(settings.customReminderHour, settings.customReminderPeriod),
-    minute: settings.customReminderMinute,
-  };
+): { hour: number; minute: number } => ({
+  hour: to24Hour(settings.customReminderHour, settings.customReminderPeriod),
+  minute: settings.customReminderMinute,
+});
+
+export const getStreakResetWarningFireDate = (
+  currentDailyDate: string | null,
+  lastCompletedDate: DailyStats["lastCompletedDate"],
+  streakResetWarningHours: number,
+  now: Date = new Date()
+): Date | null => {
+  if (!currentDailyDate) return null;
+  if (lastCompletedDate === currentDailyDate) return null;
+
+  const [year, month, day] = currentDailyDate.split("-").map(Number);
+  if (!year || !month || !day) return null;
+
+  const releaseTime = Date.UTC(year, month - 1, day, DAILY_RELEASE_HOUR_UTC);
+  const resetTime = releaseTime + 24 * 60 * 60 * 1000;
+  const fireDate = new Date(
+    resetTime - streakResetWarningHours * 60 * 60 * 1000
+  );
+
+  return fireDate.getTime() > now.getTime() ? fireDate : null;
 };
 
 export const getInactivityReminderFireDate = (
@@ -151,18 +164,22 @@ const ensurePermission = async (
 
 export const syncNotificationSchedule = async (
   settings: NotificationSettings,
-  lastCompletedDate: DailyStats["lastCompletedDate"]
+  lastCompletedDate: DailyStats["lastCompletedDate"],
+  currentDailyDate: string | null
 ): Promise<void> => {
   const plugin = getLocalNotificationsPlugin();
   if (!plugin) return;
 
   const anyReminderEnabled =
-    settings.dailyStreakRemindersEnabled || settings.inactivityReminderEnabled;
+    settings.dailyStreakRemindersEnabled ||
+    settings.customReminderTimeEnabled ||
+    settings.inactivityReminderEnabled;
 
   if (!anyReminderEnabled) {
     await plugin.cancel({
       notifications: [
-        { id: DAILY_REMINDER_NOTIFICATION_ID },
+        { id: STREAK_RESET_WARNING_NOTIFICATION_ID },
+        { id: CUSTOM_TIME_REMINDER_NOTIFICATION_ID },
         { id: INACTIVITY_REMINDER_NOTIFICATION_ID },
       ],
     });
@@ -177,7 +194,8 @@ export const syncNotificationSchedule = async (
   try {
     await plugin.cancel({
       notifications: [
-        { id: DAILY_REMINDER_NOTIFICATION_ID },
+        { id: STREAK_RESET_WARNING_NOTIFICATION_ID },
+        { id: CUSTOM_TIME_REMINDER_NOTIFICATION_ID },
         { id: INACTIVITY_REMINDER_NOTIFICATION_ID },
       ],
     });
@@ -186,9 +204,30 @@ export const syncNotificationSchedule = async (
   const notificationsToSchedule: CapacitorLocalNotification[] = [];
 
   if (settings.dailyStreakRemindersEnabled) {
-    const { hour, minute } = getDailyReminderTime(settings);
+    const fireDate = getStreakResetWarningFireDate(
+      currentDailyDate,
+      lastCompletedDate,
+      settings.streakResetWarningHours
+    );
+    if (fireDate) {
+      notificationsToSchedule.push({
+        id: STREAK_RESET_WARNING_NOTIFICATION_ID,
+        title: "Your streak is about to reset!",
+        body: "Play today's Vagudle before it's too late.",
+        channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
+        largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
+        schedule: {
+          at: fireDate,
+          allowWhileIdle: true,
+        },
+      });
+    }
+  }
+
+  if (settings.customReminderTimeEnabled) {
+    const { hour, minute } = getCustomReminderTime(settings);
     notificationsToSchedule.push({
-      id: DAILY_REMINDER_NOTIFICATION_ID,
+      id: CUSTOM_TIME_REMINDER_NOTIFICATION_ID,
       title: "Don't lose your streak!",
       body: "Today's Vagudle is waiting for you.",
       channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
@@ -227,16 +266,21 @@ export const syncNotificationSchedule = async (
 
 export const runNotificationPrimerFlow = async (
   settings: NotificationSettings,
-  lastCompletedDate: DailyStats["lastCompletedDate"]
+  lastCompletedDate: DailyStats["lastCompletedDate"],
+  currentDailyDate: string | null
 ): Promise<void> => {
   const primerPlugin = getNotificationPrimerPlugin();
   if (!primerPlugin) {
-    await syncNotificationSchedule(settings, lastCompletedDate);
+    await syncNotificationSchedule(
+      settings,
+      lastCompletedDate,
+      currentDailyDate
+    );
     return;
   }
 
   const result = await primerPlugin.showPrimer();
   if (result.alreadyShown || !result.accepted) return;
 
-  await syncNotificationSchedule(settings, lastCompletedDate);
+  await syncNotificationSchedule(settings, lastCompletedDate, currentDailyDate);
 };

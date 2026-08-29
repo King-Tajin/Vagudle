@@ -76,6 +76,8 @@ type Props = {
   setBackgroundId: (value: BackgroundId) => void;
   dailyStreakRemindersEnabled: boolean;
   setDailyStreakRemindersEnabled: (value: boolean) => void;
+  streakResetWarningHours: number;
+  setStreakResetWarningHours: (value: number) => void;
   customReminderTimeEnabled: boolean;
   setCustomReminderTimeEnabled: (value: boolean) => void;
   customReminderHour: number;
@@ -176,6 +178,8 @@ export const GameModals = ({
   setBackgroundId,
   dailyStreakRemindersEnabled,
   setDailyStreakRemindersEnabled,
+  streakResetWarningHours,
+  setStreakResetWarningHours,
   customReminderTimeEnabled,
   setCustomReminderTimeEnabled,
   customReminderHour,
@@ -280,6 +284,7 @@ export const GameModals = ({
             extraEffects,
             backgroundId,
             dailyStreakRemindersEnabled,
+            streakResetWarningHours,
             customReminderTimeEnabled,
             customReminderHour,
             customReminderMinute,
@@ -296,6 +301,7 @@ export const GameModals = ({
             setExtraEffects,
             setBackgroundId,
             setDailyStreakRemindersEnabled,
+            setStreakResetWarningHours,
             setCustomReminderTimeEnabled,
             setCustomReminderHour,
             setCustomReminderMinute,

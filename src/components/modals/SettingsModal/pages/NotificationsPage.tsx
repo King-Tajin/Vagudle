@@ -1,6 +1,7 @@
 import { SettingsToggle } from "../../SettingsToggle";
 import { NotificationTimePicker } from "../NotificationTimePicker";
 import { InactivityDaysInput } from "../InactivityDaysInput";
+import { StreakResetHoursInput } from "../StreakResetHoursInput";
 import {
   SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL,
   SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION,
@@ -33,7 +34,14 @@ export const NotificationsPage = ({
             flag={settings.dailyStreakRemindersEnabled}
             handleFlag={settingsHandlers.setDailyStreakRemindersEnabled}
             description={SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION}
-          />
+            dimLabelWhenOff
+          >
+            <StreakResetHoursInput
+              value={settings.streakResetWarningHours}
+              disabled={!settings.dailyStreakRemindersEnabled}
+              onChange={settingsHandlers.setStreakResetWarningHours}
+            />
+          </SettingsToggle>
 
           <SettingsToggle
             settingName={SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL}

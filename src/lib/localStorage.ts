@@ -83,6 +83,7 @@ export type StoredSettings = {
   autoGreen: boolean;
   extraEffects: boolean;
   dailyStreakRemindersEnabled: boolean;
+  streakResetWarningHours: number;
   customReminderTimeEnabled: boolean;
   customReminderHour: number;
   customReminderMinute: number;
@@ -105,6 +106,7 @@ const defaultSettings: StoredSettings = {
   autoGreen: false,
   extraEffects: !prefersReducedMotion(),
   dailyStreakRemindersEnabled: true,
+  streakResetWarningHours: 3,
   customReminderTimeEnabled: false,
   customReminderHour: 9,
   customReminderMinute: 0,
