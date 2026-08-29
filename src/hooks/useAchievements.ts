@@ -18,7 +18,10 @@ import {
 import { loadStats } from "../lib/stats";
 import { getGuessStatuses } from "../lib/statuses";
 import { useStorageSync } from "./useStorageSync";
-import { syncPlayGamesAchievements } from "../lib/playGamesCloudAuth";
+import {
+  syncPlayGamesAchievements,
+  syncPlayGamesLeaderboard,
+} from "../lib/playGamesCloudAuth";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
@@ -264,7 +267,11 @@ export const useAchievements = () => {
       gotAllGrayStreak: false,
     };
 
-    return commitProgress(base, next, ctx);
+    const unlocked = commitProgress(base, next, ctx);
+    try {
+      syncPlayGamesLeaderboard(ctx.totalWins);
+    } catch {}
+    return unlocked;
   };
 
   const recordGuess = (

@@ -16,6 +16,7 @@ import {
   clearPlayGamesSession,
   maybeRenewPlayGamesSession,
   isPlayGamesAvailable,
+  syncPlayGamesLeaderboard,
   PLAYGAMES_SESSION_STORAGE_KEY,
   type PlayGamesSession,
 } from "../lib/playGamesCloudAuth";
@@ -157,6 +158,7 @@ export const useCloudAuth = () => {
     let cancelled = false;
     void maybeRenewPlayGamesSession().then((renewed) => {
       if (!cancelled) setPlayGamesSession(renewed);
+      if (renewed) syncPlayGamesLeaderboard();
     });
     return () => {
       cancelled = true;

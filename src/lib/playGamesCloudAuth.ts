@@ -18,6 +18,7 @@ import type { CapacitorSharePlugin } from "./share";
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
 const PENDING_UNLOCKS_KEY = "vagudle-playgames-pending-unlocks:v1";
 const PENDING_STEPS_KEY = "vagudle-playgames-pending-steps:v1";
+const TOTAL_WINS_LEADERBOARD_ID = "CgkIsKCwqpsCEAIQJA";
 
 export type PlayGamesSession = {
   token: string;
@@ -40,6 +41,10 @@ type CapacitorPlayGamesPlugin = {
   setAchievementSteps: (options: {
     achievementId: string;
     steps: number;
+  }) => Promise<void>;
+  submitScore: (options: {
+    leaderboardId: string;
+    score: number;
   }) => Promise<void>;
 };
 
@@ -248,6 +253,7 @@ export const renewPlayGamesSession = async (
 
     storePlayGamesSession(renewed);
     flushPendingPlayGamesAchievements();
+    syncPlayGamesLeaderboard();
     return renewed;
   } catch {
     return null;
@@ -398,6 +404,32 @@ const getIncrementalSteps = (
   }
 };
 
+export const computeTotalWins = (): number => {
+  const normal = loadStats(false);
+  const hard = loadStats(true);
+  return (
+    normal.totalGames -
+    normal.gamesFailed +
+    (hard.totalGames - hard.gamesFailed)
+  );
+};
+
+const pushLeaderboardScore = async (score: number): Promise<void> => {
+  if (!isPlayGamesAvailable()) return;
+
+  try {
+    const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
+    await plugin?.submitScore({
+      leaderboardId: TOTAL_WINS_LEADERBOARD_ID,
+      score,
+    });
+  } catch {}
+};
+
+export const syncPlayGamesLeaderboard = (totalWins?: number): void => {
+  void pushLeaderboardScore(totalWins ?? computeTotalWins());
+};
+
 export const backfillPlayGamesAchievements = (): void => {
   const progress = loadAchievementProgress();
   const normal = loadStats(false);
@@ -417,6 +449,7 @@ export const backfillPlayGamesAchievements = (): void => {
     bestCurrentStreak,
     uniqueWordCount,
   });
+  syncPlayGamesLeaderboard(totalWins);
 };
 
 export const syncPlayGamesAchievements = (
