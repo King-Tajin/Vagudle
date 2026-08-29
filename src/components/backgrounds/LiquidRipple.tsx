@@ -4,6 +4,10 @@ import {
   subscribeToRipples,
   type RippleEvent,
 } from "../../lib/liquidRippleBus";
+import {
+  isWebglSupported,
+  notifyWebglUnavailable,
+} from "../../lib/webglSupport";
 import type { CharStatus } from "../../lib/statuses";
 
 const BASE_BACKGROUND = "#05060d";
@@ -93,12 +97,18 @@ export const LiquidRipple = (): React.JSX.Element => {
     container.style.opacity = "0";
     container.style.transition = "none";
 
+    if (!isWebglSupported()) {
+      notifyWebglUnavailable("liquid_ripple");
+      return;
+    }
+
     let fluid: WebGLFluidEnhanced | null = null;
     try {
       fluid = new WebGLFluidEnhanced(container);
       fluid.setConfig(FLUID_CONFIG);
       fluid.start();
     } catch {
+      notifyWebglUnavailable("liquid_ripple");
       return;
     }
 

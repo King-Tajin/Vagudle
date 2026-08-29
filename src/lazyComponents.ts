@@ -191,3 +191,8 @@ export const OfflineModeModal = lazy(() =>
     default: m.OfflineModeModal,
   }))
 );
+export const WebglUnavailableModal = lazy(() =>
+  import("./components/modals/WebglUnavailableModal").then((m) => ({
+    default: m.WebglUnavailableModal,
+  }))
+);

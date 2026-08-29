@@ -33,6 +33,7 @@ export const MODAL_TITLE_DAILY_LEADERBOARD = "Daily Leaderboard";
 export const MODAL_TITLE_RESET_ALL_DATA = "Reset All Data";
 export const MODAL_TITLE_CREATE_CHALLENGE = "Create Challenge";
 export const MODAL_TITLE_OFFLINE_MODE = "You're Offline";
+export const MODAL_TITLE_WEBGL_UNAVAILABLE = "Graphics Not Supported";
 
 export const OFFLINE_MODE_INTRO_TEXT =
   "We couldn't reach the Vagudle servers. You can still play the base game offline.";
@@ -50,6 +51,10 @@ export const OFFLINE_MODE_UNAVAILABLE_ITEMS = [
   "Cloud save and account sign-in",
 ];
 export const OFFLINE_MODE_DISMISS_BUTTON_TEXT = "PLAY OFFLINE";
+
+export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
+  `${backgroundLabel} needs WebGL, which your browser or device doesn't support. Try updating your graphics drivers, switching browsers, or picking a different background.`;
+export const WEBGL_UNAVAILABLE_DISMISS_BUTTON_TEXT = "OK";
 
 export const SETTINGS_HARD_MODE_LABEL = "Hard Mode";
 export const SETTINGS_HARD_MODE_DESCRIPTION =

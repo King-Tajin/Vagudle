@@ -48,6 +48,7 @@ export type BackgroundDef = {
   videoSrc?: string;
   objectPosition?: string;
   attribution?: BackgroundAttribution;
+  requiresWebGL?: boolean;
 };
 
 export const BACKGROUNDS: BackgroundDef[] = [
@@ -210,6 +211,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
     mobileLabel: "RIPPLES",
     requiresAchievementId: "blind_faith",
     kind: "css",
+    requiresWebGL: true,
   },
   {
     id: "spinning_seal",

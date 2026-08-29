@@ -38,6 +38,7 @@ import {
   ActivityAccountChoiceScreen,
   ActivityAlreadyPlayedScreen,
   OfflineModeModal,
+  WebglUnavailableModal,
 } from "./lazyComponents";
 
 import { LoadingScreen } from "./components/screens/GameScreens";
@@ -47,6 +48,7 @@ import { useIsMobile } from "./hooks/useIsMobile";
 import { usePageChrome } from "./hooks/usePageChrome";
 import { useDiscourageInAppBrowser } from "./hooks/useDiscourageInAppBrowser";
 import { useOfflineModeCheck } from "./hooks/useOfflineModeCheck";
+import { useWebglUnavailableModal } from "./hooks/useWebglUnavailableModal";
 import { useTilePainting } from "./hooks/useTilePainting";
 import { useDuelResult } from "./hooks/useDuelResult";
 import { useDailyActivityResult } from "./hooks/useDailyActivityResult";
@@ -805,6 +807,11 @@ function App() {
   usePageChrome({ isDuelMode, isChallengeMode, isDailyMode });
   useDiscourageInAppBrowser({ showErrorAlert });
   const { isOfflineModalOpen, handleCloseOfflineModal } = useOfflineModeCheck();
+  const {
+    isWebglUnavailableModalOpen,
+    webglUnavailableBackgroundLabel,
+    handleCloseWebglUnavailableModal,
+  } = useWebglUnavailableModal();
   if (isLoading) return <LoadingScreen />;
   const screenFallback = (
     <div
@@ -1081,6 +1088,13 @@ function App() {
           <OfflineModeModal
             isOpen={isOfflineModalOpen}
             handleClose={handleCloseOfflineModal}
+          />
+        </Suspense>
+        <Suspense fallback={null}>
+          <WebglUnavailableModal
+            isOpen={isWebglUnavailableModalOpen}
+            backgroundLabel={webglUnavailableBackgroundLabel}
+            handleClose={handleCloseWebglUnavailableModal}
           />
         </Suspense>
       </div>
