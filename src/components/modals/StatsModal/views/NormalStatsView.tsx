@@ -1,9 +1,15 @@
 import { BaseModal } from "../../BaseModal";
 import { StatBar } from "../../../stats/StatBar";
+import { DailyStatBar } from "../../../stats/DailyStatBar";
 import { Histogram } from "../../../stats/Histogram";
 import { Share2, RotateCcw, Swords } from "lucide-react";
-import { shareStatus, shareStats } from "../../../../lib/share";
+import {
+  shareStatus,
+  shareStats,
+  shareDailyStats,
+} from "../../../../lib/share";
 import { type GameStats } from "../../../../lib/localStorage";
+import { type DailyStats } from "../../../../lib/daily";
 import {
   STATISTICS_TITLE,
   GUESS_DISTRIBUTION_TEXT,
@@ -23,12 +29,15 @@ const TAB_INACTIVE_STYLE = {
 const TAB_BASE =
   "flex-1 py-2 font-pixel text-xs tracking-widest transition-colors";
 
+type StatsTab = "normal" | "hard" | "daily";
+
 type Props = {
   isOpen: boolean;
   handleClose: () => void;
-  activeTab: "normal" | "hard";
-  setActiveTab: (tab: "normal" | "hard") => void;
+  activeTab: StatsTab;
+  setActiveTab: (tab: StatsTab) => void;
   displayStats: GameStats;
+  dailyStats: DailyStats;
   tabMaxChallenges: number;
   gameOutcome: GameOutcome;
   numberOfGuessesMade: number;
@@ -48,6 +57,7 @@ export const NormalStatsView = ({
   activeTab,
   setActiveTab,
   displayStats,
+  dailyStats,
   tabMaxChallenges,
   gameOutcome,
   numberOfGuessesMade,
@@ -60,7 +70,10 @@ export const NormalStatsView = ({
   gameMaxChallenges,
   onOpenChallengeCreator,
 }: Props) => {
-  const hasGames = displayStats.totalGames > 0;
+  const isDailyTab = activeTab === "daily";
+  const hasGames = isDailyTab
+    ? dailyStats.totalPlayed > 0
+    : displayStats.totalGames > 0;
   const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
   return (
     <BaseModal
@@ -85,24 +98,38 @@ export const NormalStatsView = ({
         >
           HARD
         </button>
+        <button
+          type="button"
+          className={TAB_BASE}
+          style={activeTab === "daily" ? TAB_ACTIVE_STYLE : TAB_INACTIVE_STYLE}
+          onClick={() => setActiveTab("daily")}
+        >
+          DAILY
+        </button>
       </div>
       {hasGames ? (
         <>
-          <StatBar gameStats={displayStats} />
-          <p className="font-pixel text-xs text-gray-500 tracking-widest mt-4 mb-3">
-            {GUESS_DISTRIBUTION_TEXT.toUpperCase()} -{" "}
-            {displayStats.totalGames - displayStats.gamesFailed} GAME
-            {displayStats.totalGames - displayStats.gamesFailed === 1
-              ? ""
-              : "S"}{" "}
-            WON
-          </p>
-          <Histogram
-            gameStats={displayStats}
-            isGameWon={gameOutcome === "won" && isCurrentTab}
-            numberOfGuessesMade={numberOfGuessesMade}
-            maxChallenges={tabMaxChallenges}
-          />
+          {isDailyTab ? (
+            <DailyStatBar dailyStats={dailyStats} />
+          ) : (
+            <>
+              <StatBar gameStats={displayStats} />
+              <p className="font-pixel text-xs text-gray-500 tracking-widest mt-4 mb-3">
+                {GUESS_DISTRIBUTION_TEXT.toUpperCase()} -{" "}
+                {displayStats.totalGames - displayStats.gamesFailed} GAME
+                {displayStats.totalGames - displayStats.gamesFailed === 1
+                  ? ""
+                  : "S"}{" "}
+                WON
+              </p>
+              <Histogram
+                gameStats={displayStats}
+                isGameWon={gameOutcome === "won" && isCurrentTab}
+                numberOfGuessesMade={numberOfGuessesMade}
+                maxChallenges={tabMaxChallenges}
+              />
+            </>
+          )}
         </>
       ) : (
         <div className="py-8 flex flex-col items-center gap-2">
@@ -110,9 +137,11 @@ export const NormalStatsView = ({
             NO GAMES YET
           </p>
           <p className="font-code text-xs text-gray-500 text-center">
-            {activeTab === "hard"
-              ? "Play a game in Hard Mode to see stats here."
-              : "Play a game to see stats here."}
+            {isDailyTab
+              ? "Play today's daily to see stats here."
+              : activeTab === "hard"
+                ? "Play a game in Hard Mode to see stats here."
+                : "Play a game to see stats here."}
           </p>
         </div>
       )}
@@ -133,11 +162,13 @@ export const NormalStatsView = ({
               e.currentTarget.style.filter = "brightness(1)";
             }}
             onClick={() =>
-              shareStats(
-                displayStats,
-                activeTab === "hard",
-                handleShareToClipboard
-              )
+              isDailyTab
+                ? shareDailyStats(dailyStats, handleShareToClipboard)
+                : shareStats(
+                    displayStats,
+                    activeTab === "hard",
+                    handleShareToClipboard
+                  )
             }
           >
             <Share2 className="w-3 h-3" />
@@ -145,7 +176,7 @@ export const NormalStatsView = ({
           </button>
         </div>
       )}
-      {gameOutcome !== "playing" && (
+      {!isDailyTab && gameOutcome !== "playing" && (
         <>
           <div
             className={`mt-3 ${isActivityMode ? "" : "grid grid-cols-2 gap-3"}`}

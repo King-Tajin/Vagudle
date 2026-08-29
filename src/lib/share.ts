@@ -2,7 +2,7 @@ import { getGuessStatuses } from "./statuses";
 import { unicodeSplit } from "./words";
 import { GAME_TITLE } from "../constants/strings";
 import { type GameStats } from "./localStorage";
-import { DAILY_PATH } from "./daily";
+import { DAILY_PATH, type DailyStats } from "./daily";
 import { getPublicOrigin } from "./publicOrigin";
 import { UAParser } from "ua-parser-js";
 import { DICT_LABELS, type ChallengeConfig } from "./challenge";
@@ -171,6 +171,33 @@ export const shareStats = async (
 
   await doShare(
     { title: `${GAME_TITLE}${modeTag} Stats`, text: textToShare },
+    textToShare,
+    handleShareToClipboard
+  );
+};
+
+export const shareDailyStats = async (
+  stats: DailyStats,
+  handleShareToClipboard: () => void
+) => {
+  const winRate =
+    stats.totalPlayed > 0
+      ? Math.round((stats.totalWon / stats.totalPlayed) * 100)
+      : 0;
+  const lines = [
+    `${GAME_TITLE} [DAILY] Stats`,
+    `${window.location.href}`,
+    ``,
+    `🎮 Played:   ${stats.totalPlayed}`,
+    `✅ Win Rate: ${winRate}%`,
+    `🔥 Streak:   ${stats.currentStreak}`,
+    `🏆 Best:     ${stats.bestStreak}`,
+  ];
+
+  const textToShare = lines.join("\n");
+
+  await doShare(
+    { title: `${GAME_TITLE} [DAILY] Stats`, text: textToShare },
     textToShare,
     handleShareToClipboard
   );

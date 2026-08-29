@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { type GameStats } from "../../../lib/localStorage";
+import { type DailyStats } from "../../../lib/daily";
 import { BaseModal } from "../BaseModal";
 import { ChallengeCreatorModal } from "../ChallengeCreatorModal";
 import {
@@ -13,6 +14,7 @@ import {
 import type { Achievement } from "../../../lib/achievements";
 import { type BackgroundId } from "../../../lib/backgrounds";
 import type { DuelConfig } from "../../../lib/duel";
+import type { GameMode } from "../../../lib/gameMode";
 import { playSadTrombone } from "../../../lib/sounds";
 import { type GameOutcome } from "../../../lib/gameOutcome";
 import { AchievementView } from "./views/AchievementView";
@@ -28,6 +30,8 @@ type Props = {
   guesses: string[];
   gameStats: GameStats;
   hardGameStats: GameStats;
+  dailyStats: DailyStats;
+  gameMode: GameMode;
   gameOutcome: GameOutcome;
   handleShareToClipboard: () => void;
   numberOfGuessesMade: number;
@@ -51,6 +55,8 @@ export const StatsModal = ({
   guesses,
   gameStats,
   hardGameStats,
+  dailyStats,
+  gameMode,
   gameOutcome,
   handleShareToClipboard,
   numberOfGuessesMade,
@@ -66,8 +72,8 @@ export const StatsModal = ({
   onAchievementsViewed,
   setBackgroundId,
 }: Props) => {
-  const [activeTab, setActiveTab] = useState<"normal" | "hard">(
-    hardMode ? "hard" : "normal"
+  const [activeTab, setActiveTab] = useState<"normal" | "hard" | "daily">(
+    gameMode === "daily" ? "daily" : hardMode ? "hard" : "normal"
   );
   const [showChallengeCreator, setShowChallengeCreator] = useState(false);
   const [achievementIdx, setAchievementIdx] = useState(0);
@@ -80,7 +86,9 @@ export const StatsModal = ({
     if (isOpen) {
       setShowChallengeCreator(false);
       setAchievementIdx(0);
-      setActiveTab(hardMode ? "hard" : "normal");
+      setActiveTab(
+        gameMode === "daily" ? "daily" : hardMode ? "hard" : "normal"
+      );
     }
   }
 
@@ -195,6 +203,7 @@ export const StatsModal = ({
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       displayStats={displayStats}
+      dailyStats={dailyStats}
       tabMaxChallenges={tabMaxChallenges}
       gameOutcome={gameOutcome}
       numberOfGuessesMade={numberOfGuessesMade}

@@ -14,6 +14,8 @@ export const TOTAL_TRIES_TEXT = "Total tries";
 export const SUCCESS_RATE_TEXT = "Success rate";
 export const CURRENT_STREAK_TEXT = "Current streak";
 export const BEST_STREAK_TEXT = "Best streak";
+export const DAYS_PLAYED_TEXT = "Days played";
+export const LAST_COMPLETED_TEXT = "Last completed";
 export const DISCOURAGE_INAPP_BROWSER_TEXT =
   "You are using an embedded browser and may experience problems sharing or saving your results. We encourage you rather to use your device's default browser.";
 export const CHALLENGE_WIN_MESSAGES = [
@@ -80,7 +82,8 @@ export const SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION =
 export const SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL = "Inactivity Reminder";
 export const SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION =
   "Get nudged if you haven't played in a while.";
-export const SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX = "days";
+export const SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX =
+  "days of inactivity";
 
 export const SETTINGS_HAPTICS_LABEL = "Haptic Feedback";
 export const SETTINGS_HAPTICS_DESCRIPTION =

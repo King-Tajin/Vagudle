@@ -9,7 +9,7 @@ import {
   STREAK_WARNING_MAX_HOURS,
 } from "../../../constants/settings";
 
-export const NumberStepperInput = ({
+const NumberStepperInput = ({
   value,
   min,
   max,
