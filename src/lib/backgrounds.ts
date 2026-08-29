@@ -121,7 +121,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
           sourceUrl: "https://www.youtube.com/watch?v=MUVo20q6tx8",
         },
       ],
-      license: "Unknown",
+      license: "Creative Commons Attribution license (reuse allowed)",
     },
   },
   {
@@ -232,7 +232,7 @@ export const BACKGROUNDS: BackgroundDef[] = [
           creator: "Maniacs of Noise",
         },
       ],
-      license: "Unknown",
+      license: "Creative Commons Attribution (CC BY)",
     },
   },
 ];
