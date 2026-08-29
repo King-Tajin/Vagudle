@@ -21,7 +21,6 @@ export const REMINDER_NOTIFICATION_CHANNEL_ID = "vagudle-reminders";
 export const REMINDER_NOTIFICATION_LARGE_ICON = "ic_notification_large";
 
 export const DEFAULT_DAILY_REMINDER_HOUR = 20;
-export const DEFAULT_DAILY_REMINDER_MINUTE = 0;
 
 type CapacitorLocalNotificationsSchedule = {
   at?: Date;

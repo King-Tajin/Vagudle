@@ -275,19 +275,24 @@ export const CloudSaveSection = ({
   const [email, setEmail] = useState("");
   const [linkStatus, setLinkStatus] = useState<LinkStatus | null>(null);
   const playGamesAvailable = useMemo(() => isPlayGamesAvailable(), []);
+  const linkStatusRequestIdRef = useRef(0);
 
   const refreshLinkStatus = useCallback(async () => {
+    const requestId = ++linkStatusRequestIdRef.current;
     const idToken = await getIdTokenForCurrentUser();
-    setLinkStatus(idToken ? await fetchLinkStatus(idToken) : null);
+    const status = idToken ? await fetchLinkStatus(idToken) : null;
+    if (linkStatusRequestIdRef.current === requestId) setLinkStatus(status);
   }, []);
 
   useEffect(() => {
+    const requestId = ++linkStatusRequestIdRef.current;
     let cancelled = false;
     void (async () => {
       const idToken = await getIdTokenForCurrentUser();
-      if (cancelled) return;
+      if (cancelled || linkStatusRequestIdRef.current !== requestId) return;
       const status = idToken ? await fetchLinkStatus(idToken) : null;
-      if (!cancelled) setLinkStatus(status);
+      if (!cancelled && linkStatusRequestIdRef.current === requestId)
+        setLinkStatus(status);
     })();
     return () => {
       cancelled = true;

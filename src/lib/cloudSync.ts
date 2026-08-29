@@ -427,6 +427,12 @@ export const linkDiscordOAuthWithCurrentUser = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
+    if (!res.ok) {
+      return {
+        status: "error",
+        message: "Could not link your Discord account.",
+      };
+    }
     const data = (await res.json()) as { success: boolean; error?: string };
     if (data.success) return { status: "linked" };
     return {
@@ -466,6 +472,12 @@ export const linkPlayGamesOAuthWithCurrentUser = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
+    if (!res.ok) {
+      return {
+        status: "error",
+        message: "Could not link your Play Games account.",
+      };
+    }
     const data = (await res.json()) as { success: boolean; error?: string };
     if (data.success) return { status: "linked" };
     return {

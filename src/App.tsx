@@ -253,11 +253,13 @@ function App() {
   useEffect(() => {
     const pendingLink = getPendingDiscordLinkCode();
     if (!pendingLink) return;
+    let isCancelled = false;
     void (async () => {
       const result = await linkDiscordOAuthWithCurrentUser(
         pendingLink.code,
         pendingLink.redirectUri
       );
+      if (isCancelled) return;
       if (result.status === "linked") {
         showSuccessAlert("Discord account linked!");
         setIsSettingsModalOpen(true);
@@ -265,6 +267,9 @@ function App() {
         showErrorAlert(result.message);
       }
     })();
+    return () => {
+      isCancelled = true;
+    };
   }, [showSuccessAlert, showErrorAlert]);
 
   const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
