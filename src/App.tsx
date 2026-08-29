@@ -24,11 +24,7 @@ import { CloudSaveConflictOverlay } from "./components/overlays/CloudSaveConflic
 import { WinCelebrationOverlay } from "./components/overlays/WinCelebrationOverlay";
 import { AchievementRevealOverlay } from "./components/overlays/AchievementRevealOverlay";
 import { useAchievements } from "./hooks/useAchievements";
-import {
-  BACKGROUNDS,
-  type BackgroundId,
-  loadBackgroundId,
-} from "./lib/backgrounds";
+import { BACKGROUNDS } from "./lib/backgrounds";
 import type { Achievement } from "./lib/achievements";
 import type { CharStatus } from "./lib/statuses";
 
@@ -64,6 +60,7 @@ import { useGameInitialization } from "./hooks/useGameInitialization";
 import { useGameFlow } from "./hooks/useGameFlow";
 import { useGuessInput } from "./hooks/useGuessInput";
 import { useSaveGameState } from "./hooks/useSaveGameState";
+import { useGameSettings } from "./hooks/useGameSettings";
 import { useCrossTabSync } from "./hooks/useCrossTabSync";
 import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 import { useDailyMode } from "./hooks/useDailyMode";
@@ -288,44 +285,41 @@ function App() {
     Achievement[]
   >([]);
   const [wordLength, setWordLength] = useState(savedSettings.wordLength);
-  const [hardMode, setHardMode] = useState(savedSettings.hardMode);
-  const [showGrayCount, setShowGrayCount] = useState(
-    savedSettings.showGrayCount
-  );
-  const [autoGray, setAutoGray] = useState(savedSettings.autoGray ?? false);
-  const [autoGreen, setAutoGreen] = useState(savedSettings.autoGreen ?? false);
-  const [extraEffects, setExtraEffects] = useState(
-    savedSettings.extraEffects ?? true
-  );
-  const [dailyStreakRemindersEnabled, setDailyStreakRemindersEnabled] =
-    useState(savedSettings.dailyStreakRemindersEnabled ?? true);
-  const [streakResetWarningHours, setStreakResetWarningHours] = useState(
-    savedSettings.streakResetWarningHours ?? 3
-  );
-  const [customReminderTimeEnabled, setCustomReminderTimeEnabled] = useState(
-    savedSettings.customReminderTimeEnabled ?? false
-  );
-  const [customReminderHour, setCustomReminderHour] = useState(
-    savedSettings.customReminderHour ?? 9
-  );
-  const [customReminderMinute, setCustomReminderMinute] = useState(
-    savedSettings.customReminderMinute ?? 0
-  );
-  const [customReminderPeriod, setCustomReminderPeriod] = useState<"AM" | "PM">(
-    savedSettings.customReminderPeriod ?? "AM"
-  );
-  const [inactivityReminderEnabled, setInactivityReminderEnabled] = useState(
-    savedSettings.inactivityReminderEnabled ?? true
-  );
-  const [inactivityReminderDays, setInactivityReminderDays] = useState(
-    savedSettings.inactivityReminderDays ?? 3
-  );
-  const [hapticsEnabled, setHapticsEnabled] = useState(
-    savedSettings.hapticsEnabled ?? true
-  );
-  const [backgroundId, setBackgroundId] = useState<BackgroundId>(() =>
-    loadBackgroundId(window.innerWidth < 640, isDiscordActivity)
-  );
+  const { settings, settingsHandlers } = useGameSettings(savedSettings);
+  const {
+    showGrayCount,
+    hardMode,
+    autoGray,
+    autoGreen,
+    extraEffects,
+    backgroundId,
+    dailyStreakRemindersEnabled,
+    streakResetWarningHours,
+    customReminderTimeEnabled,
+    customReminderHour,
+    customReminderMinute,
+    customReminderPeriod,
+    inactivityReminderEnabled,
+    inactivityReminderDays,
+    hapticsEnabled,
+  } = settings;
+  const {
+    setShowGrayCount,
+    setHardMode,
+    setAutoGray,
+    setAutoGreen,
+    setExtraEffects,
+    setBackgroundId,
+    setDailyStreakRemindersEnabled,
+    setStreakResetWarningHours,
+    setCustomReminderTimeEnabled,
+    setCustomReminderHour,
+    setCustomReminderMinute,
+    setCustomReminderPeriod,
+    setInactivityReminderEnabled,
+    setInactivityReminderDays,
+    setHapticsEnabled,
+  } = settingsHandlers;
   const autoGrayLetters = useMemo(
     () =>
       autoGray ? computeFullyGrayLetters(solution, guesses) : new Set<string>(),
@@ -764,21 +758,8 @@ function App() {
     guesses,
     cellColors,
     autoGrayLetters,
-    hardMode,
     wordLength,
-    showGrayCount,
-    autoGray,
-    autoGreen,
-    extraEffects,
-    dailyStreakRemindersEnabled,
-    streakResetWarningHours,
-    customReminderTimeEnabled,
-    customReminderHour,
-    customReminderMinute,
-    customReminderPeriod,
-    inactivityReminderEnabled,
-    inactivityReminderDays,
-    hapticsEnabled,
+    settings,
     isDuelMode,
     duelConfig,
     isChallengeMode,
@@ -983,13 +964,17 @@ function App() {
           hardMode={hardMode}
           extraEffects={extraEffects}
           setExtraEffects={setExtraEffects}
-          cloudUpdatedAt={cloudUpdatedAt}
-          isCloudUpToDate={isUpToDate}
-          showPlayGamesLinkPrompt={showPlayGamesLinkPrompt}
-          dismissPlayGamesLinkPrompt={dismissPlayGamesLinkPrompt}
+          cloudSyncStatus={{
+            updatedAt: cloudUpdatedAt,
+            isUpToDate,
+            showPlayGamesLinkPrompt,
+            dismissPlayGamesLinkPrompt,
+          }}
           gameMode={gameMode}
-          isActivityMode={isDiscordActivity}
-          activityAccessToken={activityAccessToken}
+          activityContext={{
+            isActivityMode: isDiscordActivity,
+            activityAccessToken,
+          }}
           isMobile={isMobile}
           isGameWon={isGameWon}
           isGameLost={isGameLost}
@@ -1078,8 +1063,10 @@ function App() {
             setIsSettingsModalOpen(false);
             if (isDailyMode) void handleOpenDaily();
           }}
-          settingsAccountJumpKey={settingsAccountJumpKey}
-          settingsBackgroundJumpKey={settingsBackgroundJumpKey}
+          jumpKeys={{
+            account: settingsAccountJumpKey,
+            background: settingsBackgroundJumpKey,
+          }}
           isChallengeModalOpen={isChallengeModalOpen}
           handlePlayChallenge={() => setIsChallengeModalOpen(false)}
           isDuelModalOpen={isDuelModalOpen}

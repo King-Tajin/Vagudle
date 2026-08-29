@@ -10,6 +10,7 @@ import {
 import { saveChallengeState } from "../lib/challenge";
 import { saveDuelState } from "../lib/duel";
 import { saveDailyProgress } from "../lib/daily";
+import type { GameSettingsValues } from "./useGameSettings";
 
 type Params = {
   isLoading: boolean;
@@ -17,21 +18,8 @@ type Params = {
   guesses: string[];
   cellColors: { [key: string]: CharStatus };
   autoGrayLetters: Set<string>;
-  hardMode: boolean;
   wordLength: number;
-  showGrayCount: boolean;
-  autoGray: boolean;
-  autoGreen: boolean;
-  extraEffects: boolean;
-  dailyStreakRemindersEnabled: boolean;
-  streakResetWarningHours: number;
-  customReminderTimeEnabled: boolean;
-  customReminderHour: number;
-  customReminderMinute: number;
-  customReminderPeriod: "AM" | "PM";
-  inactivityReminderEnabled: boolean;
-  inactivityReminderDays: number;
-  hapticsEnabled: boolean;
+  settings: GameSettingsValues;
   isDuelMode: boolean;
   duelConfig: DuelConfig | null;
   isChallengeMode: boolean;
@@ -46,21 +34,8 @@ export const useSaveGameState = ({
   guesses,
   cellColors,
   autoGrayLetters,
-  hardMode,
   wordLength,
-  showGrayCount,
-  autoGray,
-  autoGreen,
-  extraEffects,
-  dailyStreakRemindersEnabled,
-  streakResetWarningHours,
-  customReminderTimeEnabled,
-  customReminderHour,
-  customReminderMinute,
-  customReminderPeriod,
-  inactivityReminderEnabled,
-  inactivityReminderDays,
-  hapticsEnabled,
+  settings,
   isDuelMode,
   duelConfig,
   isChallengeMode,
@@ -70,41 +45,8 @@ export const useSaveGameState = ({
 }: Params) => {
   useEffect(() => {
     if (isLoading) return;
-    saveSettingsToLocalStorage({
-      wordLength,
-      showGrayCount,
-      hardMode,
-      autoGray,
-      autoGreen,
-      extraEffects,
-      dailyStreakRemindersEnabled,
-      streakResetWarningHours,
-      customReminderTimeEnabled,
-      customReminderHour,
-      customReminderMinute,
-      customReminderPeriod,
-      inactivityReminderEnabled,
-      inactivityReminderDays,
-      hapticsEnabled,
-    });
-  }, [
-    isLoading,
-    wordLength,
-    showGrayCount,
-    hardMode,
-    autoGray,
-    autoGreen,
-    extraEffects,
-    dailyStreakRemindersEnabled,
-    streakResetWarningHours,
-    customReminderTimeEnabled,
-    customReminderHour,
-    customReminderMinute,
-    customReminderPeriod,
-    inactivityReminderEnabled,
-    inactivityReminderDays,
-    hapticsEnabled,
-  ]);
+    saveSettingsToLocalStorage({ wordLength, ...settings });
+  }, [isLoading, wordLength, settings]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -129,7 +71,7 @@ export const useSaveGameState = ({
         solution,
         cellColors,
         autoGrayLetters: Array.from(autoGrayLetters),
-        hardMode,
+        hardMode: settings.hardMode,
       });
     }
   }, [
@@ -144,6 +86,6 @@ export const useSaveGameState = ({
     isDailyMode,
     dailyConfig,
     solution,
-    hardMode,
+    settings.hardMode,
   ]);
 };

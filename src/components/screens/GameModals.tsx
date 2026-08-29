@@ -32,13 +32,17 @@ type Props = {
   hardMode: boolean;
   extraEffects: boolean;
   setExtraEffects: (value: boolean) => void;
-  cloudUpdatedAt: string | null;
-  isCloudUpToDate: boolean;
-  showPlayGamesLinkPrompt: boolean;
-  dismissPlayGamesLinkPrompt: () => void;
+  cloudSyncStatus: {
+    updatedAt: string | null;
+    isUpToDate: boolean;
+    showPlayGamesLinkPrompt: boolean;
+    dismissPlayGamesLinkPrompt: () => void;
+  };
   gameMode: GameMode;
-  isActivityMode: boolean;
-  activityAccessToken: string | null;
+  activityContext: {
+    isActivityMode: boolean;
+    activityAccessToken: string | null;
+  };
   isMobile: boolean;
   isGameWon: boolean;
   isGameLost: boolean;
@@ -114,8 +118,10 @@ type Props = {
   handleCloseStats: () => void;
   isSettingsModalOpen: boolean;
   handleCloseSettings: () => void;
-  settingsAccountJumpKey: number;
-  settingsBackgroundJumpKey: number;
+  jumpKeys: {
+    account: number;
+    background: number;
+  };
   isChallengeModalOpen: boolean;
   handlePlayChallenge: () => void;
   isDuelModalOpen: boolean;
@@ -134,13 +140,9 @@ export const GameModals = ({
   hardMode,
   extraEffects,
   setExtraEffects,
-  cloudUpdatedAt,
-  isCloudUpToDate,
-  showPlayGamesLinkPrompt,
-  dismissPlayGamesLinkPrompt,
+  cloudSyncStatus,
   gameMode,
-  isActivityMode,
-  activityAccessToken,
+  activityContext,
   isMobile,
   isGameWon,
   isGameLost,
@@ -216,8 +218,7 @@ export const GameModals = ({
   handleCloseStats,
   isSettingsModalOpen,
   handleCloseSettings,
-  settingsAccountJumpKey,
-  settingsBackgroundJumpKey,
+  jumpKeys,
   isChallengeModalOpen,
   handlePlayChallenge,
   isDuelModalOpen,
@@ -227,6 +228,7 @@ export const GameModals = ({
   isAchievementsModalOpen,
   handleCloseAchievements,
 }: Props) => {
+  const { isActivityMode } = activityContext;
   return (
     <>
       <Suspense fallback={null}>
@@ -330,20 +332,11 @@ export const GameModals = ({
                   : null
           }
           activityContext={{
-            isActivityMode,
+            ...activityContext,
             freeBackgroundsMode: isActivityMode && gameMode !== "normal",
-            activityAccessToken,
           }}
-          cloudSyncStatus={{
-            updatedAt: cloudUpdatedAt,
-            isUpToDate: isCloudUpToDate,
-            showPlayGamesLinkPrompt,
-            dismissPlayGamesLinkPrompt,
-          }}
-          jumpKeys={{
-            account: settingsAccountJumpKey,
-            background: settingsBackgroundJumpKey,
-          }}
+          cloudSyncStatus={cloudSyncStatus}
+          jumpKeys={jumpKeys}
         />
         {gameMode === "challenge" && challengeConfig && (
           <ChallengeAcceptModal

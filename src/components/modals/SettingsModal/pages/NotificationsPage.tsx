@@ -1,7 +1,9 @@
 import { SettingsToggle } from "../../SettingsToggle";
 import { NotificationTimePicker } from "../NotificationTimePicker";
-import { InactivityDaysInput } from "../InactivityDaysInput";
-import { StreakResetHoursInput } from "../StreakResetHoursInput";
+import {
+  InactivityDaysInput,
+  StreakResetHoursInput,
+} from "../NumberStepperInput";
 import {
   SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL,
   SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION,

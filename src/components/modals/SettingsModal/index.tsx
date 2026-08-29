@@ -7,50 +7,19 @@ import { NotificationsPage } from "./pages/NotificationsPage";
 import { tabBase, activeTabStyle, inactiveTabStyle } from "./styles";
 import { type ChallengeConfig } from "../../../lib/challenge";
 import type { DuelConfig } from "../../../lib/duel";
-import type { BackgroundId } from "../../../lib/backgrounds";
 import { MODAL_TITLE_SETTINGS } from "../../../constants/strings";
 import {
   ENABLE_NOTIFICATION_SETTINGS,
   ENABLE_HAPTICS_SETTINGS,
 } from "../../../constants/settings";
+import type {
+  GameSettingsValues,
+  GameSettingsHandlers,
+} from "../../../hooks/useGameSettings";
+
+export type { GameSettingsValues, GameSettingsHandlers };
 
 type Tab = "settings" | "challenge";
-
-export type GameSettingsValues = {
-  showGrayCount: boolean;
-  hardMode: boolean;
-  autoGray: boolean;
-  autoGreen: boolean;
-  extraEffects: boolean;
-  backgroundId: BackgroundId;
-  dailyStreakRemindersEnabled: boolean;
-  streakResetWarningHours: number;
-  customReminderTimeEnabled: boolean;
-  customReminderHour: number;
-  customReminderMinute: number;
-  customReminderPeriod: "AM" | "PM";
-  inactivityReminderEnabled: boolean;
-  inactivityReminderDays: number;
-  hapticsEnabled: boolean;
-};
-
-export type GameSettingsHandlers = {
-  setShowGrayCount: (value: boolean) => void;
-  setHardMode: (value: boolean) => void;
-  setAutoGray: (value: boolean) => void;
-  setAutoGreen: (value: boolean) => void;
-  setExtraEffects: (value: boolean) => void;
-  setBackgroundId: (value: BackgroundId) => void;
-  setDailyStreakRemindersEnabled: (value: boolean) => void;
-  setStreakResetWarningHours: (value: number) => void;
-  setCustomReminderTimeEnabled: (value: boolean) => void;
-  setCustomReminderHour: (value: number) => void;
-  setCustomReminderMinute: (value: number) => void;
-  setCustomReminderPeriod: (value: "AM" | "PM") => void;
-  setInactivityReminderEnabled: (value: boolean) => void;
-  setInactivityReminderDays: (value: number) => void;
-  setHapticsEnabled: (value: boolean) => void;
-};
 
 type Props = {
   isOpen: boolean;
