@@ -1,3 +1,5 @@
+import { ACHIEVEMENT_TEXT } from "../constants/strings";
+
 export type AchievementContext = {
   totalWins: number;
   wonInHardMode5Plus: boolean;
@@ -47,125 +49,103 @@ export const COMPLETIONIST_ID = "completionist";
 export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "first_win",
-    title: "First Victory",
-    description: "Win your first game",
+    ...ACHIEVEMENT_TEXT.first_win,
     hidden: false,
     check: (ctx) => ctx.totalWins >= 1,
   },
   {
     id: "win_15",
-    title: "Seasoned Player",
-    description: "Win 15 games",
+    ...ACHIEVEMENT_TEXT.win_15,
     hidden: false,
     check: (ctx) => ctx.totalWins >= 15,
   },
   {
     id: "win_50",
-    title: "Veteran",
-    description: "Win 50 games",
+    ...ACHIEVEMENT_TEXT.win_50,
     hidden: false,
     check: (ctx) => ctx.totalWins >= 50,
   },
   {
     id: "on_a_roll",
-    title: "On a Roll",
-    description: "Win 5 games in a row",
+    ...ACHIEVEMENT_TEXT.on_a_roll,
     hidden: false,
     check: (ctx) => ctx.bestCurrentStreak >= 5,
   },
   {
     id: "unstoppable",
-    title: "Unstoppable",
-    description: "Win 15 games in a row",
+    ...ACHIEVEMENT_TEXT.unstoppable,
     hidden: false,
     check: (ctx) => ctx.bestCurrentStreak >= 15,
   },
   {
     id: "hard_5plus",
-    title: "Hard Core",
-    description: "Beat Hard Mode with a word 5 letters or longer",
+    ...ACHIEVEMENT_TEXT.hard_5plus,
     hidden: false,
     check: (ctx) => ctx.wonInHardMode5Plus,
   },
   {
     id: "fifth_guess",
-    title: "Speed Demon",
-    description: "Solve a word in 5 guesses or fewer",
+    ...ACHIEVEMENT_TEXT.fifth_guess,
     hidden: true,
     check: (ctx) => ctx.wonIn5GuessesEver,
   },
   {
     id: "seven_letters",
-    title: "Heavyweight Champion",
-    description: "Win a game with a 7-letter word",
+    ...ACHIEVEMENT_TEXT.seven_letters,
     hidden: false,
     check: (ctx) => ctx.wonWith7LettersEver,
   },
   {
     id: "close_but_no_cigar",
-    title: "Close But No Cigar",
-    description:
-      "Guess 3 different words in a row with only one letter incorrect",
+    ...ACHIEVEMENT_TEXT.close_but_no_cigar,
     hidden: true,
     check: (ctx) => ctx.gotCloseCallStreak,
   },
   {
     id: "process_of_elimination",
-    title: "Process of Elimination",
-    description:
-      "Guess 3 different words in the same game with every letter incorrect",
+    ...ACHIEVEMENT_TEXT.process_of_elimination,
     hidden: false,
     check: (ctx) => ctx.gotAllGrayStreak,
   },
   {
     id: "word_connoisseur",
-    title: "Word Connoisseur",
-    description: "Guess 200 unique words in normal or hard mode",
+    ...ACHIEVEMENT_TEXT.word_connoisseur,
     hidden: false,
     check: (ctx) => ctx.uniqueWordCount >= 200,
   },
   {
     id: "quack",
-    title: "Quack!",
-    description:
-      "Spell DUCK vertically down any column across 4 guesses in a row",
+    ...ACHIEVEMENT_TEXT.quack,
     hidden: false,
     check: (ctx) => ctx.spelledDuckVertically,
   },
   {
     id: "guess_mouse",
-    title: "Squeak!",
-    description: "Type MOUSE as a guess during a game",
+    ...ACHIEVEMENT_TEXT.guess_mouse,
     hidden: false,
     check: (ctx) => ctx.lastGuess === "mouse",
   },
   {
     id: "nail_biter",
-    title: "Nail-Biter",
-    description: "Win a game on your very last guess",
+    ...ACHIEVEMENT_TEXT.nail_biter,
     hidden: true,
     check: (ctx) => ctx.wonOnFinalGuessEver,
   },
   {
     id: "diversify",
-    title: "Diversify",
-    description:
-      "Win in 3+ guesses without repeating a letter's position across your earlier guesses (excluding solution)",
+    ...ACHIEVEMENT_TEXT.diversify,
     hidden: false,
     check: (ctx) => ctx.wonWithoutReusingLettersEver,
   },
   {
     id: "blind_faith",
-    title: "Blind Faith",
-    description:
-      "Win a game where only one letter position is ever correct before your winning guess",
+    ...ACHIEVEMENT_TEXT.blind_faith,
     hidden: true,
     check: (ctx) => ctx.wonWithMostlyGraysEver,
   },
   {
     id: COMPLETIONIST_ID,
-    title: "Completionist",
-    description: "Unlock all other achievements",
+    ...ACHIEVEMENT_TEXT.completionist,
     hidden: false,
     check: () => false,
   },

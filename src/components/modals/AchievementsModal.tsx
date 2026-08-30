@@ -9,7 +9,16 @@ import {
 import { BaseModal } from "./BaseModal";
 import { ACHIEVEMENTS, type Achievement } from "../../lib/achievements";
 import { BACKGROUNDS } from "../../lib/backgrounds";
-import { MODAL_TITLE_ACHIEVEMENTS } from "../../constants/strings";
+import {
+  MODAL_TITLE_ACHIEVEMENTS,
+  ACHIEVEMENTS_HIDDEN_PLACEHOLDER,
+  ACHIEVEMENTS_PROGRESS_LABEL,
+  ACHIEVEMENTS_UNLOCKS_HIDDEN_TEXT,
+  ACHIEVEMENTS_UNLOCKS_TEXT,
+  ACHIEVEMENTS_PREV_PAGE_LABEL,
+  ACHIEVEMENTS_NEXT_PAGE_LABEL,
+  ACHIEVEMENTS_PAGE_INDICATOR_TEXT,
+} from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -147,17 +156,17 @@ const AchievementRow = ({
             textDecoration: !isUnlocked && !a.hidden ? "line-through" : "none",
           }}
         >
-          {isHiddenLocked ? "???" : a.title}
+          {isHiddenLocked ? ACHIEVEMENTS_HIDDEN_PLACEHOLDER : a.title}
         </p>
         <p className="font-code text-[13px] text-gray-500 leading-snug">
-          {isHiddenLocked ? "???" : a.description}
+          {isHiddenLocked ? ACHIEVEMENTS_HIDDEN_PLACEHOLDER : a.description}
         </p>
 
         {showProgress && (
           <div className="mt-2.5">
             <div className="flex items-center justify-between mb-1">
               <span className="font-pixel text-[10px] text-gray-500 tracking-widest">
-                PROGRESS
+                {ACHIEVEMENTS_PROGRESS_LABEL}
               </span>
               <span
                 className="font-pixel text-[10px] tracking-widest"
@@ -195,7 +204,9 @@ const AchievementRow = ({
           >
             <Award className="w-3.5 h-3.5 text-crown-amber shrink-0" />
             <span className="font-pixel text-[10px] text-crown-amber tracking-widest">
-              {isHiddenLocked ? "UNLOCKS: ???" : `UNLOCKS: ${bg.desktopLabel}`}
+              {isHiddenLocked
+                ? ACHIEVEMENTS_UNLOCKS_HIDDEN_TEXT
+                : ACHIEVEMENTS_UNLOCKS_TEXT(bg.desktopLabel)}
             </span>
           </div>
         )}
@@ -336,13 +347,13 @@ export const AchievementsModal = (props: Props) => {
           onClick={() => canPrev && setPageIndex((i) => i - 1)}
           disabled={!canPrev}
           className="p-2 bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-30 disabled:hover:bg-obsidian-700 text-gray-300 transition-colors pixel-border-sm"
-          aria-label="Previous page"
+          aria-label={ACHIEVEMENTS_PREV_PAGE_LABEL}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
 
         <span className="font-pixel text-xs text-gray-400 tracking-widest">
-          PAGE {safePageIndex + 1}/{pages.length}
+          {ACHIEVEMENTS_PAGE_INDICATOR_TEXT(safePageIndex + 1, pages.length)}
         </span>
 
         <button
@@ -350,7 +361,7 @@ export const AchievementsModal = (props: Props) => {
           onClick={() => canNext && setPageIndex((i) => i + 1)}
           disabled={!canNext}
           className="p-2 bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-30 disabled:hover:bg-obsidian-700 text-gray-300 transition-colors pixel-border-sm"
-          aria-label="Next page"
+          aria-label={ACHIEVEMENTS_NEXT_PAGE_LABEL}
         >
           <ChevronRight className="w-4 h-4" />
         </button>

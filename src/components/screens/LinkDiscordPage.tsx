@@ -8,6 +8,24 @@ import {
   useCloudAuth,
 } from "../../hooks/useCloudAuth";
 import { useAccountLinkFlow } from "../../hooks/useAccountLinkFlow";
+import {
+  LINK_DISCORD_INVALID_LINK_TEXT,
+  LINK_DISCORD_LINKED_TEXT,
+  LINK_DISCORD_RETURN_BUTTON_TEXT,
+  LINK_DISCORD_LINKING_TEXT,
+  LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT,
+  LINK_DISCORD_SIGNED_IN_TEXT_BEFORE,
+  LINK_DISCORD_SIGNED_IN_TEXT_AFTER,
+  LINK_DISCORD_FALLBACK_ACCOUNT_TEXT,
+  LINK_DISCORD_SIGN_IN_PROMPT_TEXT,
+  LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT,
+  LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT,
+  LINK_DISCORD_EMAIL_LABEL,
+  LINK_DISCORD_EMAIL_PLACEHOLDER,
+  LINK_DISCORD_SEND_LINK_BUTTON_TEXT,
+  LINK_DISCORD_EMAIL_SENT_TEXT,
+  LINK_DISCORD_HEADING,
+} from "../../constants/strings";
 
 const cardStyle = {
   background: "rgba(255,215,0,0.06)",
@@ -56,8 +74,7 @@ export const LinkDiscordPage = () => {
     if (!token)
       return (
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          This link is missing or invalid. Go back to Discord and try linking
-          your account again.
+          {LINK_DISCORD_INVALID_LINK_TEXT}
         </p>
       );
 
@@ -65,15 +82,14 @@ export const LinkDiscordPage = () => {
       return (
         <div className="flex flex-col gap-3">
           <p className="font-code text-sm text-gray-400 leading-relaxed">
-            Your account is linked. You can close this tab and go back to
-            Discord, or return to Vagudle below.
+            {LINK_DISCORD_LINKED_TEXT}
           </p>
           <a
             href="https://vagudle.king-tajin.dev/"
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors text-center"
             style={buttonStyle}
           >
-            RETURN TO VAGUDLE
+            {LINK_DISCORD_RETURN_BUTTON_TEXT}
           </a>
         </div>
       );
@@ -81,7 +97,7 @@ export const LinkDiscordPage = () => {
     if (linkStatus === "linking")
       return (
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          Linking your account...
+          {LINK_DISCORD_LINKING_TEXT}
         </p>
       );
 
@@ -97,7 +113,7 @@ export const LinkDiscordPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
-            TRY AGAIN
+            {LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT}
           </button>
         </>
       );
@@ -105,15 +121,16 @@ export const LinkDiscordPage = () => {
     if (user && user.providerId !== "discord.com")
       return (
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          Signed in as {user.email ?? user.displayName ?? "your account"}.
-          Finishing the link...
+          {LINK_DISCORD_SIGNED_IN_TEXT_BEFORE}{" "}
+          {user.email ?? user.displayName ?? LINK_DISCORD_FALLBACK_ACCOUNT_TEXT}
+          {LINK_DISCORD_SIGNED_IN_TEXT_AFTER}
         </p>
       );
 
     return (
       <div className="flex flex-col gap-4 text-left">
         <p className="font-code text-sm text-gray-400 leading-relaxed text-center">
-          Sign in with your existing Vagudle account to link it to Discord.
+          {LINK_DISCORD_SIGN_IN_PROMPT_TEXT}
         </p>
         <div className="flex flex-col gap-2">
           <button
@@ -122,7 +139,7 @@ export const LinkDiscordPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
-            CONTINUE WITH GOOGLE
+            {LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
           </button>
           <button
             type="button"
@@ -130,7 +147,7 @@ export const LinkDiscordPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
-            CONTINUE WITH GITHUB
+            {LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
           </button>
         </div>
         <div className="flex flex-col gap-2">
@@ -138,14 +155,14 @@ export const LinkDiscordPage = () => {
             htmlFor="link-discord-email"
             className="font-pixel text-xs text-crown-gold tracking-widest"
           >
-            EMAIL
+            {LINK_DISCORD_EMAIL_LABEL}
           </label>
           <input
             id="link-discord-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder={LINK_DISCORD_EMAIL_PLACEHOLDER}
             className="font-code text-sm px-3 py-2 rounded-none"
             style={inputStyle}
           />
@@ -156,12 +173,11 @@ export const LinkDiscordPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors disabled:opacity-40"
             style={buttonStyle}
           >
-            SEND SIGN-IN LINK
+            {LINK_DISCORD_SEND_LINK_BUTTON_TEXT}
           </button>
           {emailLinkSent && (
             <p className="font-code text-xs text-gray-500 leading-relaxed">
-              Check your email for a sign-in link, then open it in this same
-              browser.
+              {LINK_DISCORD_EMAIL_SENT_TEXT}
             </p>
           )}
         </div>
@@ -187,7 +203,7 @@ export const LinkDiscordPage = () => {
           style={cardStyle}
         >
           <p className="font-pixel text-xs text-crown-gold tracking-widest mb-3">
-            LINK YOUR ACCOUNT
+            {LINK_DISCORD_HEADING}
           </p>
           {renderBody()}
         </m.div>

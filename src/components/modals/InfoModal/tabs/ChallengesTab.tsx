@@ -1,38 +1,57 @@
 import { ActivityLink } from "../../../ActivityLink";
+import {
+  CHALLENGES_IN_GAME_HEADING,
+  CHALLENGES_STEP1_TEXT_PART1,
+  CHALLENGES_SETTINGS_LABEL,
+  CHALLENGES_STEP1_TEXT_PART2,
+  CHALLENGES_CHALLENGE_TAB_LABEL,
+  CHALLENGES_STEP1_TEXT_PART3,
+  CHALLENGES_RESULTS_NOTE_TEXT,
+  CHALLENGES_VIA_DISCORD_HEADING,
+  CHALLENGES_DISCORD_TEXT_PART1,
+  CHALLENGES_DISCORD_LINK_TEXT,
+  CHALLENGES_DISCORD_TEXT_PART2,
+  CHALLENGES_SLASH_COMMAND_LABEL,
+  CHALLENGES_DISCORD_TEXT_PART3,
+} from "../../../../constants/strings";
 
 export const ChallengesTab = () => {
   return (
     <div className="space-y-4">
       <p className="font-pixel text-xs text-crown-amber tracking-widest">
-        IN THE GAME
+        {CHALLENGES_IN_GAME_HEADING}
       </p>
       <p className="font-code text-sm text-gray-400 leading-relaxed">
-        Open <span className="text-crown-gold">Settings</span> and go to the{" "}
-        <span className="text-crown-gold">Challenge</span> tab. Pick a
-        dictionary, choose how many guesses to allow, type your secret word, and
-        hit Generate Link. Share the link to let others play your custom word
-        with exactly the settings you chose.
+        {CHALLENGES_STEP1_TEXT_PART1}{" "}
+        <span className="text-crown-gold">{CHALLENGES_SETTINGS_LABEL}</span>{" "}
+        {CHALLENGES_STEP1_TEXT_PART2}{" "}
+        <span className="text-crown-gold">
+          {CHALLENGES_CHALLENGE_TAB_LABEL}
+        </span>{" "}
+        {CHALLENGES_STEP1_TEXT_PART3}
       </p>
       <p className="font-code text-sm text-gray-400 leading-relaxed">
-        Results never count toward the recipient's stats, and their progress is
-        saved to the link so they can come back to it any time.
+        {CHALLENGES_RESULTS_NOTE_TEXT}
       </p>
 
       <div className="border-t border-obsidian-700" />
 
       <p className="font-pixel text-xs text-crown-amber tracking-widest">
-        VIA DISCORD
+        {CHALLENGES_VIA_DISCORD_HEADING}
       </p>
       <p className="font-code text-sm text-gray-400 leading-relaxed">
-        In the{" "}
+        {CHALLENGES_DISCORD_TEXT_PART1}{" "}
         <ActivityLink
           href="https://discord.gg/sU2XRxK8EB"
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          King-Tajin Discord server
+          {CHALLENGES_DISCORD_LINK_TEXT}
         </ActivityLink>
-        , use the <span className="text-crown-gold">/vagudle_challenge</span>{" "}
-        slash command to generate a challenge link directly from Discord.
+        {CHALLENGES_DISCORD_TEXT_PART2}{" "}
+        <span className="text-crown-gold">
+          {CHALLENGES_SLASH_COMMAND_LABEL}
+        </span>{" "}
+        {CHALLENGES_DISCORD_TEXT_PART3}
       </p>
     </div>
   );

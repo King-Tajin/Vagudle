@@ -1,5 +1,13 @@
 import { ActivityLink } from "../../../ActivityLink";
 import { SOURCE_CODE_URL } from "../../../../constants/settings";
+import {
+  OPEN_SOURCE_PROJECT_LINK_TEXT,
+  OPEN_SOURCE_INTRO_TEXT_MIDDLE,
+  OPEN_SOURCE_BASED_ON_LINK_TEXT,
+  OPEN_SOURCE_INTRO_TEXT_END,
+  OPEN_SOURCE_MADE_BY_TEXT,
+  OPEN_SOURCE_AUTHOR_LINK_TEXT,
+} from "../../../../constants/strings";
 
 export const OpenSourceTab = () => {
   return (
@@ -9,25 +17,25 @@ export const OpenSourceTab = () => {
           href={SOURCE_CODE_URL}
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          Vagudle
+          {OPEN_SOURCE_PROJECT_LINK_TEXT}
         </ActivityLink>{" "}
-        is open source and based on{" "}
+        {OPEN_SOURCE_INTRO_TEXT_MIDDLE}{" "}
         <ActivityLink
           href="https://github.com/markzither/react-wordle"
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          react-wordle
+          {OPEN_SOURCE_BASED_ON_LINK_TEXT}
         </ActivityLink>
-        . Contributions and feedback are welcome.
+        {OPEN_SOURCE_INTRO_TEXT_END}
       </p>
 
       <p className="font-code text-sm text-gray-400 leading-relaxed">
-        Made by{" "}
+        {OPEN_SOURCE_MADE_BY_TEXT}{" "}
         <ActivityLink
           href="https://github.com/King-Tajin"
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          King Tajin
+          {OPEN_SOURCE_AUTHOR_LINK_TEXT}
         </ActivityLink>
         .
       </p>

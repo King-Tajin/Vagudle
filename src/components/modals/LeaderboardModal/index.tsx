@@ -6,7 +6,29 @@ import {
   MapPin,
 } from "lucide-react";
 import { BaseModal } from "../BaseModal";
-import { MODAL_TITLE_DAILY_LEADERBOARD } from "../../../constants/strings";
+import {
+  MODAL_TITLE_DAILY_LEADERBOARD,
+  RESET_DATA_CANCEL_BUTTON_TEXT,
+  LEADERBOARD_LOADING_TEXT,
+  LEADERBOARD_ERROR_TEXT,
+  LEADERBOARD_SIGN_IN_PROMPT_TEXT,
+  LEADERBOARD_GO_TO_SETTINGS_BUTTON_TEXT,
+  LEADERBOARD_CHANGE_USERNAME_HEADING,
+  LEADERBOARD_SET_USERNAME_HEADING,
+  LEADERBOARD_USERNAME_PLACEHOLDER,
+  LEADERBOARD_USERNAME_ARIA_LABEL,
+  LEADERBOARD_SAVING_INDICATOR,
+  LEADERBOARD_SAVE_BUTTON_TEXT,
+  LEADERBOARD_PLAYING_AS_TEXT,
+  LEADERBOARD_CHANGE_BUTTON_TEXT,
+  LEADERBOARD_COOLDOWN_TEXT_BEFORE,
+  LEADERBOARD_COOLDOWN_TEXT_AFTER,
+  LEADERBOARD_EMPTY_TEXT,
+  LEADERBOARD_PREV_BUTTON_TEXT,
+  LEADERBOARD_PAGE_INDICATOR_TEXT,
+  LEADERBOARD_NEXT_BUTTON_TEXT,
+  LEADERBOARD_JUMP_TO_MY_PAGE_BUTTON_TEXT,
+} from "../../../constants/strings";
 import { useLeaderboardData, formatCooldown } from "./useLeaderboardData";
 import { LeaderboardRow } from "./LeaderboardRow";
 
@@ -53,14 +75,14 @@ export const LeaderboardModal = ({
         <div className="flex items-center gap-3 py-8 justify-center">
           <Loader className="w-4 h-4 text-gray-400 animate-spin" />
           <p className="font-code text-sm text-gray-400">
-            Loading leaderboard...
+            {LEADERBOARD_LOADING_TEXT}
           </p>
         </div>
       )}
 
       {status === "error" && (
         <p className="font-code text-sm text-gray-300 text-center py-6">
-          Couldn't load the leaderboard. Please try again later.
+          {LEADERBOARD_ERROR_TEXT}
         </p>
       )}
 
@@ -75,7 +97,7 @@ export const LeaderboardModal = ({
               }}
             >
               <p className="font-code text-sm text-gray-300 text-center leading-relaxed">
-                Sign in to save your name and appear on the leaderboard.
+                {LEADERBOARD_SIGN_IN_PROMPT_TEXT}
               </p>
               <button
                 type="button"
@@ -93,7 +115,7 @@ export const LeaderboardModal = ({
                   e.currentTarget.style.filter = "brightness(1)";
                 }}
               >
-                GO TO SETTINGS
+                {LEADERBOARD_GO_TO_SETTINGS_BUTTON_TEXT}
               </button>
             </div>
           )}
@@ -110,8 +132,8 @@ export const LeaderboardModal = ({
                 <>
                   <p className="font-pixel text-[9px] text-gray-500 tracking-widest mb-2">
                     {usernameStatus.username
-                      ? "CHANGE USERNAME"
-                      : "SET A USERNAME TO JOIN THE LEADERBOARD"}
+                      ? LEADERBOARD_CHANGE_USERNAME_HEADING
+                      : LEADERBOARD_SET_USERNAME_HEADING}
                   </p>
                   <div className="flex items-center gap-2">
                     <input
@@ -124,8 +146,8 @@ export const LeaderboardModal = ({
                         })
                       }
                       maxLength={20}
-                      placeholder="Your leaderboard name"
-                      aria-label="Leaderboard username"
+                      placeholder={LEADERBOARD_USERNAME_PLACEHOLDER}
+                      aria-label={LEADERBOARD_USERNAME_ARIA_LABEL}
                       className="flex-1 min-w-0 px-2.5 py-1.5 font-code text-sm bg-obsidian-800 text-white border border-obsidian-600 focus:outline-none focus:border-crown-amber"
                     />
                     <button
@@ -134,7 +156,9 @@ export const LeaderboardModal = ({
                       disabled={isSubmitting}
                       className="px-3 py-1.5 font-pixel text-[10px] tracking-wider bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-50 text-crown-amber transition-colors pixel-border-sm"
                     >
-                      {isSubmitting ? "..." : "SAVE"}
+                      {isSubmitting
+                        ? LEADERBOARD_SAVING_INDICATOR
+                        : LEADERBOARD_SAVE_BUTTON_TEXT}
                     </button>
                     {usernameStatus.username && (
                       <button
@@ -147,7 +171,7 @@ export const LeaderboardModal = ({
                         }
                         className="px-3 py-1.5 font-pixel text-[10px] tracking-wider text-gray-400 hover:text-gray-200 transition-colors"
                       >
-                        CANCEL
+                        {RESET_DATA_CANCEL_BUTTON_TEXT}
                       </button>
                     )}
                   </div>
@@ -161,7 +185,7 @@ export const LeaderboardModal = ({
                 <div>
                   <div className="flex items-center justify-between gap-3">
                     <p className="font-code text-sm text-gray-200 truncate">
-                      Playing as{" "}
+                      {LEADERBOARD_PLAYING_AS_TEXT}{" "}
                       <span className="text-crown-amber">
                         {usernameStatus.username}
                       </span>
@@ -173,14 +197,15 @@ export const LeaderboardModal = ({
                         className="flex items-center gap-1 font-pixel text-[9px] text-gray-400 hover:text-crown-amber tracking-widest transition-colors shrink-0"
                       >
                         <Pencil className="w-3 h-3" />
-                        CHANGE
+                        {LEADERBOARD_CHANGE_BUTTON_TEXT}
                       </button>
                     )}
                   </div>
                   {usernameStatus.canChangeAt && (
                     <p className="font-code text-xs text-gray-500 mt-1">
-                      Please wait {formatCooldown(usernameStatus.canChangeAt)}{" "}
-                      before changing your username.
+                      {LEADERBOARD_COOLDOWN_TEXT_BEFORE}{" "}
+                      {formatCooldown(usernameStatus.canChangeAt)}{" "}
+                      {LEADERBOARD_COOLDOWN_TEXT_AFTER}
                     </p>
                   )}
                 </div>
@@ -190,7 +215,7 @@ export const LeaderboardModal = ({
 
           {data.top.length === 0 && (
             <p className="font-code text-sm text-gray-400 text-center py-6">
-              No results yet. Be the first on the board!
+              {LEADERBOARD_EMPTY_TEXT}
             </p>
           )}
 
@@ -220,10 +245,10 @@ export const LeaderboardModal = ({
                 className="flex items-center gap-1 px-2 py-1.5 font-pixel text-[9px] tracking-widest text-gray-400 hover:text-crown-amber disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
               >
                 <ChevronLeft className="w-3 h-3" />
-                PREV
+                {LEADERBOARD_PREV_BUTTON_TEXT}
               </button>
               <p className="font-code text-xs text-gray-500">
-                Page {data.page} / {data.totalPages}
+                {LEADERBOARD_PAGE_INDICATOR_TEXT(data.page, data.totalPages)}
               </p>
               <button
                 type="button"
@@ -231,7 +256,7 @@ export const LeaderboardModal = ({
                 disabled={data.page >= data.totalPages || isPageLoading}
                 className="flex items-center gap-1 px-2 py-1.5 font-pixel text-[9px] tracking-widest text-gray-400 hover:text-crown-amber disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
               >
-                NEXT
+                {LEADERBOARD_NEXT_BUTTON_TEXT}
                 <ChevronRight className="w-3 h-3" />
               </button>
             </div>
@@ -262,7 +287,7 @@ export const LeaderboardModal = ({
                   className="w-full flex items-center justify-center gap-1.5 py-1.5 font-pixel text-[9px] tracking-widest text-gray-400 hover:text-crown-amber disabled:opacity-30 transition-colors"
                 >
                   <MapPin className="w-3 h-3" />
-                  JUMP TO MY PAGE
+                  {LEADERBOARD_JUMP_TO_MY_PAGE_BUTTON_TEXT}
                 </button>
               )}
             </>

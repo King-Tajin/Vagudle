@@ -36,6 +36,16 @@ import {
   NAVBAR_ABANDON_BUTTON_TEXT,
   NAVBAR_LEAVE_BUTTON_TEXT,
   NAVBAR_KEEP_PLAYING_BUTTON_TEXT,
+  NAVBAR_BRAND_TITLE,
+  NAVBAR_BRAND_SUBTITLE,
+  NAVBAR_HOW_TO_PLAY_ARIA_LABEL,
+  NAVBAR_DAILY_WORD_ARIA_LABEL,
+  NAVBAR_DAILY_TITLE,
+  NAVBAR_STATISTICS_ARIA_LABEL,
+  NAVBAR_SETTINGS_ARIA_LABEL,
+  NAVBAR_NUDGE_HEADING,
+  NAVBAR_NUDGE_DESCRIPTION,
+  NAVBAR_NUDGE_DISMISS_BUTTON_TEXT,
 } from "../../constants/strings";
 
 const SETTINGS_NUDGE_KEY = "vagudle-settings-nudge-dismissed";
@@ -186,7 +196,7 @@ export const Navbar = ({
               className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              aria-label="How to play"
+              aria-label={NAVBAR_HOW_TO_PLAY_ARIA_LABEL}
             >
               <InformationCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
             </m.button>
@@ -207,13 +217,13 @@ export const Navbar = ({
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    Yellow Skipper
+                    {NAVBAR_BRAND_TITLE}
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
-                    Games
+                    {NAVBAR_BRAND_SUBTITLE}
                   </p>
                 </div>
               </m.button>
@@ -234,13 +244,13 @@ export const Navbar = ({
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    Yellow Skipper
+                    {NAVBAR_BRAND_TITLE}
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
-                    Games
+                    {NAVBAR_BRAND_SUBTITLE}
                   </p>
                 </div>
               </m.a>
@@ -277,8 +287,8 @@ export const Navbar = ({
                     }
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    aria-label="Daily word"
-                    title="Daily"
+                    aria-label={NAVBAR_DAILY_WORD_ARIA_LABEL}
+                    title={NAVBAR_DAILY_TITLE}
                   >
                     <CalendarDays className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
                   </m.button>
@@ -289,7 +299,7 @@ export const Navbar = ({
                 className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                aria-label="Statistics"
+                aria-label={NAVBAR_STATISTICS_ARIA_LABEL}
               >
                 <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
               </m.button>
@@ -314,7 +324,7 @@ export const Navbar = ({
                   }
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  aria-label="Settings"
+                  aria-label={NAVBAR_SETTINGS_ARIA_LABEL}
                   animate={showNudge ? { scale: [1, 1.08, 1] } : {}}
                   transition={
                     showNudge
@@ -349,11 +359,10 @@ export const Navbar = ({
                       />
                       <div className="p-3">
                         <p className="font-pixel text-[9px] text-crown-amber tracking-widest mb-1">
-                          FIRST TIME HERE?
+                          {NAVBAR_NUDGE_HEADING}
                         </p>
                         <p className="font-code text-xs text-gray-300 leading-relaxed mb-3">
-                          Check out Settings to customize word length, helpful
-                          tools, and more.
+                          {NAVBAR_NUDGE_DESCRIPTION}
                         </p>
                         <button
                           type="button"
@@ -365,7 +374,7 @@ export const Navbar = ({
                             color: "#d4af37",
                           }}
                         >
-                          DISMISS
+                          {NAVBAR_NUDGE_DISMISS_BUTTON_TEXT}
                         </button>
                       </div>
                     </m.div>

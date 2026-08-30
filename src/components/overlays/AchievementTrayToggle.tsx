@@ -1,5 +1,10 @@
 import { m } from "framer-motion";
 import RibbonIcon from "../../assets/icons/ribon.svg?react";
+import {
+  ACHIEVEMENT_TRAY_ARIA_LABEL,
+  ACHIEVEMENT_TRAY_HIDE_ARIA_LABEL,
+  ACHIEVEMENT_TRAY_SHOW_ARIA_LABEL,
+} from "../../constants/strings";
 
 // icon (w-14 = 56px) + padding (p-2 = 8px * 2) + right border (border-2 = 2px) = 74px
 const ACHIEVEMENT_TRAY_WIDTH = 74;
@@ -27,7 +32,7 @@ export const AchievementTrayToggle = ({
       className="p-2 flex items-center justify-center bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 transition-colors"
       style={{ borderLeft: "none", borderRadius: 0 }}
       onClick={onOpenAchievements}
-      aria-label="Achievements"
+      aria-label={ACHIEVEMENT_TRAY_ARIA_LABEL}
     >
       <RibbonIcon className="w-14 h-14" />
     </button>
@@ -37,7 +42,9 @@ export const AchievementTrayToggle = ({
       style={{ borderLeft: "none", borderRadius: "0 6px 6px 0" }}
       onClick={onToggleTray}
       aria-label={
-        isTrayOpen ? "Hide achievements tray" : "Show achievements tray"
+        isTrayOpen
+          ? ACHIEVEMENT_TRAY_HIDE_ARIA_LABEL
+          : ACHIEVEMENT_TRAY_SHOW_ARIA_LABEL
       }
     >
       <span style={{ fontSize: "16px", lineHeight: 1 }}>

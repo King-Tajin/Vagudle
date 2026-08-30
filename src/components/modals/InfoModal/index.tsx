@@ -13,6 +13,19 @@ import { ChallengesTab } from "./tabs/ChallengesTab";
 import { AboutTab } from "./tabs/AboutTab";
 import { OpenSourceTab } from "./tabs/OpenSourceTab";
 import { FeedbackTab } from "./tabs/FeedbackTab";
+import {
+  CLOSE_BUTTON_LABEL,
+  INFO_MODAL_TITLE,
+  INFO_TAB_HOWTO_LABEL,
+  INFO_TAB_FEATURES_LABEL,
+  INFO_TAB_CHALLENGES_LABEL,
+  INFO_TAB_ABOUT_LABEL,
+  INFO_TAB_OPENSOURCE_LABEL,
+  INFO_TAB_FEEDBACK_LABEL,
+  INFO_MODAL_FOOTER_TOS_LABEL,
+  INFO_MODAL_FOOTER_AUTHOR_LABEL,
+  INFO_MODAL_FOOTER_PRIVACY_LABEL,
+} from "../../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -26,24 +39,36 @@ type Tab =
   "howto" | "features" | "challenges" | "about" | "opensource" | "feedback";
 
 const TABS: { id: Tab; label: string; icon: ReactNode }[] = [
-  { id: "howto", label: "HOW TO", icon: <Gamepad2 className="w-3.5 h-3.5" /> },
+  {
+    id: "howto",
+    label: INFO_TAB_HOWTO_LABEL,
+    icon: <Gamepad2 className="w-3.5 h-3.5" />,
+  },
   {
     id: "features",
-    label: "FEATURES",
+    label: INFO_TAB_FEATURES_LABEL,
     icon: <Sparkles className="w-3.5 h-3.5" />,
   },
   {
     id: "challenges",
-    label: "CHALLENGES",
+    label: INFO_TAB_CHALLENGES_LABEL,
     icon: <Swords className="w-3.5 h-3.5" />,
   },
-  { id: "about", label: "ABOUT", icon: <Info className="w-3.5 h-3.5" /> },
+  {
+    id: "about",
+    label: INFO_TAB_ABOUT_LABEL,
+    icon: <Info className="w-3.5 h-3.5" />,
+  },
   {
     id: "opensource",
-    label: "SOURCE",
+    label: INFO_TAB_OPENSOURCE_LABEL,
     icon: <Code2 className="w-3.5 h-3.5" />,
   },
-  { id: "feedback", label: "FEEDBACK", icon: <Send className="w-3.5 h-3.5" /> },
+  {
+    id: "feedback",
+    label: INFO_TAB_FEEDBACK_LABEL,
+    icon: <Send className="w-3.5 h-3.5" />,
+  },
 ];
 
 export const InfoModal = ({
@@ -104,7 +129,7 @@ export const InfoModal = ({
           >
             <button
               type="button"
-              aria-label="Close"
+              aria-label={CLOSE_BUTTON_LABEL}
               className="absolute inset-0 w-full h-full m-0 p-0 border-0 transition-opacity"
               style={{ background: "rgba(0,0,0,0.75)" }}
               onClick={handleClose}
@@ -143,14 +168,14 @@ export const InfoModal = ({
                   <div className="flex items-center gap-3">
                     <HatIcon className="w-12 h-12 text-crown-gold" />
                     <h2 className="font-pixel text-sm text-crown-amber tracking-widest">
-                      INFORMATION
+                      {INFO_MODAL_TITLE}
                     </h2>
                   </div>
                   <button
                     type="button"
                     onClick={handleClose}
                     className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
-                    aria-label="Close"
+                    aria-label={CLOSE_BUTTON_LABEL}
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -220,21 +245,21 @@ export const InfoModal = ({
                       href="https://vagudle.king-tajin.dev/terms.html"
                       className="hover:text-crown-amber transition-colors underline"
                     >
-                      TOS
+                      {INFO_MODAL_FOOTER_TOS_LABEL}
                     </ActivityLink>{" "}
                     ·{" "}
                     <ActivityLink
                       href="https://github.com/King-Tajin"
                       className="hover:text-crown-amber transition-colors underline"
                     >
-                      KING TAJIN
+                      {INFO_MODAL_FOOTER_AUTHOR_LABEL}
                     </ActivityLink>{" "}
                     ·{" "}
                     <ActivityLink
                       href="https://vagudle.king-tajin.dev/privacy.html"
                       className="hover:text-crown-amber transition-colors underline"
                     >
-                      PRIVACY POLICY
+                      {INFO_MODAL_FOOTER_PRIVACY_LABEL}
                     </ActivityLink>
                   </p>
                 </div>

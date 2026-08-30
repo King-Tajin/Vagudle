@@ -1,5 +1,10 @@
 import { m } from "framer-motion";
 import { Image } from "lucide-react";
+import {
+  BACKGROUND_TRAY_ARIA_LABEL,
+  BACKGROUND_TRAY_HIDE_ARIA_LABEL,
+  BACKGROUND_TRAY_SHOW_ARIA_LABEL,
+} from "../../constants/strings";
 
 const BACKGROUND_TRAY_WIDTH = 74;
 
@@ -26,7 +31,7 @@ export const BackgroundTrayToggle = ({
       className="p-2 flex items-center justify-center bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 transition-colors"
       style={{ borderLeft: "none", borderRadius: 0 }}
       onClick={onOpenBackgrounds}
-      aria-label="Backgrounds"
+      aria-label={BACKGROUND_TRAY_ARIA_LABEL}
     >
       <Image className="w-14 h-14 text-crown-gold" strokeWidth={1.25} />
     </button>
@@ -35,7 +40,11 @@ export const BackgroundTrayToggle = ({
       className="flex items-center justify-center px-1.5 bg-obsidian-900/95 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/50 hover:bg-obsidian-700 transition-colors text-crown-gold"
       style={{ borderLeft: "none", borderRadius: "0 6px 6px 0" }}
       onClick={onToggleTray}
-      aria-label={isTrayOpen ? "Hide background tray" : "Show background tray"}
+      aria-label={
+        isTrayOpen
+          ? BACKGROUND_TRAY_HIDE_ARIA_LABEL
+          : BACKGROUND_TRAY_SHOW_ARIA_LABEL
+      }
     >
       <span style={{ fontSize: "16px", lineHeight: 1 }}>
         {isTrayOpen ? "‹" : "›"}
