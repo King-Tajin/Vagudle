@@ -32,6 +32,7 @@ export type CloudAuthUser = {
   email: string | null;
   displayName: string | null;
   providerId: string;
+  providerIds: string[];
 };
 
 export type DeleteAccountResult =
@@ -39,12 +40,16 @@ export type DeleteAccountResult =
   | { status: "needs_reauth"; providerId: string }
   | { status: "error"; message: string };
 
-const toCloudAuthUser = (user: User): CloudAuthUser => ({
-  uid: user.uid,
-  email: user.email,
-  displayName: user.displayName,
-  providerId: user.providerData[0]?.providerId ?? "unknown",
-});
+const toCloudAuthUser = (user: User): CloudAuthUser => {
+  const providerIds = user.providerData.map((p) => p.providerId);
+  return {
+    uid: user.uid,
+    email: user.email,
+    displayName: user.displayName,
+    providerId: providerIds[0] ?? "unknown",
+    providerIds,
+  };
+};
 
 const toCloudAuthUserFromDiscord = (
   session: DiscordSession
@@ -53,6 +58,7 @@ const toCloudAuthUserFromDiscord = (
   email: null,
   displayName: session.displayName,
   providerId: "discord.com",
+  providerIds: ["discord.com"],
 });
 
 const toCloudAuthUserFromPlayGames = (
@@ -62,6 +68,7 @@ const toCloudAuthUserFromPlayGames = (
   email: null,
   displayName: session.displayName,
   providerId: "playgames.google.com",
+  providerIds: ["playgames.google.com"],
 });
 
 export { isPlayGamesAvailable };

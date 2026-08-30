@@ -307,28 +307,25 @@ export const CloudSaveSection = ({
   const accountTypeLabel = user ? getProviderLabel(user.providerId) : "";
 
   const linkedAccountsLabel = useMemo(() => {
-    if (!user || !linkStatus) return null;
+    if (!user) return null;
 
-    const directAccount =
-      user.providerId !== "discord.com" &&
-      user.providerId !== "playgames.google.com";
+    const primaryLabel = getProviderLabel(user.providerId);
+    const linked = new Set<string>();
 
-    if (directAccount) {
-      const linked: string[] = [];
-      if (linkStatus.discordLinked) linked.push("Discord");
-      if (linkStatus.playGamesLinked) linked.push("Play Games");
-      return linked.length > 0 ? `Also linked: ${linked.join(", ")}` : null;
+    for (const providerId of user.providerIds) {
+      const label = getProviderLabel(providerId);
+      if (label !== "Unknown" && label !== primaryLabel) linked.add(label);
     }
 
-    const nativeLinked =
-      user.providerId === "discord.com"
-        ? linkStatus.discordLinked
-        : user.providerId === "playgames.google.com"
-          ? linkStatus.playGamesLinked
-          : false;
+    if (linkStatus?.discordLinked && primaryLabel !== "Discord")
+      linked.add("Discord");
+    if (linkStatus?.playGamesLinked && primaryLabel !== "Play Games")
+      linked.add("Play Games");
 
-    return nativeLinked ? "Linked to a direct account" : null;
-  }, [user, linkStatus]);
+    return linked.size > 0
+      ? `Also linked: ${Array.from(linked).join(", ")}`
+      : null;
+  }, [user, linkStatus?.discordLinked, linkStatus?.playGamesLinked]);
 
   return (
     <div className="py-3">
