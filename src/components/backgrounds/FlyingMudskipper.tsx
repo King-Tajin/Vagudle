@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const VIDEO_SRC = "/backgrounds/flying-mudskipper.webm";
+const VIDEO_SRC = "/backgrounds/flying-mudskipper_v2.webm";
 const MUD_TEXTURE_SRC = "/backgrounds/mud-texture.webp";
 const MUD_ZOOM_PERCENT = 180;
 
