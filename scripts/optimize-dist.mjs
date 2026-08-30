@@ -90,17 +90,46 @@ const minifyJson = async (filePath) => {
   return { before, after };
 };
 
+const probeAlphaMode = async (filePath) => {
+  const { promise } = runFfmpeg(ffmpegBinary, [
+    "-y",
+    "-i",
+    filePath,
+    "-f",
+    "null",
+    "-",
+  ]);
+  const { stderr } = await withTimeout(
+    promise,
+    `probe alpha_mode: ${filePath}`
+  );
+  return /alpha_mode\s*:\s*1/.test(stderr) ? "1" : "";
+};
+
 const stripVideoMetadata = async (filePath) => {
   const before = (await stat(filePath)).size;
   const tempPath = `${filePath}.stripped${path.extname(filePath)}`;
+
+  const ext = path.extname(filePath).toLowerCase();
+  const alphaMode = ext === ".webm" ? await probeAlphaMode(filePath) : "";
+
+  const metadataArgs =
+    alphaMode === "1"
+      ? [
+          "-map_metadata",
+          "-1",
+          "-map_chapters",
+          "-1",
+          "-metadata:s:v:0",
+          "alpha_mode=1",
+        ]
+      : ["-map_metadata", "-1", "-map_chapters", "-1"];
+
   const { promise, child } = runFfmpeg(ffmpegBinary, [
     "-y",
     "-i",
     filePath,
-    "-map_metadata",
-    "-1",
-    "-map_chapters",
-    "-1",
+    ...metadataArgs,
     "-c",
     "copy",
     tempPath,
