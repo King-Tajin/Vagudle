@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 const VIDEO_SRC = "/backgrounds/flying-mudskipper_v2.webm";
 const MUD_TEXTURE_SRC = "/backgrounds/mud-texture.webp";
-const MUD_ZOOM_PERCENT = 180;
+const MUD_ZOOM_PERCENT = 140;
 
 const SPRITE_HEIGHT_RATIO = 0.36;
 const VERTICAL_POSITION_RATIO = 0.325;
@@ -28,12 +28,18 @@ const randomWaitMs = () =>
   WAIT_OFFSCREEN_MS_MIN +
   Math.random() * (WAIT_OFFSCREEN_MS_MAX - WAIT_OFFSCREEN_MS_MIN);
 
-const MudBackground = ({ position }: { position: string }) => (
+const MudBackground = ({
+  position,
+  size,
+}: {
+  position: string;
+  size: string;
+}) => (
   <div
     className="absolute inset-0"
     style={{
       backgroundImage: `url(${MUD_TEXTURE_SRC})`,
-      backgroundSize: `${MUD_ZOOM_PERCENT}%`,
+      backgroundSize: size,
       backgroundPosition: position,
       backgroundRepeat: "no-repeat",
     }}
@@ -44,6 +50,10 @@ export const FlyingMudskipper = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [mudPosition] = useState<string>(randomMudPosition);
+  const [mudImageSize, setMudImageSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   const [widthPerHeight, setWidthPerHeight] = useState(1.6);
   const [x, setX] = useState(0);
   const [direction, setDirection] = useState<Direction>(-1);
@@ -55,6 +65,18 @@ export const FlyingMudskipper = () => {
   const rafRef = useRef<number | undefined>(undefined);
   const lastTimestampRef = useRef<number | null>(null);
   const xRef = useRef(0);
+
+  useEffect(() => {
+    const image = new Image();
+    image.onload = () => {
+      if (image.naturalWidth && image.naturalHeight)
+        setMudImageSize({
+          width: image.naturalWidth,
+          height: image.naturalHeight,
+        });
+    };
+    image.src = MUD_TEXTURE_SRC;
+  }, []);
 
   useEffect(() => {
     const measureSpriteWidth = () =>
@@ -143,13 +165,28 @@ export const FlyingMudskipper = () => {
   const spriteHeight = window.innerHeight * SPRITE_HEIGHT_RATIO;
   const spriteWidth = spriteHeight * widthPerHeight;
 
+  const containerWidth = containerRef.current?.clientWidth ?? window.innerWidth;
+  const containerHeight =
+    containerRef.current?.clientHeight ?? window.innerHeight;
+  let mudBackgroundSize = "cover";
+  if (mudImageSize) {
+    const coverScale = Math.max(
+      containerWidth / mudImageSize.width,
+      containerHeight / mudImageSize.height
+    );
+    const scale = coverScale * (MUD_ZOOM_PERCENT / 100);
+    const scaledWidth = mudImageSize.width * scale;
+    const scaledHeight = mudImageSize.height * scale;
+    mudBackgroundSize = `${scaledWidth}px ${scaledHeight}px`;
+  }
+
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 pointer-events-none overflow-hidden"
       style={{ zIndex: 0 }}
     >
-      <MudBackground position={mudPosition} />
+      <MudBackground position={mudPosition} size={mudBackgroundSize} />
       <video
         ref={videoRef}
         src={VIDEO_SRC}
