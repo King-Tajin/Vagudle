@@ -922,7 +922,7 @@ function App() {
         isActivityMode={isDiscordActivity}
         onOpenDaily={handleOpenDaily}
       />
-      <div className="relative pt-2 px-1 pb-44 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
+      <div className="relative pt-2 px-1 pb-[calc(11rem+env(safe-area-inset-bottom))] md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
           <m.p
             initial={{ opacity: 0, y: -10 }}

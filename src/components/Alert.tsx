@@ -11,7 +11,7 @@ type Props = {
 
 const Alert = ({ isOpen, message, variant = "error" }: Props) => {
   const classes = classNames(
-    "fixed z-[9999] top-14 left-1/2 transform -translate-x-1/2 w-auto max-w-[26rem] shadow-lg rounded-xl pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden",
+    "fixed z-[9999] left-1/2 transform -translate-x-1/2 w-auto max-w-[26rem] shadow-lg rounded-xl pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden",
     {
       "bg-rose-500 text-white": variant === "error",
       "bg-blue-500 text-white": variant === "success",
@@ -29,7 +29,10 @@ const Alert = ({ isOpen, message, variant = "error" }: Props) => {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <div className={classes}>
+      <div
+        className={classes}
+        style={{ top: "calc(3.5rem + env(safe-area-inset-top))" }}
+      >
         <div className="px-4 py-3">
           <p className="text-lg leading-tight text-center font-medium">
             {message}
