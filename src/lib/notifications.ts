@@ -1,5 +1,15 @@
 import type { DailyStats } from "./daily";
 import { DAILY_RELEASE_HOUR_UTC } from "./daily";
+import {
+  NOTIFICATION_CHANNEL_NAME,
+  NOTIFICATION_CHANNEL_DESCRIPTION,
+  NOTIFICATION_STREAK_WARNING_TITLE,
+  NOTIFICATION_STREAK_WARNING_BODY,
+  NOTIFICATION_CUSTOM_REMINDER_TITLE,
+  NOTIFICATION_CUSTOM_REMINDER_BODY,
+  NOTIFICATION_INACTIVITY_TITLE,
+  NOTIFICATION_INACTIVITY_BODY,
+} from "../constants/strings";
 
 export type ReminderPeriod = "AM" | "PM";
 
@@ -141,8 +151,8 @@ const ensureChannel = async (
   try {
     await plugin.createChannel({
       id: REMINDER_NOTIFICATION_CHANNEL_ID,
-      name: "Play Reminders",
-      description: "Reminders to keep your streak alive and come back to play",
+      name: NOTIFICATION_CHANNEL_NAME,
+      description: NOTIFICATION_CHANNEL_DESCRIPTION,
       importance: 3,
     });
   } catch {}
@@ -211,8 +221,8 @@ export const syncNotificationSchedule = async (
     if (fireDate) {
       notificationsToSchedule.push({
         id: STREAK_RESET_WARNING_NOTIFICATION_ID,
-        title: "Your streak is about to reset!",
-        body: "Play today's Vagudle before it's too late.",
+        title: NOTIFICATION_STREAK_WARNING_TITLE,
+        body: NOTIFICATION_STREAK_WARNING_BODY,
         channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
         largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
         schedule: {
@@ -227,8 +237,8 @@ export const syncNotificationSchedule = async (
     const { hour, minute } = getCustomReminderTime(settings);
     notificationsToSchedule.push({
       id: CUSTOM_TIME_REMINDER_NOTIFICATION_ID,
-      title: "Don't lose your streak!",
-      body: "Today's Vagudle is waiting for you.",
+      title: NOTIFICATION_CUSTOM_REMINDER_TITLE,
+      body: NOTIFICATION_CUSTOM_REMINDER_BODY,
       channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
       largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
       schedule: {
@@ -246,8 +256,8 @@ export const syncNotificationSchedule = async (
     if (fireDate) {
       notificationsToSchedule.push({
         id: INACTIVITY_REMINDER_NOTIFICATION_ID,
-        title: "Haven't played in a while?",
-        body: "Come back and pick up where you left off.",
+        title: NOTIFICATION_INACTIVITY_TITLE,
+        body: NOTIFICATION_INACTIVITY_BODY,
         channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
         largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
         schedule: {

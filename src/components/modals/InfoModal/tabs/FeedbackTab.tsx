@@ -23,7 +23,6 @@ import {
   FEEDBACK_CATEGORY_FEATURE_REQUEST,
   FEEDBACK_CATEGORY_GENERAL,
   FEEDBACK_EMAIL_LABEL,
-  FEEDBACK_EMAIL_PLACEHOLDER,
   FEEDBACK_EMAIL_HINT,
   FEEDBACK_MESSAGE_LABEL,
   FEEDBACK_MESSAGE_FULLSCREEN_LABEL,
@@ -248,7 +247,7 @@ export const FeedbackTab = () => {
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           onKeyDown={(e) => e.stopPropagation()}
-          placeholder={FEEDBACK_EMAIL_PLACEHOLDER}
+          placeholder="your.email@example.com"
           maxLength={EMAIL_MAX}
           className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"
           style={{

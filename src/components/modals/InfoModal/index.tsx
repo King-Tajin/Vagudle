@@ -23,7 +23,6 @@ import {
   INFO_TAB_OPENSOURCE_LABEL,
   INFO_TAB_FEEDBACK_LABEL,
   INFO_MODAL_FOOTER_TOS_LABEL,
-  INFO_MODAL_FOOTER_AUTHOR_LABEL,
   INFO_MODAL_FOOTER_PRIVACY_LABEL,
 } from "../../../constants/strings";
 
@@ -252,7 +251,7 @@ export const InfoModal = ({
                       href="https://github.com/King-Tajin"
                       className="hover:text-crown-amber transition-colors underline"
                     >
-                      {INFO_MODAL_FOOTER_AUTHOR_LABEL}
+                      KING TAJIN
                     </ActivityLink>{" "}
                     ·{" "}
                     <ActivityLink

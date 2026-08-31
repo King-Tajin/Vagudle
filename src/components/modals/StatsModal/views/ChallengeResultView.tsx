@@ -7,6 +7,20 @@ import {
   type ChallengeConfig,
 } from "../../../../lib/challenge";
 import type { GameOutcome } from "../../../../lib/gameOutcome";
+import {
+  CHALLENGE_RESULT_MODAL_TITLE,
+  CHALLENGE_RESULT_HEADING,
+  DAILY_SCHEDULE_WORD_LENGTH_TEXT,
+  CHALLENGE_DICTIONARY_SUFFIX_TEXT,
+  CHALLENGE_GUESSES_ALLOWED_TEXT,
+  CHALLENGE_RESULT_COMPLETE_TEXT,
+  RESULT_SOLVED_TEXT_BEFORE,
+  RESULT_SOLVED_TEXT_AFTER,
+  CHALLENGE_RESULT_FAILED_TEXT,
+  CHALLENGE_RESULT_FAILED_DESCRIPTION,
+  RESULT_LEAVE_BUTTON_TEXT,
+  CHALLENGE_RESULT_SHARE_BUTTON_TEXT,
+} from "../../../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -34,7 +48,7 @@ export const ChallengeResultView = ({
 
   return (
     <BaseModal
-      title="Challenge Result"
+      title={CHALLENGE_RESULT_MODAL_TITLE}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -46,18 +60,19 @@ export const ChallengeResultView = ({
         }}
       >
         <p className="font-pixel text-xs text-crown-amber tracking-widest">
-          CUSTOM CHALLENGE
+          {CHALLENGE_RESULT_HEADING}
         </p>
         <div className="flex items-center gap-2">
           <Hash className="w-3.5 h-3.5 text-gray-400 shrink-0" />
           <span className="font-code text-xs text-gray-300">
-            {challengeConfig.length} letters
+            {DAILY_SCHEDULE_WORD_LENGTH_TEXT(challengeConfig.length)}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0" />
           <span className="font-code text-xs text-gray-300">
-            {DICT_LABELS[challengeConfig.dict]} dictionary —{" "}
+            {DICT_LABELS[challengeConfig.dict]}{" "}
+            {CHALLENGE_DICTIONARY_SUFFIX_TEXT}{" "}
             <span className="text-gray-500">
               {DICT_DESCRIPTIONS[challengeConfig.dict]}
             </span>
@@ -66,7 +81,7 @@ export const ChallengeResultView = ({
         <div className="flex items-center gap-2">
           <Target className="w-3.5 h-3.5 text-gray-400 shrink-0" />
           <span className="font-code text-xs text-gray-300">
-            {challengeConfig.guesses} guesses allowed
+            {CHALLENGE_GUESSES_ALLOWED_TEXT(challengeConfig.guesses)}
           </span>
         </div>
       </div>
@@ -74,24 +89,24 @@ export const ChallengeResultView = ({
       {gameOutcome === "won" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-lime tracking-widest">
-            CHALLENGE COMPLETE!
+            {CHALLENGE_RESULT_COMPLETE_TEXT}
           </p>
           <p className="font-code text-sm text-gray-300 mt-1">
-            Solved in{" "}
+            {RESULT_SOLVED_TEXT_BEFORE}{" "}
             <span className="text-crown-gold font-bold">
               {score}/{maxG}
             </span>{" "}
-            guesses
+            {RESULT_SOLVED_TEXT_AFTER}
           </p>
         </div>
       )}
       {gameOutcome === "lost" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-red tracking-widest">
-            CHALLENGE FAILED
+            {CHALLENGE_RESULT_FAILED_TEXT}
           </p>
           <p className="font-code text-sm text-gray-400 mt-1">
-            Better luck next time! You can always ask the sender for the answer.
+            {CHALLENGE_RESULT_FAILED_DESCRIPTION}
           </p>
         </div>
       )}
@@ -115,7 +130,7 @@ export const ChallengeResultView = ({
             onClick={handleReturnToNormal}
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            LEAVE
+            {RESULT_LEAVE_BUTTON_TEXT}
           </button>
         )}
         {!isActivityMode && (
@@ -138,7 +153,7 @@ export const ChallengeResultView = ({
             }
           >
             <Share2 className="w-3.5 h-3.5" />
-            SHARE
+            {CHALLENGE_RESULT_SHARE_BUTTON_TEXT}
           </button>
         )}
       </div>

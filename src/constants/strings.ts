@@ -176,7 +176,6 @@ export const INFO_TAB_ABOUT_LABEL = "ABOUT";
 export const INFO_TAB_OPENSOURCE_LABEL = "SOURCE";
 export const INFO_TAB_FEEDBACK_LABEL = "FEEDBACK";
 export const INFO_MODAL_FOOTER_TOS_LABEL = "TOS";
-export const INFO_MODAL_FOOTER_AUTHOR_LABEL = "KING TAJIN";
 export const INFO_MODAL_FOOTER_PRIVACY_LABEL = "PRIVACY POLICY";
 
 export const ABOUT_INTRO_TEXT_BEFORE_LINK =
@@ -198,7 +197,6 @@ export const ABOUT_RESTORE_ATTRIBUTIONS_TITLE =
 export const ABOUT_RESTORE_ATTRIBUTIONS_TEXT = "RESTORE ATTRIBUTIONS";
 export const ABOUT_ATTRIBUTIONS_VISIBLE_TEXT = "ATTRIBUTIONS VISIBLE";
 export const ABOUT_STORE_BUTTON_TEXT = "VISIT THE STORE";
-export const ABOUT_STORE_URL_DISPLAY_TEXT = "store.king-tajin.dev →";
 
 export const CHALLENGES_IN_GAME_HEADING = "IN THE GAME";
 export const CHALLENGES_STEP1_TEXT_PART1 = "Open";
@@ -213,7 +211,6 @@ export const CHALLENGES_VIA_DISCORD_HEADING = "VIA DISCORD";
 export const CHALLENGES_DISCORD_TEXT_PART1 = "In the";
 export const CHALLENGES_DISCORD_LINK_TEXT = "King-Tajin Discord server";
 export const CHALLENGES_DISCORD_TEXT_PART2 = ", use the";
-export const CHALLENGES_SLASH_COMMAND_LABEL = "/vagudle_challenge";
 export const CHALLENGES_DISCORD_TEXT_PART3 =
   "slash command to generate a challenge link directly from Discord.";
 
@@ -250,7 +247,6 @@ export const FEEDBACK_CATEGORY_BUG_REPORT = "Bug Report";
 export const FEEDBACK_CATEGORY_FEATURE_REQUEST = "Feature Request";
 export const FEEDBACK_CATEGORY_GENERAL = "General Feedback";
 export const FEEDBACK_EMAIL_LABEL = "EMAIL (OPTIONAL)";
-export const FEEDBACK_EMAIL_PLACEHOLDER = "your.email@example.com";
 export const FEEDBACK_EMAIL_HINT = "Only if you want a response";
 export const FEEDBACK_MESSAGE_LABEL = "YOUR FEEDBACK *";
 export const FEEDBACK_MESSAGE_FULLSCREEN_LABEL = "YOUR FEEDBACK";
@@ -295,9 +291,6 @@ export const FEATURES_LIST: [string, string][] = [
   ["Gray count", "Shows how many absent letters are in a row."],
 ];
 
-export const PROVIDER_LABEL_GOOGLE = "Google";
-export const PROVIDER_LABEL_GITHUB = "GitHub";
-export const PROVIDER_LABEL_DISCORD = "Discord";
 export const PROVIDER_LABEL_DEFAULT = "your provider";
 
 export const RESET_DATA_CATEGORIES: { title: string; description: string }[] = [
@@ -572,3 +565,435 @@ export const LINK_DISCORD_SEND_LINK_BUTTON_TEXT = "SEND SIGN-IN LINK";
 export const LINK_DISCORD_EMAIL_SENT_TEXT =
   "Check your email for a sign-in link, then open it in this same browser.";
 export const LINK_DISCORD_HEADING = "LINK YOUR ACCOUNT";
+
+export const COMPLETED_ROW_RESET_ARIA_LABEL = "Reset row colors";
+
+export const GRID_BRUSH_ARIA_LABEL = (status: string) => `${status} brush`;
+export const GRID_RESET_ALL_ARIA_LABEL = "Reset all colors";
+export const GRID_RESET_CONFIRM_TITLE = "RESET ALL COLORS?";
+export const GRID_RESET_CONFIRM_TEXT_WITH_AUTOGRAY =
+  "This will clear all painted cells. Auto-grayed cells will remain.";
+export const GRID_RESET_CONFIRM_TEXT = "This will clear all painted cells.";
+export const GRID_RESET_BUTTON_TEXT = "RESET";
+export const GRID_GUESS_HISTORY_ARIA_LABEL =
+  "Guess history. Click and drag over a tile to recolor it.";
+
+export const DAILY_MODAL_PLAY_INTRO_TEXT =
+  "Everyone gets the same word today. You get one attempt so make it count.";
+export const DAILY_MODAL_WORD_LENGTH_LABEL = "WORD LENGTH";
+export const DAILY_MODAL_DIFFICULTY_LABEL = "DIFFICULTY";
+export const DAILY_MODAL_CURRENT_STREAK_LABEL = "CURRENT STREAK";
+export const DAILY_MODAL_STREAK_DAYS_TEXT = (days: number) =>
+  `${days} day${days === 1 ? "" : "s"}`;
+export const DAILY_MODAL_ALREADY_PLAYING_TEXT =
+  "You're already playing today's word. Leave to head back to a normal game, or close this to keep guessing.";
+export const DAILY_MODAL_LOCKOUT_WARNING_TEXT =
+  "⚠ Once you finish, you're locked out until the next reset. ⚠";
+export const DAILY_MODAL_LEAVE_BUTTON_TEXT = "LEAVE DAILY";
+export const DAILY_MODAL_PLAY_BUTTON_TEXT = "PLAY TODAY'S DAILY";
+export const DAILY_MODAL_SOLVED_TEXT = (
+  guessCount: number,
+  maxGuesses: number
+) => `SOLVED IN ${guessCount}/${maxGuesses}`;
+export const DAILY_MODAL_NOT_SOLVED_TEXT = "NOT SOLVED TODAY";
+export const DAILY_MODAL_VIEW_GAME_BUTTON_TEXT = "VIEW GAME";
+export const DAILY_MODAL_COME_BACK_TEXT =
+  "Come back after the reset for a new word.";
+export const DAILY_MODAL_STREAK_LABEL = "STREAK";
+export const DAILY_MODAL_BEST_LABEL = "BEST";
+export const DAILY_MODAL_PLAYED_LABEL = "PLAYED";
+export const DAILY_MODAL_NEXT_DAILY_TEXT = (countdown: string) =>
+  `Next daily in ${countdown}`;
+export const DAILY_MODAL_SHARE_BUTTON_TEXT = "SHARE RESULT";
+export const DAILY_MODAL_RETURN_BUTTON_TEXT = "RETURN TO NORMAL GAME";
+export const DAILY_MODAL_HEADING_COMPLETE = "DAILY COMPLETE";
+export const DAILY_MODAL_HEADING_DEFAULT = "DAILY";
+export const DAILY_MODAL_SCHEDULE_ARIA_LABEL = "Daily schedule";
+export const DAILY_MODAL_LOADING_TEXT = "Loading today's word...";
+export const DAILY_MODAL_ERROR_TEXT =
+  "Today's daily word isn't available yet. Check back soon.";
+export const DAILY_MODAL_VIEW_LEADERBOARD_BUTTON_TEXT = "VIEW LEADERBOARD";
+
+export const WEEKDAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+export const DAILY_CALENDAR_ON_TIME_SUFFIX = "(on time)";
+
+export const LINK_PLAYGAMES_INVALID_LINK_TEXT =
+  "This link is missing or invalid. Go back to the app and try linking your account again.";
+export const LINK_PLAYGAMES_LINKED_TEXT =
+  "Your account is linked. You can close this tab and go back to the app.";
+export const LINK_PLAYGAMES_SIGN_IN_PROMPT_TEXT =
+  "Sign in with your existing Vagudle account to link it to Play Games.";
+export const LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT =
+  "CONTINUE WITH DISCORD";
+
+export const CHALLENGE_FORM_AUTO_GENERATE_ERROR_TEXT =
+  "Could not auto-generate link. Edit the settings below or try again.";
+export const CHALLENGE_FORM_NOTE_LABEL = "NOTE:";
+export const CHALLENGE_FORM_NOTE_TEXT =
+  "The chosen dictionary has little effect on gameplay. It simply lets the player know the popularity of the word.";
+export const CHALLENGE_FORM_DICTIONARY_LABEL = "DICTIONARY";
+export const CHALLENGE_FORM_WORD_LABEL = "YOUR WORD";
+export const CHALLENGE_FORM_WORD_PLACEHOLDER = "Type a word (4–7 letters)...";
+export const CHALLENGE_FORM_INVALID_LENGTH_TEXT = "Word must be 4–7 letters.";
+export const CHALLENGE_FORM_INVALID_WORD_TEXT = (
+  word: string,
+  dictLabel: string
+) => `"${word}" isn't in the ${dictLabel} dictionary.`;
+export const CHALLENGE_FORM_AVAILABLE_IN_OTHER_DICT_TEXT = (
+  dictLabel: string
+) =>
+  `However, it is available in ${dictLabel} dictionary though. Switch dictionaries to use it.`;
+export const CHALLENGE_FORM_VALID_WORD_TEXT = (word: string, length: number) =>
+  `"${word}" is valid — ${length} letters.`;
+export const CHALLENGE_FORM_EASIER_DICT_HINT_TEXT = (dictLabel: string) =>
+  `Heads up: this word also appears in the ${dictLabel} dictionary, switching the dictionary provides the player with more precise information about the word's popularity.`;
+export const CHALLENGE_FORM_MUST_BE_IN_DICT_TEXT = (dictLabel: string) =>
+  `Must be in the ${dictLabel} dictionary.`;
+export const CHALLENGE_FORM_GUESSES_ALLOWED_LABEL = "GUESSES ALLOWED";
+export const CHALLENGE_FORM_RESULTS_WARNING_TEXT =
+  "⚠ Challenge results do not count toward the recipient's stats. ⚠";
+export const CHALLENGE_FORM_GENERATE_ERROR_TEXT =
+  "Failed to generate link. Check your connection and try again.";
+export const CHALLENGE_FORM_GENERATING_BUTTON_TEXT = "GENERATING...";
+export const CHALLENGE_FORM_GENERATE_BUTTON_TEXT = "GENERATE LINK";
+
+export const CLOUD_SAVE_PROVIDER_LABEL_EMAIL = "Email";
+export const CLOUD_SAVE_PROVIDER_LABEL_PLAYGAMES = "Play Games";
+export const CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN = "Unknown";
+export const CLOUD_SAVE_AUTO_SIGNED_IN_TEXT = "Auto signed in via Discord.";
+export const CLOUD_SAVE_WAITING_LINK_TEXT =
+  "Waiting for you to finish linking in your browser...";
+export const CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT = "OPENING LINK...";
+export const CLOUD_SAVE_LINK_EXISTING_ACCOUNT_BUTTON_TEXT =
+  "LINK EXISTING ACCOUNT";
+export const CLOUD_SAVE_LINK_START_ERROR_TEXT =
+  "Could not start linking. Please try again.";
+export const CLOUD_SAVE_PLAYGAMES_PROMPT_TEXT =
+  "Have an existing Vagudle account? Link it so your progress carries over.";
+export const CLOUD_SAVE_OPENING_BUTTON_TEXT = "OPENING...";
+export const CLOUD_SAVE_LINK_ACCOUNT_BUTTON_TEXT = "LINK ACCOUNT";
+export const CLOUD_SAVE_SKIP_BUTTON_TEXT = "SKIP";
+export const CLOUD_SAVE_PLAYGAMES_LINK_ERROR_TEXT =
+  "Could not link Play Games. Please try again.";
+export const CLOUD_SAVE_LINKING_BUTTON_TEXT = "LINKING...";
+export const CLOUD_SAVE_LINK_PLAYGAMES_BUTTON_TEXT = "LINK PLAY GAMES";
+export const CLOUD_SAVE_ALSO_LINKED_TEXT = (list: string) =>
+  `Also linked: ${list}`;
+export const CLOUD_SAVE_HEADING = "CLOUD SAVE";
+export const CLOUD_SAVE_IN_PROGRESS_WARNING_TEXT =
+  "Cloud save does not save games currently in progress.";
+export const CLOUD_SAVE_PRIVACY_TEXT =
+  "Your data is never sold. Emails are only kept in case you need support.";
+export const CLOUD_SAVE_CHECKING_STATUS_TEXT = "Checking sign-in status...";
+export const CLOUD_SAVE_SIGNED_IN_AS_TEXT = "Signed in as";
+export const CLOUD_SAVE_ACCOUNT_TYPE_SUFFIX_TEXT = (type: string) =>
+  `— ${type} account`;
+export const CLOUD_SAVE_UP_TO_DATE_TEXT = "Up to date";
+export const CLOUD_SAVE_SYNCING_TEXT = "Syncing...";
+export const CLOUD_SAVE_LAST_SAVED_TEXT = (time: string) =>
+  `Last saved ${time}`;
+export const CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT = "LINK DISCORD";
+export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "SIGN OUT";
+export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
+  "Sign in to keep your stats, achievements, and settings synced across devices.";
+export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "DIRECT SIGN-IN";
+export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Email address";
+export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "SEND LINK";
+export const CLOUD_SAVE_EMAIL_SENT_TEXT =
+  "Check your email for a sign-in link.";
+export const CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING = "FLEXIBLE SIGN-IN";
+export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
+  "Works on its own, or link it to another account anytime from here.";
+export const CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT =
+  "CONTINUE WITH PLAY GAMES";
+export const CLOUD_SAVE_BETA_BADGE_TEXT = "BETA";
+
+export const GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT = "DAILY MODE ACTIVE";
+export const GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT =
+  "CUSTOM CHALLENGE ACTIVE";
+export const CHALLENGE_DICTIONARY_SUFFIX_TEXT = "dictionary —";
+export const CHALLENGE_GUESSES_ALLOWED_TEXT = (guesses: number) =>
+  `${guesses} guesses allowed`;
+export const GENERAL_SETTINGS_DAILY_LOCKED_TEXT =
+  "Word length and difficulty are set by today's daily word and reset at the next daily.";
+export const GENERAL_SETTINGS_CHALLENGE_LOCKED_TEXT =
+  "Word length and difficulty are set by this challenge. Return to normal Vagudle to change these.";
+export const GENERAL_SETTINGS_WORD_LENGTH_HINT_TEXT =
+  "Can be changed before your first guess:";
+export const GENERAL_SETTINGS_WORD_LENGTH_ARIA_LABEL = "Word length";
+
+export const CHALLENGE_RESULT_MODAL_TITLE = "Challenge Result";
+export const CHALLENGE_RESULT_HEADING = "CUSTOM CHALLENGE";
+export const CHALLENGE_RESULT_COMPLETE_TEXT = "CHALLENGE COMPLETE!";
+export const RESULT_SOLVED_TEXT_BEFORE = "Solved in";
+export const RESULT_SOLVED_TEXT_AFTER = "guesses";
+export const CHALLENGE_RESULT_FAILED_TEXT = "CHALLENGE FAILED";
+export const CHALLENGE_RESULT_FAILED_DESCRIPTION =
+  "Better luck next time! You can always ask the sender for the answer.";
+export const RESULT_LEAVE_BUTTON_TEXT = "LEAVE";
+export const CHALLENGE_RESULT_SHARE_BUTTON_TEXT = "SHARE";
+
+export const DUEL_RESULT_MODAL_TITLE = "Duel Result";
+export const DUEL_RESULT_HEADING = "DUEL";
+export const DUEL_RESULT_COMPLETE_TEXT = "DUEL COMPLETE!";
+export const DUEL_RESULT_FAILED_TEXT = "DUEL FAILED";
+export const DUEL_RESULT_FAILED_DESCRIPTION = "Better luck next time!";
+
+export const CHALLENGE_DICT_LABELS: Record<"normal" | "hard" | "full", string> =
+  {
+    normal: "Normal",
+    hard: "Hard",
+    full: "Extreme",
+  };
+export const CHALLENGE_DICT_DESCRIPTIONS: Record<
+  "normal" | "hard" | "full",
+  string
+> = {
+  normal: "Common English words",
+  hard: "Uncommon English words",
+  full: "Full Scrabble dictionary",
+};
+
+export const USERNAME_VALIDATION_ERROR_TEXT =
+  "3-20 characters: letters, numbers, spaces, - or _";
+export const USERNAME_TAKEN_ERROR_TEXT = "That username is already taken.";
+export const USERNAME_RATE_LIMITED_ERROR_TEXT = (cooldown: string) =>
+  `You can change your name again in ${cooldown}.`;
+export const GENERIC_ERROR_TEXT = "Something went wrong. Please try again.";
+
+export const CLOUD_AUTH_EMAIL_PROMPT_TEXT =
+  "Confirm your email to finish signing in:";
+export const CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT =
+  "Google sign-in failed. Please try again.";
+export const CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT =
+  "GitHub sign-in failed. Please try again.";
+export const CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT =
+  "Play Games sign-in failed. Please try again.";
+export const CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT =
+  "Couldn't send sign-in link. Please try again.";
+export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT =
+  "Sign-out failed. Please try again.";
+export const CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT =
+  "Couldn't delete your account. Please try again.";
+export const CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT = "No signed-in account found.";
+export const CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT =
+  "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.";
+export const CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT =
+  "Re-authorization failed. Please try again.";
+
+export const CLOUD_SYNC_VERIFY_ERROR_TEXT =
+  "Couldn't verify sign-in for cloud sync.";
+export const CLOUD_SYNC_CREATE_ERROR_TEXT = "Couldn't create your cloud save.";
+export const CLOUD_SYNC_UNREACHABLE_ERROR_TEXT = "Couldn't reach cloud save.";
+export const CLOUD_SYNC_PUSH_ERROR_TEXT = "Couldn't sync to cloud.";
+
+export const PAGE_TITLE_DUEL = "Vagudle - Duel";
+export const PAGE_TITLE_CHALLENGE = "Vagudle - Challenge";
+export const PAGE_TITLE_DAILY = "Vagudle - Daily";
+
+export const SHARE_HARD_MODE_TAG = " [HARD]";
+export const SHARE_NORMAL_MODE_TAG = " [NORMAL]";
+export const SHARE_CHALLENGE_HEADER_TEXT = (
+  score: number | string,
+  maxChallenges: number,
+  wordPart: string
+) => `${GAME_TITLE} [CHALLENGE] — ${score}/${maxChallenges} (${wordPart})`;
+export const SHARE_STATUS_HEADER_TEXT = (
+  modeTag: string,
+  solution: string,
+  score: number | string,
+  maxChallenges: number,
+  wordLength: number
+) =>
+  `${GAME_TITLE}${modeTag} — ${solution} — ${score}/${maxChallenges} (${wordLength} letters)`;
+export const SHARE_STATUS_CHALLENGE_TITLE = () => `${GAME_TITLE} Challenge`;
+export const SHARE_STATUS_NORMAL_TITLE = (solution: string) =>
+  `${GAME_TITLE} — ${solution}`;
+export const SHARE_DAILY_HEADER_TEXT = (
+  dailyNumber: number,
+  score: number | string,
+  maxChallenges: number
+) => `${GAME_TITLE} Daily #${dailyNumber} — ${score}/${maxChallenges}`;
+export const SHARE_DAILY_TITLE = (dailyNumber: number) =>
+  `${GAME_TITLE} Daily #${dailyNumber}`;
+export const SHARE_STATS_TITLE = (modeTag: string) =>
+  `${GAME_TITLE}${modeTag} Stats`;
+export const SHARE_STATS_PLAYED_LABEL = "🎮 Played:   ";
+export const SHARE_STATS_WIN_RATE_LABEL = "✅ Win Rate: ";
+export const SHARE_STATS_STREAK_LABEL = "🔥 Streak:   ";
+export const SHARE_STATS_BEST_LABEL = "🏆 Best:     ";
+export const SHARE_STATS_GUESS_DISTRIBUTION_LABEL = "Guess Distribution:";
+export const SHARE_DAILY_STATS_TITLE = () => `${GAME_TITLE} [DAILY] Stats`;
+export const SHARE_CHALLENGE_INVITE_INTRO_TEXT =
+  "I'm challenging you to a custom Vagudle!";
+export const SHARE_CHALLENGE_INVITE_DETAILS_TEXT = (
+  length: number,
+  dictLabel: string,
+  guesses: number
+) => `${length} letters · ${dictLabel} dictionary · ${guesses} guesses`;
+export const SHARE_CHALLENGE_INVITE_NOTE_TEXT =
+  "(Results won't affect your stats)";
+export const SHARE_CHALLENGE_INVITE_TITLE = "Vagudle Challenge";
+export const SHARE_ACHIEVEMENT_UNLOCKED_TEXT = (title: string) =>
+  `🏆 Achievement Unlocked: ${title}`;
+export const SHARE_ACHIEVEMENT_BACKGROUND_UNLOCKED_TEXT = (label: string) =>
+  `Unlocked background: ${label}`;
+export const SHARE_ACHIEVEMENT_TITLE = "Vagudle Achievement";
+
+export const NOTIFICATION_CHANNEL_NAME = "Play Reminders";
+export const NOTIFICATION_CHANNEL_DESCRIPTION =
+  "Reminders to keep your streak alive and come back to play";
+export const NOTIFICATION_STREAK_WARNING_TITLE =
+  "Your streak is about to reset!";
+export const NOTIFICATION_STREAK_WARNING_BODY =
+  "Play today's Vagudle before it's too late.";
+export const NOTIFICATION_CUSTOM_REMINDER_TITLE = "Don't lose your streak!";
+export const NOTIFICATION_CUSTOM_REMINDER_BODY =
+  "Today's Vagudle is waiting for you.";
+export const NOTIFICATION_INACTIVITY_TITLE = "Haven't played in a while?";
+export const NOTIFICATION_INACTIVITY_BODY =
+  "Come back and pick up where you left off.";
+
+export const CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT =
+  "Could not link your account.";
+export const CLOUD_SYNC_LINK_ACCOUNT_RETRY_ERROR_TEXT =
+  "Could not link your account. Please try again.";
+export const CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT =
+  "Could not verify your sign-in. Please try again.";
+export const CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT =
+  "Could not link your Discord account.";
+export const CLOUD_SYNC_LINK_DISCORD_RETRY_ERROR_TEXT =
+  "Could not link your Discord account. Please try again.";
+export const CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT =
+  "Could not link your Play Games account.";
+export const CLOUD_SYNC_LINK_PLAYGAMES_RETRY_ERROR_TEXT =
+  "Could not link your Play Games account. Please try again.";
+export const RELATIVE_TIME_JUST_NOW_TEXT = "just now";
+export const RELATIVE_TIME_UNIT_LABELS: Record<string, string> = {
+  second: "second",
+  minute: "minute",
+  hour: "hour",
+  day: "day",
+  month: "month",
+  year: "year",
+};
+
+export const DAILY_MODE_SIGNIN_WARNING_TEXT =
+  "Sign in to save to the leaderboard";
+export const DAILY_MODE_USERNAME_WARNING_TEXT =
+  "Set a username to save to the leaderboard";
+
+export const WORD_LISTS_LOAD_ERROR_TEXT =
+  "Failed to load word lists. Please refresh the page.";
+
+export const LINK_START_ERROR_SHORT_TEXT = "Could not start linking.";
+export const PLAYGAMES_NOT_AVAILABLE_ERROR_TEXT =
+  "Play Games is not available on this device.";
+export const LINKING_NOT_AVAILABLE_ERROR_TEXT =
+  "Linking is not available on this device.";
+
+export const BACKGROUND_TEXT: Record<
+  string,
+  {
+    desktopLabel: string;
+    mobileLabel: string;
+    attribution?: {
+      credits: {
+        role: string;
+        title: string;
+        creator: string;
+        sourceUrl?: string;
+      }[];
+      license: string;
+    };
+  }
+> = {
+  sprinkles: { desktopLabel: "VAGUDLE SPRINKLES", mobileLabel: "GRAY" },
+  flakes: { desktopLabel: "FLAKE RAIN", mobileLabel: "GRID" },
+  tnt_rain: { desktopLabel: "TNT RAIN", mobileLabel: "TNT" },
+  pulsing_purple: { desktopLabel: "PULSING PURPLE", mobileLabel: "PURPLE" },
+  carrots: { desktopLabel: "SPINNING CARROTS", mobileLabel: "CARROTS" },
+  flying_mudskipper: {
+    desktopLabel: "FLYING MUDSKIPPER",
+    mobileLabel: "MUDSKIPPER",
+  },
+  escalating_fire: { desktopLabel: "ESCALATING FIRE", mobileLabel: "FIRE" },
+  dvd_screensaver: { desktopLabel: "DVD SCREENSAVER", mobileLabel: "DVD" },
+  number_rain: {
+    desktopLabel: "NUMBER RAIN",
+    mobileLabel: "NUMBERS",
+    attribution: {
+      credits: [
+        {
+          role: "Video",
+          title: "Matrix Rain Codes (4K FULL HD)",
+          creator: "Fatih Kalkan",
+          sourceUrl: "https://www.youtube.com/watch?v=MUVo20q6tx8",
+        },
+      ],
+      license: "Creative Commons Attribution license (reuse allowed)",
+    },
+  },
+  seven_letters: { desktopLabel: "SEVEN LETTER WORDS", mobileLabel: "WORDS" },
+  snowfall: { desktopLabel: "SNOWFALL", mobileLabel: "SNOW" },
+  letter_pile: { desktopLabel: "LETTER PILE", mobileLabel: "PILE" },
+  letter_rain: { desktopLabel: "LETTER RAIN", mobileLabel: "LETTERS" },
+  duck_parade: { desktopLabel: "DUCK PARADE", mobileLabel: "DUCKS" },
+  mouse_eating: {
+    desktopLabel: "MOUSE EATING M&M",
+    mobileLabel: "MOUSE",
+    attribution: {
+      credits: [
+        {
+          role: "Video",
+          title:
+            "Mouse eating M&M's with peaceful music for 10 minutes. (He will keep you company and be your friend)",
+          creator: "June Hargadon",
+          sourceUrl: "https://www.youtube.com/watch?v=bBRgYIvaL00",
+        },
+        {
+          role: "Animation",
+          title: "Creature Comforts",
+          creator: "Aardman Animations",
+        },
+        {
+          role: "Music",
+          title: "New Home (Slowed)",
+          creator: "Austin Farwell",
+        },
+      ],
+      license: "Unknown",
+    },
+  },
+  emoji_rain: { desktopLabel: "EMOJI RAIN", mobileLabel: "EMOJIS" },
+  fireworks: { desktopLabel: "FIREWORKS", mobileLabel: "FIREWORKS" },
+  liquid_ripple: { desktopLabel: "LIQUID RIPPLES", mobileLabel: "RIPPLES" },
+  spinning_seal: {
+    desktopLabel: "SPINNING SEAL",
+    mobileLabel: "SEAL",
+    attribution: {
+      credits: [
+        {
+          role: "Video",
+          title: "there is no need to be upset",
+          creator: "High Valley",
+          sourceUrl: "https://www.youtube.com/watch?v=GJDNkVDGM_s&t=14s",
+        },
+        {
+          role: "Music",
+          title: "Happy H. Christmas",
+          creator: "Maniacs of Noise",
+        },
+      ],
+      license: "Creative Commons Attribution (CC BY)",
+    },
+  },
+};

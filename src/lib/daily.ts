@@ -1,5 +1,11 @@
 import { stampUpdatedAt, cloudSyncKey } from "./localStorage";
 import { getPublicOrigin } from "./publicOrigin";
+import {
+  WEEKDAY_NAMES,
+  DAILY_CALENDAR_ON_TIME_SUFFIX,
+} from "../constants/strings";
+
+export { WEEKDAY_NAMES };
 
 export type DailyConfig = {
   date: string;
@@ -395,16 +401,6 @@ export const DAILY_SCHEDULE: DailyRotationEntry[] = [
   { wordLength: 4, hardMode: true },
 ];
 
-export const WEEKDAY_NAMES = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
 export const getLocalDailyUnlockTime = (date: Date = new Date()): string => {
   const releaseTime = new Date(
     Date.UTC(
@@ -448,7 +444,9 @@ export const getDailyCalendarHourLabel = (
     hour: "numeric",
     minute: "2-digit",
   });
-  return hourUtc === DAILY_RELEASE_HOUR_UTC ? `${time} (on time)` : time;
+  return hourUtc === DAILY_RELEASE_HOUR_UTC
+    ? `${time} ${DAILY_CALENDAR_ON_TIME_SUFFIX}`
+    : time;
 };
 
 export const getDailyCalendarHttpsUrl = (fileName: string): string => {

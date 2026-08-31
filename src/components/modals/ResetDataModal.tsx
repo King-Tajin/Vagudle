@@ -7,9 +7,6 @@ import type { DeleteAccountResult } from "../../hooks/useCloudAuth";
 import { getIdTokenForCurrentUser, deleteCloudSave } from "../../lib/cloudSync";
 import {
   MODAL_TITLE_RESET_ALL_DATA,
-  PROVIDER_LABEL_GOOGLE,
-  PROVIDER_LABEL_GITHUB,
-  PROVIDER_LABEL_DISCORD,
   PROVIDER_LABEL_DEFAULT,
   RESET_DATA_CATEGORIES,
   RESET_DATA_DELETION_STEPS,
@@ -45,9 +42,9 @@ type Props = {
 const COUNTDOWN_SECONDS = 20;
 
 const providerLabel = (providerId: string): string => {
-  if (providerId === "google.com") return PROVIDER_LABEL_GOOGLE;
-  if (providerId === "github.com") return PROVIDER_LABEL_GITHUB;
-  if (providerId === "discord.com") return PROVIDER_LABEL_DISCORD;
+  if (providerId === "google.com") return "Google";
+  if (providerId === "github.com") return "GitHub";
+  if (providerId === "discord.com") return "Discord";
   return PROVIDER_LABEL_DEFAULT;
 };
 

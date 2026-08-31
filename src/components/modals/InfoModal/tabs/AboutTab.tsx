@@ -16,7 +16,6 @@ import {
   ABOUT_RESTORE_ATTRIBUTIONS_TEXT,
   ABOUT_ATTRIBUTIONS_VISIBLE_TEXT,
   ABOUT_STORE_BUTTON_TEXT,
-  ABOUT_STORE_URL_DISPLAY_TEXT,
 } from "../../../../constants/strings";
 
 type Props = {
@@ -144,7 +143,7 @@ export const AboutTab = ({
             className="font-code text-xs tracking-wide"
             style={{ color: "#FFBF00", opacity: 0.65 }}
           >
-            {ABOUT_STORE_URL_DISPLAY_TEXT}
+            store.king-tajin.dev →
           </span>
         </div>
       </ActivityLink>

@@ -24,6 +24,18 @@ import {
   isGoogleNativeAvailable,
   signInWithGoogleNative,
 } from "../lib/googleNativeAuth";
+import {
+  CLOUD_AUTH_EMAIL_PROMPT_TEXT,
+  CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT,
+  CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT,
+  CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT,
+  CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT,
+  CLOUD_AUTH_SIGNOUT_ERROR_TEXT,
+  CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
+  CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT,
+  CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT,
+  CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT,
+} from "../constants/strings";
 
 const EMAIL_LINK_STORAGE_KEY = "vagudle-email-link-address:v1";
 
@@ -88,7 +100,7 @@ export const completeEmailLinkSignIn = async (): Promise<void> => {
   } catch {}
 
   if (!email) {
-    email = window.prompt("Confirm your email to finish signing in:");
+    email = window.prompt(CLOUD_AUTH_EMAIL_PROMPT_TEXT);
   }
   if (!email) return;
 
@@ -180,7 +192,7 @@ export const useCloudAuth = () => {
       if (isGoogleNativeAvailable()) {
         const idToken = await signInWithGoogleNative();
         if (!idToken) {
-          setActionError("Google sign-in failed. Please try again.");
+          setActionError(CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
           return;
         }
         const credential = authModule.GoogleAuthProvider.credential(idToken);
@@ -190,7 +202,7 @@ export const useCloudAuth = () => {
 
       await authModule.signInWithPopup(auth, googleProvider);
     } catch {
-      setActionError("Google sign-in failed. Please try again.");
+      setActionError(CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
     }
   }, []);
 
@@ -200,7 +212,7 @@ export const useCloudAuth = () => {
       const { auth, githubProvider, authModule } = await loadFirebaseAuth();
       await authModule.signInWithPopup(auth, githubProvider);
     } catch {
-      setActionError("GitHub sign-in failed. Please try again.");
+      setActionError(CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT);
     }
   }, []);
 
@@ -214,12 +226,12 @@ export const useCloudAuth = () => {
     try {
       const session = await triggerPlayGamesSignIn();
       if (!session) {
-        setActionError("Play Games sign-in failed. Please try again.");
+        setActionError(CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
         return;
       }
       setPlayGamesSession(session);
     } catch {
-      setActionError("Play Games sign-in failed. Please try again.");
+      setActionError(CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
     }
   }, []);
 
@@ -237,7 +249,7 @@ export const useCloudAuth = () => {
       } catch {}
       setEmailLinkSent(true);
     } catch {
-      setActionError("Couldn't send sign-in link. Please try again.");
+      setActionError(CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
     }
   }, []);
 
@@ -251,7 +263,7 @@ export const useCloudAuth = () => {
       clearPlayGamesSession();
       setPlayGamesSession(null);
     } catch {
-      setActionError("Sign-out failed. Please try again.");
+      setActionError(CLOUD_AUTH_SIGNOUT_ERROR_TEXT);
     }
   }, []);
 
@@ -270,7 +282,7 @@ export const useCloudAuth = () => {
         }
         return {
           status: "error",
-          message: "Couldn't delete your account. Please try again.",
+          message: CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
         };
       }
     }
@@ -284,13 +296,13 @@ export const useCloudAuth = () => {
       setPlayGamesSession(null);
       return { status: "success" };
     }
-    return { status: "error", message: "No signed-in account found." };
+    return { status: "error", message: CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT };
   }, [firebaseUser, discordSession, playGamesSession]);
 
   const reauthenticateAndDeleteAccount =
     useCallback(async (): Promise<DeleteAccountResult> => {
       if (!firebaseUser)
-        return { status: "error", message: "No signed-in account found." };
+        return { status: "error", message: CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT };
 
       const providerId = firebaseUser.providerData[0]?.providerId;
 
@@ -307,8 +319,7 @@ export const useCloudAuth = () => {
         if (!provider)
           return {
             status: "error",
-            message:
-              "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.",
+            message: CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT,
           };
 
         await authModule.reauthenticateWithPopup(firebaseUser, provider);
@@ -317,7 +328,7 @@ export const useCloudAuth = () => {
       } catch {
         return {
           status: "error",
-          message: "Re-authorization failed. Please try again.",
+          message: CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT,
         };
       }
     }, [firebaseUser]);

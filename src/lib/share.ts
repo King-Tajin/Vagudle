@@ -1,6 +1,5 @@
 import { getGuessStatuses } from "./statuses";
 import { unicodeSplit } from "./words";
-import { GAME_TITLE } from "../constants/strings";
 import { type GameStats } from "./localStorage";
 import { DAILY_PATH, type DailyStats } from "./daily";
 import { getPublicOrigin } from "./publicOrigin";
@@ -8,6 +7,30 @@ import { UAParser } from "ua-parser-js";
 import { DICT_LABELS, type ChallengeConfig } from "./challenge";
 import type { Achievement } from "./achievements";
 import { BACKGROUNDS } from "./backgrounds";
+import {
+  SHARE_HARD_MODE_TAG,
+  SHARE_NORMAL_MODE_TAG,
+  SHARE_CHALLENGE_HEADER_TEXT,
+  SHARE_STATUS_HEADER_TEXT,
+  SHARE_STATUS_CHALLENGE_TITLE,
+  SHARE_STATUS_NORMAL_TITLE,
+  SHARE_DAILY_HEADER_TEXT,
+  SHARE_DAILY_TITLE,
+  SHARE_STATS_TITLE,
+  SHARE_STATS_PLAYED_LABEL,
+  SHARE_STATS_WIN_RATE_LABEL,
+  SHARE_STATS_STREAK_LABEL,
+  SHARE_STATS_BEST_LABEL,
+  SHARE_STATS_GUESS_DISTRIBUTION_LABEL,
+  SHARE_DAILY_STATS_TITLE,
+  SHARE_CHALLENGE_INVITE_INTRO_TEXT,
+  SHARE_CHALLENGE_INVITE_DETAILS_TEXT,
+  SHARE_CHALLENGE_INVITE_NOTE_TEXT,
+  SHARE_CHALLENGE_INVITE_TITLE,
+  SHARE_ACHIEVEMENT_UNLOCKED_TEXT,
+  SHARE_ACHIEVEMENT_BACKGROUND_UNLOCKED_TEXT,
+  SHARE_ACHIEVEMENT_TITLE,
+} from "../constants/strings";
 
 export type CapacitorShareOptions = {
   title?: string;
@@ -73,11 +96,17 @@ export const shareStatus = async (
   challengeMode: boolean = false
 ) => {
   const score = lost ? "X" : guesses.length;
-  const modeTag = hardMode ? " [HARD]" : "";
+  const modeTag = hardMode ? SHARE_HARD_MODE_TAG : "";
   const wordPart = challengeMode ? `${solution.length} letters` : solution;
   const header = challengeMode
-    ? `${GAME_TITLE} [CHALLENGE] — ${score}/${maxChallenges} (${wordPart})`
-    : `${GAME_TITLE}${modeTag} — ${solution} — ${score}/${maxChallenges} (${solution.length} letters)`;
+    ? SHARE_CHALLENGE_HEADER_TEXT(score, maxChallenges, wordPart)
+    : SHARE_STATUS_HEADER_TEXT(
+        modeTag,
+        solution,
+        score,
+        maxChallenges,
+        solution.length
+      );
   const textToShare =
     `${header}\n${window.location.href}\n` +
     generateEmojiGrid(solution, guesses, EMOJI_TILES);
@@ -85,8 +114,8 @@ export const shareStatus = async (
   await doShare(
     {
       title: challengeMode
-        ? `${GAME_TITLE} Challenge`
-        : `${GAME_TITLE} — ${solution}`,
+        ? SHARE_STATUS_CHALLENGE_TITLE()
+        : SHARE_STATUS_NORMAL_TITLE(solution),
       text: textToShare,
     },
     textToShare,
@@ -103,13 +132,13 @@ export const shareDailyResult = async (
   handleShareToClipboard: () => void
 ) => {
   const score = lost ? "X" : guesses.length;
-  const header = `${GAME_TITLE} Daily #${dailyNumber} — ${score}/${maxChallenges}`;
+  const header = SHARE_DAILY_HEADER_TEXT(dailyNumber, score, maxChallenges);
   const textToShare =
     `${header}\n${getPublicOrigin()}${DAILY_PATH}\n` +
     generateEmojiGrid(solution, guesses, EMOJI_TILES);
 
   await doShare(
-    { title: `${GAME_TITLE} Daily #${dailyNumber}`, text: textToShare },
+    { title: SHARE_DAILY_TITLE(dailyNumber), text: textToShare },
     textToShare,
     handleShareToClipboard
   );
@@ -145,15 +174,15 @@ export const shareStats = async (
   hardMode: boolean,
   handleShareToClipboard: () => void
 ) => {
-  const modeTag = hardMode ? " [HARD]" : " [NORMAL]";
+  const modeTag = hardMode ? SHARE_HARD_MODE_TAG : SHARE_NORMAL_MODE_TAG;
   const lines = [
-    `${GAME_TITLE}${modeTag} Stats`,
+    SHARE_STATS_TITLE(modeTag),
     `${window.location.href}`,
     ``,
-    `🎮 Played:   ${stats.totalGames}`,
-    `✅ Win Rate: ${stats.successRate}%`,
-    `🔥 Streak:   ${stats.currentStreak}`,
-    `🏆 Best:     ${stats.bestStreak}`,
+    `${SHARE_STATS_PLAYED_LABEL}${stats.totalGames}`,
+    `${SHARE_STATS_WIN_RATE_LABEL}${stats.successRate}%`,
+    `${SHARE_STATS_STREAK_LABEL}${stats.currentStreak}`,
+    `${SHARE_STATS_BEST_LABEL}${stats.bestStreak}`,
   ];
 
   const maxCount = Math.max(...stats.winDistribution, 1);
@@ -165,12 +194,12 @@ export const shareStats = async (
     })
     .join("\n");
 
-  lines.push(``, `Guess Distribution:`, bars);
+  lines.push(``, SHARE_STATS_GUESS_DISTRIBUTION_LABEL, bars);
 
   const textToShare = lines.join("\n");
 
   await doShare(
-    { title: `${GAME_TITLE}${modeTag} Stats`, text: textToShare },
+    { title: SHARE_STATS_TITLE(modeTag), text: textToShare },
     textToShare,
     handleShareToClipboard
   );
@@ -185,19 +214,19 @@ export const shareDailyStats = async (
       ? Math.round((stats.totalWon / stats.totalPlayed) * 100)
       : 0;
   const lines = [
-    `${GAME_TITLE} [DAILY] Stats`,
+    SHARE_DAILY_STATS_TITLE(),
     `${window.location.href}`,
     ``,
-    `🎮 Played:   ${stats.totalPlayed}`,
-    `✅ Win Rate: ${winRate}%`,
-    `🔥 Streak:   ${stats.currentStreak}`,
-    `🏆 Best:     ${stats.bestStreak}`,
+    `${SHARE_STATS_PLAYED_LABEL}${stats.totalPlayed}`,
+    `${SHARE_STATS_WIN_RATE_LABEL}${winRate}%`,
+    `${SHARE_STATS_STREAK_LABEL}${stats.currentStreak}`,
+    `${SHARE_STATS_BEST_LABEL}${stats.bestStreak}`,
   ];
 
   const textToShare = lines.join("\n");
 
   await doShare(
-    { title: `${GAME_TITLE} [DAILY] Stats`, text: textToShare },
+    { title: SHARE_DAILY_STATS_TITLE(), text: textToShare },
     textToShare,
     handleShareToClipboard
   );
@@ -208,15 +237,17 @@ export const shareChallengeInvite = async (
   handleShareToClipboard: () => void
 ) => {
   const text =
-    `I'm challenging you to a custom Vagudle!\n` +
-    `${config.length} letters · ${DICT_LABELS[config.dict]} dictionary · ${
+    `${SHARE_CHALLENGE_INVITE_INTRO_TEXT}\n` +
+    `${SHARE_CHALLENGE_INVITE_DETAILS_TEXT(
+      config.length,
+      DICT_LABELS[config.dict],
       config.guesses
-    } guesses\n` +
-    `(Results won't affect your stats)\n` +
+    )}\n` +
+    `${SHARE_CHALLENGE_INVITE_NOTE_TEXT}\n` +
     window.location.href;
 
   await doShare(
-    { title: "Vagudle Challenge", text },
+    { title: SHARE_CHALLENGE_INVITE_TITLE, text },
     text,
     handleShareToClipboard
   );
@@ -230,13 +261,15 @@ export const shareAchievement = async (
     (b) => b.requiresAchievementId === achievement.id
   );
   const text =
-    `🏆 Achievement Unlocked: ${achievement.title}\n` +
+    `${SHARE_ACHIEVEMENT_UNLOCKED_TEXT(achievement.title)}\n` +
     `${achievement.description}\n` +
-    (bgUnlock ? `Unlocked background: ${bgUnlock.desktopLabel}\n` : "") +
+    (bgUnlock
+      ? `${SHARE_ACHIEVEMENT_BACKGROUND_UNLOCKED_TEXT(bgUnlock.desktopLabel)}\n`
+      : "") +
     window.location.href;
 
   await doShare(
-    { title: "Vagudle Achievement", text },
+    { title: SHARE_ACHIEVEMENT_TITLE, text },
     text,
     handleShareToClipboard
   );

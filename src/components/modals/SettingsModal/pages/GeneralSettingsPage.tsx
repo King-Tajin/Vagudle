@@ -20,6 +20,16 @@ import {
   SETTINGS_BACKGROUND_LABEL,
   SETTINGS_BACKGROUND_DESCRIPTION_FREE,
   SETTINGS_BACKGROUND_DESCRIPTION_LOCKED,
+  GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT,
+  GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT,
+  DAILY_SCHEDULE_WORD_LENGTH_TEXT,
+  CHALLENGE_DICTIONARY_SUFFIX_TEXT,
+  CHALLENGE_GUESSES_ALLOWED_TEXT,
+  GENERAL_SETTINGS_DAILY_LOCKED_TEXT,
+  GENERAL_SETTINGS_CHALLENGE_LOCKED_TEXT,
+  DAILY_MODAL_WORD_LENGTH_LABEL,
+  GENERAL_SETTINGS_WORD_LENGTH_HINT_TEXT,
+  GENERAL_SETTINGS_WORD_LENGTH_ARIA_LABEL,
 } from "../../../../constants/strings";
 import type { GameSettingsValues, GameSettingsHandlers } from "../index";
 
@@ -54,8 +64,8 @@ export const GeneralSettingsPage = ({
         <div className="py-3 space-y-2">
           <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none mb-2">
             {challengeConfig.id === "daily"
-              ? "DAILY MODE ACTIVE"
-              : "CUSTOM CHALLENGE ACTIVE"}
+              ? GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT
+              : GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT}
           </p>
           <div
             className="p-3 space-y-2"
@@ -67,13 +77,14 @@ export const GeneralSettingsPage = ({
             <div className="flex items-center gap-2">
               <Hash className="w-3.5 h-3.5 text-crown-amber shrink-0" />
               <span className="font-code text-xs text-gray-300">
-                {challengeConfig.length} letters
+                {DAILY_SCHEDULE_WORD_LENGTH_TEXT(challengeConfig.length)}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <BookOpen className="w-3.5 h-3.5 text-crown-amber shrink-0" />
               <span className="font-code text-xs text-gray-300">
-                {DICT_LABELS[challengeConfig.dict]} dictionary —{" "}
+                {DICT_LABELS[challengeConfig.dict]}{" "}
+                {CHALLENGE_DICTIONARY_SUFFIX_TEXT}{" "}
                 <span className="text-gray-500">
                   {DICT_DESCRIPTIONS[challengeConfig.dict]}
                 </span>
@@ -82,14 +93,14 @@ export const GeneralSettingsPage = ({
             <div className="flex items-center gap-2">
               <Target className="w-3.5 h-3.5 text-crown-amber shrink-0" />
               <span className="font-code text-xs text-gray-300">
-                {challengeConfig.guesses} guesses allowed
+                {CHALLENGE_GUESSES_ALLOWED_TEXT(challengeConfig.guesses)}
               </span>
             </div>
           </div>
           <p className="font-code text-xs text-gray-500 leading-snug">
             {challengeConfig.id === "daily"
-              ? "Word length and difficulty are set by today's daily word and reset at the next daily."
-              : "Word length and difficulty are set by this challenge. Return to normal Vagudle to change these."}
+              ? GENERAL_SETTINGS_DAILY_LOCKED_TEXT
+              : GENERAL_SETTINGS_CHALLENGE_LOCKED_TEXT}
           </p>
         </div>
       ) : (
@@ -98,10 +109,10 @@ export const GeneralSettingsPage = ({
             <div className="flex justify-between items-center mb-3">
               <div className="text-left">
                 <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                  WORD LENGTH
+                  {DAILY_MODAL_WORD_LENGTH_LABEL}
                 </p>
                 <p className="font-code text-xs mt-1.5 text-gray-500">
-                  Can be changed before your first guess:
+                  {GENERAL_SETTINGS_WORD_LENGTH_HINT_TEXT}
                 </p>
               </div>
               <span className="font-pixel text-2xl text-spice-lime w-10 text-center tabular-nums">
@@ -154,7 +165,7 @@ export const GeneralSettingsPage = ({
                   step={1}
                   value={wordLength}
                   onChange={onWordLengthChange}
-                  aria-label="Word length"
+                  aria-label={GENERAL_SETTINGS_WORD_LENGTH_ARIA_LABEL}
                   className="absolute inset-0 w-full opacity-0 cursor-pointer"
                   style={{
                     height: 22,

@@ -12,6 +12,25 @@ import {
   type DictHint,
   type GenerateStatus,
 } from "../challengeLogic";
+import {
+  CHALLENGE_FORM_AUTO_GENERATE_ERROR_TEXT,
+  CHALLENGE_FORM_NOTE_LABEL,
+  CHALLENGE_FORM_NOTE_TEXT,
+  CHALLENGE_FORM_DICTIONARY_LABEL,
+  CHALLENGE_FORM_WORD_LABEL,
+  CHALLENGE_FORM_WORD_PLACEHOLDER,
+  CHALLENGE_FORM_INVALID_LENGTH_TEXT,
+  CHALLENGE_FORM_INVALID_WORD_TEXT,
+  CHALLENGE_FORM_AVAILABLE_IN_OTHER_DICT_TEXT,
+  CHALLENGE_FORM_VALID_WORD_TEXT,
+  CHALLENGE_FORM_EASIER_DICT_HINT_TEXT,
+  CHALLENGE_FORM_MUST_BE_IN_DICT_TEXT,
+  CHALLENGE_FORM_GUESSES_ALLOWED_LABEL,
+  CHALLENGE_FORM_RESULTS_WARNING_TEXT,
+  CHALLENGE_FORM_GENERATE_ERROR_TEXT,
+  CHALLENGE_FORM_GENERATING_BUTTON_TEXT,
+  CHALLENGE_FORM_GENERATE_BUTTON_TEXT,
+} from "../../../../constants/strings";
 
 const GUESSES_OPTIONS = [
   { value: 9 as const, label: "9" },
@@ -63,7 +82,7 @@ export const FormView = ({
           }}
         >
           <p className="font-code text-xs text-spice-red">
-            Could not auto-generate link. Edit the settings below or try again.
+            {CHALLENGE_FORM_AUTO_GENERATE_ERROR_TEXT}
           </p>
         </div>
       )}
@@ -76,9 +95,8 @@ export const FormView = ({
       >
         <Info className="w-3.5 h-3.5 text-crown-amber shrink-0 mt-0.5" />
         <p className="font-code text-xs text-gray-400 leading-relaxed">
-          <span className="text-crown-amber">NOTE:</span> The chosen dictionary
-          has little effect on gameplay. It simply lets the player know the
-          popularity of the word.
+          <span className="text-crown-amber">{CHALLENGE_FORM_NOTE_LABEL}</span>{" "}
+          {CHALLENGE_FORM_NOTE_TEXT}
         </p>
       </div>
       <div>
@@ -86,7 +104,7 @@ export const FormView = ({
           htmlFor="challenge-dictionary"
           className="font-pixel text-xs text-crown-amber tracking-widest mb-2 block"
         >
-          DICTIONARY
+          {CHALLENGE_FORM_DICTIONARY_LABEL}
         </label>
         <select
           id="challenge-dictionary"
@@ -112,7 +130,7 @@ export const FormView = ({
           id="challenge-word-label"
           className="font-pixel text-xs text-crown-amber tracking-widest mb-2"
         >
-          YOUR WORD
+          {CHALLENGE_FORM_WORD_LABEL}
         </p>
         <div className="relative">
           <input
@@ -122,7 +140,7 @@ export const FormView = ({
             onBlur={onBlur}
             onKeyDown={onKeyDown}
             maxLength={7}
-            placeholder="Type a word (4–7 letters)..."
+            placeholder={CHALLENGE_FORM_WORD_PLACEHOLDER}
             aria-labelledby="challenge-word-label"
             className="w-full border-2 font-pixel text-sm p-2 pr-8 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber tracking-widest uppercase"
             style={{
@@ -143,24 +161,26 @@ export const FormView = ({
 
         {wordStatus === "invalid-length" && (
           <p className="font-code text-xs text-spice-red mt-1">
-            Word must be 4–7 letters.
+            {CHALLENGE_FORM_INVALID_LENGTH_TEXT}
           </p>
         )}
 
         {wordStatus === "invalid-word" && (
           <>
             <p className="font-code text-xs text-spice-red mt-1">
-              "{cleanInput}" isn't in the {DICT_LABELS[dict].toLowerCase()}{" "}
-              dictionary.
+              {CHALLENGE_FORM_INVALID_WORD_TEXT(
+                cleanInput,
+                DICT_LABELS[dict].toLowerCase()
+              )}
             </p>
             {dictHints.foundIn && (
               <p
                 className="font-code text-xs mt-1"
                 style={{ color: "#a78bfa" }}
               >
-                However, it is available in{" "}
-                {DICT_LABELS[dictHints.foundIn].toLowerCase()} dictionary
-                though. Switch dictionaries to use it.
+                {CHALLENGE_FORM_AVAILABLE_IN_OTHER_DICT_TEXT(
+                  DICT_LABELS[dictHints.foundIn].toLowerCase()
+                )}
               </p>
             )}
           </>
@@ -169,17 +189,16 @@ export const FormView = ({
         {wordStatus === "valid" && (
           <>
             <p className="font-code text-xs text-green-400 mt-1">
-              "{cleanInput}" is valid — {cleanInput.length} letters.
+              {CHALLENGE_FORM_VALID_WORD_TEXT(cleanInput, cleanInput.length)}
             </p>
             {dictHints.easierThan && (
               <p
                 className="font-code text-xs mt-1"
                 style={{ color: "#facc15" }}
               >
-                Heads up: this word also appears in the{" "}
-                {DICT_LABELS[dictHints.easierThan].toLowerCase()} dictionary,
-                switching the dictionary provides the player with more precise
-                information about the word's popularity.
+                {CHALLENGE_FORM_EASIER_DICT_HINT_TEXT(
+                  DICT_LABELS[dictHints.easierThan].toLowerCase()
+                )}
               </p>
             )}
           </>
@@ -187,14 +206,16 @@ export const FormView = ({
 
         {wordStatus === "idle" && (
           <p className="font-code text-xs text-gray-500 mt-1">
-            Must be in the {DICT_LABELS[dict].toLowerCase()} dictionary.
+            {CHALLENGE_FORM_MUST_BE_IN_DICT_TEXT(
+              DICT_LABELS[dict].toLowerCase()
+            )}
           </p>
         )}
       </div>
       <div className="border-t border-obsidian-700" />
       <div>
         <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-          GUESSES ALLOWED
+          {CHALLENGE_FORM_GUESSES_ALLOWED_LABEL}
         </p>
         <ButtonGroup
           options={GUESSES_OPTIONS}
@@ -207,11 +228,11 @@ export const FormView = ({
         className="font-code text-xs leading-snug"
         style={{ color: "rgba(212,175,55,0.6)" }}
       >
-        ⚠ Challenge results do not count toward the recipient's stats. ⚠
+        {CHALLENGE_FORM_RESULTS_WARNING_TEXT}
       </p>
       {generateStatus === "error" && !hasAutoFilledWord && (
         <p className="font-code text-xs text-spice-red">
-          Failed to generate link. Check your connection and try again.
+          {CHALLENGE_FORM_GENERATE_ERROR_TEXT}
         </p>
       )}
       <button
@@ -243,7 +264,9 @@ export const FormView = ({
         }}
       >
         <Link className="w-3.5 h-3.5" />
-        {generateStatus === "loading" ? "GENERATING..." : "GENERATE LINK"}
+        {generateStatus === "loading"
+          ? CHALLENGE_FORM_GENERATING_BUTTON_TEXT
+          : CHALLENGE_FORM_GENERATE_BUTTON_TEXT}
       </button>
     </div>
   );

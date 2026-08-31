@@ -9,6 +9,12 @@ import {
   cloudSaveMatchesLocal,
   type CloudSave,
 } from "../lib/cloudSync";
+import {
+  CLOUD_SYNC_VERIFY_ERROR_TEXT,
+  CLOUD_SYNC_CREATE_ERROR_TEXT,
+  CLOUD_SYNC_UNREACHABLE_ERROR_TEXT,
+  CLOUD_SYNC_PUSH_ERROR_TEXT,
+} from "../constants/strings";
 
 const POLL_INTERVAL_MS = 4000;
 const PUSH_DEBOUNCE_MS = 1500;
@@ -42,7 +48,7 @@ export const useCloudSync = (isMobile: boolean) => {
       const idToken = await getIdTokenForCurrentUser();
       if (ignore) return;
       if (!idToken) {
-        setSyncError("Couldn't verify sign-in for cloud sync.");
+        setSyncError(CLOUD_SYNC_VERIFY_ERROR_TEXT);
         return;
       }
 
@@ -71,7 +77,7 @@ export const useCloudSync = (isMobile: boolean) => {
         );
         if (ignore) return;
         if (!updatedAt) {
-          setSyncError("Couldn't create your cloud save.");
+          setSyncError(CLOUD_SYNC_CREATE_ERROR_TEXT);
           return;
         }
         lastPushedAtRef.current = getLocalMaxUpdatedAt();
@@ -81,7 +87,7 @@ export const useCloudSync = (isMobile: boolean) => {
         return;
       }
 
-      setSyncError("Couldn't reach cloud save.");
+      setSyncError(CLOUD_SYNC_UNREACHABLE_ERROR_TEXT);
     };
 
     void run();
@@ -132,7 +138,7 @@ export const useCloudSync = (isMobile: boolean) => {
           setIsUpToDate(true);
           setSyncError(null);
         } else {
-          setSyncError("Couldn't sync to cloud.");
+          setSyncError(CLOUD_SYNC_PUSH_ERROR_TEXT);
         }
       };
       void run();

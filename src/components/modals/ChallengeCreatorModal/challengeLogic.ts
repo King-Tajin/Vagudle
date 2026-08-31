@@ -5,6 +5,7 @@ import {
 } from "../../../lib/challenge";
 import { isWordInDict } from "../../../lib/words";
 import { doShare } from "../../../lib/share";
+import { SHARE_CHALLENGE_INVITE_TITLE } from "../../../constants/strings";
 
 export type WordStatus = "idle" | "valid" | "invalid-word" | "invalid-length";
 export type Generated = { word: string; url: string; config: ChallengeConfig };
@@ -132,5 +133,5 @@ export const shareChallenge = async (
     `(Results won't affect your stats)\n` +
     url;
 
-  await doShare({ title: "Vagudle Challenge", text }, text, onCopied);
+  await doShare({ title: SHARE_CHALLENGE_INVITE_TITLE, text }, text, onCopied);
 };

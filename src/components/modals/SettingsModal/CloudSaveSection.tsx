@@ -31,17 +31,59 @@ import {
   openExternalLink,
 } from "../../../lib/discord";
 import { providerButtonStyle } from "./styles";
+import {
+  CLOUD_SAVE_PROVIDER_LABEL_EMAIL,
+  CLOUD_SAVE_PROVIDER_LABEL_PLAYGAMES,
+  CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN,
+  CLOUD_SAVE_AUTO_SIGNED_IN_TEXT,
+  CLOUD_SAVE_WAITING_LINK_TEXT,
+  CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT,
+  CLOUD_SAVE_LINK_EXISTING_ACCOUNT_BUTTON_TEXT,
+  CLOUD_SAVE_LINK_START_ERROR_TEXT,
+  CLOUD_SAVE_PLAYGAMES_PROMPT_TEXT,
+  CLOUD_SAVE_OPENING_BUTTON_TEXT,
+  CLOUD_SAVE_LINK_ACCOUNT_BUTTON_TEXT,
+  CLOUD_SAVE_SKIP_BUTTON_TEXT,
+  CLOUD_SAVE_PLAYGAMES_LINK_ERROR_TEXT,
+  CLOUD_SAVE_LINKING_BUTTON_TEXT,
+  CLOUD_SAVE_LINK_PLAYGAMES_BUTTON_TEXT,
+  CLOUD_SAVE_ALSO_LINKED_TEXT,
+  CLOUD_SAVE_HEADING,
+  CLOUD_SAVE_IN_PROGRESS_WARNING_TEXT,
+  CLOUD_SAVE_PRIVACY_TEXT,
+  CLOUD_SAVE_CHECKING_STATUS_TEXT,
+  CLOUD_SAVE_SIGNED_IN_AS_TEXT,
+  CLOUD_SAVE_ACCOUNT_TYPE_SUFFIX_TEXT,
+  CLOUD_SAVE_UP_TO_DATE_TEXT,
+  CLOUD_SAVE_SYNCING_TEXT,
+  CLOUD_SAVE_LAST_SAVED_TEXT,
+  CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT,
+  CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT,
+  CLOUD_SAVE_SIGN_IN_PROMPT_TEXT,
+  CLOUD_SAVE_DIRECT_SIGNIN_HEADING,
+  LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT,
+  LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT,
+  LINK_DISCORD_EMAIL_PLACEHOLDER,
+  CLOUD_SAVE_EMAIL_ARIA_LABEL,
+  CLOUD_SAVE_SEND_LINK_BUTTON_TEXT,
+  CLOUD_SAVE_EMAIL_SENT_TEXT,
+  CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING,
+  CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION,
+  LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT,
+  CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT,
+  CLOUD_SAVE_BETA_BADGE_TEXT,
+} from "../../../constants/strings";
 
 const PROVIDER_LABELS: Record<string, string> = {
   "google.com": "Google",
   "github.com": "GitHub",
-  password: "Email",
+  password: CLOUD_SAVE_PROVIDER_LABEL_EMAIL,
   "discord.com": "Discord",
-  "playgames.google.com": "Play Games",
+  "playgames.google.com": CLOUD_SAVE_PROVIDER_LABEL_PLAYGAMES,
 };
 
 const getProviderLabel = (providerId: string): string =>
-  PROVIDER_LABELS[providerId] ?? "Unknown";
+  PROVIDER_LABELS[providerId] ?? CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN;
 
 const ActivityLinkSection = ({
   accessToken,
@@ -85,11 +127,11 @@ const ActivityLinkSection = ({
   return (
     <div className="space-y-2">
       <p className="font-code text-xs text-gray-300">
-        Auto signed in via Discord.
+        {CLOUD_SAVE_AUTO_SIGNED_IN_TEXT}
       </p>
       {mode === "waiting" ? (
         <p className="font-code text-xs text-gray-500 leading-snug">
-          Waiting for you to finish linking in your browser...
+          {CLOUD_SAVE_WAITING_LINK_TEXT}
         </p>
       ) : (
         <button
@@ -99,12 +141,14 @@ const ActivityLinkSection = ({
           className="w-full font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
           style={providerButtonStyle}
         >
-          {mode === "linking" ? "OPENING LINK..." : "LINK EXISTING ACCOUNT"}
+          {mode === "linking"
+            ? CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT
+            : CLOUD_SAVE_LINK_EXISTING_ACCOUNT_BUTTON_TEXT}
         </button>
       )}
       {mode === "error" && (
         <p className="font-code text-xs text-spice-red leading-snug">
-          Could not start linking. Please try again.
+          {CLOUD_SAVE_LINK_START_ERROR_TEXT}
         </p>
       )}
     </div>
@@ -132,7 +176,7 @@ const PlayGamesLinkPrompt = ({ onDismiss }: { onDismiss: () => void }) => {
   return (
     <div className="space-y-2 mb-3 p-3" style={providerButtonStyle}>
       <p className="font-code text-xs text-gray-300 leading-snug">
-        Have an existing Vagudle account? Link it so your progress carries over.
+        {CLOUD_SAVE_PLAYGAMES_PROMPT_TEXT}
       </p>
       <div className="flex gap-2">
         <button
@@ -142,7 +186,9 @@ const PlayGamesLinkPrompt = ({ onDismiss }: { onDismiss: () => void }) => {
           className="flex-1 font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
           style={providerButtonStyle}
         >
-          {mode === "opening" ? "OPENING..." : "LINK ACCOUNT"}
+          {mode === "opening"
+            ? CLOUD_SAVE_OPENING_BUTTON_TEXT
+            : CLOUD_SAVE_LINK_ACCOUNT_BUTTON_TEXT}
         </button>
         <button
           type="button"
@@ -150,12 +196,12 @@ const PlayGamesLinkPrompt = ({ onDismiss }: { onDismiss: () => void }) => {
           className="flex-1 font-pixel text-xs tracking-widest px-3 py-2"
           style={providerButtonStyle}
         >
-          SKIP
+          {CLOUD_SAVE_SKIP_BUTTON_TEXT}
         </button>
       </div>
       {mode === "error" && (
         <p className="font-code text-xs text-spice-red leading-snug">
-          Could not start linking. Please try again.
+          {CLOUD_SAVE_LINK_START_ERROR_TEXT}
         </p>
       )}
     </div>
@@ -190,11 +236,11 @@ const LinkAccountButton = ({
         className="w-full font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
         style={providerButtonStyle}
       >
-        {mode === "opening" ? "OPENING LINK..." : label}
+        {mode === "opening" ? CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT : label}
       </button>
       {mode === "error" && (
         <p className="font-code text-xs text-spice-red leading-snug">
-          Could not start linking. Please try again.
+          {CLOUD_SAVE_LINK_START_ERROR_TEXT}
         </p>
       )}
     </div>
@@ -234,11 +280,13 @@ const LinkPlayGamesToAccountButton = ({
         style={providerButtonStyle}
       >
         <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-        {mode === "linking" ? "LINKING..." : "LINK PLAY GAMES"}
+        {mode === "linking"
+          ? CLOUD_SAVE_LINKING_BUTTON_TEXT
+          : CLOUD_SAVE_LINK_PLAYGAMES_BUTTON_TEXT}
       </button>
       {mode === "error" && (
         <p className="font-code text-xs text-spice-red leading-snug">
-          Could not link Play Games. Please try again.
+          {CLOUD_SAVE_PLAYGAMES_LINK_ERROR_TEXT}
         </p>
       )}
     </div>
@@ -314,23 +362,27 @@ export const CloudSaveSection = ({
 
     for (const providerId of user.providerIds) {
       const label = getProviderLabel(providerId);
-      if (label !== "Unknown" && label !== primaryLabel) linked.add(label);
+      if (label !== CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN && label !== primaryLabel)
+        linked.add(label);
     }
 
     if (linkStatus?.discordLinked && primaryLabel !== "Discord")
       linked.add("Discord");
-    if (linkStatus?.playGamesLinked && primaryLabel !== "Play Games")
-      linked.add("Play Games");
+    if (
+      linkStatus?.playGamesLinked &&
+      primaryLabel !== CLOUD_SAVE_PROVIDER_LABEL_PLAYGAMES
+    )
+      linked.add(CLOUD_SAVE_PROVIDER_LABEL_PLAYGAMES);
 
     return linked.size > 0
-      ? `Also linked: ${Array.from(linked).join(", ")}`
+      ? CLOUD_SAVE_ALSO_LINKED_TEXT(Array.from(linked).join(", "))
       : null;
   }, [user, linkStatus?.discordLinked, linkStatus?.playGamesLinked]);
 
   return (
     <div className="py-3">
       <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none mb-2">
-        CLOUD SAVE
+        {CLOUD_SAVE_HEADING}
       </p>
       <div className="flex items-start gap-1.5 mb-2">
         <AlertTriangle
@@ -338,7 +390,7 @@ export const CloudSaveSection = ({
           aria-hidden="true"
         />
         <p className="font-code text-xs text-gray-500 leading-snug">
-          Cloud save does not save games currently in progress.
+          {CLOUD_SAVE_IN_PROGRESS_WARNING_TEXT}
         </p>
       </div>
       <div className="flex items-start gap-1.5 mb-2">
@@ -347,15 +399,14 @@ export const CloudSaveSection = ({
           aria-hidden="true"
         />
         <p className="font-code text-xs text-gray-500 leading-snug">
-          Your data is never sold. Emails are only kept in case you need
-          support.
+          {CLOUD_SAVE_PRIVACY_TEXT}
         </p>
       </div>
       {isActivityMode ? (
         <ActivityLinkSection accessToken={activityAccessToken} />
       ) : authLoading ? (
         <p className="font-code text-xs text-gray-500">
-          Checking sign-in status...
+          {CLOUD_SAVE_CHECKING_STATUS_TEXT}
         </p>
       ) : user ? (
         <div className="space-y-2">
@@ -364,31 +415,37 @@ export const CloudSaveSection = ({
               <PlayGamesLinkPrompt onDismiss={dismissPlayGamesLinkPrompt} />
             )}
           <p className="font-code text-xs text-gray-300 leading-snug">
-            Signed in as{" "}
+            {CLOUD_SAVE_SIGNED_IN_AS_TEXT}{" "}
             <span className="text-spice-lime">
               {user.email ?? user.displayName ?? user.uid}
             </span>{" "}
-            — {accountTypeLabel} account
+            {CLOUD_SAVE_ACCOUNT_TYPE_SUFFIX_TEXT(accountTypeLabel)}
             {linkedAccountsLabel && <> · {linkedAccountsLabel}</>}
           </p>
           <p className="font-code text-xs text-gray-500">
             {isCloudUpToDate ? (
-              <span className="text-spice-lime">Up to date</span>
+              <span className="text-spice-lime">
+                {CLOUD_SAVE_UP_TO_DATE_TEXT}
+              </span>
             ) : (
-              "Syncing..."
+              CLOUD_SAVE_SYNCING_TEXT
             )}
             {cloudUpdatedAt && (
-              <> · Last saved {formatRelativeTime(cloudUpdatedAt)}</>
+              <>
+                {" "}
+                ·{" "}
+                {CLOUD_SAVE_LAST_SAVED_TEXT(formatRelativeTime(cloudUpdatedAt))}
+              </>
             )}
           </p>
           {user.providerId === "discord.com" && !linkStatus?.discordLinked && (
             <LinkAccountButton
-              label="LINK ACCOUNT"
+              label={CLOUD_SAVE_LINK_ACCOUNT_BUTTON_TEXT}
               onLink={async () => {
                 const session = getStoredDiscordSession();
                 if (!session)
                   return {
-                    error: "Could not start linking. Please try again.",
+                    error: CLOUD_SAVE_LINK_START_ERROR_TEXT,
                   };
                 return openDiscordLinkFlow(session);
               }}
@@ -397,12 +454,12 @@ export const CloudSaveSection = ({
           {user.providerId === "playgames.google.com" &&
             !linkStatus?.playGamesLinked && (
               <LinkAccountButton
-                label="LINK ACCOUNT"
+                label={CLOUD_SAVE_LINK_ACCOUNT_BUTTON_TEXT}
                 onLink={async () => {
                   const session = getStoredPlayGamesSession();
                   if (!session)
                     return {
-                      error: "Could not start linking. Please try again.",
+                      error: CLOUD_SAVE_LINK_START_ERROR_TEXT,
                     };
                   return openPlayGamesLinkFlow(session);
                 }}
@@ -416,7 +473,7 @@ export const CloudSaveSection = ({
               style={providerButtonStyle}
             >
               <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-              LINK DISCORD
+              {CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT}
             </button>
           )}
           {isDirectAccount &&
@@ -430,7 +487,7 @@ export const CloudSaveSection = ({
             className="w-full font-pixel text-xs tracking-widest px-3 py-2"
             style={providerButtonStyle}
           >
-            SIGN OUT
+            {CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT}
           </button>
           {actionError && (
             <p className="font-code text-xs text-spice-red">{actionError}</p>
@@ -439,12 +496,11 @@ export const CloudSaveSection = ({
       ) : (
         <div className="space-y-2">
           <p className="font-code text-xs text-gray-500 leading-snug mb-1">
-            Sign in to keep your stats, achievements, and settings synced across
-            devices.
+            {CLOUD_SAVE_SIGN_IN_PROMPT_TEXT}
           </p>
 
           <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-2 mb-1">
-            DIRECT SIGN-IN
+            {CLOUD_SAVE_DIRECT_SIGNIN_HEADING}
           </p>
           <button
             type="button"
@@ -453,7 +509,7 @@ export const CloudSaveSection = ({
             style={providerButtonStyle}
           >
             <GoogleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-            CONTINUE WITH GOOGLE
+            {LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
           </button>
           <button
             type="button"
@@ -462,15 +518,15 @@ export const CloudSaveSection = ({
             style={providerButtonStyle}
           >
             <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-            CONTINUE WITH GITHUB
+            {LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
           </button>
           <div className="flex gap-2 pt-1">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              aria-label="Email address"
+              placeholder={LINK_DISCORD_EMAIL_PLACEHOLDER}
+              aria-label={CLOUD_SAVE_EMAIL_ARIA_LABEL}
               className="flex-1 min-w-0 border-2 font-code text-xs p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber"
               style={{
                 background: "#0a0014",
@@ -485,23 +541,22 @@ export const CloudSaveSection = ({
               style={providerButtonStyle}
             >
               <Mail className="w-3.5 h-3.5 shrink-0" />
-              SEND LINK
+              {CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
             </button>
           </div>
           {emailLinkSent && (
             <p className="font-code text-xs text-spice-lime">
-              Check your email for a sign-in link.
+              {CLOUD_SAVE_EMAIL_SENT_TEXT}
             </p>
           )}
 
           {(!isActivityMode || playGamesAvailable) && (
             <>
               <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-3 mb-1">
-                FLEXIBLE SIGN-IN
+                {CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING}
               </p>
               <p className="font-code text-xs text-gray-500 leading-snug mb-1">
-                Works on its own, or link it to another account anytime from
-                here.
+                {CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION}
               </p>
               {!isActivityMode && (
                 <button
@@ -514,7 +569,7 @@ export const CloudSaveSection = ({
                     className="w-4 h-4 shrink-0"
                     aria-hidden="true"
                   />
-                  CONTINUE WITH DISCORD
+                  {LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
                 </button>
               )}
               {playGamesAvailable && (
@@ -528,9 +583,9 @@ export const CloudSaveSection = ({
                     className="w-4 h-4 shrink-0"
                     aria-hidden="true"
                   />
-                  CONTINUE WITH PLAY GAMES
+                  {CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT}
                   <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
-                    BETA
+                    {CLOUD_SAVE_BETA_BADGE_TEXT}
                   </span>
                 </button>
               )}

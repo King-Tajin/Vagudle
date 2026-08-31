@@ -12,6 +12,10 @@ import {
   NORMAL_MODE_MAX_CHALLENGES,
 } from "../constants/settings";
 import { GAME_COPIED_MESSAGE } from "../constants/strings";
+import {
+  DAILY_MODE_SIGNIN_WARNING_TEXT,
+  DAILY_MODE_USERNAME_WARNING_TEXT,
+} from "../constants/strings";
 import { shareDailyResult } from "../lib/share";
 import {
   fetchDailyConfig,
@@ -83,9 +87,9 @@ export const useDailyMode = ({
     ? getDailyNumber(dailyConfig.date, dailyConfig.originDate)
     : 0;
   const dailyUsernameWarning = !user
-    ? "Sign in to save to the leaderboard"
+    ? DAILY_MODE_SIGNIN_WARNING_TEXT
     : hasUsername === false
-      ? "Set a username to save to the leaderboard"
+      ? DAILY_MODE_USERNAME_WARNING_TEXT
       : null;
 
   const dailyLeaderboardSubmittedForRef = useRef<string | null>(null);

@@ -43,6 +43,7 @@ import {
 } from "../lib/daily";
 import { getIdTokenForCurrentUser } from "../lib/cloudSync";
 import { CORRECT_WORD_MESSAGE } from "../constants/strings";
+import { WORD_LISTS_LOAD_ERROR_TEXT } from "../constants/strings";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
@@ -248,7 +249,7 @@ export const useGameInitialization = ({
       try {
         await initWordLists();
       } catch {
-        showErrorAlert("Failed to load word lists. Please refresh the page.", {
+        showErrorAlert(WORD_LISTS_LOAD_ERROR_TEXT, {
           persist: true,
         });
         setIsLoading(false);

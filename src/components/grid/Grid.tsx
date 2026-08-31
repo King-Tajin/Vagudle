@@ -8,6 +8,16 @@ import GreenBrushIcon from "@/assets/icons/green-brush.svg?react";
 import YellowBrushIcon from "@/assets/icons/yellow-brush.svg?react";
 import GrayBrushIcon from "@/assets/icons/gray-brush.svg?react";
 import RecycleIcon from "@/assets/icons/recycle.svg?react";
+import {
+  RESET_DATA_CANCEL_BUTTON_TEXT,
+  GRID_BRUSH_ARIA_LABEL,
+  GRID_RESET_ALL_ARIA_LABEL,
+  GRID_RESET_CONFIRM_TITLE,
+  GRID_RESET_CONFIRM_TEXT_WITH_AUTOGRAY,
+  GRID_RESET_CONFIRM_TEXT,
+  GRID_RESET_BUTTON_TEXT,
+  GRID_GUESS_HISTORY_ARIA_LABEL,
+} from "../../constants/strings";
 
 type Props = {
   solution: string;
@@ -241,7 +251,7 @@ export const Grid = ({
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
                 }}
-                aria-label={`${status} brush`}
+                aria-label={GRID_BRUSH_ARIA_LABEL(status)}
                 aria-pressed={selectedBrush === status}
               >
                 <Icon className="w-9 h-9" />
@@ -267,7 +277,7 @@ export const Grid = ({
                 backdropFilter: "blur(10px)",
                 WebkitBackdropFilter: "blur(10px)",
               }}
-              aria-label="Reset all colors"
+              aria-label={GRID_RESET_ALL_ARIA_LABEL}
             >
               <RecycleIcon className="w-9 h-9 text-gray-400" />
             </button>
@@ -287,12 +297,12 @@ export const Grid = ({
               id="reset-dialog-title"
               className="font-pixel text-xs text-crown-amber tracking-widest mb-2"
             >
-              RESET ALL COLORS?
+              {GRID_RESET_CONFIRM_TITLE}
             </p>
             <p className="font-code text-sm text-gray-300 mb-5">
               {autoGray
-                ? "This will clear all painted cells. Auto-grayed cells will remain."
-                : "This will clear all painted cells."}
+                ? GRID_RESET_CONFIRM_TEXT_WITH_AUTOGRAY
+                : GRID_RESET_CONFIRM_TEXT}
             </p>
             <div className="flex gap-3">
               <button
@@ -308,7 +318,7 @@ export const Grid = ({
                   color: "#f87171",
                 }}
               >
-                RESET
+                {GRID_RESET_BUTTON_TEXT}
               </button>
               <button
                 type="button"
@@ -321,7 +331,7 @@ export const Grid = ({
                   color: "#fbbf24",
                 }}
               >
-                CANCEL
+                {RESET_DATA_CANCEL_BUTTON_TEXT}
               </button>
             </div>
           </dialog>
@@ -333,7 +343,7 @@ export const Grid = ({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         role="group"
-        aria-label="Guess history. Click and drag over a tile to recolor it."
+        aria-label={GRID_GUESS_HISTORY_ARIA_LABEL}
         style={{ userSelect: "none" }}
       >
         {guesses.map((guess, i) => (

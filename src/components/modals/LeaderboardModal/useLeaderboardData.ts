@@ -9,6 +9,12 @@ import {
   USERNAME_PATTERN,
   type UsernameStatus,
 } from "../../../lib/username";
+import {
+  USERNAME_VALIDATION_ERROR_TEXT,
+  USERNAME_TAKEN_ERROR_TEXT,
+  USERNAME_RATE_LIMITED_ERROR_TEXT,
+  GENERIC_ERROR_TEXT,
+} from "../../../constants/strings";
 
 export const formatCooldown = (canChangeAt: string): string => {
   const ms = new Date(canChangeAt).getTime() - Date.now();
@@ -192,7 +198,7 @@ export const useLeaderboardData = ({
     if (!USERNAME_PATTERN.test(trimmed)) {
       dispatch({
         type: "submitError",
-        message: "3-20 characters: letters, numbers, spaces, - or _",
+        message: USERNAME_VALIDATION_ERROR_TEXT,
       });
       return;
     }
@@ -218,22 +224,24 @@ export const useLeaderboardData = ({
     if (outcome.status === "invalid")
       dispatch({
         type: "submitError",
-        message: "3-20 characters: letters, numbers, spaces, - or _",
+        message: USERNAME_VALIDATION_ERROR_TEXT,
       });
     else if (outcome.status === "taken")
       dispatch({
         type: "submitError",
-        message: "That username is already taken.",
+        message: USERNAME_TAKEN_ERROR_TEXT,
       });
     else if (outcome.status === "rate_limited")
       dispatch({
         type: "submitError",
-        message: `You can change your name again in ${formatCooldown(outcome.retryAt)}.`,
+        message: USERNAME_RATE_LIMITED_ERROR_TEXT(
+          formatCooldown(outcome.retryAt)
+        ),
       });
     else
       dispatch({
         type: "submitError",
-        message: "Something went wrong. Please try again.",
+        message: GENERIC_ERROR_TEXT,
       });
   };
 

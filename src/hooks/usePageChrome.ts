@@ -1,4 +1,9 @@
 import { useEffect } from "react";
+import {
+  PAGE_TITLE_DUEL,
+  PAGE_TITLE_CHALLENGE,
+  PAGE_TITLE_DAILY,
+} from "../constants/strings";
 
 type Params = {
   isDuelMode: boolean;
@@ -17,11 +22,11 @@ export const usePageChrome = ({
 
   useEffect(() => {
     document.title = isDuelMode
-      ? "Vagudle - Duel"
+      ? PAGE_TITLE_DUEL
       : isChallengeMode
-        ? "Vagudle - Challenge"
+        ? PAGE_TITLE_CHALLENGE
         : isDailyMode
-          ? "Vagudle - Daily"
+          ? PAGE_TITLE_DAILY
           : "Vagudle";
     return () => {
       document.title = "Vagudle";

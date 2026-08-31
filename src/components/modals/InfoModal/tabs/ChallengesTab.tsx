@@ -11,7 +11,6 @@ import {
   CHALLENGES_DISCORD_TEXT_PART1,
   CHALLENGES_DISCORD_LINK_TEXT,
   CHALLENGES_DISCORD_TEXT_PART2,
-  CHALLENGES_SLASH_COMMAND_LABEL,
   CHALLENGES_DISCORD_TEXT_PART3,
 } from "../../../../constants/strings";
 
@@ -48,9 +47,7 @@ export const ChallengesTab = () => {
           {CHALLENGES_DISCORD_LINK_TEXT}
         </ActivityLink>
         {CHALLENGES_DISCORD_TEXT_PART2}{" "}
-        <span className="text-crown-gold">
-          {CHALLENGES_SLASH_COMMAND_LABEL}
-        </span>{" "}
+        <span className="text-crown-gold">/vagudle_challenge</span>{" "}
         {CHALLENGES_DISCORD_TEXT_PART3}
       </p>
     </div>

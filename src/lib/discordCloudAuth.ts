@@ -1,5 +1,9 @@
 import { DISCORD_CLIENT_ID } from "../constants/settings";
 import { getPublicOrigin } from "./publicOrigin";
+import {
+  LINK_START_ERROR_SHORT_TEXT,
+  CLOUD_SAVE_LINK_START_ERROR_TEXT,
+} from "../constants/strings";
 
 export const DISCORD_SESSION_STORAGE_KEY = "vagudle-discord-session:v1";
 const STATE_STORAGE_KEY = "vagudle-discord-oauth-state:v1";
@@ -112,11 +116,11 @@ export const fetchDiscordLinkUrl = async (
       error?: string;
     };
     if (!res.ok || !data.success || !data.url) {
-      return { error: data.error ?? "Could not start linking." };
+      return { error: data.error ?? LINK_START_ERROR_SHORT_TEXT };
     }
     return { url: data.url };
   } catch {
-    return { error: "Could not start linking. Please try again." };
+    return { error: CLOUD_SAVE_LINK_START_ERROR_TEXT };
   }
 };
 
