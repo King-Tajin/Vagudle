@@ -8,31 +8,7 @@ import {
   Maximize2,
   Minimize2,
 } from "lucide-react";
-import {
-  FEEDBACK_VALIDATION_ERROR_MESSAGE,
-  FEEDBACK_SUBMIT_ERROR_MESSAGE,
-  FEEDBACK_SUCCESS_TITLE,
-  FEEDBACK_SUCCESS_MESSAGE,
-  FEEDBACK_SEND_ANOTHER_BUTTON_TEXT,
-  FEEDBACK_TYPE_LABEL,
-  FEEDBACK_POSITIVE_LABEL,
-  FEEDBACK_NEGATIVE_LABEL,
-  FEEDBACK_CATEGORY_LABEL,
-  FEEDBACK_CATEGORY_PLACEHOLDER,
-  FEEDBACK_CATEGORY_BUG_REPORT,
-  FEEDBACK_CATEGORY_FEATURE_REQUEST,
-  FEEDBACK_CATEGORY_GENERAL,
-  FEEDBACK_EMAIL_LABEL,
-  FEEDBACK_EMAIL_HINT,
-  FEEDBACK_MESSAGE_LABEL,
-  FEEDBACK_MESSAGE_FULLSCREEN_LABEL,
-  FEEDBACK_MESSAGE_PLACEHOLDER,
-  FEEDBACK_CHARACTERS_LEFT_TEXT,
-  FEEDBACK_EXPAND_LABEL,
-  FEEDBACK_COLLAPSE_LABEL,
-  FEEDBACK_SENDING_BUTTON_TEXT,
-  FEEDBACK_SEND_BUTTON_TEXT,
-} from "../../../../constants/strings";
+import strings from "../../../../constants/strings";
 
 const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
@@ -61,7 +37,7 @@ export const FeedbackTab = () => {
 
     if (!formData.sentiment || !formData.category || !formData.message) {
       setStatus("error");
-      setErrorMessage(FEEDBACK_VALIDATION_ERROR_MESSAGE);
+      setErrorMessage(strings.FEEDBACK_VALIDATION_ERROR_MESSAGE);
       return;
     }
 
@@ -81,14 +57,14 @@ export const FeedbackTab = () => {
 
       if (!response.ok) {
         setStatus("error");
-        setErrorMessage(FEEDBACK_SUBMIT_ERROR_MESSAGE);
+        setErrorMessage(strings.FEEDBACK_SUBMIT_ERROR_MESSAGE);
         return;
       }
 
       setStatus("success");
     } catch {
       setStatus("error");
-      setErrorMessage(FEEDBACK_SUBMIT_ERROR_MESSAGE);
+      setErrorMessage(strings.FEEDBACK_SUBMIT_ERROR_MESSAGE);
     } finally {
       isSubmittingRef.current = false;
     }
@@ -99,10 +75,10 @@ export const FeedbackTab = () => {
       <div className="flex flex-col items-center justify-center h-full py-12 text-center">
         <CheckCircle className="w-14 h-14 text-spice-lime mb-4" />
         <h3 className="font-pixel text-sm text-crown-gold mb-2 tracking-widest">
-          {FEEDBACK_SUCCESS_TITLE}
+          {strings.FEEDBACK_SUCCESS_TITLE}
         </h3>
         <p className="font-code text-sm text-gray-400">
-          {FEEDBACK_SUCCESS_MESSAGE}
+          {strings.FEEDBACK_SUCCESS_MESSAGE}
         </p>
         <button
           type="button"
@@ -118,7 +94,7 @@ export const FeedbackTab = () => {
           }}
           className="mt-6 font-pixel text-xs text-crown-amber underline tracking-widest"
         >
-          {FEEDBACK_SEND_ANOTHER_BUTTON_TEXT}
+          {strings.FEEDBACK_SEND_ANOTHER_BUTTON_TEXT}
         </button>
       </div>
     );
@@ -131,7 +107,7 @@ export const FeedbackTab = () => {
           id="feedback-type-label"
           className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest"
         >
-          {FEEDBACK_TYPE_LABEL}
+          {strings.FEEDBACK_TYPE_LABEL}
         </span>
         <div
           role="group"
@@ -167,7 +143,7 @@ export const FeedbackTab = () => {
                   formData.sentiment === "positive" ? "#22c55e" : "#9ca3af",
               }}
             >
-              {FEEDBACK_POSITIVE_LABEL}
+              {strings.FEEDBACK_POSITIVE_LABEL}
             </span>
           </button>
           <button
@@ -199,7 +175,7 @@ export const FeedbackTab = () => {
                   formData.sentiment === "negative" ? "#f87171" : "#9ca3af",
               }}
             >
-              {FEEDBACK_NEGATIVE_LABEL}
+              {strings.FEEDBACK_NEGATIVE_LABEL}
             </span>
           </button>
         </div>
@@ -209,7 +185,7 @@ export const FeedbackTab = () => {
           htmlFor="feedback-category"
           className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest"
         >
-          {FEEDBACK_CATEGORY_LABEL}
+          {strings.FEEDBACK_CATEGORY_LABEL}
         </label>
         <select
           id="feedback-category"
@@ -226,12 +202,14 @@ export const FeedbackTab = () => {
             color: formData.category ? "#d1d5db" : "#6b7280",
           }}
         >
-          <option value="">{FEEDBACK_CATEGORY_PLACEHOLDER}</option>
-          <option value="bug-report">{FEEDBACK_CATEGORY_BUG_REPORT}</option>
-          <option value="feature-request">
-            {FEEDBACK_CATEGORY_FEATURE_REQUEST}
+          <option value="">{strings.FEEDBACK_CATEGORY_PLACEHOLDER}</option>
+          <option value="bug-report">
+            {strings.FEEDBACK_CATEGORY_BUG_REPORT}
           </option>
-          <option value="general">{FEEDBACK_CATEGORY_GENERAL}</option>
+          <option value="feature-request">
+            {strings.FEEDBACK_CATEGORY_FEATURE_REQUEST}
+          </option>
+          <option value="general">{strings.FEEDBACK_CATEGORY_GENERAL}</option>
         </select>
       </div>
       <div>
@@ -239,7 +217,7 @@ export const FeedbackTab = () => {
           htmlFor="feedback-email"
           className="block font-pixel text-xs text-crown-amber mb-2 tracking-widest"
         >
-          {FEEDBACK_EMAIL_LABEL}
+          {strings.FEEDBACK_EMAIL_LABEL}
         </label>
         <input
           id="feedback-email"
@@ -257,7 +235,7 @@ export const FeedbackTab = () => {
           }}
         />
         <p className="font-code text-xs text-gray-600 mt-1">
-          {FEEDBACK_EMAIL_HINT}
+          {strings.FEEDBACK_EMAIL_HINT}
         </p>
       </div>
       <div>
@@ -266,7 +244,7 @@ export const FeedbackTab = () => {
             htmlFor="feedback-message"
             className="font-pixel text-xs text-crown-amber tracking-widest"
           >
-            {FEEDBACK_MESSAGE_LABEL}
+            {strings.FEEDBACK_MESSAGE_LABEL}
           </label>
           <span
             className="font-code text-xs tabular-nums"
@@ -278,7 +256,7 @@ export const FeedbackTab = () => {
                   : "#4b5563",
             }}
           >
-            {FEEDBACK_CHARACTERS_LEFT_TEXT(messageRemaining)}
+            {strings.FEEDBACK_CHARACTERS_LEFT_TEXT(messageRemaining)}
           </span>
         </div>
         <div className="relative">
@@ -289,7 +267,7 @@ export const FeedbackTab = () => {
               setFormData({ ...formData, message: e.target.value })
             }
             onKeyDown={(e) => e.stopPropagation()}
-            placeholder={FEEDBACK_MESSAGE_PLACEHOLDER}
+            placeholder={strings.FEEDBACK_MESSAGE_PLACEHOLDER}
             rows={5}
             maxLength={MESSAGE_MAX}
             className="w-full border-2 font-code text-sm p-2 pb-7 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors resize-none"
@@ -304,8 +282,8 @@ export const FeedbackTab = () => {
           <button
             type="button"
             onClick={() => setIsFullscreen(true)}
-            title={FEEDBACK_EXPAND_LABEL}
-            aria-label={FEEDBACK_EXPAND_LABEL}
+            title={strings.FEEDBACK_EXPAND_LABEL}
+            aria-label={strings.FEEDBACK_EXPAND_LABEL}
             className="absolute bottom-2 right-2 p-1 transition-opacity opacity-40 hover:opacity-100"
             style={{ color: "#d4af37" }}
           >
@@ -337,7 +315,7 @@ export const FeedbackTab = () => {
                   id="feedback-message-fullscreen-label"
                   className="font-pixel text-xs text-crown-amber tracking-widest"
                 >
-                  {FEEDBACK_MESSAGE_FULLSCREEN_LABEL}
+                  {strings.FEEDBACK_MESSAGE_FULLSCREEN_LABEL}
                 </span>
                 <div className="flex items-center gap-3">
                   <span
@@ -350,13 +328,13 @@ export const FeedbackTab = () => {
                           : "#4b5563",
                     }}
                   >
-                    {FEEDBACK_CHARACTERS_LEFT_TEXT(messageRemaining)}
+                    {strings.FEEDBACK_CHARACTERS_LEFT_TEXT(messageRemaining)}
                   </span>
                   <button
                     type="button"
                     onClick={() => setIsFullscreen(false)}
-                    title={FEEDBACK_COLLAPSE_LABEL}
-                    aria-label={FEEDBACK_COLLAPSE_LABEL}
+                    title={strings.FEEDBACK_COLLAPSE_LABEL}
+                    aria-label={strings.FEEDBACK_COLLAPSE_LABEL}
                     className="p-1 transition-opacity opacity-60 hover:opacity-100"
                     style={{ color: "#d4af37" }}
                   >
@@ -370,7 +348,7 @@ export const FeedbackTab = () => {
                   setFormData({ ...formData, message: e.target.value })
                 }
                 onKeyDown={(e) => e.stopPropagation()}
-                placeholder={FEEDBACK_MESSAGE_PLACEHOLDER}
+                placeholder={strings.FEEDBACK_MESSAGE_PLACEHOLDER}
                 aria-labelledby="feedback-message-fullscreen-label"
                 maxLength={MESSAGE_MAX}
                 autoFocus
@@ -412,8 +390,8 @@ export const FeedbackTab = () => {
       >
         <Send className="w-4 h-4" />
         {status === "submitting"
-          ? FEEDBACK_SENDING_BUTTON_TEXT
-          : FEEDBACK_SEND_BUTTON_TEXT}
+          ? strings.FEEDBACK_SENDING_BUTTON_TEXT
+          : strings.FEEDBACK_SEND_BUTTON_TEXT}
       </button>
     </div>
   );

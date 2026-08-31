@@ -8,16 +8,7 @@ import GreenBrushIcon from "@/assets/icons/green-brush.svg?react";
 import YellowBrushIcon from "@/assets/icons/yellow-brush.svg?react";
 import GrayBrushIcon from "@/assets/icons/gray-brush.svg?react";
 import RecycleIcon from "@/assets/icons/recycle.svg?react";
-import {
-  RESET_DATA_CANCEL_BUTTON_TEXT,
-  GRID_BRUSH_ARIA_LABEL,
-  GRID_RESET_ALL_ARIA_LABEL,
-  GRID_RESET_CONFIRM_TITLE,
-  GRID_RESET_CONFIRM_TEXT_WITH_AUTOGRAY,
-  GRID_RESET_CONFIRM_TEXT,
-  GRID_RESET_BUTTON_TEXT,
-  GRID_GUESS_HISTORY_ARIA_LABEL,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   solution: string;
@@ -251,7 +242,7 @@ export const Grid = ({
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
                 }}
-                aria-label={GRID_BRUSH_ARIA_LABEL(status)}
+                aria-label={strings.GRID_BRUSH_ARIA_LABEL(status)}
                 aria-pressed={selectedBrush === status}
               >
                 <Icon className="w-9 h-9" />
@@ -277,7 +268,7 @@ export const Grid = ({
                 backdropFilter: "blur(10px)",
                 WebkitBackdropFilter: "blur(10px)",
               }}
-              aria-label={GRID_RESET_ALL_ARIA_LABEL}
+              aria-label={strings.GRID_RESET_ALL_ARIA_LABEL}
             >
               <RecycleIcon className="w-9 h-9 text-gray-400" />
             </button>
@@ -297,12 +288,12 @@ export const Grid = ({
               id="reset-dialog-title"
               className="font-pixel text-xs text-crown-amber tracking-widest mb-2"
             >
-              {GRID_RESET_CONFIRM_TITLE}
+              {strings.GRID_RESET_CONFIRM_TITLE}
             </p>
             <p className="font-code text-sm text-gray-300 mb-5">
               {autoGray
-                ? GRID_RESET_CONFIRM_TEXT_WITH_AUTOGRAY
-                : GRID_RESET_CONFIRM_TEXT}
+                ? strings.GRID_RESET_CONFIRM_TEXT_WITH_AUTOGRAY
+                : strings.GRID_RESET_CONFIRM_TEXT}
             </p>
             <div className="flex gap-3">
               <button
@@ -318,7 +309,7 @@ export const Grid = ({
                   color: "#f87171",
                 }}
               >
-                {GRID_RESET_BUTTON_TEXT}
+                {strings.GRID_RESET_BUTTON_TEXT}
               </button>
               <button
                 type="button"
@@ -331,7 +322,7 @@ export const Grid = ({
                   color: "#fbbf24",
                 }}
               >
-                {RESET_DATA_CANCEL_BUTTON_TEXT}
+                {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
               </button>
             </div>
           </dialog>
@@ -343,7 +334,7 @@ export const Grid = ({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         role="group"
-        aria-label={GRID_GUESS_HISTORY_ARIA_LABEL}
+        aria-label={strings.GRID_GUESS_HISTORY_ARIA_LABEL}
         style={{ userSelect: "none" }}
       >
         {guesses.map((guess, i) => (

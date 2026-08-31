@@ -7,7 +7,6 @@ import { NotificationsPage } from "./pages/NotificationsPage";
 import { tabBase, activeTabStyle, inactiveTabStyle } from "./styles";
 import { type ChallengeConfig } from "../../../lib/challenge";
 import type { DuelConfig } from "../../../lib/duel";
-import { MODAL_TITLE_SETTINGS } from "../../../constants/strings";
 import {
   ENABLE_NOTIFICATION_SETTINGS,
   ENABLE_HAPTICS_SETTINGS,
@@ -16,6 +15,9 @@ import type {
   GameSettingsValues,
   GameSettingsHandlers,
 } from "../../../hooks/useGameSettings";
+import { saveSettingsToLocalStorage } from "../../../lib/localStorage";
+import type { Language } from "../../../constants/languages";
+import strings from "../../../constants/strings";
 
 export type { GameSettingsValues, GameSettingsHandlers };
 
@@ -143,9 +145,15 @@ export const SettingsModal = ({
     settingsHandlers.setHardMode(value);
   };
 
+  const handleLanguageChange = (value: Language) => {
+    settingsHandlers.setLanguage(value);
+    saveSettingsToLocalStorage({ wordLength, ...settings, language: value });
+    window.location.reload();
+  };
+
   return (
     <BaseModal
-      title={MODAL_TITLE_SETTINGS}
+      title={strings.MODAL_TITLE_SETTINGS}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -200,6 +208,7 @@ export const SettingsModal = ({
               isBackgroundDropdownOpen={isBackgroundDropdownOpen}
               setIsBackgroundDropdownOpen={setIsBackgroundDropdownOpen}
               handleHardModeChange={handleHardModeChange}
+              handleLanguageChange={handleLanguageChange}
             />
           )}
 

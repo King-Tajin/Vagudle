@@ -34,6 +34,7 @@ import {
   NORMAL_MODE_MAX_CHALLENGES,
 } from "../constants/settings";
 import { useStorageSync } from "./useStorageSync";
+import type { Language } from "../constants/languages";
 
 type Params = {
   isLoading: boolean;
@@ -60,6 +61,7 @@ type Params = {
   setCurrentGuess: (v: string) => void;
   setCurrentRowClass: (v: string) => void;
   setIsRevealing: (v: boolean) => void;
+  language: Language;
   setWordLength: (v: number) => void;
   setHardMode: (v: boolean) => void;
   setShowGrayCount: (v: boolean) => void;
@@ -97,6 +99,7 @@ export const useCrossTabSync = ({
   dailyConfig,
   solution,
   hardMode,
+  language,
   restoredGameRef,
   achievementCheckedRef,
   duelSubmittedRef,
@@ -133,6 +136,10 @@ export const useCrossTabSync = ({
 
   useStorageSync(settingsKey, () => {
     const s = loadSettingsFromLocalStorage();
+    if (s.language !== language) {
+      window.location.reload();
+      return;
+    }
     setWordLength(s.wordLength);
     setHardMode(s.hardMode);
     setShowGrayCount(s.showGrayCount);

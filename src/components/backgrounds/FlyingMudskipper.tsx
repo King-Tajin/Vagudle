@@ -57,6 +57,10 @@ export const FlyingMudskipper = () => {
   const [widthPerHeight, setWidthPerHeight] = useState(1.6);
   const [x, setX] = useState(0);
   const [direction, setDirection] = useState<Direction>(-1);
+  const [containerSize, setContainerSize] = useState(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }));
 
   const directionRef = useRef<Direction>(-1);
   const phaseRef = useRef<Phase>("flying");
@@ -76,6 +80,19 @@ export const FlyingMudskipper = () => {
         });
     };
     image.src = MUD_TEXTURE_SRC;
+  }, []);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+
+    setContainerSize({ width: node.clientWidth, height: node.clientHeight });
+
+    const observer = new ResizeObserver(() => {
+      setContainerSize({ width: node.clientWidth, height: node.clientHeight });
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -165,9 +182,8 @@ export const FlyingMudskipper = () => {
   const spriteHeight = window.innerHeight * SPRITE_HEIGHT_RATIO;
   const spriteWidth = spriteHeight * widthPerHeight;
 
-  const containerWidth = containerRef.current?.clientWidth ?? window.innerWidth;
-  const containerHeight =
-    containerRef.current?.clientHeight ?? window.innerHeight;
+  const containerWidth = containerSize.width || window.innerWidth;
+  const containerHeight = containerSize.height || window.innerHeight;
   let mudBackgroundSize = "cover";
   if (mudImageSize) {
     const coverScale = Math.max(

@@ -1,8 +1,8 @@
 import type React from "react";
 import { useEffect } from "react";
 import { REVEAL_TIME_MS } from "../constants/settings";
-import { WIN_MESSAGES, CHALLENGE_WIN_MESSAGES } from "../constants/strings";
 import { triggerSuccessHaptic, triggerLossHaptic } from "../lib/haptics";
+import strings from "../constants/strings";
 
 type Params = {
   isGameWon: boolean;
@@ -62,8 +62,8 @@ export const useGameOutcome = ({
       } else {
         const pool =
           isDuelMode || isChallengeMode || isDailyMode
-            ? CHALLENGE_WIN_MESSAGES
-            : WIN_MESSAGES;
+            ? strings.CHALLENGE_WIN_MESSAGES
+            : strings.WIN_MESSAGES;
         const winMessage = pool[Math.floor(Math.random() * pool.length)];
         showSuccessAlert(winMessage, {
           delayMs,

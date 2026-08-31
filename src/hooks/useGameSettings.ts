@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { type BackgroundId, loadBackgroundId } from "../lib/backgrounds";
 import { isDiscordActivity } from "../lib/discord";
 import type { StoredSettings } from "../lib/localStorage";
+import type { Language } from "../constants/languages";
 
 export type GameSettingsValues = {
   showGrayCount: boolean;
@@ -19,6 +20,7 @@ export type GameSettingsValues = {
   inactivityReminderEnabled: boolean;
   inactivityReminderDays: number;
   hapticsEnabled: boolean;
+  language: Language;
 };
 
 export type GameSettingsHandlers = {
@@ -37,6 +39,7 @@ export type GameSettingsHandlers = {
   setInactivityReminderEnabled: (value: boolean) => void;
   setInactivityReminderDays: (value: number) => void;
   setHapticsEnabled: (value: boolean) => void;
+  setLanguage: (value: Language) => void;
 };
 
 export const useGameSettings = (
@@ -78,6 +81,7 @@ export const useGameSettings = (
   const [hapticsEnabled, setHapticsEnabled] = useState(
     savedSettings.hapticsEnabled
   );
+  const [language, setLanguage] = useState(savedSettings.language);
 
   const settings = useMemo<GameSettingsValues>(
     () => ({
@@ -96,6 +100,7 @@ export const useGameSettings = (
       inactivityReminderEnabled,
       inactivityReminderDays,
       hapticsEnabled,
+      language,
     }),
     [
       showGrayCount,
@@ -113,6 +118,7 @@ export const useGameSettings = (
       inactivityReminderEnabled,
       inactivityReminderDays,
       hapticsEnabled,
+      language,
     ]
   );
 
@@ -133,6 +139,7 @@ export const useGameSettings = (
       setInactivityReminderEnabled,
       setInactivityReminderDays,
       setHapticsEnabled,
+      setLanguage,
     }),
     []
   );

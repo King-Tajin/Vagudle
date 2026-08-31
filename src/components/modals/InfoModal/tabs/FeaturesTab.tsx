@@ -1,9 +1,9 @@
-import { FEATURES_LIST } from "../../../../constants/strings";
+import strings from "../../../../constants/strings";
 
 export const FeaturesTab = () => {
   return (
     <ul className="space-y-4">
-      {FEATURES_LIST.map(([feature, desc]) => (
+      {strings.FEATURES_LIST.map(([feature, desc]) => (
         <li
           key={feature}
           className="flex flex-col gap-1 pb-4 border-b border-obsidian-700 last:border-0 last:pb-0"

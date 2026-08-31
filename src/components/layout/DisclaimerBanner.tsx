@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import {
-  DISCLAIMER_BANNER_ARIA_LABEL,
-  DISCLAIMER_BANNER_LABEL,
-  DISCLAIMER_BANNER_TEXT_PART1,
-  DISCLAIMER_BANNER_TEXT_PART2,
-  DISCLAIMER_BANNER_DISMISS_ARIA_LABEL,
-  DISCLAIMER_BANNER_DISMISS_BUTTON_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 const DISMISSED_KEY = "king-tajin-disclaimer-dismissed";
 
@@ -38,16 +31,16 @@ export const DisclaimerBanner = () => {
             WebkitBackdropFilter: "blur(10px)",
           }}
           role="dialog"
-          aria-label={DISCLAIMER_BANNER_ARIA_LABEL}
+          aria-label={strings.DISCLAIMER_BANNER_ARIA_LABEL}
         >
           <div className="mx-auto max-w-3xl flex items-center gap-4 flex-wrap sm:flex-nowrap">
             <p className="font-code text-xs sm:text-sm text-gray-400 leading-relaxed flex-1 min-w-50">
               <span className="text-crown-gold font-pixel text-[16px] tracking-widest mr-2 align-middle">
-                {DISCLAIMER_BANNER_LABEL}
+                {strings.DISCLAIMER_BANNER_LABEL}
               </span>
-              {DISCLAIMER_BANNER_TEXT_PART1}{" "}
+              {strings.DISCLAIMER_BANNER_TEXT_PART1}{" "}
               <span className="text-gray-200">
-                {DISCLAIMER_BANNER_TEXT_PART2}
+                {strings.DISCLAIMER_BANNER_TEXT_PART2}
               </span>
             </p>
             <button
@@ -59,9 +52,9 @@ export const DisclaimerBanner = () => {
                 borderColor: "rgba(255,215,0,0.35)",
                 color: "#FFD700",
               }}
-              aria-label={DISCLAIMER_BANNER_DISMISS_ARIA_LABEL}
+              aria-label={strings.DISCLAIMER_BANNER_DISMISS_ARIA_LABEL}
             >
-              {DISCLAIMER_BANNER_DISMISS_BUTTON_TEXT}
+              {strings.DISCLAIMER_BANNER_DISMISS_BUTTON_TEXT}
               <X className="w-3 h-3" />
             </button>
           </div>

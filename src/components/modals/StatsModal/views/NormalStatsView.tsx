@@ -10,11 +10,8 @@ import {
 } from "../../../../lib/share";
 import { type GameStats } from "../../../../lib/localStorage";
 import { type DailyStats } from "../../../../lib/daily";
-import {
-  STATISTICS_TITLE,
-  GUESS_DISTRIBUTION_TEXT,
-} from "../../../../constants/strings";
 import type { GameOutcome } from "../../../../lib/gameOutcome";
+import strings from "../../../../constants/strings";
 
 const TAB_ACTIVE_STYLE = {
   background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
@@ -77,7 +74,7 @@ export const NormalStatsView = ({
   const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
   return (
     <BaseModal
-      title={STATISTICS_TITLE}
+      title={strings.STATISTICS_TITLE}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -115,7 +112,7 @@ export const NormalStatsView = ({
             <>
               <StatBar gameStats={displayStats} />
               <p className="font-pixel text-xs text-gray-500 tracking-widest mt-4 mb-3">
-                {GUESS_DISTRIBUTION_TEXT.toUpperCase()} -{" "}
+                {strings.GUESS_DISTRIBUTION_TEXT.toUpperCase()} -{" "}
                 {displayStats.totalGames - displayStats.gamesFailed} GAME
                 {displayStats.totalGames - displayStats.gamesFailed === 1
                   ? ""

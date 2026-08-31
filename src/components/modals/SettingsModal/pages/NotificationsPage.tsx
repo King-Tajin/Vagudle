@@ -5,20 +5,11 @@ import {
   StreakResetHoursInput,
 } from "../NumberStepperInput";
 import {
-  SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL,
-  SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION,
-  SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL,
-  SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION,
-  SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL,
-  SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION,
-  SETTINGS_HAPTICS_LABEL,
-  SETTINGS_HAPTICS_DESCRIPTION,
-} from "../../../../constants/strings";
-import {
   ENABLE_NOTIFICATION_SETTINGS,
   ENABLE_HAPTICS_SETTINGS,
 } from "../../../../constants/settings";
 import type { GameSettingsValues, GameSettingsHandlers } from "../index";
+import strings from "../../../../constants/strings";
 
 export const NotificationsPage = ({
   settings,
@@ -32,10 +23,12 @@ export const NotificationsPage = ({
       {ENABLE_NOTIFICATION_SETTINGS && (
         <>
           <SettingsToggle
-            settingName={SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL}
+            settingName={strings.SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL}
             flag={settings.dailyStreakRemindersEnabled}
             handleFlag={settingsHandlers.setDailyStreakRemindersEnabled}
-            description={SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION}
+            description={
+              strings.SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION
+            }
             dimLabelWhenOff
           >
             <StreakResetHoursInput
@@ -46,10 +39,10 @@ export const NotificationsPage = ({
           </SettingsToggle>
 
           <SettingsToggle
-            settingName={SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL}
+            settingName={strings.SETTINGS_NOTIFICATIONS_CUSTOM_TIME_LABEL}
             flag={settings.customReminderTimeEnabled}
             handleFlag={settingsHandlers.setCustomReminderTimeEnabled}
-            description={SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION}
+            description={strings.SETTINGS_NOTIFICATIONS_CUSTOM_TIME_DESCRIPTION}
             dimLabelWhenOff
           >
             <NotificationTimePicker
@@ -64,10 +57,10 @@ export const NotificationsPage = ({
           </SettingsToggle>
 
           <SettingsToggle
-            settingName={SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL}
+            settingName={strings.SETTINGS_NOTIFICATIONS_INACTIVITY_LABEL}
             flag={settings.inactivityReminderEnabled}
             handleFlag={settingsHandlers.setInactivityReminderEnabled}
-            description={SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION}
+            description={strings.SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION}
             dimLabelWhenOff
           >
             <InactivityDaysInput
@@ -81,10 +74,10 @@ export const NotificationsPage = ({
 
       {ENABLE_HAPTICS_SETTINGS && (
         <SettingsToggle
-          settingName={SETTINGS_HAPTICS_LABEL}
+          settingName={strings.SETTINGS_HAPTICS_LABEL}
           flag={settings.hapticsEnabled}
           handleFlag={settingsHandlers.setHapticsEnabled}
-          description={SETTINGS_HAPTICS_DESCRIPTION}
+          description={strings.SETTINGS_HAPTICS_DESCRIPTION}
         />
       )}
     </div>

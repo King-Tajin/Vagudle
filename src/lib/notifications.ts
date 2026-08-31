@@ -1,15 +1,6 @@
 import type { DailyStats } from "./daily";
 import { DAILY_RELEASE_HOUR_UTC } from "./daily";
-import {
-  NOTIFICATION_CHANNEL_NAME,
-  NOTIFICATION_CHANNEL_DESCRIPTION,
-  NOTIFICATION_STREAK_WARNING_TITLE,
-  NOTIFICATION_STREAK_WARNING_BODY,
-  NOTIFICATION_CUSTOM_REMINDER_TITLE,
-  NOTIFICATION_CUSTOM_REMINDER_BODY,
-  NOTIFICATION_INACTIVITY_TITLE,
-  NOTIFICATION_INACTIVITY_BODY,
-} from "../constants/strings";
+import strings from "../constants/strings";
 
 export type ReminderPeriod = "AM" | "PM";
 
@@ -151,8 +142,8 @@ const ensureChannel = async (
   try {
     await plugin.createChannel({
       id: REMINDER_NOTIFICATION_CHANNEL_ID,
-      name: NOTIFICATION_CHANNEL_NAME,
-      description: NOTIFICATION_CHANNEL_DESCRIPTION,
+      name: strings.NOTIFICATION_CHANNEL_NAME,
+      description: strings.NOTIFICATION_CHANNEL_DESCRIPTION,
       importance: 3,
     });
   } catch {}
@@ -221,8 +212,8 @@ export const syncNotificationSchedule = async (
     if (fireDate) {
       notificationsToSchedule.push({
         id: STREAK_RESET_WARNING_NOTIFICATION_ID,
-        title: NOTIFICATION_STREAK_WARNING_TITLE,
-        body: NOTIFICATION_STREAK_WARNING_BODY,
+        title: strings.NOTIFICATION_STREAK_WARNING_TITLE,
+        body: strings.NOTIFICATION_STREAK_WARNING_BODY,
         channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
         largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
         schedule: {
@@ -237,8 +228,8 @@ export const syncNotificationSchedule = async (
     const { hour, minute } = getCustomReminderTime(settings);
     notificationsToSchedule.push({
       id: CUSTOM_TIME_REMINDER_NOTIFICATION_ID,
-      title: NOTIFICATION_CUSTOM_REMINDER_TITLE,
-      body: NOTIFICATION_CUSTOM_REMINDER_BODY,
+      title: strings.NOTIFICATION_CUSTOM_REMINDER_TITLE,
+      body: strings.NOTIFICATION_CUSTOM_REMINDER_BODY,
       channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
       largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
       schedule: {
@@ -256,8 +247,8 @@ export const syncNotificationSchedule = async (
     if (fireDate) {
       notificationsToSchedule.push({
         id: INACTIVITY_REMINDER_NOTIFICATION_ID,
-        title: NOTIFICATION_INACTIVITY_TITLE,
-        body: NOTIFICATION_INACTIVITY_BODY,
+        title: strings.NOTIFICATION_INACTIVITY_TITLE,
+        body: strings.NOTIFICATION_INACTIVITY_BODY,
         channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
         largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
         schedule: {

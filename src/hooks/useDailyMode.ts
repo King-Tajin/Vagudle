@@ -11,11 +11,6 @@ import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
 } from "../constants/settings";
-import { GAME_COPIED_MESSAGE } from "../constants/strings";
-import {
-  DAILY_MODE_SIGNIN_WARNING_TEXT,
-  DAILY_MODE_USERNAME_WARNING_TEXT,
-} from "../constants/strings";
 import { shareDailyResult } from "../lib/share";
 import {
   fetchDailyConfig,
@@ -33,6 +28,7 @@ import {
   type DailyConfig,
   type DailyResult,
 } from "../lib/daily";
+import strings from "../constants/strings";
 
 type Params = {
   user: CloudAuthUser | null;
@@ -87,9 +83,9 @@ export const useDailyMode = ({
     ? getDailyNumber(dailyConfig.date, dailyConfig.originDate)
     : 0;
   const dailyUsernameWarning = !user
-    ? DAILY_MODE_SIGNIN_WARNING_TEXT
+    ? strings.DAILY_MODE_SIGNIN_WARNING_TEXT
     : hasUsername === false
-      ? DAILY_MODE_USERNAME_WARNING_TEXT
+      ? strings.DAILY_MODE_USERNAME_WARNING_TEXT
       : null;
 
   const dailyLeaderboardSubmittedForRef = useRef<string | null>(null);
@@ -222,7 +218,7 @@ export const useDailyMode = ({
       sharedLost,
       dailyNumber,
       dailyResult?.maxGuesses ?? dailyMaxChallenges,
-      () => showSuccessAlert(GAME_COPIED_MESSAGE)
+      () => showSuccessAlert(strings.GAME_COPIED_MESSAGE)
     );
   };
 

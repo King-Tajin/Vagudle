@@ -18,6 +18,7 @@ import type { DailyConfig, DailyResult, DailyStats } from "../../lib/daily";
 import type { BackgroundId, BackgroundDef } from "../../lib/backgrounds";
 import type { Achievement } from "../../lib/achievements";
 import type { GameMode } from "../../lib/gameMode";
+import type { Language } from "../../constants/languages";
 import { getGameOutcome } from "../../lib/gameOutcome";
 import {
   HARD_MODE_MAX_CHALLENGES,
@@ -96,6 +97,8 @@ type Props = {
   setInactivityReminderDays: (value: number) => void;
   hapticsEnabled: boolean;
   setHapticsEnabled: (value: boolean) => void;
+  language: Language;
+  setLanguage: (value: Language) => void;
   unlockedIds: string[];
   newlyUnlockedAchievements: Achievement[];
   onAchievementsViewed: () => void;
@@ -196,6 +199,8 @@ export const GameModals = ({
   setInactivityReminderDays,
   hapticsEnabled,
   setHapticsEnabled,
+  language,
+  setLanguage,
   unlockedIds,
   newlyUnlockedAchievements,
   onAchievementsViewed,
@@ -296,6 +301,7 @@ export const GameModals = ({
             inactivityReminderEnabled,
             inactivityReminderDays,
             hapticsEnabled,
+            language,
           }}
           settingsHandlers={{
             setShowGrayCount,
@@ -313,6 +319,7 @@ export const GameModals = ({
             setInactivityReminderEnabled,
             setInactivityReminderDays,
             setHapticsEnabled,
+            setLanguage,
           }}
           unlockedAchievementIds={unlockedIds}
           isMobile={isMobile}

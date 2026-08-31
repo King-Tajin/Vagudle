@@ -105,7 +105,7 @@ import {
   NORMAL_MODE_MAX_CHALLENGES,
   SHOW_KING_TAJIN_DISCLAIMER,
 } from "./constants/settings";
-import { GAME_COPIED_MESSAGE } from "./constants/strings";
+import strings from "./constants/strings";
 
 const challengeParam = new URLSearchParams(window.location.search).get(
   "challenge"
@@ -304,6 +304,7 @@ function App() {
     inactivityReminderEnabled,
     inactivityReminderDays,
     hapticsEnabled,
+    language,
   } = settings;
   const {
     setShowGrayCount,
@@ -321,6 +322,7 @@ function App() {
     setInactivityReminderEnabled,
     setInactivityReminderDays,
     setHapticsEnabled,
+    setLanguage,
   } = settingsHandlers;
   const autoGrayLetters = useMemo(
     () =>
@@ -780,6 +782,7 @@ function App() {
     dailyConfig,
     solution,
     hardMode,
+    language: settings.language,
     restoredGameRef,
     achievementCheckedRef,
     duelSubmittedRef,
@@ -804,7 +807,12 @@ function App() {
     setBackgroundId,
     setHiddenAttributionIds,
   });
-  usePageChrome({ isDuelMode, isChallengeMode, isDailyMode });
+  usePageChrome({
+    isDuelMode,
+    isChallengeMode,
+    isDailyMode,
+    language: settings.language,
+  });
   useDiscourageInAppBrowser({ showErrorAlert });
   const { isOfflineModalOpen, handleCloseOfflineModal } = useOfflineModeCheck();
   const {
@@ -1035,6 +1043,8 @@ function App() {
           setInactivityReminderDays={setInactivityReminderDays}
           hapticsEnabled={hapticsEnabled}
           setHapticsEnabled={setHapticsEnabled}
+          language={language}
+          setLanguage={setLanguage}
           unlockedIds={unlockedIds}
           newlyUnlockedAchievements={newlyUnlockedAchievements}
           onAchievementsViewed={() => setNewlyUnlockedAchievements([])}
@@ -1059,7 +1069,9 @@ function App() {
             if (guesses.length === 0)
               startNewGame(getRandomWord(wordLength, value));
           }}
-          handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
+          handleShareToClipboard={() =>
+            showSuccessAlert(strings.GAME_COPIED_MESSAGE)
+          }
           isInfoModalOpen={isInfoModalOpen}
           handleCloseInfo={() => setIsInfoModalOpen(false)}
           infoModalAutoOpenReset={isDeleteAccountRoute}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Info } from "lucide-react";
-import { ATTRIBUTION_BUTTON_ARIA_LABEL } from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   onClick: () => void;
@@ -43,7 +43,7 @@ export const AttributionButton = ({
     <button
       type="button"
       onClick={onClick}
-      aria-label={ATTRIBUTION_BUTTON_ARIA_LABEL}
+      aria-label={strings.ATTRIBUTION_BUTTON_ARIA_LABEL}
       className="fixed left-4 z-55 w-9 h-9 flex items-center justify-center rounded-full bg-obsidian-900/90 backdrop-blur-sm border-2 border-obsidian-600/50 hover:border-crown-gold/60 transition-colors"
       style={{ bottom: bottomOffset }}
     >

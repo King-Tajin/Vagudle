@@ -6,15 +6,7 @@ import type { DuelConfig } from "../../lib/duel";
 import type { DailyConfig } from "../../lib/daily";
 import type { GameMode } from "../../lib/gameMode";
 import React from "react";
-import {
-  BANNER_LABEL_CUSTOM_CHALLENGE,
-  BANNER_LABEL_DUEL,
-  BANNER_LABEL_DAILY_PREFIX,
-  BANNER_DIFFICULTY_HARD_TEXT,
-  BANNER_DIFFICULTY_NORMAL_TEXT,
-  BANNER_DAILY_ATTEMPT_TEXT,
-  BANNER_DUEL_WINDOW_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 const BannerFrame = ({ children }: { children: React.ReactNode }) => (
   <m.div
@@ -58,7 +50,7 @@ const BannerDivider = () => (
 
 const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
   <BannerFrame>
-    <BannerLabel>{BANNER_LABEL_CUSTOM_CHALLENGE}</BannerLabel>
+    <BannerLabel>{strings.BANNER_LABEL_CUSTOM_CHALLENGE}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
         {config.length} letters
@@ -77,7 +69,7 @@ const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
 
 const DuelBanner = ({ config }: { config: DuelConfig }) => (
   <BannerFrame>
-    <BannerLabel>{BANNER_LABEL_DUEL}</BannerLabel>
+    <BannerLabel>{strings.BANNER_LABEL_DUEL}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
         {config.length} letters
@@ -92,7 +84,7 @@ const DuelBanner = ({ config }: { config: DuelConfig }) => (
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<Swords className="w-3 h-3 text-crown-amber" />}>
-        {BANNER_DUEL_WINDOW_TEXT}
+        {strings.BANNER_DUEL_WINDOW_TEXT}
       </BannerStat>
     </div>
   </BannerFrame>
@@ -109,7 +101,7 @@ const DailyBanner = ({
 }) => (
   <BannerFrame>
     <BannerLabel>
-      {BANNER_LABEL_DAILY_PREFIX}
+      {strings.BANNER_LABEL_DAILY_PREFIX}
       {dailyNumber}
     </BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
@@ -119,12 +111,12 @@ const DailyBanner = ({
       <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
         {config.hardMode
-          ? BANNER_DIFFICULTY_HARD_TEXT
-          : BANNER_DIFFICULTY_NORMAL_TEXT}
+          ? strings.BANNER_DIFFICULTY_HARD_TEXT
+          : strings.BANNER_DIFFICULTY_NORMAL_TEXT}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<CalendarDays className="w-3 h-3 text-crown-amber" />}>
-        {BANNER_DAILY_ATTEMPT_TEXT}
+        {strings.BANNER_DAILY_ATTEMPT_TEXT}
       </BannerStat>
     </div>
     {usernameWarning && (

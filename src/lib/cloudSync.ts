@@ -40,17 +40,7 @@ import {
   dailyStatsKey,
   type DailyStats,
 } from "./daily";
-import {
-  CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
-  CLOUD_SYNC_LINK_ACCOUNT_RETRY_ERROR_TEXT,
-  CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
-  CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
-  CLOUD_SYNC_LINK_DISCORD_RETRY_ERROR_TEXT,
-  CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT,
-  CLOUD_SYNC_LINK_PLAYGAMES_RETRY_ERROR_TEXT,
-  RELATIVE_TIME_JUST_NOW_TEXT,
-  RELATIVE_TIME_UNIT_LABELS,
-} from "../constants/strings";
+import strings from "../constants/strings";
 
 export type CloudSavePayload = {
   achievements: string;
@@ -294,18 +284,21 @@ const requestDiscordLink = async (
       signal: controller.signal,
     });
     if (!res.ok) {
-      return { status: "error", message: CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT };
+      return {
+        status: "error",
+        message: strings.CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
+      };
     }
     const data = (await res.json()) as { success: boolean; error?: string };
     if (data.success) return { status: "linked" };
     return {
       status: "error",
-      message: data.error ?? CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
+      message: data.error ?? strings.CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
     };
   } catch {
     return {
       status: "error",
-      message: CLOUD_SYNC_LINK_ACCOUNT_RETRY_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_LINK_ACCOUNT_RETRY_ERROR_TEXT,
     };
   } finally {
     clearTimeout(timeout);
@@ -321,7 +314,7 @@ export const linkDiscordWithCurrentUser = async (
   if (!idToken) {
     return {
       status: "error",
-      message: CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
     };
   }
   return requestDiscordLink(idToken, linkToken, signal);
@@ -350,18 +343,21 @@ const requestPlayGamesLink = async (
       signal: controller.signal,
     });
     if (!res.ok) {
-      return { status: "error", message: CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT };
+      return {
+        status: "error",
+        message: strings.CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
+      };
     }
     const data = (await res.json()) as { success: boolean; error?: string };
     if (data.success) return { status: "linked" };
     return {
       status: "error",
-      message: data.error ?? CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
+      message: data.error ?? strings.CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
     };
   } catch {
     return {
       status: "error",
-      message: CLOUD_SYNC_LINK_ACCOUNT_RETRY_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_LINK_ACCOUNT_RETRY_ERROR_TEXT,
     };
   } finally {
     clearTimeout(timeout);
@@ -377,7 +373,7 @@ export const linkPlayGamesWithCurrentUser = async (
   if (!idToken) {
     return {
       status: "error",
-      message: CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
     };
   }
   return requestPlayGamesLink(idToken, linkToken, signal);
@@ -423,7 +419,7 @@ export const linkDiscordOAuthWithCurrentUser = async (
   if (!idToken)
     return {
       status: "error",
-      message: CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
     };
   try {
     const controller = new AbortController();
@@ -441,19 +437,19 @@ export const linkDiscordOAuthWithCurrentUser = async (
     if (!res.ok) {
       return {
         status: "error",
-        message: CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
+        message: strings.CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
       };
     }
     const data = (await res.json()) as { success: boolean; error?: string };
     if (data.success) return { status: "linked" };
     return {
       status: "error",
-      message: data.error ?? CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
+      message: data.error ?? strings.CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
     };
   } catch {
     return {
       status: "error",
-      message: CLOUD_SYNC_LINK_DISCORD_RETRY_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_LINK_DISCORD_RETRY_ERROR_TEXT,
     };
   }
 };
@@ -468,7 +464,7 @@ export const linkPlayGamesOAuthWithCurrentUser = async (
   if (!idToken)
     return {
       status: "error",
-      message: CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
     };
   try {
     const controller = new AbortController();
@@ -486,19 +482,19 @@ export const linkPlayGamesOAuthWithCurrentUser = async (
     if (!res.ok) {
       return {
         status: "error",
-        message: CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT,
+        message: strings.CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT,
       };
     }
     const data = (await res.json()) as { success: boolean; error?: string };
     if (data.success) return { status: "linked" };
     return {
       status: "error",
-      message: data.error ?? CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT,
+      message: data.error ?? strings.CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT,
     };
   } catch {
     return {
       status: "error",
-      message: CLOUD_SYNC_LINK_PLAYGAMES_RETRY_ERROR_TEXT,
+      message: strings.CLOUD_SYNC_LINK_PLAYGAMES_RETRY_ERROR_TEXT,
     };
   }
 };
@@ -562,11 +558,11 @@ export const formatRelativeTime = (iso: string): string => {
     0,
     Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
   );
-  if (diffSeconds < 10) return RELATIVE_TIME_JUST_NOW_TEXT;
+  if (diffSeconds < 10) return strings.RELATIVE_TIME_JUST_NOW_TEXT;
   const unit =
     RELATIVE_TIME_UNITS.find((u) => diffSeconds < u.limitSeconds) ??
     RELATIVE_TIME_UNITS[RELATIVE_TIME_UNITS.length - 1];
   const value = Math.floor(diffSeconds / unit.divisorSeconds);
-  const label = RELATIVE_TIME_UNIT_LABELS[unit.label] ?? unit.label;
+  const label = strings.RELATIVE_TIME_UNIT_LABELS[unit.label] ?? unit.label;
   return `${value} ${label}${value === 1 ? "" : "s"} ago`;
 };

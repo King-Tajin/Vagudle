@@ -19,26 +19,7 @@ import {
   getDailyCalendarHttpsUrl,
   getDailyCalendarWebcalUrl,
 } from "../../lib/daily";
-import { MODAL_TITLE_DAILY_SCHEDULE } from "../../constants/strings";
-import {
-  DAILY_SCHEDULE_UNLOCK_TEXT_BEFORE_TIME,
-  DAILY_SCHEDULE_UNLOCK_TEXT_AFTER_TIME,
-  DAILY_SCHEDULE_TODAY_LABEL,
-  DAILY_SCHEDULE_WORD_LENGTH_TEXT,
-  DAILY_SCHEDULE_HARD_LABEL,
-  DAILY_SCHEDULE_NORMAL_LABEL,
-  DAILY_SCHEDULE_ADD_TO_CALENDAR_HEADING,
-  DAILY_SCHEDULE_SUBSCRIBE_DESCRIPTION,
-  DAILY_SCHEDULE_REMINDER_HOUR_ARIA_LABEL,
-  DAILY_SCHEDULE_SUBSCRIBE_ARIA_LABEL,
-  DAILY_SCHEDULE_OPENING_BUTTON_TEXT,
-  DAILY_SCHEDULE_SUBSCRIBE_BUTTON_TEXT,
-  DAILY_SCHEDULE_COPY_ARIA_LABEL,
-  DAILY_SCHEDULE_DOWNLOAD_PROMPT_TEXT,
-  DAILY_SCHEDULE_DOWNLOAD_BUTTON_TEXT,
-  DAILY_SCHEDULE_DISMISS_BUTTON_TEXT,
-  DAILY_SCHEDULE_FOOTER_NOTE_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -114,7 +95,7 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
 
   return (
     <BaseModal
-      title={MODAL_TITLE_DAILY_SCHEDULE}
+      title={strings.MODAL_TITLE_DAILY_SCHEDULE}
       isOpen={isOpen}
       handleClose={handleClose}
       maxWidthClass="sm:max-w-sm"
@@ -130,9 +111,9 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
         >
           <CalendarClock className="w-4 h-4 text-crown-amber shrink-0" />
           <p className="font-code text-sm text-gray-200 leading-snug">
-            {DAILY_SCHEDULE_UNLOCK_TEXT_BEFORE_TIME}{" "}
+            {strings.DAILY_SCHEDULE_UNLOCK_TEXT_BEFORE_TIME}{" "}
             <span className="text-crown-amber">{localUnlockTime}</span>{" "}
-            {DAILY_SCHEDULE_UNLOCK_TEXT_AFTER_TIME}
+            {strings.DAILY_SCHEDULE_UNLOCK_TEXT_AFTER_TIME}
           </p>
         </div>
 
@@ -155,13 +136,13 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
                 {WEEKDAY_NAMES[i]}
                 {i === today && (
                   <span className="ml-2 font-pixel text-[8px] text-crown-amber tracking-widest">
-                    {DAILY_SCHEDULE_TODAY_LABEL}
+                    {strings.DAILY_SCHEDULE_TODAY_LABEL}
                   </span>
                 )}
               </span>
               <div className="flex items-center gap-2 shrink-0">
                 <span className="font-code text-sm text-gray-300">
-                  {DAILY_SCHEDULE_WORD_LENGTH_TEXT(entry.wordLength)}
+                  {strings.DAILY_SCHEDULE_WORD_LENGTH_TEXT(entry.wordLength)}
                 </span>
                 <span
                   className="flex items-center gap-1 font-pixel text-[9px] tracking-widest px-2 py-1"
@@ -176,8 +157,8 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
                 >
                   {entry.hardMode}
                   {entry.hardMode
-                    ? DAILY_SCHEDULE_HARD_LABEL
-                    : DAILY_SCHEDULE_NORMAL_LABEL}
+                    ? strings.DAILY_SCHEDULE_HARD_LABEL
+                    : strings.DAILY_SCHEDULE_NORMAL_LABEL}
                 </span>
               </div>
             </div>
@@ -186,10 +167,10 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
 
         <div className="space-y-2 pt-3 border-t-2 border-obsidian-700">
           <p className="font-pixel text-[10px] text-gray-500 tracking-widest">
-            {DAILY_SCHEDULE_ADD_TO_CALENDAR_HEADING}
+            {strings.DAILY_SCHEDULE_ADD_TO_CALENDAR_HEADING}
           </p>
           <p className="font-code text-xs text-gray-500 leading-snug">
-            {DAILY_SCHEDULE_SUBSCRIBE_DESCRIPTION}
+            {strings.DAILY_SCHEDULE_SUBSCRIBE_DESCRIPTION}
           </p>
 
           <select
@@ -201,7 +182,7 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
               borderColor: "#d4af37",
               color: "#d1d5db",
             }}
-            aria-label={DAILY_SCHEDULE_REMINDER_HOUR_ARIA_LABEL}
+            aria-label={strings.DAILY_SCHEDULE_REMINDER_HOUR_ARIA_LABEL}
           >
             {DAILY_CALENDAR_HOURS.map((hour) => (
               <option key={hour} value={hour}>
@@ -223,17 +204,17 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
               disabled={isChecking}
               className="flex-1 flex items-center justify-center gap-1 font-pixel text-[9px] tracking-widest px-2 py-2 pixel-border-sm text-crown-amber hover:text-crown-gold transition-colors disabled:opacity-60 disabled:cursor-wait"
               style={{ border: "1px solid rgba(212,175,55,0.4)" }}
-              aria-label={DAILY_SCHEDULE_SUBSCRIBE_ARIA_LABEL}
+              aria-label={strings.DAILY_SCHEDULE_SUBSCRIBE_ARIA_LABEL}
             >
               {isChecking ? (
                 <>
                   <Loader2 className="w-3 h-3 animate-spin" />
-                  {DAILY_SCHEDULE_OPENING_BUTTON_TEXT}
+                  {strings.DAILY_SCHEDULE_OPENING_BUTTON_TEXT}
                 </>
               ) : (
                 <>
                   <CalendarPlus className="w-3 h-3" />
-                  {DAILY_SCHEDULE_SUBSCRIBE_BUTTON_TEXT}
+                  {strings.DAILY_SCHEDULE_SUBSCRIBE_BUTTON_TEXT}
                 </>
               )}
             </button>
@@ -242,7 +223,7 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
               onClick={handleCopy}
               className="p-2 pixel-border-sm text-gray-400 hover:text-white transition-colors shrink-0"
               style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-              aria-label={DAILY_SCHEDULE_COPY_ARIA_LABEL}
+              aria-label={strings.DAILY_SCHEDULE_COPY_ARIA_LABEL}
             >
               {copied ? (
                 <Check className="w-3 h-3 text-green-400" />
@@ -261,7 +242,7 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
               }}
             >
               <p className="font-code text-xs text-gray-300 leading-snug">
-                {DAILY_SCHEDULE_DOWNLOAD_PROMPT_TEXT}
+                {strings.DAILY_SCHEDULE_DOWNLOAD_PROMPT_TEXT}
               </p>
               <div className="flex items-center gap-2 shrink-0">
                 <button
@@ -270,21 +251,21 @@ export const DailyScheduleModal = ({ isOpen, handleClose }: Props) => {
                   className="font-pixel text-[9px] tracking-widest px-2 py-1.5 pixel-border-sm text-crown-amber hover:text-crown-gold transition-colors"
                   style={{ border: "1px solid rgba(212,175,55,0.4)" }}
                 >
-                  {DAILY_SCHEDULE_DOWNLOAD_BUTTON_TEXT}
+                  {strings.DAILY_SCHEDULE_DOWNLOAD_BUTTON_TEXT}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowDownloadPrompt(false)}
                   className="font-pixel text-[9px] tracking-widest px-2 py-1.5 text-gray-500 hover:text-gray-300 transition-colors"
                 >
-                  {DAILY_SCHEDULE_DISMISS_BUTTON_TEXT}
+                  {strings.DAILY_SCHEDULE_DISMISS_BUTTON_TEXT}
                 </button>
               </div>
             </div>
           )}
 
           <p className="font-code text-[11px] text-gray-600 leading-snug">
-            {DAILY_SCHEDULE_FOOTER_NOTE_TEXT}
+            {strings.DAILY_SCHEDULE_FOOTER_NOTE_TEXT}
           </p>
         </div>
       </div>

@@ -9,12 +9,7 @@ import {
   USERNAME_PATTERN,
   type UsernameStatus,
 } from "../../../lib/username";
-import {
-  USERNAME_VALIDATION_ERROR_TEXT,
-  USERNAME_TAKEN_ERROR_TEXT,
-  USERNAME_RATE_LIMITED_ERROR_TEXT,
-  GENERIC_ERROR_TEXT,
-} from "../../../constants/strings";
+import strings from "../../../constants/strings";
 
 export const formatCooldown = (canChangeAt: string): string => {
   const ms = new Date(canChangeAt).getTime() - Date.now();
@@ -198,7 +193,7 @@ export const useLeaderboardData = ({
     if (!USERNAME_PATTERN.test(trimmed)) {
       dispatch({
         type: "submitError",
-        message: USERNAME_VALIDATION_ERROR_TEXT,
+        message: strings.USERNAME_VALIDATION_ERROR_TEXT,
       });
       return;
     }
@@ -224,24 +219,24 @@ export const useLeaderboardData = ({
     if (outcome.status === "invalid")
       dispatch({
         type: "submitError",
-        message: USERNAME_VALIDATION_ERROR_TEXT,
+        message: strings.USERNAME_VALIDATION_ERROR_TEXT,
       });
     else if (outcome.status === "taken")
       dispatch({
         type: "submitError",
-        message: USERNAME_TAKEN_ERROR_TEXT,
+        message: strings.USERNAME_TAKEN_ERROR_TEXT,
       });
     else if (outcome.status === "rate_limited")
       dispatch({
         type: "submitError",
-        message: USERNAME_RATE_LIMITED_ERROR_TEXT(
+        message: strings.USERNAME_RATE_LIMITED_ERROR_TEXT(
           formatCooldown(outcome.retryAt)
         ),
       });
     else
       dispatch({
         type: "submitError",
-        message: GENERIC_ERROR_TEXT,
+        message: strings.GENERIC_ERROR_TEXT,
       });
   };
 

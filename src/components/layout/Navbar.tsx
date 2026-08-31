@@ -20,33 +20,7 @@ import {
   NAVBAR_BRAND_URL,
   NAVBAR_BRAND_URL_ACTIVITY,
 } from "../../constants/settings";
-import {
-  NAVBAR_LEAVE_DUEL_LABEL,
-  NAVBAR_LEAVE_CHALLENGE_LABEL,
-  NAVBAR_LEAVE_DAILY_LABEL,
-  NAVBAR_NEW_GAME_LABEL,
-  NAVBAR_LEAVE_DUEL_TITLE,
-  NAVBAR_LEAVE_DUEL_DESCRIPTION,
-  NAVBAR_LEAVE_DAILY_TITLE,
-  NAVBAR_LEAVE_DAILY_DESCRIPTION,
-  NAVBAR_LEAVE_CHALLENGE_TITLE,
-  NAVBAR_LEAVE_CHALLENGE_DESCRIPTION,
-  NAVBAR_ABANDON_GAME_TITLE,
-  NAVBAR_ABANDON_GAME_DESCRIPTION,
-  NAVBAR_ABANDON_BUTTON_TEXT,
-  NAVBAR_LEAVE_BUTTON_TEXT,
-  NAVBAR_KEEP_PLAYING_BUTTON_TEXT,
-  NAVBAR_BRAND_TITLE,
-  NAVBAR_BRAND_SUBTITLE,
-  NAVBAR_HOW_TO_PLAY_ARIA_LABEL,
-  NAVBAR_DAILY_WORD_ARIA_LABEL,
-  NAVBAR_DAILY_TITLE,
-  NAVBAR_STATISTICS_ARIA_LABEL,
-  NAVBAR_SETTINGS_ARIA_LABEL,
-  NAVBAR_NUDGE_HEADING,
-  NAVBAR_NUDGE_DESCRIPTION,
-  NAVBAR_NUDGE_DISMISS_BUTTON_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 const SETTINGS_NUDGE_KEY = "vagudle-settings-nudge-dismissed";
 
@@ -179,12 +153,12 @@ export const Navbar = ({
 
   const leaveLabel =
     gameMode === "duel"
-      ? NAVBAR_LEAVE_DUEL_LABEL
+      ? strings.NAVBAR_LEAVE_DUEL_LABEL
       : gameMode === "challenge"
-        ? NAVBAR_LEAVE_CHALLENGE_LABEL
+        ? strings.NAVBAR_LEAVE_CHALLENGE_LABEL
         : gameMode === "daily"
-          ? NAVBAR_LEAVE_DAILY_LABEL
-          : NAVBAR_NEW_GAME_LABEL;
+          ? strings.NAVBAR_LEAVE_DAILY_LABEL
+          : strings.NAVBAR_NEW_GAME_LABEL;
 
   return (
     <div className="navbar">
@@ -196,7 +170,7 @@ export const Navbar = ({
               className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              aria-label={NAVBAR_HOW_TO_PLAY_ARIA_LABEL}
+              aria-label={strings.NAVBAR_HOW_TO_PLAY_ARIA_LABEL}
             >
               <InformationCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
             </m.button>
@@ -217,13 +191,13 @@ export const Navbar = ({
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    {NAVBAR_BRAND_TITLE}
+                    {strings.NAVBAR_BRAND_TITLE}
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
-                    {NAVBAR_BRAND_SUBTITLE}
+                    {strings.NAVBAR_BRAND_SUBTITLE}
                   </p>
                 </div>
               </m.button>
@@ -244,13 +218,13 @@ export const Navbar = ({
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    {NAVBAR_BRAND_TITLE}
+                    {strings.NAVBAR_BRAND_TITLE}
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
-                    {NAVBAR_BRAND_SUBTITLE}
+                    {strings.NAVBAR_BRAND_SUBTITLE}
                   </p>
                 </div>
               </m.a>
@@ -287,8 +261,8 @@ export const Navbar = ({
                     }
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    aria-label={NAVBAR_DAILY_WORD_ARIA_LABEL}
-                    title={NAVBAR_DAILY_TITLE}
+                    aria-label={strings.NAVBAR_DAILY_WORD_ARIA_LABEL}
+                    title={strings.NAVBAR_DAILY_TITLE}
                   >
                     <CalendarDays className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
                   </m.button>
@@ -299,7 +273,7 @@ export const Navbar = ({
                 className="shrink-0 p-1.5 sm:p-2 hover:bg-obsidian-700 rounded transition-colors min-h-9 min-w-9 sm:min-h-11 sm:min-w-11 flex items-center justify-center border-2 border-obsidian-600/50 hover:border-crown-gold/50"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                aria-label={NAVBAR_STATISTICS_ARIA_LABEL}
+                aria-label={strings.NAVBAR_STATISTICS_ARIA_LABEL}
               >
                 <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-crown-gold" />
               </m.button>
@@ -324,7 +298,7 @@ export const Navbar = ({
                   }
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  aria-label={NAVBAR_SETTINGS_ARIA_LABEL}
+                  aria-label={strings.NAVBAR_SETTINGS_ARIA_LABEL}
                   animate={showNudge ? { scale: [1, 1.08, 1] } : {}}
                   transition={
                     showNudge
@@ -359,10 +333,10 @@ export const Navbar = ({
                       />
                       <div className="p-3">
                         <p className="font-pixel text-[9px] text-crown-amber tracking-widest mb-1">
-                          {NAVBAR_NUDGE_HEADING}
+                          {strings.NAVBAR_NUDGE_HEADING}
                         </p>
                         <p className="font-code text-xs text-gray-300 leading-relaxed mb-3">
-                          {NAVBAR_NUDGE_DESCRIPTION}
+                          {strings.NAVBAR_NUDGE_DESCRIPTION}
                         </p>
                         <button
                           type="button"
@@ -374,7 +348,7 @@ export const Navbar = ({
                             color: "#d4af37",
                           }}
                         >
-                          {NAVBAR_NUDGE_DISMISS_BUTTON_TEXT}
+                          {strings.NAVBAR_NUDGE_DISMISS_BUTTON_TEXT}
                         </button>
                       </div>
                     </m.div>
@@ -402,37 +376,37 @@ export const Navbar = ({
             {gameMode === "duel" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  {NAVBAR_LEAVE_DUEL_TITLE}
+                  {strings.NAVBAR_LEAVE_DUEL_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  {NAVBAR_LEAVE_DUEL_DESCRIPTION}
+                  {strings.NAVBAR_LEAVE_DUEL_DESCRIPTION}
                 </p>
               </>
             ) : gameMode === "daily" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  {NAVBAR_LEAVE_DAILY_TITLE}
+                  {strings.NAVBAR_LEAVE_DAILY_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  {NAVBAR_LEAVE_DAILY_DESCRIPTION}
+                  {strings.NAVBAR_LEAVE_DAILY_DESCRIPTION}
                 </p>
               </>
             ) : gameMode === "challenge" ? (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  {NAVBAR_LEAVE_CHALLENGE_TITLE}
+                  {strings.NAVBAR_LEAVE_CHALLENGE_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  {NAVBAR_LEAVE_CHALLENGE_DESCRIPTION}
+                  {strings.NAVBAR_LEAVE_CHALLENGE_DESCRIPTION}
                 </p>
               </>
             ) : (
               <>
                 <p className="font-pixel text-xs text-crown-amber tracking-widest mb-2">
-                  {NAVBAR_ABANDON_GAME_TITLE}
+                  {strings.NAVBAR_ABANDON_GAME_TITLE}
                 </p>
                 <p className="font-code text-sm text-gray-300 mb-5">
-                  {NAVBAR_ABANDON_GAME_DESCRIPTION}
+                  {strings.NAVBAR_ABANDON_GAME_DESCRIPTION}
                 </p>
               </>
             )}
@@ -448,8 +422,8 @@ export const Navbar = ({
                 }}
               >
                 {gameMode === "normal"
-                  ? NAVBAR_ABANDON_BUTTON_TEXT
-                  : NAVBAR_LEAVE_BUTTON_TEXT}
+                  ? strings.NAVBAR_ABANDON_BUTTON_TEXT
+                  : strings.NAVBAR_LEAVE_BUTTON_TEXT}
               </button>
               <button
                 type="button"
@@ -461,7 +435,7 @@ export const Navbar = ({
                   color: "#fbbf24",
                 }}
               >
-                {NAVBAR_KEEP_PLAYING_BUTTON_TEXT}
+                {strings.NAVBAR_KEEP_PLAYING_BUTTON_TEXT}
               </button>
             </div>
           </div>

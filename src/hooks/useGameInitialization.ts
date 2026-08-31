@@ -42,14 +42,13 @@ import {
   type DailyStats,
 } from "../lib/daily";
 import { getIdTokenForCurrentUser } from "../lib/cloudSync";
-import { CORRECT_WORD_MESSAGE } from "../constants/strings";
-import { WORD_LISTS_LOAD_ERROR_TEXT } from "../constants/strings";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
   WELCOME_INFO_MODAL_MS,
   MIN_LOADING_WORDS_TIME_MS,
 } from "../constants/settings";
+import strings from "../constants/strings";
 
 type Params = {
   challengeParam: string | null;
@@ -249,7 +248,7 @@ export const useGameInitialization = ({
       try {
         await initWordLists();
       } catch {
-        showErrorAlert(WORD_LISTS_LOAD_ERROR_TEXT, {
+        showErrorAlert(strings.WORD_LISTS_LOAD_ERROR_TEXT, {
           persist: true,
         });
         setIsLoading(false);
@@ -551,7 +550,7 @@ export const useGameInitialization = ({
         } else if (savedState.guesses.length >= savedMaxChallenges) {
           restoredGameRef.current = true;
           setIsGameLost(true);
-          showErrorAlert(CORRECT_WORD_MESSAGE(savedState.solution), {
+          showErrorAlert(strings.CORRECT_WORD_MESSAGE(savedState.solution), {
             persist: true,
           });
           modalTimeoutId = setTimeout(() => {

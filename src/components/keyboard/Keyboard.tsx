@@ -1,9 +1,9 @@
 import { type CharStatus } from "../../lib/statuses";
 import { Key } from "./Key";
 import React, { useEffect, useEffectEvent } from "react";
-import { ENTER_TEXT, DELETE_TEXT } from "../../constants/strings";
 import { localeAwareUpperCase } from "../../lib/words";
 import { isNativeApp } from "../../lib/browser";
+import strings from "../../constants/strings";
 
 type Props = {
   onChar: (value: string) => void;
@@ -103,7 +103,7 @@ export const Keyboard = ({
           onClick={onClick}
           solutionLength={solution.length}
         >
-          {ENTER_TEXT}
+          {strings.ENTER_TEXT}
         </Key>
         {["Z", "X", "C", "V", "B", "N", "M"].map((key) => (
           <Key
@@ -121,7 +121,7 @@ export const Keyboard = ({
           onClick={onClick}
           solutionLength={solution.length}
         >
-          {DELETE_TEXT}
+          {strings.DELETE_TEXT}
         </Key>
       </div>
     </div>

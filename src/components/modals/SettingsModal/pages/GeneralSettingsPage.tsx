@@ -2,36 +2,16 @@ import React from "react";
 import { Hash, BookOpen, Target } from "lucide-react";
 import { SettingsToggle } from "../../SettingsToggle";
 import { BackgroundDropdown } from "../BackgroundDropdown";
+import { CompactDropdown } from "../CompactDropdown";
 import {
   DICT_LABELS,
   DICT_DESCRIPTIONS,
   type ChallengeConfig,
 } from "../../../../lib/challenge";
 import type { DuelConfig } from "../../../../lib/duel";
-import {
-  SETTINGS_HARD_MODE_LABEL,
-  SETTINGS_HARD_MODE_DESCRIPTION,
-  SETTINGS_SHOW_GRAY_COUNT_LABEL,
-  SETTINGS_SHOW_GRAY_COUNT_DESCRIPTION,
-  SETTINGS_AUTO_GRAY_LABEL,
-  SETTINGS_AUTO_GRAY_DESCRIPTION,
-  SETTINGS_AUTO_GREEN_LABEL,
-  SETTINGS_AUTO_GREEN_DESCRIPTION,
-  SETTINGS_BACKGROUND_LABEL,
-  SETTINGS_BACKGROUND_DESCRIPTION_FREE,
-  SETTINGS_BACKGROUND_DESCRIPTION_LOCKED,
-  GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT,
-  GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT,
-  DAILY_SCHEDULE_WORD_LENGTH_TEXT,
-  CHALLENGE_DICTIONARY_SUFFIX_TEXT,
-  CHALLENGE_GUESSES_ALLOWED_TEXT,
-  GENERAL_SETTINGS_DAILY_LOCKED_TEXT,
-  GENERAL_SETTINGS_CHALLENGE_LOCKED_TEXT,
-  DAILY_MODAL_WORD_LENGTH_LABEL,
-  GENERAL_SETTINGS_WORD_LENGTH_HINT_TEXT,
-  GENERAL_SETTINGS_WORD_LENGTH_ARIA_LABEL,
-} from "../../../../constants/strings";
+import { LANGUAGES, type Language } from "../../../../constants/languages";
 import type { GameSettingsValues, GameSettingsHandlers } from "../index";
+import strings from "../../../../constants/strings";
 
 export const GeneralSettingsPage = ({
   wordLength,
@@ -45,6 +25,7 @@ export const GeneralSettingsPage = ({
   isBackgroundDropdownOpen,
   setIsBackgroundDropdownOpen,
   handleHardModeChange,
+  handleLanguageChange,
 }: {
   wordLength: number;
   onWordLengthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -57,6 +38,7 @@ export const GeneralSettingsPage = ({
   isBackgroundDropdownOpen: boolean;
   setIsBackgroundDropdownOpen: (open: boolean) => void;
   handleHardModeChange: (value: boolean) => void;
+  handleLanguageChange: (value: Language) => void;
 }) => {
   return (
     <div className="flex flex-col divide-y divide-obsidian-700">
@@ -64,8 +46,8 @@ export const GeneralSettingsPage = ({
         <div className="py-3 space-y-2">
           <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none mb-2">
             {challengeConfig.id === "daily"
-              ? GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT
-              : GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT}
+              ? strings.GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT
+              : strings.GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT}
           </p>
           <div
             className="p-3 space-y-2"
@@ -77,14 +59,16 @@ export const GeneralSettingsPage = ({
             <div className="flex items-center gap-2">
               <Hash className="w-3.5 h-3.5 text-crown-amber shrink-0" />
               <span className="font-code text-xs text-gray-300">
-                {DAILY_SCHEDULE_WORD_LENGTH_TEXT(challengeConfig.length)}
+                {strings.DAILY_SCHEDULE_WORD_LENGTH_TEXT(
+                  challengeConfig.length
+                )}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <BookOpen className="w-3.5 h-3.5 text-crown-amber shrink-0" />
               <span className="font-code text-xs text-gray-300">
                 {DICT_LABELS[challengeConfig.dict]}{" "}
-                {CHALLENGE_DICTIONARY_SUFFIX_TEXT}{" "}
+                {strings.CHALLENGE_DICTIONARY_SUFFIX_TEXT}{" "}
                 <span className="text-gray-500">
                   {DICT_DESCRIPTIONS[challengeConfig.dict]}
                 </span>
@@ -93,14 +77,16 @@ export const GeneralSettingsPage = ({
             <div className="flex items-center gap-2">
               <Target className="w-3.5 h-3.5 text-crown-amber shrink-0" />
               <span className="font-code text-xs text-gray-300">
-                {CHALLENGE_GUESSES_ALLOWED_TEXT(challengeConfig.guesses)}
+                {strings.CHALLENGE_GUESSES_ALLOWED_TEXT(
+                  challengeConfig.guesses
+                )}
               </span>
             </div>
           </div>
           <p className="font-code text-xs text-gray-500 leading-snug">
             {challengeConfig.id === "daily"
-              ? GENERAL_SETTINGS_DAILY_LOCKED_TEXT
-              : GENERAL_SETTINGS_CHALLENGE_LOCKED_TEXT}
+              ? strings.GENERAL_SETTINGS_DAILY_LOCKED_TEXT
+              : strings.GENERAL_SETTINGS_CHALLENGE_LOCKED_TEXT}
           </p>
         </div>
       ) : (
@@ -109,10 +95,10 @@ export const GeneralSettingsPage = ({
             <div className="flex justify-between items-center mb-3">
               <div className="text-left">
                 <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                  {DAILY_MODAL_WORD_LENGTH_LABEL}
+                  {strings.DAILY_MODAL_WORD_LENGTH_LABEL}
                 </p>
                 <p className="font-code text-xs mt-1.5 text-gray-500">
-                  {GENERAL_SETTINGS_WORD_LENGTH_HINT_TEXT}
+                  {strings.GENERAL_SETTINGS_WORD_LENGTH_HINT_TEXT}
                 </p>
               </div>
               <span className="font-pixel text-2xl text-spice-lime w-10 text-center tabular-nums">
@@ -165,7 +151,7 @@ export const GeneralSettingsPage = ({
                   step={1}
                   value={wordLength}
                   onChange={onWordLengthChange}
-                  aria-label={GENERAL_SETTINGS_WORD_LENGTH_ARIA_LABEL}
+                  aria-label={strings.GENERAL_SETTINGS_WORD_LENGTH_ARIA_LABEL}
                   className="absolute inset-0 w-full opacity-0 cursor-pointer"
                   style={{
                     height: 22,
@@ -180,42 +166,42 @@ export const GeneralSettingsPage = ({
           </div>
 
           <SettingsToggle
-            settingName={SETTINGS_HARD_MODE_LABEL}
+            settingName={strings.SETTINGS_HARD_MODE_LABEL}
             flag={settings.hardMode}
             handleFlag={handleHardModeChange}
-            description={SETTINGS_HARD_MODE_DESCRIPTION}
+            description={strings.SETTINGS_HARD_MODE_DESCRIPTION}
           />
         </>
       )}
 
       <SettingsToggle
-        settingName={SETTINGS_SHOW_GRAY_COUNT_LABEL}
+        settingName={strings.SETTINGS_SHOW_GRAY_COUNT_LABEL}
         flag={settings.showGrayCount}
         handleFlag={settingsHandlers.setShowGrayCount}
-        description={SETTINGS_SHOW_GRAY_COUNT_DESCRIPTION}
+        description={strings.SETTINGS_SHOW_GRAY_COUNT_DESCRIPTION}
       />
       <SettingsToggle
-        settingName={SETTINGS_AUTO_GRAY_LABEL}
+        settingName={strings.SETTINGS_AUTO_GRAY_LABEL}
         flag={settings.autoGray}
         handleFlag={settingsHandlers.setAutoGray}
-        description={SETTINGS_AUTO_GRAY_DESCRIPTION}
+        description={strings.SETTINGS_AUTO_GRAY_DESCRIPTION}
       />
       <SettingsToggle
-        settingName={SETTINGS_AUTO_GREEN_LABEL}
+        settingName={strings.SETTINGS_AUTO_GREEN_LABEL}
         flag={settings.autoGreen}
         handleFlag={settingsHandlers.setAutoGreen}
-        description={SETTINGS_AUTO_GREEN_DESCRIPTION}
+        description={strings.SETTINGS_AUTO_GREEN_DESCRIPTION}
       />
 
       <div className="flex justify-between gap-4 py-3">
         <div className="text-left mt-1">
           <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-            {SETTINGS_BACKGROUND_LABEL}
+            {strings.SETTINGS_BACKGROUND_LABEL}
           </p>
           <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
             {freeBackgroundsMode
-              ? SETTINGS_BACKGROUND_DESCRIPTION_FREE
-              : SETTINGS_BACKGROUND_DESCRIPTION_LOCKED}
+              ? strings.SETTINGS_BACKGROUND_DESCRIPTION_FREE
+              : strings.SETTINGS_BACKGROUND_DESCRIPTION_LOCKED}
           </p>
         </div>
         <BackgroundDropdown
@@ -226,6 +212,26 @@ export const GeneralSettingsPage = ({
           isOpen={isBackgroundDropdownOpen}
           onOpenChange={setIsBackgroundDropdownOpen}
           onChange={settingsHandlers.setBackgroundId}
+        />
+      </div>
+
+      <div className="flex justify-between gap-4 py-3">
+        <div className="text-left mt-1">
+          <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
+            {strings.SETTINGS_LANGUAGE_LABEL}
+          </p>
+          <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
+            {strings.SETTINGS_LANGUAGE_DESCRIPTION}
+          </p>
+        </div>
+        <CompactDropdown
+          value={settings.language}
+          options={LANGUAGES.map((lang) => ({
+            value: lang.code,
+            label: lang.label,
+          }))}
+          onChange={(value) => handleLanguageChange(value as Language)}
+          ariaLabel={strings.SETTINGS_LANGUAGE_ARIA_LABEL}
         />
       </div>
     </div>

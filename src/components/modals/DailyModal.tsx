@@ -16,38 +16,7 @@ import {
 import type { DailyConfig, DailyStats } from "../../lib/daily";
 import { msUntilNextDailyRelease } from "../../lib/daily";
 import { useBackButtonClose } from "../../lib/backButton";
-import {
-  BANNER_DIFFICULTY_HARD_TEXT,
-  BANNER_DIFFICULTY_NORMAL_TEXT,
-  CLOSE_BUTTON_LABEL,
-  RESET_DATA_CLOSE_BUTTON_TEXT,
-  DAILY_SCHEDULE_WORD_LENGTH_TEXT,
-  DAILY_MODAL_PLAY_INTRO_TEXT,
-  DAILY_MODAL_WORD_LENGTH_LABEL,
-  DAILY_MODAL_DIFFICULTY_LABEL,
-  DAILY_MODAL_CURRENT_STREAK_LABEL,
-  DAILY_MODAL_STREAK_DAYS_TEXT,
-  DAILY_MODAL_ALREADY_PLAYING_TEXT,
-  DAILY_MODAL_LOCKOUT_WARNING_TEXT,
-  DAILY_MODAL_LEAVE_BUTTON_TEXT,
-  DAILY_MODAL_PLAY_BUTTON_TEXT,
-  DAILY_MODAL_SOLVED_TEXT,
-  DAILY_MODAL_NOT_SOLVED_TEXT,
-  DAILY_MODAL_VIEW_GAME_BUTTON_TEXT,
-  DAILY_MODAL_COME_BACK_TEXT,
-  DAILY_MODAL_STREAK_LABEL,
-  DAILY_MODAL_BEST_LABEL,
-  DAILY_MODAL_PLAYED_LABEL,
-  DAILY_MODAL_NEXT_DAILY_TEXT,
-  DAILY_MODAL_SHARE_BUTTON_TEXT,
-  DAILY_MODAL_RETURN_BUTTON_TEXT,
-  DAILY_MODAL_HEADING_COMPLETE,
-  DAILY_MODAL_HEADING_DEFAULT,
-  DAILY_MODAL_SCHEDULE_ARIA_LABEL,
-  DAILY_MODAL_LOADING_TEXT,
-  DAILY_MODAL_ERROR_TEXT,
-  DAILY_MODAL_VIEW_LEADERBOARD_BUTTON_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 export type DailyOrigin =
   { type: "daily" } | { type: "normal"; canViewGame: boolean };
@@ -119,7 +88,7 @@ const DailyModalPlayContent = ({
   return (
     <>
       <p className="font-code text-sm text-gray-300 leading-relaxed">
-        {DAILY_MODAL_PLAY_INTRO_TEXT}
+        {strings.DAILY_MODAL_PLAY_INTRO_TEXT}
       </p>
 
       <div
@@ -133,10 +102,10 @@ const DailyModalPlayContent = ({
           <Hash className="w-4 h-4 text-crown-amber shrink-0" />
           <div>
             <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-              {DAILY_MODAL_WORD_LENGTH_LABEL}
+              {strings.DAILY_MODAL_WORD_LENGTH_LABEL}
             </p>
             <p className="font-code text-sm text-gray-200 mt-0.5">
-              {DAILY_SCHEDULE_WORD_LENGTH_TEXT(config.wordLength)}
+              {strings.DAILY_SCHEDULE_WORD_LENGTH_TEXT(config.wordLength)}
             </p>
           </div>
         </div>
@@ -145,12 +114,12 @@ const DailyModalPlayContent = ({
           <BookOpen className="w-4 h-4 text-crown-amber shrink-0" />
           <div>
             <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-              {DAILY_MODAL_DIFFICULTY_LABEL}
+              {strings.DAILY_MODAL_DIFFICULTY_LABEL}
             </p>
             <p className="font-code text-sm text-gray-200 mt-0.5">
               {config.hardMode
-                ? BANNER_DIFFICULTY_HARD_TEXT
-                : BANNER_DIFFICULTY_NORMAL_TEXT}
+                ? strings.BANNER_DIFFICULTY_HARD_TEXT
+                : strings.BANNER_DIFFICULTY_NORMAL_TEXT}
             </p>
           </div>
         </div>
@@ -160,10 +129,10 @@ const DailyModalPlayContent = ({
             <Flame className="w-4 h-4 text-crown-amber shrink-0" />
             <div>
               <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                {DAILY_MODAL_CURRENT_STREAK_LABEL}
+                {strings.DAILY_MODAL_CURRENT_STREAK_LABEL}
               </p>
               <p className="font-code text-sm text-gray-200 mt-0.5">
-                {DAILY_MODAL_STREAK_DAYS_TEXT(dailyStats.currentStreak)}
+                {strings.DAILY_MODAL_STREAK_DAYS_TEXT(dailyStats.currentStreak)}
               </p>
             </div>
           </div>
@@ -172,14 +141,14 @@ const DailyModalPlayContent = ({
 
       {isDailyMode ? (
         <p className="font-code text-xs text-gray-500 leading-snug">
-          {DAILY_MODAL_ALREADY_PLAYING_TEXT}
+          {strings.DAILY_MODAL_ALREADY_PLAYING_TEXT}
         </p>
       ) : (
         <p
           className="font-code text-xs leading-snug"
           style={{ color: "rgba(212,175,55,0.6)" }}
         >
-          {DAILY_MODAL_LOCKOUT_WARNING_TEXT}
+          {strings.DAILY_MODAL_LOCKOUT_WARNING_TEXT}
         </p>
       )}
 
@@ -201,7 +170,7 @@ const DailyModalPlayContent = ({
           }}
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          {DAILY_MODAL_LEAVE_BUTTON_TEXT}
+          {strings.DAILY_MODAL_LEAVE_BUTTON_TEXT}
         </button>
       ) : (
         <button
@@ -221,7 +190,7 @@ const DailyModalPlayContent = ({
           }}
         >
           <CalendarDays className="w-3.5 h-3.5" />
-          {DAILY_MODAL_PLAY_BUTTON_TEXT}
+          {strings.DAILY_MODAL_PLAY_BUTTON_TEXT}
         </button>
       )}
     </>
@@ -260,8 +229,11 @@ const DailyModalCompleteContent = ({
           }}
         >
           {result.won
-            ? DAILY_MODAL_SOLVED_TEXT(result.guessCount, result.maxGuesses)
-            : DAILY_MODAL_NOT_SOLVED_TEXT}
+            ? strings.DAILY_MODAL_SOLVED_TEXT(
+                result.guessCount,
+                result.maxGuesses
+              )
+            : strings.DAILY_MODAL_NOT_SOLVED_TEXT}
         </p>
         {canViewGame && (
           <button
@@ -283,12 +255,12 @@ const DailyModalCompleteContent = ({
             }}
           >
             <Eye className="w-3 h-3" />
-            {DAILY_MODAL_VIEW_GAME_BUTTON_TEXT}
+            {strings.DAILY_MODAL_VIEW_GAME_BUTTON_TEXT}
           </button>
         )}
       </div>
       <p className="font-code text-xs text-gray-500 text-center leading-snug">
-        {DAILY_MODAL_COME_BACK_TEXT}
+        {strings.DAILY_MODAL_COME_BACK_TEXT}
       </p>
 
       <div
@@ -300,7 +272,7 @@ const DailyModalCompleteContent = ({
       >
         <div>
           <p className="font-pixel text-[9px] text-crown-amber tracking-widest">
-            {DAILY_MODAL_STREAK_LABEL}
+            {strings.DAILY_MODAL_STREAK_LABEL}
           </p>
           <p className="font-code text-sm text-gray-200 mt-1">
             {dailyStats.currentStreak}
@@ -308,7 +280,7 @@ const DailyModalCompleteContent = ({
         </div>
         <div>
           <p className="font-pixel text-[9px] text-crown-amber tracking-widest">
-            {DAILY_MODAL_BEST_LABEL}
+            {strings.DAILY_MODAL_BEST_LABEL}
           </p>
           <p className="font-code text-sm text-gray-200 mt-1">
             {dailyStats.bestStreak}
@@ -316,7 +288,7 @@ const DailyModalCompleteContent = ({
         </div>
         <div>
           <p className="font-pixel text-[9px] text-crown-amber tracking-widest">
-            {DAILY_MODAL_PLAYED_LABEL}
+            {strings.DAILY_MODAL_PLAYED_LABEL}
           </p>
           <p className="font-code text-sm text-gray-200 mt-1">
             {dailyStats.totalPlayed}
@@ -329,7 +301,7 @@ const DailyModalCompleteContent = ({
         style={{ color: "#6b7280" }}
       >
         <p className="font-code text-xs">
-          {DAILY_MODAL_NEXT_DAILY_TEXT(countdown)}
+          {strings.DAILY_MODAL_NEXT_DAILY_TEXT(countdown)}
         </p>
       </div>
 
@@ -350,7 +322,7 @@ const DailyModalCompleteContent = ({
         }}
       >
         <Share2 className="w-3.5 h-3.5" />
-        {DAILY_MODAL_SHARE_BUTTON_TEXT}
+        {strings.DAILY_MODAL_SHARE_BUTTON_TEXT}
       </button>
 
       {isDailyMode && (
@@ -371,7 +343,7 @@ const DailyModalCompleteContent = ({
           }}
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          {DAILY_MODAL_RETURN_BUTTON_TEXT}
+          {strings.DAILY_MODAL_RETURN_BUTTON_TEXT}
         </button>
       )}
     </>
@@ -440,8 +412,8 @@ export const DailyModal = ({
                 <CalendarDays className="w-5 h-5 text-crown-gold" />
                 <h2 className="font-pixel text-sm text-crown-amber tracking-widest">
                   {mode === "complete"
-                    ? DAILY_MODAL_HEADING_COMPLETE
-                    : DAILY_MODAL_HEADING_DEFAULT}
+                    ? strings.DAILY_MODAL_HEADING_COMPLETE
+                    : strings.DAILY_MODAL_HEADING_DEFAULT}
                   {dailyNumber > 0 ? ` #${dailyNumber}` : ""}
                 </h2>
               </div>
@@ -450,8 +422,8 @@ export const DailyModal = ({
                   type="button"
                   onClick={onOpenSchedule}
                   className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
-                  aria-label={DAILY_MODAL_SCHEDULE_ARIA_LABEL}
-                  title={DAILY_MODAL_SCHEDULE_ARIA_LABEL}
+                  aria-label={strings.DAILY_MODAL_SCHEDULE_ARIA_LABEL}
+                  title={strings.DAILY_MODAL_SCHEDULE_ARIA_LABEL}
                 >
                   <CalendarClock className="w-4 h-4" />
                 </button>
@@ -459,7 +431,7 @@ export const DailyModal = ({
                   type="button"
                   onClick={onClose}
                   className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
-                  aria-label={CLOSE_BUTTON_LABEL}
+                  aria-label={strings.CLOSE_BUTTON_LABEL}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -471,7 +443,7 @@ export const DailyModal = ({
                 <div className="flex items-center gap-3 py-6 justify-center">
                   <Loader className="w-4 h-4 text-gray-400 animate-spin" />
                   <p className="font-code text-sm text-gray-400">
-                    {DAILY_MODAL_LOADING_TEXT}
+                    {strings.DAILY_MODAL_LOADING_TEXT}
                   </p>
                 </div>
               )}
@@ -479,7 +451,7 @@ export const DailyModal = ({
               {mode === "error" && (
                 <>
                   <p className="font-code text-sm text-gray-300 leading-relaxed">
-                    {DAILY_MODAL_ERROR_TEXT}
+                    {strings.DAILY_MODAL_ERROR_TEXT}
                   </p>
                   <button
                     type="button"
@@ -491,7 +463,7 @@ export const DailyModal = ({
                       color: "#9ca3af",
                     }}
                   >
-                    {RESET_DATA_CLOSE_BUTTON_TEXT}
+                    {strings.RESET_DATA_CLOSE_BUTTON_TEXT}
                   </button>
                 </>
               )}
@@ -535,7 +507,7 @@ export const DailyModal = ({
                 }}
               >
                 <Trophy className="w-3.5 h-3.5" />
-                {DAILY_MODAL_VIEW_LEADERBOARD_BUTTON_TEXT}
+                {strings.DAILY_MODAL_VIEW_LEADERBOARD_BUTTON_TEXT}
               </button>
             </div>
           </div>

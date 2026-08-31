@@ -21,7 +21,7 @@ import { AchievementView } from "./views/AchievementView";
 import { DuelResultView } from "./views/DuelResultView";
 import { ChallengeResultView } from "./views/ChallengeResultView";
 import { NormalStatsView } from "./views/NormalStatsView";
-import { MODAL_TITLE_CREATE_CHALLENGE } from "../../../constants/strings";
+import strings from "../../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -153,7 +153,7 @@ export const StatsModal = ({
   if (showChallengeCreator) {
     return (
       <BaseModal
-        title={MODAL_TITLE_CREATE_CHALLENGE}
+        title={strings.MODAL_TITLE_CREATE_CHALLENGE}
         isOpen={isOpen}
         handleClose={handleClose}
       >

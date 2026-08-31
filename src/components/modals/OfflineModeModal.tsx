@@ -1,14 +1,6 @@
 import { WifiOff, Check, AlertTriangle } from "lucide-react";
 import { BaseModal } from "./BaseModal";
-import {
-  MODAL_TITLE_OFFLINE_MODE,
-  OFFLINE_MODE_INTRO_TEXT,
-  OFFLINE_MODE_AVAILABLE_HEADING,
-  OFFLINE_MODE_AVAILABLE_ITEMS,
-  OFFLINE_MODE_UNAVAILABLE_HEADING,
-  OFFLINE_MODE_UNAVAILABLE_ITEMS,
-  OFFLINE_MODE_DISMISS_BUTTON_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -18,7 +10,7 @@ type Props = {
 export const OfflineModeModal = ({ isOpen, handleClose }: Props) => {
   return (
     <BaseModal
-      title={MODAL_TITLE_OFFLINE_MODE}
+      title={strings.MODAL_TITLE_OFFLINE_MODE}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -32,16 +24,16 @@ export const OfflineModeModal = ({ isOpen, handleClose }: Props) => {
         >
           <WifiOff className="w-4 h-4 text-crown-amber shrink-0 mt-0.5" />
           <p className="font-code text-xs text-gray-300 leading-snug">
-            {OFFLINE_MODE_INTRO_TEXT}
+            {strings.OFFLINE_MODE_INTRO_TEXT}
           </p>
         </div>
 
         <div>
           <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-1.5">
-            {OFFLINE_MODE_AVAILABLE_HEADING}
+            {strings.OFFLINE_MODE_AVAILABLE_HEADING}
           </p>
           <ul className="space-y-1.5">
-            {OFFLINE_MODE_AVAILABLE_ITEMS.map((item) => (
+            {strings.OFFLINE_MODE_AVAILABLE_ITEMS.map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" />
                 <span className="font-code text-xs text-gray-400 leading-snug">
@@ -54,10 +46,10 @@ export const OfflineModeModal = ({ isOpen, handleClose }: Props) => {
 
         <div>
           <p className="font-pixel text-[10px] text-spice-red tracking-widest mb-1.5">
-            {OFFLINE_MODE_UNAVAILABLE_HEADING}
+            {strings.OFFLINE_MODE_UNAVAILABLE_HEADING}
           </p>
           <ul className="space-y-1.5">
-            {OFFLINE_MODE_UNAVAILABLE_ITEMS.map((item) => (
+            {strings.OFFLINE_MODE_UNAVAILABLE_ITEMS.map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <AlertTriangle className="w-3.5 h-3.5 text-spice-red shrink-0 mt-0.5" />
                 <span className="font-code text-xs text-gray-400 leading-snug">
@@ -84,7 +76,7 @@ export const OfflineModeModal = ({ isOpen, handleClose }: Props) => {
             e.currentTarget.style.filter = "brightness(1)";
           }}
         >
-          {OFFLINE_MODE_DISMISS_BUTTON_TEXT}
+          {strings.OFFLINE_MODE_DISMISS_BUTTON_TEXT}
         </button>
       </div>
     </BaseModal>

@@ -5,14 +5,10 @@ import {
   unicodeLength,
   unicodeSplit,
 } from "../lib/words";
-import {
-  NOT_ENOUGH_LETTERS_MESSAGE,
-  WORD_NOT_FOUND_MESSAGE,
-  CORRECT_WORD_MESSAGE,
-} from "../constants/strings";
 import { REVEAL_TIME_MS } from "../constants/settings";
 import { triggerErrorHaptic } from "../lib/haptics";
 import type React from "react";
+import strings from "../constants/strings";
 
 type Params = {
   currentGuess: string;
@@ -111,7 +107,7 @@ export const useGuessInput = ({
     if (!(unicodeLength(currentGuess) === solution.length)) {
       setCurrentRowClass("");
       requestAnimationFrame(() => setCurrentRowClass("jiggle"));
-      return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
+      return showErrorAlert(strings.NOT_ENOUGH_LETTERS_MESSAGE, {
         onClose: clearCurrentRowClass,
       });
     }
@@ -120,7 +116,7 @@ export const useGuessInput = ({
       setCurrentRowClass("");
       requestAnimationFrame(() => setCurrentRowClass("jiggle"));
       triggerErrorHaptic(hapticsEnabledRef.current);
-      return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
+      return showErrorAlert(strings.WORD_NOT_FOUND_MESSAGE, {
         onClose: clearCurrentRowClass,
       });
     }
@@ -186,7 +182,7 @@ export const useGuessInput = ({
           );
         setIsGameLost(true);
         if (!isChallengeMode && !isDuelMode) {
-          showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
+          showErrorAlert(strings.CORRECT_WORD_MESSAGE(solution), {
             persist: true,
             delayMs: REVEAL_TIME_MS * solution.length + 1,
           });

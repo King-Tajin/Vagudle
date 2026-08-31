@@ -1,8 +1,5 @@
 import { getPublicOrigin } from "./publicOrigin";
-import {
-  CHALLENGE_DICT_LABELS,
-  CHALLENGE_DICT_DESCRIPTIONS,
-} from "../constants/strings";
+import strings from "../constants/strings";
 
 export type ChallengeDict = "normal" | "hard" | "full";
 
@@ -144,7 +141,8 @@ export const loadChallengeState = (id: string): ChallengeGameState | null => {
   }
 };
 
-export const DICT_LABELS: Record<ChallengeDict, string> = CHALLENGE_DICT_LABELS;
+export const DICT_LABELS: Record<ChallengeDict, string> =
+  strings.CHALLENGE_DICT_LABELS;
 
 export const DICT_DESCRIPTIONS: Record<ChallengeDict, string> =
-  CHALLENGE_DICT_DESCRIPTIONS;
+  strings.CHALLENGE_DICT_DESCRIPTIONS;

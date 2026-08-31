@@ -8,24 +8,7 @@ import {
   useCloudAuth,
 } from "../../hooks/useCloudAuth";
 import { useAccountLinkFlow } from "../../hooks/useAccountLinkFlow";
-import {
-  LINK_PLAYGAMES_INVALID_LINK_TEXT,
-  LINK_PLAYGAMES_LINKED_TEXT,
-  LINK_PLAYGAMES_SIGN_IN_PROMPT_TEXT,
-  LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT,
-  LINK_DISCORD_LINKING_TEXT,
-  LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT,
-  LINK_DISCORD_SIGNED_IN_TEXT_BEFORE,
-  LINK_DISCORD_SIGNED_IN_TEXT_AFTER,
-  LINK_DISCORD_FALLBACK_ACCOUNT_TEXT,
-  LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT,
-  LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT,
-  LINK_DISCORD_EMAIL_LABEL,
-  LINK_DISCORD_EMAIL_PLACEHOLDER,
-  LINK_DISCORD_SEND_LINK_BUTTON_TEXT,
-  LINK_DISCORD_EMAIL_SENT_TEXT,
-  LINK_DISCORD_HEADING,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 const cardStyle = {
   background: "rgba(255,215,0,0.06)",
@@ -86,21 +69,21 @@ export const LinkPlayGamesPage = () => {
     if (!token)
       return (
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          {LINK_PLAYGAMES_INVALID_LINK_TEXT}
+          {strings.LINK_PLAYGAMES_INVALID_LINK_TEXT}
         </p>
       );
 
     if (linkStatus === "linked")
       return (
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          {LINK_PLAYGAMES_LINKED_TEXT}
+          {strings.LINK_PLAYGAMES_LINKED_TEXT}
         </p>
       );
 
     if (linkStatus === "linking")
       return (
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          {LINK_DISCORD_LINKING_TEXT}
+          {strings.LINK_DISCORD_LINKING_TEXT}
         </p>
       );
 
@@ -116,7 +99,7 @@ export const LinkPlayGamesPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
-            {LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT}
+            {strings.LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT}
           </button>
         </>
       );
@@ -124,16 +107,18 @@ export const LinkPlayGamesPage = () => {
     if (user && user.providerId !== "playgames.google.com")
       return (
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          {LINK_DISCORD_SIGNED_IN_TEXT_BEFORE}{" "}
-          {user.email ?? user.displayName ?? LINK_DISCORD_FALLBACK_ACCOUNT_TEXT}
-          {LINK_DISCORD_SIGNED_IN_TEXT_AFTER}
+          {strings.LINK_DISCORD_SIGNED_IN_TEXT_BEFORE}{" "}
+          {user.email ??
+            user.displayName ??
+            strings.LINK_DISCORD_FALLBACK_ACCOUNT_TEXT}
+          {strings.LINK_DISCORD_SIGNED_IN_TEXT_AFTER}
         </p>
       );
 
     return (
       <div className="flex flex-col gap-4 text-left">
         <p className="font-code text-sm text-gray-400 leading-relaxed text-center">
-          {LINK_PLAYGAMES_SIGN_IN_PROMPT_TEXT}
+          {strings.LINK_PLAYGAMES_SIGN_IN_PROMPT_TEXT}
         </p>
         <div className="flex flex-col gap-2">
           <button
@@ -142,7 +127,7 @@ export const LinkPlayGamesPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
-            {LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
+            {strings.LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
           </button>
           <button
             type="button"
@@ -150,7 +135,7 @@ export const LinkPlayGamesPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
-            {LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
+            {strings.LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
           </button>
           <button
             type="button"
@@ -158,7 +143,7 @@ export const LinkPlayGamesPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
-            {LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
+            {strings.LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
           </button>
         </div>
         <div className="flex flex-col gap-2">
@@ -166,14 +151,14 @@ export const LinkPlayGamesPage = () => {
             htmlFor="link-playgames-email"
             className="font-pixel text-xs text-crown-gold tracking-widest"
           >
-            {LINK_DISCORD_EMAIL_LABEL}
+            {strings.LINK_DISCORD_EMAIL_LABEL}
           </label>
           <input
             id="link-playgames-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={LINK_DISCORD_EMAIL_PLACEHOLDER}
+            placeholder={strings.LINK_DISCORD_EMAIL_PLACEHOLDER}
             className="font-code text-sm px-3 py-2 rounded-none"
             style={inputStyle}
           />
@@ -184,11 +169,11 @@ export const LinkPlayGamesPage = () => {
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors disabled:opacity-40"
             style={buttonStyle}
           >
-            {LINK_DISCORD_SEND_LINK_BUTTON_TEXT}
+            {strings.LINK_DISCORD_SEND_LINK_BUTTON_TEXT}
           </button>
           {emailLinkSent && (
             <p className="font-code text-xs text-gray-500 leading-relaxed">
-              {LINK_DISCORD_EMAIL_SENT_TEXT}
+              {strings.LINK_DISCORD_EMAIL_SENT_TEXT}
             </p>
           )}
         </div>
@@ -214,7 +199,7 @@ export const LinkPlayGamesPage = () => {
           style={cardStyle}
         >
           <p className="font-pixel text-xs text-crown-gold tracking-widest mb-3">
-            {LINK_DISCORD_HEADING}
+            {strings.LINK_DISCORD_HEADING}
           </p>
           {renderBody()}
         </m.div>

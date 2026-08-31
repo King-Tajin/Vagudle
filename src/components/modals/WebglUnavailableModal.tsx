@@ -1,10 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import { BaseModal } from "./BaseModal";
-import {
-  MODAL_TITLE_WEBGL_UNAVAILABLE,
-  WEBGL_UNAVAILABLE_BODY_TEXT,
-  WEBGL_UNAVAILABLE_DISMISS_BUTTON_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -19,7 +15,7 @@ export const WebglUnavailableModal = ({
 }: Props) => {
   return (
     <BaseModal
-      title={MODAL_TITLE_WEBGL_UNAVAILABLE}
+      title={strings.MODAL_TITLE_WEBGL_UNAVAILABLE}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -33,7 +29,9 @@ export const WebglUnavailableModal = ({
         >
           <AlertTriangle className="w-4 h-4 text-crown-amber shrink-0 mt-0.5" />
           <p className="font-code text-xs text-gray-300 leading-snug">
-            {WEBGL_UNAVAILABLE_BODY_TEXT(backgroundLabel ?? "This background")}
+            {strings.WEBGL_UNAVAILABLE_BODY_TEXT(
+              backgroundLabel ?? "This background"
+            )}
           </p>
         </div>
 
@@ -53,7 +51,7 @@ export const WebglUnavailableModal = ({
             e.currentTarget.style.filter = "brightness(1)";
           }}
         >
-          {WEBGL_UNAVAILABLE_DISMISS_BUTTON_TEXT}
+          {strings.WEBGL_UNAVAILABLE_DISMISS_BUTTON_TEXT}
         </button>
       </div>
     </BaseModal>

@@ -3,19 +3,7 @@ import { RotateCcw, Hash, BookOpen, Target } from "lucide-react";
 import { DICT_LABELS, DICT_DESCRIPTIONS } from "../../../../lib/challenge";
 import type { DuelConfig } from "../../../../lib/duel";
 import type { GameOutcome } from "../../../../lib/gameOutcome";
-import {
-  DUEL_RESULT_MODAL_TITLE,
-  DUEL_RESULT_HEADING,
-  DAILY_SCHEDULE_WORD_LENGTH_TEXT,
-  CHALLENGE_DICTIONARY_SUFFIX_TEXT,
-  CHALLENGE_GUESSES_ALLOWED_TEXT,
-  DUEL_RESULT_COMPLETE_TEXT,
-  RESULT_SOLVED_TEXT_BEFORE,
-  RESULT_SOLVED_TEXT_AFTER,
-  DUEL_RESULT_FAILED_TEXT,
-  DUEL_RESULT_FAILED_DESCRIPTION,
-  RESULT_LEAVE_BUTTON_TEXT,
-} from "../../../../constants/strings";
+import strings from "../../../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -40,7 +28,7 @@ export const DuelResultView = ({
 
   return (
     <BaseModal
-      title={DUEL_RESULT_MODAL_TITLE}
+      title={strings.DUEL_RESULT_MODAL_TITLE}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -52,12 +40,12 @@ export const DuelResultView = ({
         }}
       >
         <p className="font-pixel text-xs text-crown-amber tracking-widest">
-          {DUEL_RESULT_HEADING}
+          {strings.DUEL_RESULT_HEADING}
         </p>
         <div className="flex items-center gap-2">
           <Hash className="w-3.5 h-3.5 text-gray-400 shrink-0" />
           <span className="font-code text-xs text-gray-300">
-            {DAILY_SCHEDULE_WORD_LENGTH_TEXT(
+            {strings.DAILY_SCHEDULE_WORD_LENGTH_TEXT(
               duelConfig.length ?? solution.length
             )}
           </span>
@@ -65,7 +53,8 @@ export const DuelResultView = ({
         <div className="flex items-center gap-2">
           <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0" />
           <span className="font-code text-xs text-gray-300">
-            {DICT_LABELS[duelConfig.dict]} {CHALLENGE_DICTIONARY_SUFFIX_TEXT}{" "}
+            {DICT_LABELS[duelConfig.dict]}{" "}
+            {strings.CHALLENGE_DICTIONARY_SUFFIX_TEXT}{" "}
             <span className="text-gray-500">
               {DICT_DESCRIPTIONS[duelConfig.dict]}
             </span>
@@ -74,7 +63,7 @@ export const DuelResultView = ({
         <div className="flex items-center gap-2">
           <Target className="w-3.5 h-3.5 text-gray-400 shrink-0" />
           <span className="font-code text-xs text-gray-300">
-            {CHALLENGE_GUESSES_ALLOWED_TEXT(duelConfig.guesses)}
+            {strings.CHALLENGE_GUESSES_ALLOWED_TEXT(duelConfig.guesses)}
           </span>
         </div>
       </div>
@@ -82,22 +71,22 @@ export const DuelResultView = ({
       {gameOutcome === "won" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-lime tracking-widest">
-            {DUEL_RESULT_COMPLETE_TEXT}
+            {strings.DUEL_RESULT_COMPLETE_TEXT}
           </p>
           <p className="font-code text-sm text-gray-300 mt-1">
-            {RESULT_SOLVED_TEXT_BEFORE}{" "}
+            {strings.RESULT_SOLVED_TEXT_BEFORE}{" "}
             <span className="text-crown-gold font-bold">{score}</span>{" "}
-            {RESULT_SOLVED_TEXT_AFTER}
+            {strings.RESULT_SOLVED_TEXT_AFTER}
           </p>
         </div>
       )}
       {gameOutcome === "lost" && (
         <div className="text-center py-3">
           <p className="font-pixel text-xs text-spice-red tracking-widest">
-            {DUEL_RESULT_FAILED_TEXT}
+            {strings.DUEL_RESULT_FAILED_TEXT}
           </p>
           <p className="font-code text-sm text-gray-400 mt-1">
-            {DUEL_RESULT_FAILED_DESCRIPTION}
+            {strings.DUEL_RESULT_FAILED_DESCRIPTION}
           </p>
         </div>
       )}
@@ -121,7 +110,7 @@ export const DuelResultView = ({
             onClick={handleDuelReturn}
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            {RESULT_LEAVE_BUTTON_TEXT}
+            {strings.RESULT_LEAVE_BUTTON_TEXT}
           </button>
         </div>
       )}

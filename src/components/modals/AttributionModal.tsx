@@ -1,15 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import type { BackgroundAttribution } from "../../lib/backgrounds";
-import {
-  MODAL_TITLE_VIDEO_ATTRIBUTION,
-  ATTRIBUTION_MODAL_BY_PREFIX,
-  ATTRIBUTION_MODAL_LICENSE_PREFIX,
-  ATTRIBUTION_MODAL_HIDE_HEADING,
-  ATTRIBUTION_MODAL_VIEW_SOURCE_ARIA_LABEL,
-  ATTRIBUTION_MODAL_HIDE_TOGGLE_ARIA_LABEL,
-  DISCLAIMER_BANNER_DISMISS_BUTTON_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -28,7 +20,7 @@ export const AttributionModal = ({
 }: Props) => {
   return (
     <BaseModal
-      title={MODAL_TITLE_VIDEO_ATTRIBUTION}
+      title={strings.MODAL_TITLE_VIDEO_ATTRIBUTION}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -44,7 +36,7 @@ export const AttributionModal = ({
               </p>
               <div className="flex items-center gap-1.5 mt-1">
                 <p className="font-code text-xs text-gray-500">
-                  {ATTRIBUTION_MODAL_BY_PREFIX} {credit.creator}
+                  {strings.ATTRIBUTION_MODAL_BY_PREFIX} {credit.creator}
                 </p>
                 {credit.sourceUrl && (
                   <a
@@ -52,7 +44,7 @@ export const AttributionModal = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-crown-amber hover:text-crown-gold transition-colors"
-                    aria-label={ATTRIBUTION_MODAL_VIEW_SOURCE_ARIA_LABEL(
+                    aria-label={strings.ATTRIBUTION_MODAL_VIEW_SOURCE_ARIA_LABEL(
                       credit.title
                     )}
                   >
@@ -65,17 +57,17 @@ export const AttributionModal = ({
         </div>
 
         <p className="font-code text-xs text-gray-600 italic">
-          {ATTRIBUTION_MODAL_LICENSE_PREFIX} {attribution.license}
+          {strings.ATTRIBUTION_MODAL_LICENSE_PREFIX} {attribution.license}
         </p>
 
         <div className="flex justify-between items-center gap-4 pt-3 border-t-2 border-obsidian-700">
           <p className="font-pixel text-xs text-crown-amber tracking-widest leading-snug">
-            {ATTRIBUTION_MODAL_HIDE_HEADING}
+            {strings.ATTRIBUTION_MODAL_HIDE_HEADING}
           </p>
           <button
             type="button"
             onClick={() => onHideForeverChange(!isHidden)}
-            aria-label={ATTRIBUTION_MODAL_HIDE_TOGGLE_ARIA_LABEL}
+            aria-label={strings.ATTRIBUTION_MODAL_HIDE_TOGGLE_ARIA_LABEL}
             className="shrink-0 w-14 h-8 transition-colors duration-300 ease-in-out pixel-border-sm"
             style={{
               background: isHidden
@@ -112,7 +104,7 @@ export const AttributionModal = ({
             e.currentTarget.style.filter = "brightness(1)";
           }}
         >
-          {DISCLAIMER_BANNER_DISMISS_BUTTON_TEXT}
+          {strings.DISCLAIMER_BANNER_DISMISS_BUTTON_TEXT}
         </button>
       </div>
     </BaseModal>

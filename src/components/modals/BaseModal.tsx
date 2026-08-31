@@ -8,7 +8,7 @@ import {
 import { X } from "lucide-react";
 import HatIcon from "@/assets/icons/propeller-hat.svg?react";
 import { useBackButtonClose } from "../../lib/backButton";
-import { CLOSE_BUTTON_LABEL } from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   title: string;
@@ -80,7 +80,7 @@ export const BaseModal = ({
               type="button"
               onClick={handleClose}
               className="p-2 bg-obsidian-700 hover:bg-obsidian-600 text-gray-400 hover:text-white transition-colors pixel-border-sm"
-              aria-label={CLOSE_BUTTON_LABEL}
+              aria-label={strings.CLOSE_BUTTON_LABEL}
             >
               <X className="w-4 h-4" />
             </button>

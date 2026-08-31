@@ -24,18 +24,7 @@ import {
   isGoogleNativeAvailable,
   signInWithGoogleNative,
 } from "../lib/googleNativeAuth";
-import {
-  CLOUD_AUTH_EMAIL_PROMPT_TEXT,
-  CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT,
-  CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT,
-  CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT,
-  CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT,
-  CLOUD_AUTH_SIGNOUT_ERROR_TEXT,
-  CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
-  CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT,
-  CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT,
-  CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT,
-} from "../constants/strings";
+import strings from "../constants/strings";
 
 const EMAIL_LINK_STORAGE_KEY = "vagudle-email-link-address:v1";
 
@@ -100,7 +89,7 @@ export const completeEmailLinkSignIn = async (): Promise<void> => {
   } catch {}
 
   if (!email) {
-    email = window.prompt(CLOUD_AUTH_EMAIL_PROMPT_TEXT);
+    email = window.prompt(strings.CLOUD_AUTH_EMAIL_PROMPT_TEXT);
   }
   if (!email) return;
 
@@ -192,7 +181,7 @@ export const useCloudAuth = () => {
       if (isGoogleNativeAvailable()) {
         const idToken = await signInWithGoogleNative();
         if (!idToken) {
-          setActionError(CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
+          setActionError(strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
           return;
         }
         const credential = authModule.GoogleAuthProvider.credential(idToken);
@@ -202,7 +191,7 @@ export const useCloudAuth = () => {
 
       await authModule.signInWithPopup(auth, googleProvider);
     } catch {
-      setActionError(CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
+      setActionError(strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
     }
   }, []);
 
@@ -212,7 +201,7 @@ export const useCloudAuth = () => {
       const { auth, githubProvider, authModule } = await loadFirebaseAuth();
       await authModule.signInWithPopup(auth, githubProvider);
     } catch {
-      setActionError(CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT);
+      setActionError(strings.CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT);
     }
   }, []);
 
@@ -226,12 +215,12 @@ export const useCloudAuth = () => {
     try {
       const session = await triggerPlayGamesSignIn();
       if (!session) {
-        setActionError(CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
+        setActionError(strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
         return;
       }
       setPlayGamesSession(session);
     } catch {
-      setActionError(CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
+      setActionError(strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
     }
   }, []);
 
@@ -249,7 +238,7 @@ export const useCloudAuth = () => {
       } catch {}
       setEmailLinkSent(true);
     } catch {
-      setActionError(CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
+      setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
     }
   }, []);
 
@@ -263,7 +252,7 @@ export const useCloudAuth = () => {
       clearPlayGamesSession();
       setPlayGamesSession(null);
     } catch {
-      setActionError(CLOUD_AUTH_SIGNOUT_ERROR_TEXT);
+      setActionError(strings.CLOUD_AUTH_SIGNOUT_ERROR_TEXT);
     }
   }, []);
 
@@ -282,7 +271,7 @@ export const useCloudAuth = () => {
         }
         return {
           status: "error",
-          message: CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
+          message: strings.CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
         };
       }
     }
@@ -296,13 +285,19 @@ export const useCloudAuth = () => {
       setPlayGamesSession(null);
       return { status: "success" };
     }
-    return { status: "error", message: CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT };
+    return {
+      status: "error",
+      message: strings.CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT,
+    };
   }, [firebaseUser, discordSession, playGamesSession]);
 
   const reauthenticateAndDeleteAccount =
     useCallback(async (): Promise<DeleteAccountResult> => {
       if (!firebaseUser)
-        return { status: "error", message: CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT };
+        return {
+          status: "error",
+          message: strings.CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT,
+        };
 
       const providerId = firebaseUser.providerData[0]?.providerId;
 
@@ -319,7 +314,7 @@ export const useCloudAuth = () => {
         if (!provider)
           return {
             status: "error",
-            message: CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT,
+            message: strings.CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT,
           };
 
         await authModule.reauthenticateWithPopup(firebaseUser, provider);
@@ -328,7 +323,7 @@ export const useCloudAuth = () => {
       } catch {
         return {
           status: "error",
-          message: CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT,
+          message: strings.CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT,
         };
       }
     }, [firebaseUser]);

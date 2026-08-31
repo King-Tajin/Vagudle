@@ -10,35 +10,13 @@ import {
   type DailyActivityStartResult,
 } from "../../lib/discord";
 import { emptyNavbar, title, returnButton, retryButton } from "./screenHelpers";
-import {
-  ERROR_INVALID_CHALLENGE_TITLE,
-  ERROR_INVALID_CHALLENGE_DESCRIPTION,
-  ERROR_INVALID_DUEL_TITLE,
-  ERROR_INVALID_DUEL_DESCRIPTION,
-  ERROR_DUEL_EXPIRED_TITLE,
-  ERROR_DUEL_EXPIRED_DESCRIPTION,
-  ERROR_ACTIVITY_DUEL_EXPIRED_DESCRIPTION,
-  ERROR_WRONG_ACCOUNT_TITLE,
-  ERROR_WRONG_ACCOUNT_DESCRIPTION,
-  ERROR_HAVE_YOU_PLAYED_TITLE,
-  ERROR_LINK_ACCOUNT_DESCRIPTION,
-  ERROR_LINK_EXISTING_BUTTON_TEXT,
-  ERROR_START_FRESH_BUTTON_TEXT,
-  ERROR_LINKING_IN_PROGRESS_DESCRIPTION,
-  ERROR_LINKING_FAILED_DESCRIPTION,
-  ERROR_ALREADY_PLAYED_TITLE,
-  ERROR_ALREADY_PLAYED_WEB_DESCRIPTION,
-  ERROR_ALREADY_PLAYED_DEFAULT_DESCRIPTION,
-  ERROR_SOMETHING_WRONG_TITLE,
-  ERROR_SOMETHING_WRONG_HINT,
-  ACTIVITY_ERROR_MESSAGES,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type ReturnProps = {
   handleReturnToNormal: () => void;
 };
 
-export type ActivityErrorReason = keyof typeof ACTIVITY_ERROR_MESSAGES;
+export type ActivityErrorReason = keyof typeof strings.ACTIVITY_ERROR_MESSAGES;
 
 export const MalformedChallengeScreen = ({
   handleReturnToNormal,
@@ -59,10 +37,10 @@ export const MalformedChallengeScreen = ({
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          {ERROR_INVALID_CHALLENGE_TITLE}
+          {strings.ERROR_INVALID_CHALLENGE_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-          {ERROR_INVALID_CHALLENGE_DESCRIPTION}
+          {strings.ERROR_INVALID_CHALLENGE_DESCRIPTION}
         </p>
         {returnButton(handleReturnToNormal)}
       </m.div>
@@ -87,10 +65,10 @@ export const MalformedDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          {ERROR_INVALID_DUEL_TITLE}
+          {strings.ERROR_INVALID_DUEL_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-          {ERROR_INVALID_DUEL_DESCRIPTION}
+          {strings.ERROR_INVALID_DUEL_DESCRIPTION}
         </p>
         {!isDiscordActivity && returnButton(handleReturnToNormal)}
       </m.div>
@@ -115,10 +93,10 @@ export const ExpiredDuelScreen = ({ handleReturnToNormal }: ReturnProps) => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          {ERROR_DUEL_EXPIRED_TITLE}
+          {strings.ERROR_DUEL_EXPIRED_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-          {ERROR_DUEL_EXPIRED_DESCRIPTION}
+          {strings.ERROR_DUEL_EXPIRED_DESCRIPTION}
         </p>
         {!isDiscordActivity && returnButton(handleReturnToNormal)}
       </m.div>
@@ -143,10 +121,10 @@ export const ActivityNotFoundScreen = () => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          {ERROR_DUEL_EXPIRED_TITLE}
+          {strings.ERROR_DUEL_EXPIRED_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          {ERROR_ACTIVITY_DUEL_EXPIRED_DESCRIPTION}
+          {strings.ERROR_ACTIVITY_DUEL_EXPIRED_DESCRIPTION}
         </p>
       </m.div>
     </div>
@@ -170,10 +148,10 @@ export const ActivityWrongPlayerScreen = () => (
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          {ERROR_WRONG_ACCOUNT_TITLE}
+          {strings.ERROR_WRONG_ACCOUNT_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
-          {ERROR_WRONG_ACCOUNT_DESCRIPTION}
+          {strings.ERROR_WRONG_ACCOUNT_DESCRIPTION}
         </p>
       </m.div>
     </div>
@@ -242,12 +220,12 @@ export const ActivityAccountChoiceScreen = ({
           }}
         >
           <p className="font-pixel text-xs text-crown-gold tracking-widest mb-2">
-            {ERROR_HAVE_YOU_PLAYED_TITLE}
+            {strings.ERROR_HAVE_YOU_PLAYED_TITLE}
           </p>
           {mode === "choice" && (
             <>
               <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
-                {ERROR_LINK_ACCOUNT_DESCRIPTION}
+                {strings.ERROR_LINK_ACCOUNT_DESCRIPTION}
               </p>
               <div className="flex flex-col gap-2">
                 <button
@@ -260,7 +238,7 @@ export const ActivityAccountChoiceScreen = ({
                     color: "#d4af37",
                   }}
                 >
-                  {ERROR_LINK_EXISTING_BUTTON_TEXT}
+                  {strings.ERROR_LINK_EXISTING_BUTTON_TEXT}
                 </button>
                 <button
                   type="button"
@@ -272,19 +250,19 @@ export const ActivityAccountChoiceScreen = ({
                     color: "#aaa",
                   }}
                 >
-                  {ERROR_START_FRESH_BUTTON_TEXT}
+                  {strings.ERROR_START_FRESH_BUTTON_TEXT}
                 </button>
               </div>
             </>
           )}
           {mode === "linking" && (
             <p className="font-code text-sm text-gray-400 leading-relaxed">
-              {ERROR_LINKING_IN_PROGRESS_DESCRIPTION}
+              {strings.ERROR_LINKING_IN_PROGRESS_DESCRIPTION}
             </p>
           )}
           {mode === "error" && (
             <p className="font-code text-sm text-gray-400 leading-relaxed">
-              {ERROR_LINKING_FAILED_DESCRIPTION}
+              {strings.ERROR_LINKING_FAILED_DESCRIPTION}
             </p>
           )}
         </m.div>
@@ -316,12 +294,12 @@ export const ActivityAlreadyPlayedScreen = ({
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          {ERROR_ALREADY_PLAYED_TITLE}
+          {strings.ERROR_ALREADY_PLAYED_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed">
           {platform === "web"
-            ? ERROR_ALREADY_PLAYED_WEB_DESCRIPTION
-            : ERROR_ALREADY_PLAYED_DEFAULT_DESCRIPTION}
+            ? strings.ERROR_ALREADY_PLAYED_WEB_DESCRIPTION
+            : strings.ERROR_ALREADY_PLAYED_DEFAULT_DESCRIPTION}
         </p>
       </m.div>
     </div>
@@ -349,13 +327,13 @@ export const ActivityServerErrorScreen = ({
         }}
       >
         <p className="font-pixel text-xs text-spice-red tracking-widest mb-2">
-          {ERROR_SOMETHING_WRONG_TITLE}
+          {strings.ERROR_SOMETHING_WRONG_TITLE}
         </p>
         <p className="font-code text-sm text-gray-400 leading-relaxed mb-1">
-          {ACTIVITY_ERROR_MESSAGES[reason]}
+          {strings.ACTIVITY_ERROR_MESSAGES[reason]}
         </p>
         <p className="font-code text-xs text-gray-600 leading-relaxed mb-4">
-          {ERROR_SOMETHING_WRONG_HINT}
+          {strings.ERROR_SOMETHING_WRONG_HINT}
         </p>
         {retryButton()}
       </m.div>

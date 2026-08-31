@@ -1,3 +1,5 @@
+import { detectBrowserLanguage, type Language } from "../constants/languages";
+
 export const migrateLegacyStorageKey = (legacyKey: string, newKey: string) => {
   try {
     if (localStorage.getItem(newKey) !== null) return;
@@ -91,6 +93,7 @@ export type StoredSettings = {
   inactivityReminderEnabled: boolean;
   inactivityReminderDays: number;
   hapticsEnabled: boolean;
+  language: Language;
 };
 
 const prefersReducedMotion = (): boolean =>
@@ -114,6 +117,7 @@ const defaultSettings: StoredSettings = {
   inactivityReminderEnabled: true,
   inactivityReminderDays: 3,
   hapticsEnabled: true,
+  language: detectBrowserLanguage(),
 };
 
 export const saveSettingsToLocalStorage = (settings: StoredSettings) => {

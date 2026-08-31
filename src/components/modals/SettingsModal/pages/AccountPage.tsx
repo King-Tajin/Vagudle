@@ -1,10 +1,7 @@
 import { SettingsToggle } from "../../SettingsToggle";
 import { CloudSaveSection } from "../CloudSaveSection";
-import {
-  SETTINGS_EXTRA_EFFECTS_LABEL,
-  SETTINGS_EXTRA_EFFECTS_DESCRIPTION,
-} from "../../../../constants/strings";
 import type { GameSettingsValues, GameSettingsHandlers } from "../index";
+import strings from "../../../../constants/strings";
 
 export const AccountPage = ({
   settings,
@@ -28,10 +25,10 @@ export const AccountPage = ({
   return (
     <div className="flex flex-col divide-y divide-obsidian-700">
       <SettingsToggle
-        settingName={SETTINGS_EXTRA_EFFECTS_LABEL}
+        settingName={strings.SETTINGS_EXTRA_EFFECTS_LABEL}
         flag={settings.extraEffects}
         handleFlag={settingsHandlers.setExtraEffects}
-        description={SETTINGS_EXTRA_EFFECTS_DESCRIPTION}
+        description={strings.SETTINGS_EXTRA_EFFECTS_DESCRIPTION}
       />
       <CloudSaveSection
         cloudUpdatedAt={cloudUpdatedAt}

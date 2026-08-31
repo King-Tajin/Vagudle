@@ -1,5 +1,3 @@
-import { ACHIEVEMENT_TEXT } from "../constants/strings";
-
 export type AchievementContext = {
   totalWins: number;
   wonInHardMode5Plus: boolean;
@@ -49,103 +47,103 @@ export const COMPLETIONIST_ID = "completionist";
 export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "first_win",
-    ...ACHIEVEMENT_TEXT.first_win,
+    ...strings.ACHIEVEMENT_TEXT.first_win,
     hidden: false,
     check: (ctx) => ctx.totalWins >= 1,
   },
   {
     id: "win_15",
-    ...ACHIEVEMENT_TEXT.win_15,
+    ...strings.ACHIEVEMENT_TEXT.win_15,
     hidden: false,
     check: (ctx) => ctx.totalWins >= 15,
   },
   {
     id: "win_50",
-    ...ACHIEVEMENT_TEXT.win_50,
+    ...strings.ACHIEVEMENT_TEXT.win_50,
     hidden: false,
     check: (ctx) => ctx.totalWins >= 50,
   },
   {
     id: "on_a_roll",
-    ...ACHIEVEMENT_TEXT.on_a_roll,
+    ...strings.ACHIEVEMENT_TEXT.on_a_roll,
     hidden: false,
     check: (ctx) => ctx.bestCurrentStreak >= 5,
   },
   {
     id: "unstoppable",
-    ...ACHIEVEMENT_TEXT.unstoppable,
+    ...strings.ACHIEVEMENT_TEXT.unstoppable,
     hidden: false,
     check: (ctx) => ctx.bestCurrentStreak >= 15,
   },
   {
     id: "hard_5plus",
-    ...ACHIEVEMENT_TEXT.hard_5plus,
+    ...strings.ACHIEVEMENT_TEXT.hard_5plus,
     hidden: false,
     check: (ctx) => ctx.wonInHardMode5Plus,
   },
   {
     id: "fifth_guess",
-    ...ACHIEVEMENT_TEXT.fifth_guess,
+    ...strings.ACHIEVEMENT_TEXT.fifth_guess,
     hidden: true,
     check: (ctx) => ctx.wonIn5GuessesEver,
   },
   {
     id: "seven_letters",
-    ...ACHIEVEMENT_TEXT.seven_letters,
+    ...strings.ACHIEVEMENT_TEXT.seven_letters,
     hidden: false,
     check: (ctx) => ctx.wonWith7LettersEver,
   },
   {
     id: "close_but_no_cigar",
-    ...ACHIEVEMENT_TEXT.close_but_no_cigar,
+    ...strings.ACHIEVEMENT_TEXT.close_but_no_cigar,
     hidden: true,
     check: (ctx) => ctx.gotCloseCallStreak,
   },
   {
     id: "process_of_elimination",
-    ...ACHIEVEMENT_TEXT.process_of_elimination,
+    ...strings.ACHIEVEMENT_TEXT.process_of_elimination,
     hidden: false,
     check: (ctx) => ctx.gotAllGrayStreak,
   },
   {
     id: "word_connoisseur",
-    ...ACHIEVEMENT_TEXT.word_connoisseur,
+    ...strings.ACHIEVEMENT_TEXT.word_connoisseur,
     hidden: false,
     check: (ctx) => ctx.uniqueWordCount >= 200,
   },
   {
     id: "quack",
-    ...ACHIEVEMENT_TEXT.quack,
+    ...strings.ACHIEVEMENT_TEXT.quack,
     hidden: false,
     check: (ctx) => ctx.spelledDuckVertically,
   },
   {
     id: "guess_mouse",
-    ...ACHIEVEMENT_TEXT.guess_mouse,
+    ...strings.ACHIEVEMENT_TEXT.guess_mouse,
     hidden: false,
     check: (ctx) => ctx.lastGuess === "mouse",
   },
   {
     id: "nail_biter",
-    ...ACHIEVEMENT_TEXT.nail_biter,
+    ...strings.ACHIEVEMENT_TEXT.nail_biter,
     hidden: true,
     check: (ctx) => ctx.wonOnFinalGuessEver,
   },
   {
     id: "diversify",
-    ...ACHIEVEMENT_TEXT.diversify,
+    ...strings.ACHIEVEMENT_TEXT.diversify,
     hidden: false,
     check: (ctx) => ctx.wonWithoutReusingLettersEver,
   },
   {
     id: "blind_faith",
-    ...ACHIEVEMENT_TEXT.blind_faith,
+    ...strings.ACHIEVEMENT_TEXT.blind_faith,
     hidden: true,
     check: (ctx) => ctx.wonWithMostlyGraysEver,
   },
   {
     id: COMPLETIONIST_ID,
-    ...ACHIEVEMENT_TEXT.completionist,
+    ...strings.ACHIEVEMENT_TEXT.completionist,
     hidden: false,
     check: () => false,
   },
@@ -173,6 +171,7 @@ import {
   stampUpdatedAt,
   cloudSyncKey,
 } from "./localStorage";
+import strings from "../constants/strings";
 
 export const ACHIEVEMENTS_KEY = "vagudle-achievements:v1";
 const LEGACY_ACHIEVEMENTS_KEY = "vagudle-achievements";

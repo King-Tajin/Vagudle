@@ -14,13 +14,7 @@ import type { CapacitorHapticsPlugin } from "./haptics";
 import type { CapacitorReviewPromptPlugin } from "./appReview";
 import type { CapacitorAppPlugin } from "./backButton";
 import type { CapacitorSharePlugin } from "./share";
-import {
-  PLAYGAMES_NOT_AVAILABLE_ERROR_TEXT,
-  CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT,
-  LINK_START_ERROR_SHORT_TEXT,
-  CLOUD_SAVE_LINK_START_ERROR_TEXT,
-  LINKING_NOT_AVAILABLE_ERROR_TEXT,
-} from "../constants/strings";
+import strings from "../constants/strings";
 
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
 const PENDING_UNLOCKS_KEY = "vagudle-playgames-pending-unlocks:v1";
@@ -189,15 +183,15 @@ export const startPlayGamesLinkAuthCode = async (): Promise<
   { code: string } | { error: string }
 > => {
   const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
-  if (!plugin) return { error: PLAYGAMES_NOT_AVAILABLE_ERROR_TEXT };
+  if (!plugin) return { error: strings.PLAYGAMES_NOT_AVAILABLE_ERROR_TEXT };
 
   try {
     const { serverAuthCode } = await plugin.signIn();
     if (!serverAuthCode)
-      return { error: CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT };
+      return { error: strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT };
     return { code: serverAuthCode };
   } catch {
-    return { error: CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT };
+    return { error: strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT };
   }
 };
 
@@ -215,11 +209,11 @@ export const fetchPlayGamesLinkUrl = async (
       error?: string;
     };
     if (!res.ok || !data.success || !data.url) {
-      return { error: data.error ?? LINK_START_ERROR_SHORT_TEXT };
+      return { error: data.error ?? strings.LINK_START_ERROR_SHORT_TEXT };
     }
     return { url: data.url };
   } catch {
-    return { error: CLOUD_SAVE_LINK_START_ERROR_TEXT };
+    return { error: strings.CLOUD_SAVE_LINK_START_ERROR_TEXT };
   }
 };
 
@@ -230,7 +224,7 @@ export const openPlayGamesLinkFlow = async (
   if ("error" in result) return result;
 
   const browser = window.Capacitor?.Plugins?.Browser;
-  if (!browser) return { error: LINKING_NOT_AVAILABLE_ERROR_TEXT };
+  if (!browser) return { error: strings.LINKING_NOT_AVAILABLE_ERROR_TEXT };
 
   await browser.open({ url: result.url, presentationStyle: "popover" });
   return { opened: true };

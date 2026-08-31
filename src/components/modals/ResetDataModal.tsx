@@ -5,34 +5,7 @@ import { SettingsToggle } from "./SettingsToggle";
 import { useCloudAuth } from "../../hooks/useCloudAuth";
 import type { DeleteAccountResult } from "../../hooks/useCloudAuth";
 import { getIdTokenForCurrentUser, deleteCloudSave } from "../../lib/cloudSync";
-import {
-  MODAL_TITLE_RESET_ALL_DATA,
-  PROVIDER_LABEL_DEFAULT,
-  RESET_DATA_CATEGORIES,
-  RESET_DATA_DELETION_STEPS,
-  RESET_DATA_DELETION_DELETED_ITEMS,
-  RESET_DATA_DELETION_KEPT_TEXT,
-  RESET_DATA_REAUTH_TEXT_BEFORE_PROVIDER,
-  RESET_DATA_REAUTH_TEXT_AFTER_PROVIDER,
-  RESET_DATA_CANCEL_BUTTON_TEXT,
-  RESET_DATA_AUTHORIZE_BUTTON_TEXT,
-  RESET_DATA_WARNING_TEXT,
-  RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL,
-  RESET_DATA_DETAILS_ARIA_LABEL,
-  RESET_DATA_DETAILS_BUTTON_TEXT,
-  RESET_DATA_ACCOUNT_DESC_BEFORE_PROVIDER,
-  RESET_DATA_ACCOUNT_DESC_AFTER_PROVIDER,
-  RESET_DATA_NOT_SIGNED_IN_TEXT,
-  RESET_DATA_WAIT_BUTTON_TEXT,
-  RESET_DATA_DELETING_BUTTON_TEXT,
-  RESET_DATA_DELETE_ACCOUNT_AND_DATA_BUTTON_TEXT,
-  RESET_DATA_DELETE_EVERYTHING_BUTTON_TEXT,
-  RESET_DATA_DETAILS_MODAL_TITLE,
-  RESET_DATA_HOW_TO_DELETE_HEADING,
-  RESET_DATA_WHAT_GETS_DELETED_HEADING,
-  RESET_DATA_WHATS_KEPT_HEADING,
-  RESET_DATA_CLOSE_BUTTON_TEXT,
-} from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -45,7 +18,7 @@ const providerLabel = (providerId: string): string => {
   if (providerId === "google.com") return "Google";
   if (providerId === "github.com") return "GitHub";
   if (providerId === "discord.com") return "Discord";
-  return PROVIDER_LABEL_DEFAULT;
+  return strings.PROVIDER_LABEL_DEFAULT;
 };
 
 type Stage = "confirm" | "deleting" | "reauth";
@@ -140,7 +113,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
   if (stage === "reauth") {
     return (
       <BaseModal
-        title={MODAL_TITLE_RESET_ALL_DATA}
+        title={strings.MODAL_TITLE_RESET_ALL_DATA}
         isOpen={isOpen}
         handleClose={handleClose}
       >
@@ -154,9 +127,9 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
           >
             <ShieldAlert className="w-4 h-4 text-spice-red shrink-0 mt-0.5" />
             <p className="font-code text-xs text-gray-300 leading-snug">
-              {RESET_DATA_REAUTH_TEXT_BEFORE_PROVIDER}{" "}
+              {strings.RESET_DATA_REAUTH_TEXT_BEFORE_PROVIDER}{" "}
               {providerLabel(reauthProviderId ?? "")}
-              {RESET_DATA_REAUTH_TEXT_AFTER_PROVIDER}
+              {strings.RESET_DATA_REAUTH_TEXT_AFTER_PROVIDER}
             </p>
           </div>
           {deleteError && (
@@ -173,7 +146,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
                 color: "#9ca3af",
               }}
             >
-              {RESET_DATA_CANCEL_BUTTON_TEXT}
+              {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
             </button>
             <button
               type="button"
@@ -187,7 +160,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
               }}
             >
               <Trash2 className="w-3.5 h-3.5" />
-              {RESET_DATA_AUTHORIZE_BUTTON_TEXT}
+              {strings.RESET_DATA_AUTHORIZE_BUTTON_TEXT}
             </button>
           </div>
         </div>
@@ -199,7 +172,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
 
   return (
     <BaseModal
-      title={MODAL_TITLE_RESET_ALL_DATA}
+      title={strings.MODAL_TITLE_RESET_ALL_DATA}
       isOpen={isOpen}
       handleClose={handleClose}
     >
@@ -213,12 +186,12 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
         >
           <AlertTriangle className="w-4 h-4 text-spice-red shrink-0 mt-0.5" />
           <p className="font-code text-xs text-gray-300 leading-snug">
-            {RESET_DATA_WARNING_TEXT}
+            {strings.RESET_DATA_WARNING_TEXT}
           </p>
         </div>
 
         <div className="space-y-3">
-          {RESET_DATA_CATEGORIES.map((category) => (
+          {strings.RESET_DATA_CATEGORIES.map((category) => (
             <div key={category.title}>
               <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-0.5">
                 {category.title.toUpperCase()}
@@ -235,7 +208,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
           style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
         >
           <SettingsToggle
-            settingName={RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL}
+            settingName={strings.RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL}
             flag={!!user && alsoDeleteAccount}
             handleFlag={setAlsoDeleteAccount}
             disabled={!user}
@@ -243,19 +216,19 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
               <button
                 type="button"
                 onClick={() => setIsDetailsOpen(true)}
-                aria-label={RESET_DATA_DETAILS_ARIA_LABEL}
+                aria-label={strings.RESET_DATA_DETAILS_ARIA_LABEL}
                 className="flex items-center gap-1 shrink-0 p-0.5 text-[10px] font-medium leading-none text-gray-500 hover:text-crown-amber transition-colors"
               >
                 <Info className="w-3 h-3" />
-                {RESET_DATA_DETAILS_BUTTON_TEXT}
+                {strings.RESET_DATA_DETAILS_BUTTON_TEXT}
               </button>
             }
             description={
               user
-                ? `${RESET_DATA_ACCOUNT_DESC_BEFORE_PROVIDER} ${providerLabel(
+                ? `${strings.RESET_DATA_ACCOUNT_DESC_BEFORE_PROVIDER} ${providerLabel(
                     user.providerId
-                  )} ${RESET_DATA_ACCOUNT_DESC_AFTER_PROVIDER}`
-                : RESET_DATA_NOT_SIGNED_IN_TEXT
+                  )} ${strings.RESET_DATA_ACCOUNT_DESC_AFTER_PROVIDER}`
+                : strings.RESET_DATA_NOT_SIGNED_IN_TEXT
             }
           />
         </div>
@@ -275,7 +248,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
               color: "#9ca3af",
             }}
           >
-            {RESET_DATA_CANCEL_BUTTON_TEXT}
+            {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
           </button>
           <button
             type="button"
@@ -294,18 +267,18 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
           >
             <Trash2 className="w-3.5 h-3.5" />
             {isLocked
-              ? RESET_DATA_WAIT_BUTTON_TEXT(secondsLeft)
+              ? strings.RESET_DATA_WAIT_BUTTON_TEXT(secondsLeft)
               : isDeleting
-                ? RESET_DATA_DELETING_BUTTON_TEXT
+                ? strings.RESET_DATA_DELETING_BUTTON_TEXT
                 : alsoDeleteAccount
-                  ? RESET_DATA_DELETE_ACCOUNT_AND_DATA_BUTTON_TEXT
-                  : RESET_DATA_DELETE_EVERYTHING_BUTTON_TEXT}
+                  ? strings.RESET_DATA_DELETE_ACCOUNT_AND_DATA_BUTTON_TEXT
+                  : strings.RESET_DATA_DELETE_EVERYTHING_BUTTON_TEXT}
           </button>
         </div>
       </div>
 
       <BaseModal
-        title={RESET_DATA_DETAILS_MODAL_TITLE}
+        title={strings.RESET_DATA_DETAILS_MODAL_TITLE}
         isOpen={isDetailsOpen}
         handleClose={() => setIsDetailsOpen(false)}
         zIndexClass="z-[70]"
@@ -313,10 +286,10 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
         <div className="space-y-4 text-left">
           <div>
             <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-1.5">
-              {RESET_DATA_HOW_TO_DELETE_HEADING}
+              {strings.RESET_DATA_HOW_TO_DELETE_HEADING}
             </p>
             <ol className="list-decimal list-inside space-y-1">
-              {RESET_DATA_DELETION_STEPS.map((step) => (
+              {strings.RESET_DATA_DELETION_STEPS.map((step) => (
                 <li
                   key={step}
                   className="font-code text-xs text-gray-400 leading-snug"
@@ -329,10 +302,10 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
 
           <div>
             <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-1.5">
-              {RESET_DATA_WHAT_GETS_DELETED_HEADING}
+              {strings.RESET_DATA_WHAT_GETS_DELETED_HEADING}
             </p>
             <ul className="list-disc list-inside space-y-1">
-              {RESET_DATA_DELETION_DELETED_ITEMS.map((item) => (
+              {strings.RESET_DATA_DELETION_DELETED_ITEMS.map((item) => (
                 <li
                   key={item}
                   className="font-code text-xs text-gray-400 leading-snug"
@@ -345,10 +318,10 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
 
           <div>
             <p className="font-pixel text-[10px] text-crown-amber tracking-widest mb-1.5">
-              {RESET_DATA_WHATS_KEPT_HEADING}
+              {strings.RESET_DATA_WHATS_KEPT_HEADING}
             </p>
             <p className="font-code text-xs text-gray-400 leading-snug">
-              {RESET_DATA_DELETION_KEPT_TEXT}
+              {strings.RESET_DATA_DELETION_KEPT_TEXT}
             </p>
           </div>
 
@@ -362,7 +335,7 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
               color: "#9ca3af",
             }}
           >
-            {RESET_DATA_CLOSE_BUTTON_TEXT}
+            {strings.RESET_DATA_CLOSE_BUTTON_TEXT}
           </button>
         </div>
       </BaseModal>

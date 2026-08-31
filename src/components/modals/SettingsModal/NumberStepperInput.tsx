@@ -1,5 +1,3 @@
-import { SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX } from "../../../constants/strings";
-import { SETTINGS_NOTIFICATIONS_STREAK_HOURS_SUFFIX } from "../../../constants/strings";
 import {
   INACTIVITY_NUDGE_MIN_DAYS,
   INACTIVITY_NUDGE_MAX_DAYS,
@@ -8,6 +6,7 @@ import {
   STREAK_WARNING_MIN_HOURS,
   STREAK_WARNING_MAX_HOURS,
 } from "../../../constants/settings";
+import strings from "../../../constants/strings";
 
 const NumberStepperInput = ({
   value,
@@ -96,7 +95,7 @@ export const InactivityDaysInput = ({
     value={value}
     min={INACTIVITY_NUDGE_MIN_DAYS}
     max={INACTIVITY_NUDGE_MAX_DAYS}
-    suffix={SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX}
+    suffix={strings.SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX}
     decreaseLabel="Decrease days"
     increaseLabel="Increase days"
     disabled={disabled}
@@ -117,7 +116,7 @@ export const StreakResetHoursInput = ({
     value={value}
     min={STREAK_WARNING_MIN_HOURS}
     max={STREAK_WARNING_MAX_HOURS}
-    suffix={SETTINGS_NOTIFICATIONS_STREAK_HOURS_SUFFIX}
+    suffix={strings.SETTINGS_NOTIFICATIONS_STREAK_HOURS_SUFFIX}
     decreaseLabel="Decrease hours"
     increaseLabel="Increase hours"
     disabled={disabled}

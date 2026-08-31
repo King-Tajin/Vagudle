@@ -15,7 +15,7 @@ import {
   type CloudSave,
   type CloudSaveConflictPick,
 } from "../../lib/cloudSync";
-import { MODAL_TITLE_CLOUD_SAVE_FOUND } from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   cloudSave: CloudSave;
@@ -143,7 +143,7 @@ export const CloudSaveConflictModal = ({
 
   return (
     <BaseModal
-      title={MODAL_TITLE_CLOUD_SAVE_FOUND}
+      title={strings.MODAL_TITLE_CLOUD_SAVE_FOUND}
       isOpen
       handleClose={() => {}}
       maxWidthClass="sm:max-w-md"

@@ -9,12 +9,7 @@ import {
   cloudSaveMatchesLocal,
   type CloudSave,
 } from "../lib/cloudSync";
-import {
-  CLOUD_SYNC_VERIFY_ERROR_TEXT,
-  CLOUD_SYNC_CREATE_ERROR_TEXT,
-  CLOUD_SYNC_UNREACHABLE_ERROR_TEXT,
-  CLOUD_SYNC_PUSH_ERROR_TEXT,
-} from "../constants/strings";
+import strings from "../constants/strings";
 
 const POLL_INTERVAL_MS = 4000;
 const PUSH_DEBOUNCE_MS = 1500;
@@ -48,7 +43,7 @@ export const useCloudSync = (isMobile: boolean) => {
       const idToken = await getIdTokenForCurrentUser();
       if (ignore) return;
       if (!idToken) {
-        setSyncError(CLOUD_SYNC_VERIFY_ERROR_TEXT);
+        setSyncError(strings.CLOUD_SYNC_VERIFY_ERROR_TEXT);
         return;
       }
 
@@ -77,7 +72,7 @@ export const useCloudSync = (isMobile: boolean) => {
         );
         if (ignore) return;
         if (!updatedAt) {
-          setSyncError(CLOUD_SYNC_CREATE_ERROR_TEXT);
+          setSyncError(strings.CLOUD_SYNC_CREATE_ERROR_TEXT);
           return;
         }
         lastPushedAtRef.current = getLocalMaxUpdatedAt();
@@ -87,7 +82,7 @@ export const useCloudSync = (isMobile: boolean) => {
         return;
       }
 
-      setSyncError(CLOUD_SYNC_UNREACHABLE_ERROR_TEXT);
+      setSyncError(strings.CLOUD_SYNC_UNREACHABLE_ERROR_TEXT);
     };
 
     void run();
@@ -138,7 +133,7 @@ export const useCloudSync = (isMobile: boolean) => {
           setIsUpToDate(true);
           setSyncError(null);
         } else {
-          setSyncError(CLOUD_SYNC_PUSH_ERROR_TEXT);
+          setSyncError(strings.CLOUD_SYNC_PUSH_ERROR_TEXT);
         }
       };
       void run();

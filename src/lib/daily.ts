@@ -1,12 +1,8 @@
 import { stampUpdatedAt, cloudSyncKey } from "./localStorage";
 import { getPublicOrigin } from "./publicOrigin";
-import {
-  WEEKDAY_NAMES,
-  DAILY_CALENDAR_ON_TIME_SUFFIX,
-} from "../constants/strings";
+import strings from "../constants/strings";
 
-export { WEEKDAY_NAMES };
-
+export const WEEKDAY_NAMES = strings.WEEKDAY_NAMES;
 export type DailyConfig = {
   date: string;
   word: string;
@@ -445,7 +441,7 @@ export const getDailyCalendarHourLabel = (
     minute: "2-digit",
   });
   return hourUtc === DAILY_RELEASE_HOUR_UTC
-    ? `${time} ${DAILY_CALENDAR_ON_TIME_SUFFIX}`
+    ? `${time} ${strings.DAILY_CALENDAR_ON_TIME_SUFFIX}`
     : time;
 };
 

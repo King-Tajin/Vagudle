@@ -2,7 +2,7 @@ import { getGuessStatuses, type CharStatus } from "../../lib/statuses";
 import { Cell } from "./Cell";
 import { unicodeSplit } from "../../lib/words";
 import RecycleIcon from "@/assets/icons/recycle.svg?react";
-import { COMPLETED_ROW_RESET_ARIA_LABEL } from "../../constants/strings";
+import strings from "../../constants/strings";
 
 type Props = {
   solution: string;
@@ -45,7 +45,7 @@ export const CompletedRow = ({
             onClick={() => onRowReset(rowIndex)}
             className="flex items-center justify-center opacity-50 hover:opacity-100 transition-opacity"
             style={{ width: recycleSize, height: recycleSize }}
-            aria-label={COMPLETED_ROW_RESET_ARIA_LABEL}
+            aria-label={strings.COMPLETED_ROW_RESET_ARIA_LABEL}
           >
             <RecycleIcon className="w-full h-full text-gray-400" />
           </button>
