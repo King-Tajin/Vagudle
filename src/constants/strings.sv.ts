@@ -1026,6 +1026,10 @@ export const SHARE_ACHIEVEMENT_BACKGROUND_UNLOCKED_TEXT = (label: string) =>
   `Upplåst bakgrund: ${label}`;
 export const SHARE_ACHIEVEMENT_TITLE = "Vagudle-prestation";
 
+export const ACHIEVEMENT_TOAST_BACKGROUND_UNLOCKED_SUFFIX_TEXT = (
+  label: string
+) => ` — bakgrunden ${label} har låsts upp!`;
+
 export const NOTIFICATION_CHANNEL_NAME = "Spelpåminnelser";
 export const NOTIFICATION_CHANNEL_DESCRIPTION =
   "Påminnelser för att hålla din svit vid liv och komma tillbaka och spela";

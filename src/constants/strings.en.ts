@@ -1006,6 +1006,10 @@ export const SHARE_ACHIEVEMENT_BACKGROUND_UNLOCKED_TEXT = (label: string) =>
   `Unlocked background: ${label}`;
 export const SHARE_ACHIEVEMENT_TITLE = "Vagudle Achievement";
 
+export const ACHIEVEMENT_TOAST_BACKGROUND_UNLOCKED_SUFFIX_TEXT = (
+  label: string
+) => ` — ${label} background unlocked!`;
+
 export const NOTIFICATION_CHANNEL_NAME = "Play Reminders";
 export const NOTIFICATION_CHANNEL_DESCRIPTION =
   "Reminders to keep your streak alive and come back to play";

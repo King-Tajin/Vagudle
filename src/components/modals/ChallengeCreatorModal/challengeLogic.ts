@@ -126,11 +126,13 @@ export const shareChallenge = async (
 ) => {
   const { config, url } = generated;
   const text =
-    `I'm challenging you to a custom Vagudle!\n` +
-    `${config.length} letters · ${DICT_LABELS[config.dict]} dictionary · ${
+    `${strings.SHARE_CHALLENGE_INVITE_INTRO_TEXT}\n` +
+    `${strings.SHARE_CHALLENGE_INVITE_DETAILS_TEXT(
+      config.length,
+      DICT_LABELS[config.dict],
       config.guesses
-    } guesses\n` +
-    `(Results won't affect your stats)\n` +
+    )}\n` +
+    `${strings.SHARE_CHALLENGE_INVITE_NOTE_TEXT}\n` +
     url;
 
   await doShare(

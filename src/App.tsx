@@ -373,8 +373,12 @@ function App() {
       (b) => b.requiresAchievementId === achievement.id
     );
     showSuccessAlert(
-      `🏆 Achievement Unlocked: ${achievement.title}` +
-        (bg ? ` — ${bg.desktopLabel} background unlocked!` : ""),
+      strings.SHARE_ACHIEVEMENT_UNLOCKED_TEXT(achievement.title) +
+        (bg
+          ? strings.ACHIEVEMENT_TOAST_BACKGROUND_UNLOCKED_SUFFIX_TEXT(
+              bg.desktopLabel
+            )
+          : ""),
       { durationMs: 4000 }
     );
   };
