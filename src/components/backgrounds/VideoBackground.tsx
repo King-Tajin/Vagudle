@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import strings from "../../constants/strings";
 
 type Props = {
   src: string;
@@ -14,7 +15,7 @@ type LoadingOverlayProps = {
   indeterminate: boolean;
 };
 
-const formatMB = (bytes: number) => (bytes / 1_048_576).toFixed(1) + " MB";
+const formatMB = (bytes: number) => (bytes / 1_048_576).toFixed(1);
 
 const LoadingOverlay = ({
   received,
@@ -25,7 +26,7 @@ const LoadingOverlay = ({
   <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
     <div className="relative flex flex-col items-center gap-4">
       <p className="font-pixel text-crown-gold tracking-widest text-lg">
-        DOWNLOADING BACKGROUND
+        {strings.VIDEO_BACKGROUND_DOWNLOADING_TEXT}
       </p>
       <div className="w-48 h-3 border-2 border-obsidian-600 bg-obsidian-800 overflow-hidden">
         <div
@@ -39,8 +40,11 @@ const LoadingOverlay = ({
       </div>
       <p className="font-pixel text-obsidian-500 text-sm tracking-widest">
         {indeterminate
-          ? formatMB(received)
-          : `${formatMB(received)} / ${formatMB(total)}`}
+          ? strings.VIDEO_BACKGROUND_SIZE_TEXT(formatMB(received))
+          : strings.VIDEO_BACKGROUND_PROGRESS_TEXT(
+              formatMB(received),
+              formatMB(total)
+            )}
       </p>
     </div>
   </div>

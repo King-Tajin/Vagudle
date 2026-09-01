@@ -24,7 +24,9 @@ type Props = {
 };
 
 const formatDate = (iso: string | null): string =>
-  iso ? new Date(iso).toLocaleString() : "Unknown";
+  iso
+    ? new Date(iso).toLocaleString()
+    : strings.CLOUD_SAVE_CONFLICT_DATE_FALLBACK_TEXT;
 
 const emptyStats: GameStats = {
   winDistribution: [],
@@ -87,21 +89,30 @@ const SideSummary = ({
       {label}
     </p>
     <p className="font-code text-xs text-gray-500">
-      Updated {formatDate(updatedAt)}
+      {strings.CLOUD_SAVE_CONFLICT_UPDATED_TEXT(formatDate(updatedAt))}
     </p>
     <div className="font-code text-xs text-gray-300 space-y-1 pt-1">
-      <p>{unlockedCount} achievements unlocked</p>
       <p>
-        Normal: {statsNormal.totalGames - statsNormal.gamesFailed}/
-        {statsNormal.totalGames} won
+        {strings.CLOUD_SAVE_CONFLICT_ACHIEVEMENTS_UNLOCKED_TEXT(unlockedCount)}
       </p>
       <p>
-        Hard: {statsHard.totalGames - statsHard.gamesFailed}/
-        {statsHard.totalGames} won
+        {strings.CLOUD_SAVE_CONFLICT_NORMAL_WON_TEXT(
+          statsNormal.totalGames - statsNormal.gamesFailed,
+          statsNormal.totalGames
+        )}
       </p>
       <p>
-        Daily: {dailyStats.totalWon}/{dailyStats.totalPlayed} won, streak{" "}
-        {dailyStats.currentStreak}
+        {strings.CLOUD_SAVE_CONFLICT_HARD_WON_TEXT(
+          statsHard.totalGames - statsHard.gamesFailed,
+          statsHard.totalGames
+        )}
+      </p>
+      <p>
+        {strings.CLOUD_SAVE_CONFLICT_DAILY_WON_TEXT(
+          dailyStats.totalWon,
+          dailyStats.totalPlayed,
+          dailyStats.currentStreak
+        )}
       </p>
     </div>
   </div>
@@ -136,7 +147,7 @@ export const CloudSaveConflictModal = ({
     if (updatedAt) {
       onResolved();
     } else {
-      setError("Couldn't sync your save. Please try again.");
+      setError(strings.CLOUD_SAVE_CONFLICT_SYNC_ERROR_TEXT);
       setResolving(false);
     }
   };
@@ -149,13 +160,11 @@ export const CloudSaveConflictModal = ({
       maxWidthClass="sm:max-w-md"
     >
       <p className="font-code text-xs text-gray-400 leading-snug mb-3">
-        You have a save on this device and a save in the cloud. Pick which one
-        to keep but achievements will merge either way, so you won&apos;t lose
-        progress there.
+        {strings.CLOUD_SAVE_CONFLICT_INTRO_TEXT}
       </p>
       <div className="grid grid-cols-2 gap-2 mb-4">
         <SideSummary
-          label="THIS DEVICE"
+          label={strings.CLOUD_SAVE_CONFLICT_THIS_DEVICE_LABEL}
           updatedAt={getLocalMaxUpdatedAt()}
           unlockedCount={
             getEffectiveUnlockedIds(localAchievements.unlockedIds).length
@@ -165,7 +174,7 @@ export const CloudSaveConflictModal = ({
           dailyStats={localDailyStats}
         />
         <SideSummary
-          label="CLOUD SAVE"
+          label={strings.CLOUD_SAVE_CONFLICT_CLOUD_SAVE_LABEL}
           updatedAt={cloudSave.updatedAt}
           unlockedCount={getEffectiveUnlockedIds(cloudAchievementIds).length}
           statsNormal={parseStats(cloudSave.statsNormal)}
@@ -188,7 +197,7 @@ export const CloudSaveConflictModal = ({
             color: "#d1d5db",
           }}
         >
-          KEEP THIS DEVICE
+          {strings.CLOUD_SAVE_CONFLICT_KEEP_DEVICE_BUTTON_TEXT}
         </button>
         <button
           type="button"
@@ -201,7 +210,7 @@ export const CloudSaveConflictModal = ({
             color: "#fff",
           }}
         >
-          KEEP CLOUD SAVE
+          {strings.CLOUD_SAVE_CONFLICT_KEEP_CLOUD_BUTTON_TEXT}
         </button>
       </div>
     </BaseModal>

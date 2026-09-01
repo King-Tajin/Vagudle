@@ -1,5 +1,6 @@
 import { m } from "framer-motion";
 import { Navbar } from "../layout/Navbar";
+import strings from "../../constants/strings";
 
 export const emptyNavbar = (isActivityMode = false) => (
   <Navbar
@@ -34,7 +35,7 @@ export const returnButton = (onClick: () => void) => (
       color: "#d4af37",
     }}
   >
-    PLAY NORMAL VAGUDLE
+    {strings.PLAY_NORMAL_GAME_BUTTON_TEXT()}
   </button>
 );
 
@@ -49,6 +50,6 @@ export const retryButton = () => (
       color: "#d4af37",
     }}
   >
-    TRY AGAIN
+    {strings.TRY_AGAIN_BUTTON_TEXT}
   </button>
 );

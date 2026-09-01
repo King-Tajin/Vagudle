@@ -10,14 +10,14 @@ export const OpenSourceTab = () => {
           href={SOURCE_CODE_URL}
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          {strings.OPEN_SOURCE_PROJECT_LINK_TEXT}
+          Vagudle
         </ActivityLink>{" "}
         {strings.OPEN_SOURCE_INTRO_TEXT_MIDDLE}{" "}
         <ActivityLink
           href="https://github.com/markzither/react-wordle"
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          {strings.OPEN_SOURCE_BASED_ON_LINK_TEXT}
+          react-wordle
         </ActivityLink>
         {strings.OPEN_SOURCE_INTRO_TEXT_END}
       </p>
@@ -28,7 +28,7 @@ export const OpenSourceTab = () => {
           href="https://github.com/King-Tajin"
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          {strings.OPEN_SOURCE_AUTHOR_LINK_TEXT}
+          King Tajin
         </ActivityLink>
         .
       </p>

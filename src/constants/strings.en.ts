@@ -1,7 +1,14 @@
 export const GAME_TITLE = "VAGUDLE";
 
+export const ACHIEVEMENT_REVEAL_UNLOCKED_TEXT = "Achievement Unlocked!";
+export const WIN_CELEBRATION_TITLE_TEXT = "YOU WIN!";
+export const LOADING_WORDS_TEXT = "LOADING WORDS...";
+export const PLAY_NORMAL_GAME_BUTTON_TEXT = () => `PLAY NORMAL ${GAME_TITLE}`;
+export const TRY_AGAIN_BUTTON_TEXT = "TRY AGAIN";
+
 export const WIN_MESSAGES = ["Great Job!", "Awesome", "Well done!"];
 export const GAME_COPIED_MESSAGE = "Game copied to clipboard";
+export const DISCORD_ACCOUNT_LINKED_MESSAGE = "Discord account linked!";
 export const NOT_ENOUGH_LETTERS_MESSAGE = "Not enough letters";
 export const WORD_NOT_FOUND_MESSAGE = "Word not found";
 export const CORRECT_WORD_MESSAGE = (solution: string) =>
@@ -55,6 +62,7 @@ export const OFFLINE_MODE_DISMISS_BUTTON_TEXT = "PLAY OFFLINE";
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} needs WebGL, which your browser or device doesn't support. Try updating your graphics drivers, switching browsers, or picking a different background.`;
 export const WEBGL_UNAVAILABLE_DISMISS_BUTTON_TEXT = "OK";
+export const WEBGL_UNAVAILABLE_DEFAULT_BACKGROUND_LABEL = "This background";
 
 export const SETTINGS_HARD_MODE_LABEL = "Hard Mode";
 export const SETTINGS_HARD_MODE_DESCRIPTION =
@@ -94,6 +102,15 @@ export const SETTINGS_NOTIFICATIONS_INACTIVITY_DESCRIPTION =
   "Get nudged if you haven't played in a while.";
 export const SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX =
   "days of inactivity";
+export const SETTINGS_NOTIFICATIONS_REMINDER_HOUR_ARIA_LABEL = "Reminder hour";
+export const SETTINGS_NOTIFICATIONS_REMINDER_MINUTE_ARIA_LABEL =
+  "Reminder minute";
+export const SETTINGS_NOTIFICATIONS_REMINDER_PERIOD_ARIA_LABEL =
+  "Reminder AM or PM";
+export const SETTINGS_NOTIFICATIONS_DECREASE_DAYS_LABEL = "Decrease days";
+export const SETTINGS_NOTIFICATIONS_INCREASE_DAYS_LABEL = "Increase days";
+export const SETTINGS_NOTIFICATIONS_DECREASE_HOURS_LABEL = "Decrease hours";
+export const SETTINGS_NOTIFICATIONS_INCREASE_HOURS_LABEL = "Increase hours";
 
 export const SETTINGS_HAPTICS_LABEL = "Haptic Feedback";
 export const SETTINGS_HAPTICS_DESCRIPTION =
@@ -185,7 +202,6 @@ export const INFO_MODAL_FOOTER_PRIVACY_LABEL = "PRIVACY POLICY";
 
 export const ABOUT_INTRO_TEXT_BEFORE_LINK =
   "Vagudle is a word-guessing game inspired by";
-export const ABOUT_INTRO_LINK_TEXT = "Hardle";
 export const ABOUT_INTRO_TEXT_AFTER_LINK =
   ", with extra tools to help you solve the puzzle and no pesky daily limit to get in your way.";
 export const ABOUT_DISCORD_TEXT_BEFORE_LINK = "The";
@@ -263,13 +279,10 @@ export const FEEDBACK_COLLAPSE_LABEL = "Collapse";
 export const FEEDBACK_SENDING_BUTTON_TEXT = "SENDING...";
 export const FEEDBACK_SEND_BUTTON_TEXT = "SEND FEEDBACK";
 
-export const OPEN_SOURCE_PROJECT_LINK_TEXT = "Vagudle";
 export const OPEN_SOURCE_INTRO_TEXT_MIDDLE = "is open source and based on";
-export const OPEN_SOURCE_BASED_ON_LINK_TEXT = "react-wordle";
 export const OPEN_SOURCE_INTRO_TEXT_END =
   ". Contributions and feedback are welcome.";
 export const OPEN_SOURCE_MADE_BY_TEXT = "Made by";
-export const OPEN_SOURCE_AUTHOR_LINK_TEXT = "King Tajin";
 
 export const FEATURES_LIST: [string, string][] = [
   [
@@ -483,8 +496,6 @@ export const ACHIEVEMENT_TEXT: Record<
   },
 };
 
-export const NAVBAR_BRAND_TITLE = "Yellow Skipper";
-export const NAVBAR_BRAND_SUBTITLE = "Games";
 export const NAVBAR_HOW_TO_PLAY_ARIA_LABEL = "How to play";
 export const NAVBAR_DAILY_WORD_ARIA_LABEL = "Daily word";
 export const NAVBAR_DAILY_TITLE = "Daily";
@@ -505,6 +516,14 @@ export const DISCLAIMER_BANNER_DISMISS_ARIA_LABEL = "Dismiss disclaimer";
 export const DISCLAIMER_BANNER_DISMISS_BUTTON_TEXT = "GOT IT";
 
 export const ATTRIBUTION_BUTTON_ARIA_LABEL = "Background video attribution";
+
+export const VIDEO_BACKGROUND_DOWNLOADING_TEXT = "DOWNLOADING BACKGROUND";
+export const VIDEO_BACKGROUND_SIZE_TEXT = (megabytes: string) =>
+  `${megabytes} MB`;
+export const VIDEO_BACKGROUND_PROGRESS_TEXT = (
+  received: string,
+  total: string
+) => `${received} MB / ${total} MB`;
 
 export const LEADERBOARD_LOADING_TEXT = "Loading leaderboard...";
 export const LEADERBOARD_ERROR_TEXT =
@@ -532,6 +551,9 @@ export const LEADERBOARD_PAGE_INDICATOR_TEXT = (
 ) => `Page ${page} / ${totalPages}`;
 export const LEADERBOARD_NEXT_BUTTON_TEXT = "NEXT";
 export const LEADERBOARD_JUMP_TO_MY_PAGE_BUTTON_TEXT = "JUMP TO MY PAGE";
+export const LEADERBOARD_ROW_WINS_LOSSES_LABEL = "W/L";
+export const LEADERBOARD_ROW_STREAK_LABEL = "STREAK";
+export const LEADERBOARD_ROW_BEST_LABEL = "BEST";
 
 export const ATTRIBUTION_MODAL_BY_PREFIX = "by";
 export const ATTRIBUTION_MODAL_LICENSE_PREFIX = "License:";
@@ -545,6 +567,35 @@ export const ATTRIBUTION_MODAL_HIDE_TOGGLE_ARIA_LABEL =
 export const ACHIEVEMENT_TRAY_ARIA_LABEL = "Achievements";
 export const ACHIEVEMENT_TRAY_HIDE_ARIA_LABEL = "Hide achievements tray";
 export const ACHIEVEMENT_TRAY_SHOW_ARIA_LABEL = "Show achievements tray";
+
+export const ACHIEVEMENT_VIEW_UNLOCKED_TITLE = "Achievement Unlocked";
+export const ACHIEVEMENT_VIEW_UNLOCKED_TITLE_WITH_COUNT = (
+  current: number,
+  total: number
+) => `Achievement Unlocked (${current}/${total})`;
+export const ACHIEVEMENT_VIEW_BACKGROUND_UNLOCKED_TEXT = (label: string) =>
+  `BACKGROUND UNLOCKED: ${label}`;
+export const ACHIEVEMENT_VIEW_SHARE_BUTTON_TEXT = "SHARE";
+export const ACHIEVEMENT_VIEW_EQUIP_BUTTON_TEXT = "EQUIP";
+export const ACHIEVEMENT_VIEW_NEXT_BUTTON_TEXT = "NEXT";
+export const ACHIEVEMENT_VIEW_CONTINUE_BUTTON_TEXT = "CONTINUE";
+
+export const NORMAL_STATS_NO_GAMES_YET_TEXT = "NO GAMES YET";
+export const NORMAL_STATS_EMPTY_DAILY_TEXT =
+  "Play today's daily to see stats here.";
+export const NORMAL_STATS_EMPTY_HARD_TEXT =
+  "Play a game in Hard Mode to see stats here.";
+export const NORMAL_STATS_EMPTY_DEFAULT_TEXT = "Play a game to see stats here.";
+export const NORMAL_STATS_TAB_NORMAL_LABEL = "NORMAL";
+export const NORMAL_STATS_TAB_HARD_LABEL = "HARD";
+export const NORMAL_STATS_TAB_DAILY_LABEL = "DAILY";
+export const NORMAL_STATS_GAMES_WON_TEXT = (games: number) =>
+  `${games} GAME${games === 1 ? "" : "S"} WON`;
+export const NORMAL_STATS_SHARE_STATS_BUTTON_TEXT = "SHARE STATS";
+export const NORMAL_STATS_NEW_GAME_BUTTON_TEXT = "NEW GAME";
+export const NORMAL_STATS_SHARE_GAME_BUTTON_TEXT = "SHARE GAME";
+export const NORMAL_STATS_CHALLENGE_OTHERS_BUTTON_TEXT =
+  "CHALLENGE OTHERS WITH THIS WORD";
 
 export const BACKGROUND_TRAY_ARIA_LABEL = "Backgrounds";
 export const BACKGROUND_TRAY_HIDE_ARIA_LABEL = "Hide background tray";
@@ -565,7 +616,6 @@ export const LINK_DISCORD_SIGN_IN_PROMPT_TEXT =
 export const LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT = "CONTINUE WITH GOOGLE";
 export const LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT = "CONTINUE WITH GITHUB";
 export const LINK_DISCORD_EMAIL_LABEL = "EMAIL";
-export const LINK_DISCORD_EMAIL_PLACEHOLDER = "you@example.com";
 export const LINK_DISCORD_SEND_LINK_BUTTON_TEXT = "SEND SIGN-IN LINK";
 export const LINK_DISCORD_EMAIL_SENT_TEXT =
   "Check your email for a sign-in link, then open it in this same browser.";
@@ -574,6 +624,19 @@ export const LINK_DISCORD_HEADING = "LINK YOUR ACCOUNT";
 export const COMPLETED_ROW_RESET_ARIA_LABEL = "Reset row colors";
 
 export const GRID_BRUSH_ARIA_LABEL = (status: string) => `${status} brush`;
+export const CELL_STATUS_EMPTY_LABEL = "Empty";
+export const CELL_STATUS_WORDS: Record<
+  "correct" | "present" | "absent",
+  string
+> = {
+  correct: "correct",
+  present: "present",
+  absent: "absent",
+};
+export const CELL_STATUS_DESCRIPTION_TEXT = (
+  letter: string,
+  statusWord: string
+) => `${letter}, ${statusWord}`;
 export const GRID_RESET_ALL_ARIA_LABEL = "Reset all colors";
 export const GRID_RESET_CONFIRM_TITLE = "RESET ALL COLORS?";
 export const GRID_RESET_CONFIRM_TEXT_WITH_AUTOGRAY =
@@ -610,7 +673,7 @@ export const DAILY_MODAL_PLAYED_LABEL = "PLAYED";
 export const DAILY_MODAL_NEXT_DAILY_TEXT = (countdown: string) =>
   `Next daily in ${countdown}`;
 export const DAILY_MODAL_SHARE_BUTTON_TEXT = "SHARE RESULT";
-export const DAILY_MODAL_RETURN_BUTTON_TEXT = "RETURN TO NORMAL GAME";
+export const RETURN_TO_NORMAL_GAME_BUTTON_TEXT = "RETURN TO NORMAL GAME";
 export const DAILY_MODAL_HEADING_COMPLETE = "DAILY COMPLETE";
 export const DAILY_MODAL_HEADING_DEFAULT = "DAILY";
 export const DAILY_MODAL_SCHEDULE_ARIA_LABEL = "Daily schedule";
@@ -670,6 +733,19 @@ export const CHALLENGE_FORM_GENERATE_ERROR_TEXT =
 export const CHALLENGE_FORM_GENERATING_BUTTON_TEXT = "GENERATING...";
 export const CHALLENGE_FORM_GENERATE_BUTTON_TEXT = "GENERATE LINK";
 
+export const CHALLENGE_CREATOR_BACK_TO_STATS_BUTTON_TEXT = "BACK TO STATS";
+export const CHALLENGE_CREATOR_READY_LABEL = "CHALLENGE READY";
+export const CHALLENGE_CREATOR_LETTERS_TEXT = (letters: number) =>
+  `${letters} letters`;
+export const CHALLENGE_CREATOR_GUESSES_TEXT = (guesses: number) =>
+  `${guesses} guesses`;
+export const CHALLENGE_CREATOR_COPIED_BUTTON_TEXT = "COPIED!";
+export const CHALLENGE_CREATOR_COPY_BUTTON_TEXT = "COPY";
+export const CHALLENGE_CREATOR_SHARED_BUTTON_TEXT = "SHARED!";
+export const CHALLENGE_CREATOR_SHARE_BUTTON_TEXT = "SHARE";
+export const CHALLENGE_CREATOR_EDIT_BUTTON_TEXT = "EDIT";
+export const CHALLENGE_CREATOR_GENERATING_LINK_TEXT = "GENERATING LINK...";
+
 export const CLOUD_SAVE_PROVIDER_LABEL_EMAIL = "Email";
 export const CLOUD_SAVE_PROVIDER_LABEL_PLAYGAMES = "Play Games";
 export const CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN = "Unknown";
@@ -719,7 +795,31 @@ export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
   "Works on its own, or link it to another account anytime from here.";
 export const CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT =
   "CONTINUE WITH PLAY GAMES";
-export const CLOUD_SAVE_BETA_BADGE_TEXT = "BETA";
+
+export const CLOUD_SAVE_CONFLICT_DATE_FALLBACK_TEXT = "Unknown";
+export const CLOUD_SAVE_CONFLICT_UPDATED_TEXT = (date: string) =>
+  `Updated ${date}`;
+export const CLOUD_SAVE_CONFLICT_ACHIEVEMENTS_UNLOCKED_TEXT = (count: number) =>
+  `${count} achievements unlocked`;
+export const CLOUD_SAVE_CONFLICT_NORMAL_WON_TEXT = (
+  won: number,
+  total: number
+) => `Normal: ${won}/${total} won`;
+export const CLOUD_SAVE_CONFLICT_HARD_WON_TEXT = (won: number, total: number) =>
+  `Hard: ${won}/${total} won`;
+export const CLOUD_SAVE_CONFLICT_DAILY_WON_TEXT = (
+  won: number,
+  total: number,
+  streak: number
+) => `Daily: ${won}/${total} won, streak ${streak}`;
+export const CLOUD_SAVE_CONFLICT_INTRO_TEXT =
+  "You have a save on this device and a save in the cloud. Pick which one to keep but achievements will merge either way, so you won't lose progress there.";
+export const CLOUD_SAVE_CONFLICT_THIS_DEVICE_LABEL = "THIS DEVICE";
+export const CLOUD_SAVE_CONFLICT_CLOUD_SAVE_LABEL = "CLOUD SAVE";
+export const CLOUD_SAVE_CONFLICT_SYNC_ERROR_TEXT =
+  "Couldn't sync your save. Please try again.";
+export const CLOUD_SAVE_CONFLICT_KEEP_DEVICE_BUTTON_TEXT = "KEEP THIS DEVICE";
+export const CLOUD_SAVE_CONFLICT_KEEP_CLOUD_BUTTON_TEXT = "KEEP CLOUD SAVE";
 
 export const GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT = "DAILY MODE ACTIVE";
 export const GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT =
@@ -734,6 +834,12 @@ export const GENERAL_SETTINGS_CHALLENGE_LOCKED_TEXT =
 export const GENERAL_SETTINGS_WORD_LENGTH_HINT_TEXT =
   "Can be changed before your first guess:";
 export const GENERAL_SETTINGS_WORD_LENGTH_ARIA_LABEL = "Word length";
+export const SETTINGS_WORD_LENGTH_CHANGE_BLOCKED_ERROR_TEXT =
+  "Finish or start a new game before changing the word length!";
+export const SETTINGS_DIFFICULTY_CHANGE_BLOCKED_ERROR_TEXT =
+  "Finish or start a new game before changing difficulty!";
+export const SETTINGS_MODAL_TAB_SETTINGS_LABEL = "SETTINGS";
+export const SETTINGS_MODAL_TAB_CHALLENGE_LABEL = "CHALLENGE";
 
 export const CHALLENGE_RESULT_MODAL_TITLE = "Challenge Result";
 export const CHALLENGE_RESULT_HEADING = "CUSTOM CHALLENGE";
@@ -746,11 +852,58 @@ export const CHALLENGE_RESULT_FAILED_DESCRIPTION =
 export const RESULT_LEAVE_BUTTON_TEXT = "LEAVE";
 export const CHALLENGE_RESULT_SHARE_BUTTON_TEXT = "SHARE";
 
+export const CHALLENGE_ACCEPT_MODAL_HEADING = "CUSTOM CHALLENGE";
+export const CHALLENGE_ACCEPT_MODAL_INTRO_TEXT =
+  "Someone has sent you a custom Vagudle challenge. Here's what you're up against:";
+export const CHALLENGE_ACCEPT_MODAL_WORD_LENGTH_LABEL = "WORD LENGTH";
+export const CHALLENGE_ACCEPT_MODAL_DICTIONARY_LABEL = "DICTIONARY";
+export const CHALLENGE_ACCEPT_MODAL_GUESSES_LABEL = "GUESSES";
+export const CHALLENGE_ACCEPT_MODAL_LETTERS_TEXT = (letters: number) =>
+  `${letters} letters`;
+export const CHALLENGE_ACCEPT_MODAL_ATTEMPTS_TEXT = (attempts: number) =>
+  `${attempts} attempts`;
+export const CHALLENGE_ACCEPT_MODAL_PROGRESS_SAVED_TEXT =
+  "Your progress is saved to this link. Revisit any time to resume.";
+export const CHALLENGE_ACCEPT_MODAL_RESULTS_NOT_COUNTED_TEXT =
+  "⚠ Results do not count toward your stats. ⚠";
+export const CHALLENGE_ACCEPT_MODAL_PLAY_BUTTON_TEXT = "PLAY CHALLENGE";
+
 export const DUEL_RESULT_MODAL_TITLE = "Duel Result";
 export const DUEL_RESULT_HEADING = "DUEL";
 export const DUEL_RESULT_COMPLETE_TEXT = "DUEL COMPLETE!";
 export const DUEL_RESULT_FAILED_TEXT = "DUEL FAILED";
 export const DUEL_RESULT_FAILED_DESCRIPTION = "Better luck next time!";
+
+export const DUEL_MODAL_ACCEPT_HEADING = "DUEL";
+export const DUEL_MODAL_COMPLETE_HEADING = "DUEL COMPLETE";
+export const DUEL_MODAL_CHALLENGED_INTRO_TEXT =
+  "You have been challenged to a duel. Here's what you're up against:";
+export const DUEL_MODAL_WORD_LENGTH_LABEL = "WORD LENGTH";
+export const DUEL_MODAL_LETTERS_TEXT = (letters: number) =>
+  `${letters} letters`;
+export const DUEL_MODAL_DICTIONARY_LABEL = "DICTIONARY";
+export const DUEL_MODAL_GUESSES_LABEL = "GUESSES";
+export const DUEL_MODAL_ATTEMPTS_TEXT = (attempts: number) =>
+  `${attempts} attempts`;
+export const DUEL_MODAL_PROGRESS_SAVED_TEXT =
+  "Your progress is saved for 24 hours. Revisit this link any time to resume.";
+export const DUEL_MODAL_RESULTS_NOT_COUNTED_TEXT =
+  "⚠ Results do not count toward your stats. ⚠";
+export const DUEL_MODAL_PLAY_BUTTON_TEXT = "PLAY DUEL";
+export const DUEL_MODAL_RESULT_NOT_RECORDED_TEXT = "RESULT NOT RECORDED";
+export const DUEL_MODAL_RESULT_RECORDED_TEXT = "YOUR RESULT HAS BEEN RECORDED";
+export const DUEL_MODAL_SAVING_RESULT_TEXT = "SAVING RESULT...";
+export const DUEL_MODAL_RESULT_NOT_RECORDED_DESCRIPTION =
+  "There was a problem saving your result. Please let the host know.";
+export const DUEL_MODAL_RESULT_RECORDED_DESCRIPTION =
+  "The winner will be announced once both players have finished.";
+export const DUEL_MODAL_SAVING_RESULT_DESCRIPTION =
+  "Please wait while your result is being recorded.";
+export const DUEL_MODAL_SAVING_RESULTS_TEXT = "Saving results...";
+export const DUEL_MODAL_RESULTS_SAVED_TEXT = "Results saved successfully.";
+export const DUEL_MODAL_SAVE_FAILED_TEXT =
+  "Failed to save results after 3 attempts. Your result was not recorded.";
+export const DUEL_MODAL_PREPARING_SAVE_TEXT = "Preparing to save results...";
 
 export const CHALLENGE_DICT_LABELS: Record<"normal" | "hard" | "full", string> =
   {

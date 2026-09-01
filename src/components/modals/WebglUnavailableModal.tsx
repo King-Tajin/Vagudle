@@ -30,7 +30,8 @@ export const WebglUnavailableModal = ({
           <AlertTriangle className="w-4 h-4 text-crown-amber shrink-0 mt-0.5" />
           <p className="font-code text-xs text-gray-300 leading-snug">
             {strings.WEBGL_UNAVAILABLE_BODY_TEXT(
-              backgroundLabel ?? "This background"
+              backgroundLabel ??
+                strings.WEBGL_UNAVAILABLE_DEFAULT_BACKGROUND_LABEL
             )}
           </p>
         </div>

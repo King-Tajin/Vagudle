@@ -2,6 +2,7 @@ import { Copy, Check, Share2 } from "lucide-react";
 import { DICT_LABELS, type ChallengeDict } from "../../../../lib/challenge";
 import { BackButton } from "../Controls";
 import type { Generated } from "../challengeLogic";
+import strings from "../../../../constants/strings";
 
 export const ResultView = ({
   generated,
@@ -35,14 +36,14 @@ export const ResultView = ({
         }}
       >
         <p className="font-pixel text-[9px] text-gray-500 tracking-widest mb-1">
-          CHALLENGE READY
+          {strings.CHALLENGE_CREATOR_READY_LABEL}
         </p>
         <p className="font-pixel text-xl text-crown-gold tracking-widest crown-glow">
           {generated.word}
         </p>
         <div className="flex gap-3 mt-2">
           <span className="font-code text-xs text-gray-400">
-            {generated.word.length} letters
+            {strings.CHALLENGE_CREATOR_LETTERS_TEXT(generated.word.length)}
           </span>
           <span className="font-code text-xs text-gray-600">·</span>
           <span className="font-code text-xs text-gray-400">
@@ -50,7 +51,7 @@ export const ResultView = ({
           </span>
           <span className="font-code text-xs text-gray-600">·</span>
           <span className="font-code text-xs text-gray-400">
-            {guesses} guesses
+            {strings.CHALLENGE_CREATOR_GUESSES_TEXT(guesses)}
           </span>
         </div>
       </div>
@@ -79,12 +80,12 @@ export const ResultView = ({
           {copied ? (
             <>
               <Check className="w-3 h-3" />
-              COPIED!
+              {strings.CHALLENGE_CREATOR_COPIED_BUTTON_TEXT}
             </>
           ) : (
             <>
               <Copy className="w-3 h-3" />
-              COPY
+              {strings.CHALLENGE_CREATOR_COPY_BUTTON_TEXT}
             </>
           )}
         </button>
@@ -102,12 +103,12 @@ export const ResultView = ({
           {shared ? (
             <>
               <Check className="w-3 h-3" />
-              SHARED!
+              {strings.CHALLENGE_CREATOR_SHARED_BUTTON_TEXT}
             </>
           ) : (
             <>
               <Share2 className="w-3 h-3" />
-              SHARE
+              {strings.CHALLENGE_CREATOR_SHARE_BUTTON_TEXT}
             </>
           )}
         </button>
@@ -130,7 +131,7 @@ export const ResultView = ({
             e.currentTarget.style.color = "#6b7280";
           }}
         >
-          EDIT
+          {strings.CHALLENGE_CREATOR_EDIT_BUTTON_TEXT}
         </button>
       </div>
     </div>

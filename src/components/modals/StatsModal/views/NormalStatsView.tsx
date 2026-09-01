@@ -85,7 +85,7 @@ export const NormalStatsView = ({
           style={activeTab === "normal" ? TAB_ACTIVE_STYLE : TAB_INACTIVE_STYLE}
           onClick={() => setActiveTab("normal")}
         >
-          NORMAL
+          {strings.NORMAL_STATS_TAB_NORMAL_LABEL}
         </button>
         <button
           type="button"
@@ -93,7 +93,7 @@ export const NormalStatsView = ({
           style={activeTab === "hard" ? TAB_ACTIVE_STYLE : TAB_INACTIVE_STYLE}
           onClick={() => setActiveTab("hard")}
         >
-          HARD
+          {strings.NORMAL_STATS_TAB_HARD_LABEL}
         </button>
         <button
           type="button"
@@ -101,7 +101,7 @@ export const NormalStatsView = ({
           style={activeTab === "daily" ? TAB_ACTIVE_STYLE : TAB_INACTIVE_STYLE}
           onClick={() => setActiveTab("daily")}
         >
-          DAILY
+          {strings.NORMAL_STATS_TAB_DAILY_LABEL}
         </button>
       </div>
       {hasGames ? (
@@ -113,11 +113,9 @@ export const NormalStatsView = ({
               <StatBar gameStats={displayStats} />
               <p className="font-pixel text-xs text-gray-500 tracking-widest mt-4 mb-3">
                 {strings.GUESS_DISTRIBUTION_TEXT.toUpperCase()} -{" "}
-                {displayStats.totalGames - displayStats.gamesFailed} GAME
-                {displayStats.totalGames - displayStats.gamesFailed === 1
-                  ? ""
-                  : "S"}{" "}
-                WON
+                {strings.NORMAL_STATS_GAMES_WON_TEXT(
+                  displayStats.totalGames - displayStats.gamesFailed
+                )}
               </p>
               <Histogram
                 gameStats={displayStats}
@@ -131,14 +129,14 @@ export const NormalStatsView = ({
       ) : (
         <div className="py-8 flex flex-col items-center gap-2">
           <p className="font-pixel text-xs text-crown-amber tracking-widest">
-            NO GAMES YET
+            {strings.NORMAL_STATS_NO_GAMES_YET_TEXT}
           </p>
           <p className="font-code text-xs text-gray-500 text-center">
             {isDailyTab
-              ? "Play today's daily to see stats here."
+              ? strings.NORMAL_STATS_EMPTY_DAILY_TEXT
               : activeTab === "hard"
-                ? "Play a game in Hard Mode to see stats here."
-                : "Play a game to see stats here."}
+                ? strings.NORMAL_STATS_EMPTY_HARD_TEXT
+                : strings.NORMAL_STATS_EMPTY_DEFAULT_TEXT}
           </p>
         </div>
       )}
@@ -169,7 +167,7 @@ export const NormalStatsView = ({
             }
           >
             <Share2 className="w-3 h-3" />
-            SHARE STATS
+            {strings.NORMAL_STATS_SHARE_STATS_BUTTON_TEXT}
           </button>
         </div>
       )}
@@ -197,7 +195,7 @@ export const NormalStatsView = ({
                 onClick={handleNewGame}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                NEW GAME
+                {strings.NORMAL_STATS_NEW_GAME_BUTTON_TEXT}
               </button>
             )}
             {!isActivityMode && (
@@ -228,7 +226,7 @@ export const NormalStatsView = ({
                 }
               >
                 <Share2 className="w-3.5 h-3.5" />
-                SHARE GAME
+                {strings.NORMAL_STATS_SHARE_GAME_BUTTON_TEXT}
               </button>
             )}
           </div>
@@ -250,7 +248,7 @@ export const NormalStatsView = ({
             onClick={onOpenChallengeCreator}
           >
             <Swords className="w-3.5 h-3.5" />
-            CHALLENGE OTHERS WITH THIS WORD
+            {strings.NORMAL_STATS_CHALLENGE_OTHERS_BUTTON_TEXT}
           </button>
         </>
       )}

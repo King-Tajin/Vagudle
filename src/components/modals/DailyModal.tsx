@@ -343,7 +343,7 @@ const DailyModalCompleteContent = ({
           }}
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          {strings.DAILY_MODAL_RETURN_BUTTON_TEXT}
+          {strings.RETURN_TO_NORMAL_GAME_BUTTON_TEXT}
         </button>
       )}
     </>

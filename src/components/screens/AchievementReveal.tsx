@@ -6,6 +6,7 @@ import ChestDoorRight from "@/assets/icons/chest-door-right.svg";
 import RibbonIcon from "@/assets/icons/ribon.svg?react";
 import { playRattle, playBurstSound } from "../../lib/sounds";
 import { triggerAchievementHaptic } from "../../lib/haptics";
+import strings from "../../constants/strings";
 
 const TIME_SCALE = 1.6;
 
@@ -537,7 +538,7 @@ export function AchievementReveal({ onDone, hapticsEnabled }: Props) {
             }}
             transition={{ duration: TEXT_FADE_IN_MS / 1000, ease: "easeOut" }}
           >
-            Achievement Unlocked!
+            {strings.ACHIEVEMENT_REVEAL_UNLOCKED_TEXT}
           </m.p>
         </div>
 

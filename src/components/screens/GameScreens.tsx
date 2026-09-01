@@ -2,6 +2,7 @@ import { m } from "framer-motion";
 import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import { isDiscordActivity } from "../../lib/discord";
 import { emptyNavbar, title } from "./screenHelpers";
+import strings from "../../constants/strings";
 
 export const LoadingScreen = () => (
   <div className="h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
@@ -31,7 +32,7 @@ export const LoadingScreen = () => (
           ))}
         </div>
         <p className="font-pixel text-xs text-crown-amber tracking-widest">
-          LOADING WORDS...
+          {strings.LOADING_WORDS_TEXT}
         </p>
       </m.div>
     </div>

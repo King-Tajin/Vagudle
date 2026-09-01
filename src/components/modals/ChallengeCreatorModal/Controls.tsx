@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import strings from "../../../constants/strings";
 
 type ButtonGroupProps<T extends string | number> = {
   options: { value: T; label: string }[];
@@ -54,7 +55,7 @@ export const BackButton = ({ onClick }: { onClick: () => void }) => {
       }}
     >
       <ArrowLeft className="w-3 h-3" />
-      BACK TO STATS
+      {strings.CHALLENGE_CREATOR_BACK_TO_STATS_BUTTON_TEXT}
     </button>
   );
 };

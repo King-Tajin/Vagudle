@@ -3,6 +3,7 @@ import { m } from "framer-motion";
 import cn from "classnames";
 import VagudleIcon from "@/assets/icons/vagudle.svg?react";
 import { playWinSound } from "../../lib/sounds";
+import strings from "../../constants/strings";
 import "./WinCelebration.css";
 
 const PURPLES = [
@@ -185,7 +186,7 @@ export function WinCelebration({ word, onDone }: Props) {
           transition={{ delay: 0.15, duration: 0.5, ease: "easeIn" }}
           className="font-royal font-bold text-crown-gold crown-glow tracking-wider win-celebration-title"
         >
-          YOU WIN!
+          {strings.WIN_CELEBRATION_TITLE_TEXT}
         </m.p>
         <div className="win-celebration-letters">
           {letterData.map(({ letter }, i) => (

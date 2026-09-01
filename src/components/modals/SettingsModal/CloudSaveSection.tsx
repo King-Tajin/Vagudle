@@ -491,7 +491,7 @@ export const CloudSaveSection = ({
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={strings.LINK_DISCORD_EMAIL_PLACEHOLDER}
+              placeholder="you@example.com"
               aria-label={strings.CLOUD_SAVE_EMAIL_ARIA_LABEL}
               className="flex-1 min-w-0 border-2 font-code text-xs p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber"
               style={{
@@ -551,7 +551,7 @@ export const CloudSaveSection = ({
                   />
                   {strings.CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT}
                   <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
-                    {strings.CLOUD_SAVE_BETA_BADGE_TEXT}
+                    BETA
                   </span>
                 </button>
               )}

@@ -158,7 +158,7 @@ export const LinkPlayGamesPage = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={strings.LINK_DISCORD_EMAIL_PLACEHOLDER}
+            placeholder="you@example.com"
             className="font-code text-sm px-3 py-2 rounded-none"
             style={inputStyle}
           />

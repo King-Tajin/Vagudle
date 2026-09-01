@@ -191,13 +191,13 @@ export const Navbar = ({
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    {strings.NAVBAR_BRAND_TITLE}
+                    Yellow Skipper
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
-                    {strings.NAVBAR_BRAND_SUBTITLE}
+                    Games
                   </p>
                 </div>
               </m.button>
@@ -218,13 +218,13 @@ export const Navbar = ({
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
-                    {strings.NAVBAR_BRAND_TITLE}
+                    Yellow Skipper
                   </h1>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
-                    {strings.NAVBAR_BRAND_SUBTITLE}
+                    Games
                   </p>
                 </div>
               </m.a>

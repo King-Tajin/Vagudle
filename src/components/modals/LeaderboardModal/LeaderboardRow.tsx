@@ -1,3 +1,5 @@
+import strings from "../../../constants/strings";
+
 const RankBadge = ({ rank }: { rank: number }) => {
   const medal =
     rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
@@ -44,7 +46,7 @@ export const LeaderboardRow = ({
     <div className="flex items-center gap-3 shrink-0">
       <div className="text-center">
         <p className="font-pixel text-[8px] text-gray-500 tracking-widest">
-          W/L
+          {strings.LEADERBOARD_ROW_WINS_LOSSES_LABEL}
         </p>
         <p className="font-code text-base font-semibold text-gray-300">
           {wins}/{losses}
@@ -52,7 +54,7 @@ export const LeaderboardRow = ({
       </div>
       <div className="text-center">
         <p className="font-pixel text-[8px] text-gray-500 tracking-widest">
-          STREAK
+          {strings.LEADERBOARD_ROW_STREAK_LABEL}
         </p>
         <p className="font-code text-base font-semibold text-gray-300">
           {currentStreak}
@@ -60,7 +62,7 @@ export const LeaderboardRow = ({
       </div>
       <div className="text-center">
         <p className="font-pixel text-[8px] text-crown-amber tracking-widest">
-          BEST
+          {strings.LEADERBOARD_ROW_BEST_LABEL}
         </p>
         <p className="font-code text-base font-semibold text-crown-amber">
           {bestStreak}

@@ -14,7 +14,7 @@ import strings from "../../../constants/strings";
 export const formatCooldown = (canChangeAt: string): string => {
   const ms = new Date(canChangeAt).getTime() - Date.now();
   const days = Math.max(1, Math.ceil(ms / (24 * 60 * 60 * 1000)));
-  return `${days} day${days === 1 ? "" : "s"}`;
+  return strings.DAILY_MODAL_STREAK_DAYS_TEXT(days);
 };
 
 type LeaderboardState = {

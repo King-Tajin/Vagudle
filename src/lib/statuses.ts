@@ -1,4 +1,5 @@
 import { unicodeSplit } from "./words";
+import strings from "../constants/strings";
 
 export type CharStatus = "absent" | "present" | "correct" | "auto-absent";
 
@@ -6,10 +7,13 @@ export const describeLetterStatus = (
   value: string | undefined,
   status: CharStatus | undefined
 ): string => {
-  if (!value) return "Empty";
+  if (!value) return strings.CELL_STATUS_EMPTY_LABEL;
   if (!status) return value;
-  const word = status === "auto-absent" ? "absent" : status;
-  return `${value}, ${word}`;
+  const key = status === "auto-absent" ? "absent" : status;
+  return strings.CELL_STATUS_DESCRIPTION_TEXT(
+    value,
+    strings.CELL_STATUS_WORDS[key]
+  );
 };
 
 export const getGuessStatuses = (

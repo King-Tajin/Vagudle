@@ -96,8 +96,8 @@ export const InactivityDaysInput = ({
     min={INACTIVITY_NUDGE_MIN_DAYS}
     max={INACTIVITY_NUDGE_MAX_DAYS}
     suffix={strings.SETTINGS_NOTIFICATIONS_INACTIVITY_DAYS_SUFFIX}
-    decreaseLabel="Decrease days"
-    increaseLabel="Increase days"
+    decreaseLabel={strings.SETTINGS_NOTIFICATIONS_DECREASE_DAYS_LABEL}
+    increaseLabel={strings.SETTINGS_NOTIFICATIONS_INCREASE_DAYS_LABEL}
     disabled={disabled}
     onChange={onChange}
   />
@@ -117,8 +117,8 @@ export const StreakResetHoursInput = ({
     min={STREAK_WARNING_MIN_HOURS}
     max={STREAK_WARNING_MAX_HOURS}
     suffix={strings.SETTINGS_NOTIFICATIONS_STREAK_HOURS_SUFFIX}
-    decreaseLabel="Decrease hours"
-    increaseLabel="Increase hours"
+    decreaseLabel={strings.SETTINGS_NOTIFICATIONS_DECREASE_HOURS_LABEL}
+    increaseLabel={strings.SETTINGS_NOTIFICATIONS_INCREASE_HOURS_LABEL}
     disabled={disabled}
     onChange={onChange}
   />

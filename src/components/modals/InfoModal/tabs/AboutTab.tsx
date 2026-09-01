@@ -22,7 +22,7 @@ export const AboutTab = ({
           href="https://hardle.org"
           className="text-crown-gold underline hover:text-crown-amber transition-colors"
         >
-          {strings.ABOUT_INTRO_LINK_TEXT}
+          Hardle
         </ActivityLink>
         {strings.ABOUT_INTRO_TEXT_AFTER_LINK}
       </p>

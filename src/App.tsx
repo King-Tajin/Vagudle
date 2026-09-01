@@ -260,7 +260,7 @@ function App() {
       );
       if (isCancelled) return;
       if (result.status === "linked") {
-        showSuccessAlert("Discord account linked!");
+        showSuccessAlert(strings.DISCORD_ACCOUNT_LINKED_MESSAGE);
         setIsSettingsModalOpen(true);
       } else {
         showErrorAlert(result.message);

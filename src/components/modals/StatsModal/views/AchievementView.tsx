@@ -4,6 +4,7 @@ import { Share2 } from "lucide-react";
 import { shareAchievement } from "../../../../lib/share";
 import type { Achievement } from "../../../../lib/achievements";
 import { BACKGROUNDS, type BackgroundId } from "../../../../lib/backgrounds";
+import strings from "../../../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -31,8 +32,11 @@ export const AchievementView = ({
   );
   const modalTitle =
     totalAchievements > 1
-      ? `Achievement Unlocked (${achievementIdx + 1}/${totalAchievements})`
-      : "Achievement Unlocked";
+      ? strings.ACHIEVEMENT_VIEW_UNLOCKED_TITLE_WITH_COUNT(
+          achievementIdx + 1,
+          totalAchievements
+        )
+      : strings.ACHIEVEMENT_VIEW_UNLOCKED_TITLE;
 
   return (
     <BaseModal title={modalTitle} isOpen={isOpen} handleClose={handleClose}>
@@ -58,7 +62,9 @@ export const AchievementView = ({
           >
             <RibbonIcon className="w-3.5 h-3.5 shrink-0" />
             <span className="font-pixel text-[9px] text-crown-amber tracking-widest">
-              BACKGROUND UNLOCKED: {bgUnlock.desktopLabel}
+              {strings.ACHIEVEMENT_VIEW_BACKGROUND_UNLOCKED_TEXT(
+                bgUnlock.desktopLabel
+              )}
             </span>
           </div>
         )}
@@ -86,7 +92,7 @@ export const AchievementView = ({
           onClick={() => shareAchievement(achievement, handleShareToClipboard)}
         >
           <Share2 className="w-3.5 h-3.5" />
-          SHARE
+          {strings.ACHIEVEMENT_VIEW_SHARE_BUTTON_TEXT}
         </button>
         {bgUnlock && (
           <button
@@ -105,7 +111,7 @@ export const AchievementView = ({
             }}
             onClick={() => setBackgroundId?.(bgUnlock.id)}
           >
-            EQUIP
+            {strings.ACHIEVEMENT_VIEW_EQUIP_BUTTON_TEXT}
           </button>
         )}
         <button
@@ -124,7 +130,9 @@ export const AchievementView = ({
           }}
           onClick={handleAchievementOkay}
         >
-          {achievementIdx < totalAchievements - 1 ? "NEXT" : "CONTINUE"}
+          {achievementIdx < totalAchievements - 1
+            ? strings.ACHIEVEMENT_VIEW_NEXT_BUTTON_TEXT
+            : strings.ACHIEVEMENT_VIEW_CONTINUE_BUTTON_TEXT}
         </button>
       </div>
     </BaseModal>

@@ -7,6 +7,7 @@ import {
   type ChallengeConfig,
 } from "../../lib/challenge";
 import { useBackButtonClose } from "../../lib/backButton";
+import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -57,14 +58,13 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
             >
               <Swords className="w-5 h-5 text-crown-gold" />
               <h2 className="font-pixel text-sm text-crown-amber tracking-widest">
-                CUSTOM CHALLENGE
+                {strings.CHALLENGE_ACCEPT_MODAL_HEADING}
               </h2>
             </div>
 
             <div className="px-5 py-5 space-y-4">
               <p className="font-code text-sm text-gray-300 leading-relaxed">
-                Someone has sent you a custom Vagudle challenge. Here's what
-                you're up against:
+                {strings.CHALLENGE_ACCEPT_MODAL_INTRO_TEXT}
               </p>
 
               <div
@@ -78,10 +78,12 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
                   <Hash className="w-4 h-4 text-crown-amber shrink-0" />
                   <div>
                     <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                      WORD LENGTH
+                      {strings.CHALLENGE_ACCEPT_MODAL_WORD_LENGTH_LABEL}
                     </p>
                     <p className="font-code text-sm text-gray-200 mt-0.5">
-                      {config.length} letters
+                      {strings.CHALLENGE_ACCEPT_MODAL_LETTERS_TEXT(
+                        config.length
+                      )}
                     </p>
                   </div>
                 </div>
@@ -90,7 +92,7 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
                   <BookOpen className="w-4 h-4 text-crown-amber shrink-0" />
                   <div>
                     <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                      DICTIONARY
+                      {strings.CHALLENGE_ACCEPT_MODAL_DICTIONARY_LABEL}
                     </p>
                     <p className="font-code text-sm text-gray-200 mt-0.5">
                       {DICT_LABELS[config.dict]} —{" "}
@@ -105,23 +107,25 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
                   <Target className="w-4 h-4 text-crown-amber shrink-0" />
                   <div>
                     <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                      GUESSES
+                      {strings.CHALLENGE_ACCEPT_MODAL_GUESSES_LABEL}
                     </p>
                     <p className="font-code text-sm text-gray-200 mt-0.5">
-                      {config.guesses} attempts
+                      {strings.CHALLENGE_ACCEPT_MODAL_ATTEMPTS_TEXT(
+                        config.guesses
+                      )}
                     </p>
                   </div>
                 </div>
               </div>
 
               <p className="font-code text-xs text-gray-500 leading-snug">
-                Your progress is saved to this link. Revisit any time to resume.
+                {strings.CHALLENGE_ACCEPT_MODAL_PROGRESS_SAVED_TEXT}
               </p>
               <p
                 className="font-code text-xs leading-snug"
                 style={{ color: "rgba(212,175,55,0.6)" }}
               >
-                ⚠ Results do not count toward your stats. ⚠
+                {strings.CHALLENGE_ACCEPT_MODAL_RESULTS_NOT_COUNTED_TEXT}
               </p>
 
               <button
@@ -142,7 +146,7 @@ export const ChallengeAcceptModal = ({ isOpen, onPlay, config }: Props) => {
                 }}
               >
                 <Crown className="w-3.5 h-3.5" />
-                PLAY CHALLENGE
+                {strings.CHALLENGE_ACCEPT_MODAL_PLAY_BUTTON_TEXT}
               </button>
             </div>
           </div>

@@ -131,7 +131,7 @@ export const SettingsModal = ({
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (hasStarted) {
-      showError("Finish or start a new game before changing the word length!");
+      showError(strings.SETTINGS_WORD_LENGTH_CHANGE_BLOCKED_ERROR_TEXT);
       return;
     }
     onWordLengthChange(Number(e.target.value));
@@ -139,7 +139,7 @@ export const SettingsModal = ({
 
   const handleHardModeChange = (value: boolean) => {
     if (hasStarted) {
-      showError("Finish or start a new game before changing difficulty!");
+      showError(strings.SETTINGS_DIFFICULTY_CHANGE_BLOCKED_ERROR_TEXT);
       return;
     }
     settingsHandlers.setHardMode(value);
@@ -164,7 +164,7 @@ export const SettingsModal = ({
           style={activeTab === "settings" ? activeTabStyle : inactiveTabStyle}
           onClick={() => setActiveTab("settings")}
         >
-          SETTINGS
+          {strings.SETTINGS_MODAL_TAB_SETTINGS_LABEL}
         </button>
         {!isActivityMode && (
           <button
@@ -175,7 +175,7 @@ export const SettingsModal = ({
             }
             onClick={() => setActiveTab("challenge")}
           >
-            CHALLENGE
+            {strings.SETTINGS_MODAL_TAB_CHALLENGE_LABEL}
           </button>
         )}
       </div>

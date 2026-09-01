@@ -1,4 +1,5 @@
 import { CompactDropdown, type DropdownOption } from "./CompactDropdown";
+import strings from "../../../constants/strings";
 
 const HOUR_OPTIONS: DropdownOption[] = Array.from(
   { length: 12 },
@@ -42,7 +43,7 @@ export const NotificationTimePicker = ({
         options={HOUR_OPTIONS}
         disabled={disabled}
         onChange={(v) => onHourChange(Number(v))}
-        ariaLabel="Reminder hour"
+        ariaLabel={strings.SETTINGS_NOTIFICATIONS_REMINDER_HOUR_ARIA_LABEL}
       />
       <span className="font-pixel text-xs text-gray-500">:</span>
       <CompactDropdown
@@ -50,14 +51,14 @@ export const NotificationTimePicker = ({
         options={MINUTE_OPTIONS}
         disabled={disabled}
         onChange={(v) => onMinuteChange(Number(v))}
-        ariaLabel="Reminder minute"
+        ariaLabel={strings.SETTINGS_NOTIFICATIONS_REMINDER_MINUTE_ARIA_LABEL}
       />
       <CompactDropdown
         value={period}
         options={PERIOD_OPTIONS}
         disabled={disabled}
         onChange={(v) => onPeriodChange(v as "AM" | "PM")}
-        ariaLabel="Reminder AM or PM"
+        ariaLabel={strings.SETTINGS_NOTIFICATIONS_REMINDER_PERIOD_ARIA_LABEL}
       />
     </div>
   );

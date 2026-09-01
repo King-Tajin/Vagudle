@@ -11,6 +11,7 @@ import {
 import { DICT_LABELS, DICT_DESCRIPTIONS } from "../../lib/challenge";
 import type { DuelConfig, DuelSaveStatus } from "../../lib/duel";
 import { useBackButtonClose } from "../../lib/backButton";
+import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
@@ -73,7 +74,9 @@ export const DuelModal = ({
             >
               <Swords className="w-5 h-5 text-crown-gold" />
               <h2 className="font-pixel text-sm text-crown-amber tracking-widest">
-                {mode === "accept" ? "DUEL" : "DUEL COMPLETE"}
+                {mode === "accept"
+                  ? strings.DUEL_MODAL_ACCEPT_HEADING
+                  : strings.DUEL_MODAL_COMPLETE_HEADING}
               </h2>
             </div>
 
@@ -81,8 +84,7 @@ export const DuelModal = ({
               {mode === "accept" && (
                 <>
                   <p className="font-code text-sm text-gray-300 leading-relaxed">
-                    You have been challenged to a duel. Here's what you're up
-                    against:
+                    {strings.DUEL_MODAL_CHALLENGED_INTRO_TEXT}
                   </p>
 
                   <div
@@ -96,10 +98,10 @@ export const DuelModal = ({
                       <Hash className="w-4 h-4 text-crown-amber shrink-0" />
                       <div>
                         <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                          WORD LENGTH
+                          {strings.DUEL_MODAL_WORD_LENGTH_LABEL}
                         </p>
                         <p className="font-code text-sm text-gray-200 mt-0.5">
-                          {config.length} letters
+                          {strings.DUEL_MODAL_LETTERS_TEXT(config.length)}
                         </p>
                       </div>
                     </div>
@@ -108,7 +110,7 @@ export const DuelModal = ({
                       <BookOpen className="w-4 h-4 text-crown-amber shrink-0" />
                       <div>
                         <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                          DICTIONARY
+                          {strings.DUEL_MODAL_DICTIONARY_LABEL}
                         </p>
                         <p className="font-code text-sm text-gray-200 mt-0.5">
                           {DICT_LABELS[config.dict]} —{" "}
@@ -123,24 +125,23 @@ export const DuelModal = ({
                       <Target className="w-4 h-4 text-crown-amber shrink-0" />
                       <div>
                         <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none">
-                          GUESSES
+                          {strings.DUEL_MODAL_GUESSES_LABEL}
                         </p>
                         <p className="font-code text-sm text-gray-200 mt-0.5">
-                          {config.guesses} attempts
+                          {strings.DUEL_MODAL_ATTEMPTS_TEXT(config.guesses)}
                         </p>
                       </div>
                     </div>
                   </div>
 
                   <p className="font-code text-xs text-gray-500 leading-snug">
-                    Your progress is saved for 24 hours. Revisit this link any
-                    time to resume.
+                    {strings.DUEL_MODAL_PROGRESS_SAVED_TEXT}
                   </p>
                   <p
                     className="font-code text-xs leading-snug"
                     style={{ color: "rgba(212,175,55,0.6)" }}
                   >
-                    ⚠ Results do not count toward your stats. ⚠
+                    {strings.DUEL_MODAL_RESULTS_NOT_COUNTED_TEXT}
                   </p>
 
                   <button
@@ -161,7 +162,7 @@ export const DuelModal = ({
                     }}
                   >
                     <Swords className="w-3.5 h-3.5" />
-                    PLAY DUEL
+                    {strings.DUEL_MODAL_PLAY_BUTTON_TEXT}
                   </button>
                 </>
               )}
@@ -180,17 +181,17 @@ export const DuelModal = ({
                     }}
                   >
                     {saveStatus === "failed"
-                      ? "RESULT NOT RECORDED"
+                      ? strings.DUEL_MODAL_RESULT_NOT_RECORDED_TEXT
                       : saveStatus === "saved"
-                        ? "YOUR RESULT HAS BEEN RECORDED"
-                        : "SAVING RESULT..."}
+                        ? strings.DUEL_MODAL_RESULT_RECORDED_TEXT
+                        : strings.DUEL_MODAL_SAVING_RESULT_TEXT}
                   </p>
                   <p className="font-code text-xs text-gray-500 text-center leading-snug">
                     {saveStatus === "failed"
-                      ? "There was a problem saving your result. Please let the host know."
+                      ? strings.DUEL_MODAL_RESULT_NOT_RECORDED_DESCRIPTION
                       : saveStatus === "saved"
-                        ? "The winner will be announced once both players have finished."
-                        : "Please wait while your result is being recorded."}
+                        ? strings.DUEL_MODAL_RESULT_RECORDED_DESCRIPTION
+                        : strings.DUEL_MODAL_SAVING_RESULT_DESCRIPTION}
                   </p>
 
                   <div
@@ -204,24 +205,23 @@ export const DuelModal = ({
                       <>
                         <Loader className="w-4 h-4 text-gray-400 animate-spin shrink-0" />
                         <p className="font-code text-xs text-gray-400">
-                          Saving results...
+                          {strings.DUEL_MODAL_SAVING_RESULTS_TEXT}
                         </p>
                       </>
                     )}
                     {saveStatus === "saved" && (
                       <p className="font-code text-xs text-spice-lime">
-                        Results saved successfully.
+                        {strings.DUEL_MODAL_RESULTS_SAVED_TEXT}
                       </p>
                     )}
                     {saveStatus === "failed" && (
                       <p className="font-code text-xs text-spice-red leading-snug">
-                        Failed to save results after 3 attempts. Your result was
-                        not recorded.
+                        {strings.DUEL_MODAL_SAVE_FAILED_TEXT}
                       </p>
                     )}
                     {saveStatus === "idle" && (
                       <p className="font-code text-xs text-gray-500">
-                        Preparing to save results...
+                        {strings.DUEL_MODAL_PREPARING_SAVE_TEXT}
                       </p>
                     )}
                   </div>
@@ -259,7 +259,7 @@ export const DuelModal = ({
                       }}
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      RETURN TO NORMAL GAME
+                      {strings.RETURN_TO_NORMAL_GAME_BUTTON_TEXT}
                     </button>
                   )}
                 </>
