@@ -1,11 +1,14 @@
-export type Language = "en";
+export type Language = "en" | "sv";
 
 export type LanguageOption = {
   code: Language;
   label: string;
 };
 
-export const LANGUAGES: LanguageOption[] = [{ code: "en", label: "English" }];
+export const LANGUAGES: LanguageOption[] = [
+  { code: "en", label: "English" },
+  { code: "sv", label: "Svenska" },
+];
 
 export const DEFAULT_LANGUAGE: Language = "en";
 

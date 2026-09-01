@@ -6,9 +6,14 @@ import {
   type Language,
 } from "./languages";
 import * as en from "./strings.en";
+import * as sv from "./strings.sv";
 
-const modules: Record<Language, typeof en> = {
+type Widen<T> = T extends string ? string : T;
+type StringsModule = { [K in keyof typeof en]: Widen<(typeof en)[K]> };
+
+const modules: Record<Language, StringsModule> = {
   en,
+  sv,
 };
 
 const readStoredLanguage = (): Language | null => {
@@ -31,6 +36,6 @@ const readStoredLanguage = (): Language | null => {
 const resolveActiveLanguage = (): Language =>
   readStoredLanguage() ?? detectBrowserLanguage() ?? DEFAULT_LANGUAGE;
 
-const active: typeof en = modules[resolveActiveLanguage()] ?? en;
+const active: StringsModule = modules[resolveActiveLanguage()] ?? en;
 
 export default active;
