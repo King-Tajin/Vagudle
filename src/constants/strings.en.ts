@@ -89,6 +89,7 @@ export const SETTINGS_LANGUAGE_LABEL = "Language";
 export const SETTINGS_LANGUAGE_DESCRIPTION =
   "Choose the language used for menus and text. Word lists stay in English.";
 export const SETTINGS_LANGUAGE_ARIA_LABEL = "Select language";
+export const SETTINGS_LANGUAGE_SAVING_TEXT = "Saving...";
 
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL = "Streak Reset Warning";
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION =

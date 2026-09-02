@@ -18,6 +18,14 @@ import type {
 import { saveSettingsToLocalStorage } from "../../../lib/localStorage";
 import type { Language } from "../../../constants/languages";
 import strings from "../../../constants/strings";
+import { useCloudAuth } from "../../../hooks/useCloudAuth";
+import {
+  getIdTokenForCurrentUser,
+  buildCloudSavePayloadFromLocalStorage,
+  pushCloudSave,
+} from "../../../lib/cloudSync";
+
+const LANGUAGE_CLOUD_SAVE_TIMEOUT_MS = 2500;
 
 export type { GameSettingsValues, GameSettingsHandlers };
 
@@ -82,9 +90,12 @@ export const SettingsModal = ({
   const { account: jumpToAccountKey = 0, background: jumpToBackgroundKey = 0 } =
     jumpKeys ?? {};
 
+  const { user } = useCloudAuth();
+
   const [activeTab, setActiveTab] = useState<Tab>("settings");
   const [settingsPage, setSettingsPage] = useState<1 | 2 | 3>(1);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSavingLanguage, setIsSavingLanguage] = useState(false);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [prevJumpToAccountKey, setPrevJumpToAccountKey] =
     useState(jumpToAccountKey);
@@ -145,9 +156,28 @@ export const SettingsModal = ({
     settingsHandlers.setHardMode(value);
   };
 
-  const handleLanguageChange = (value: Language) => {
+  const handleLanguageChange = async (value: Language) => {
     settingsHandlers.setLanguage(value);
     saveSettingsToLocalStorage({ wordLength, ...settings, language: value });
+
+    if (user) {
+      setIsSavingLanguage(true);
+      const pushLanguageToCloud = async () => {
+        const idToken = await getIdTokenForCurrentUser();
+        if (!idToken) return;
+        await pushCloudSave(
+          idToken,
+          buildCloudSavePayloadFromLocalStorage(isMobile)
+        );
+      };
+      await Promise.race([
+        pushLanguageToCloud().catch(() => {}),
+        new Promise((resolve) =>
+          setTimeout(resolve, LANGUAGE_CLOUD_SAVE_TIMEOUT_MS)
+        ),
+      ]);
+    }
+
     window.location.reload();
   };
 
@@ -209,6 +239,7 @@ export const SettingsModal = ({
               setIsBackgroundDropdownOpen={setIsBackgroundDropdownOpen}
               handleHardModeChange={handleHardModeChange}
               handleLanguageChange={handleLanguageChange}
+              isSavingLanguage={isSavingLanguage}
             />
           )}
 

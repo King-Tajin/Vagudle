@@ -1,4 +1,4 @@
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
 
 export const GAME_TITLE = "VAGUDLE";
 
@@ -91,6 +91,7 @@ export const SETTINGS_LANGUAGE_LABEL = "Språk";
 export const SETTINGS_LANGUAGE_DESCRIPTION =
   "Välj vilket språk som används för menyer och text. Ordlistorna förblir på engelska.";
 export const SETTINGS_LANGUAGE_ARIA_LABEL = "Välj språk";
+export const SETTINGS_LANGUAGE_SAVING_TEXT = "Sparar...";
 
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL =
   "Varning för svitåterställning";

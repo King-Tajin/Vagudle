@@ -26,6 +26,7 @@ export const GeneralSettingsPage = ({
   setIsBackgroundDropdownOpen,
   handleHardModeChange,
   handleLanguageChange,
+  isSavingLanguage = false,
 }: {
   wordLength: number;
   onWordLengthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -39,6 +40,7 @@ export const GeneralSettingsPage = ({
   setIsBackgroundDropdownOpen: (open: boolean) => void;
   handleHardModeChange: (value: boolean) => void;
   handleLanguageChange: (value: Language) => void;
+  isSavingLanguage?: boolean;
 }) => {
   return (
     <div className="flex flex-col divide-y divide-obsidian-700">
@@ -223,6 +225,11 @@ export const GeneralSettingsPage = ({
           <p className="font-code text-xs mt-1.5 text-gray-500 leading-snug">
             {strings.SETTINGS_LANGUAGE_DESCRIPTION}
           </p>
+          {isSavingLanguage && (
+            <p className="font-code text-[10px] mt-1 text-gray-500 leading-snug">
+              {strings.SETTINGS_LANGUAGE_SAVING_TEXT}
+            </p>
+          )}
         </div>
         <CompactDropdown
           value={settings.language}
