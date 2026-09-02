@@ -5,16 +5,10 @@ import {
   isSupportedLanguage,
   type Language,
 } from "./languages";
-import * as en from "./strings.en";
-import * as sv from "./strings.sv";
+import type * as en from "./strings.en";
 
 type Widen<T> = T extends string ? string : T;
 type StringsModule = { [K in keyof typeof en]: Widen<(typeof en)[K]> };
-
-const modules: Record<Language, StringsModule> = {
-  en,
-  sv,
-};
 
 const readStoredLanguage = (): Language | null => {
   try {
@@ -36,6 +30,16 @@ const readStoredLanguage = (): Language | null => {
 const resolveActiveLanguage = (): Language =>
   readStoredLanguage() ?? detectBrowserLanguage() ?? DEFAULT_LANGUAGE;
 
-const active: StringsModule = modules[resolveActiveLanguage()] ?? en;
+const loadStringsModule = (language: Language) => {
+  switch (language) {
+    case "sv":
+      return import("./strings.sv");
+    case "en":
+    default:
+      return import("./strings.en");
+  }
+};
+
+const active: StringsModule = await loadStringsModule(resolveActiveLanguage());
 
 export default active;

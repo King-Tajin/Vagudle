@@ -4,6 +4,7 @@ import type { ReactDoctorConfig } from "react-doctor/api";
 export default {
   rules: {
     "react-doctor/no-giant-component": "off",
+    "react-doctor/no-high-complexity-react-function": "off",
     "deslop/unused-file": "off",
   },
   ignore: {
