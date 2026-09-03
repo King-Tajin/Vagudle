@@ -291,6 +291,7 @@ export const FEEDBACK_SEND_BUTTON_TEXT = "SKICKA FEEDBACK";
 export const OPEN_SOURCE_INTRO_TEXT_MIDDLE = "är öppen källkod och baserat på";
 export const OPEN_SOURCE_INTRO_TEXT_END = ". Bidrag och feedback är välkomna.";
 export const OPEN_SOURCE_MADE_BY_TEXT = "Skapat av";
+export const OPEN_SOURCE_STATS_CARD_ALT = "Vagudles GitHub-statistik";
 
 export const FEATURES_LIST: [string, string][] = [
   [

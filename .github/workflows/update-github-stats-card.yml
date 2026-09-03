@@ -1,0 +1,43 @@
+name: Update GitHub Stats Card
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Switch to stats branch
+        run: |
+          git fetch origin stats || true
+          if git show-ref --verify --quiet refs/remotes/origin/stats; then
+            git checkout stats
+          else
+            git checkout --orphan stats
+            git rm -rf .
+          fi
+
+      - name: Generate pin card
+        uses: soulteary/github-readme-stats-action@v1.0.0
+        with:
+          card: pin
+          options: "username=King-Tajin&repo=Vagudle&theme=dark&hide_border=true&bg_color=00000000&icon_color=FFD700"
+          path: stats/vagudle-pin.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit card
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats/vagudle-pin.svg
+          git diff --staged --quiet || git commit -m "Update GitHub stats card"
+          git push origin HEAD:stats

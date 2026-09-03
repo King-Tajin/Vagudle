@@ -284,6 +284,7 @@ export const OPEN_SOURCE_INTRO_TEXT_MIDDLE = "is open source and based on";
 export const OPEN_SOURCE_INTRO_TEXT_END =
   ". Contributions and feedback are welcome.";
 export const OPEN_SOURCE_MADE_BY_TEXT = "Made by";
+export const OPEN_SOURCE_STATS_CARD_ALT = "Vagudle GitHub repo stats";
 
 export const FEATURES_LIST: [string, string][] = [
   [
