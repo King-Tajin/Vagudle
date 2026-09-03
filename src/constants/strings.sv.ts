@@ -1,4 +1,4 @@
-// noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
+// noinspection JSUnusedGlobalSymbols
 
 export const GAME_TITLE = "VAGUDLE";
 
