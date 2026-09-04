@@ -46,7 +46,7 @@ export const OpenSourceTab = () => {
               src={GITHUB_STATS_CARD_URL}
               alt={strings.OPEN_SOURCE_STATS_CARD_ALT}
               width={380}
-              height={220}
+              height={300}
               style={{ maxWidth: "100%", height: "auto" }}
               onError={() => setStatsCardFailed(true)}
             />
