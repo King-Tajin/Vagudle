@@ -36,9 +36,11 @@ export const LeaderboardModal = ({
     isSubmitting,
     submitError,
     isPageLoading,
+    hideZeroWins,
     selfPage,
     dispatch,
     goToPage,
+    toggleHideZeroWins,
     handleSubmitUsername,
   } = useLeaderboardData({ isOpen, idToken, onUsernameSaved });
 
@@ -190,6 +192,51 @@ export const LeaderboardModal = ({
               )}
             </div>
           )}
+
+          <div
+            role="switch"
+            aria-checked={hideZeroWins}
+            aria-disabled={isPageLoading}
+            tabIndex={isPageLoading ? -1 : 0}
+            onClick={() => {
+              if (isPageLoading) return;
+              void toggleHideZeroWins(!hideZeroWins);
+            }}
+            onKeyDown={(e) => {
+              if (isPageLoading) return;
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                void toggleHideZeroWins(!hideZeroWins);
+              }
+            }}
+            className="w-full flex items-center justify-between gap-3 px-3 py-2 mb-1 cursor-pointer disabled:opacity-50 transition-opacity"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              opacity: isPageLoading ? 0.5 : 1,
+              pointerEvents: isPageLoading ? "none" : "auto",
+            }}
+          >
+            <span className="font-pixel text-xs text-gray-400 tracking-widest hover:text-crown-amber transition-colors duration-200">
+              {strings.LEADERBOARD_HIDE_ZERO_TOGGLE_LABEL}
+            </span>
+            <span
+              className="shrink-0 w-12 h-7 pixel-border-sm transition-transform duration-200 hover:scale-110"
+              style={{
+                background: hideZeroWins ? "#5000aa" : "rgba(255,255,255,0.05)",
+                border: `2px solid ${hideZeroWins ? "#5000aa" : "#3a3a4a"}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: hideZeroWins ? "flex-end" : "flex-start",
+                padding: "0 3px",
+              }}
+            >
+              <span
+                className="w-4 h-4 shrink-0 transition-colors duration-200"
+                style={{ background: hideZeroWins ? "#d4af37" : "#555570" }}
+              />
+            </span>
+          </div>
 
           {data.top.length === 0 && (
             <p className="font-code text-sm text-gray-400 text-center py-6">

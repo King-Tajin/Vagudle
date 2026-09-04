@@ -26,6 +26,7 @@ type LeaderboardState = {
   isSubmitting: boolean;
   submitError: string | null;
   isPageLoading: boolean;
+  hideZeroWins: boolean;
 };
 
 const initialLeaderboardState: LeaderboardState = {
@@ -37,6 +38,7 @@ const initialLeaderboardState: LeaderboardState = {
   isSubmitting: false,
   submitError: null,
   isPageLoading: false,
+  hideZeroWins: true,
 };
 
 type LeaderboardAction =
@@ -62,7 +64,8 @@ type LeaderboardAction =
   | { type: "cancelEditing"; inputValue: string }
   | { type: "pageLoadStart" }
   | { type: "pageLoadSuccess"; data: DailyLeaderboardResponse }
-  | { type: "pageLoadError" };
+  | { type: "pageLoadError" }
+  | { type: "setHideZeroWins"; value: boolean };
 
 function leaderboardReducer(
   state: LeaderboardState,
@@ -113,6 +116,8 @@ function leaderboardReducer(
       return { ...state, isPageLoading: false, data: action.data };
     case "pageLoadError":
       return { ...state, isPageLoading: false };
+    case "setHideZeroWins":
+      return { ...state, hideZeroWins: action.value };
   }
 }
 
@@ -135,6 +140,7 @@ export const useLeaderboardData = ({
       isSubmitting,
       submitError,
       isPageLoading,
+      hideZeroWins,
     },
     dispatch,
   ] = useReducer(leaderboardReducer, initialLeaderboardState);
@@ -146,7 +152,7 @@ export const useLeaderboardData = ({
     const loadLeaderboard = async () => {
       dispatch({ type: "loadStart" });
       const [leaderboard, username] = await Promise.all([
-        fetchDailyLeaderboard(idToken, 1),
+        fetchDailyLeaderboard(idToken, 1, initialLeaderboardState.hideZeroWins),
         idToken ? fetchUsernameStatus(idToken) : Promise.resolve(null),
       ]);
       if (cancelled) return;
@@ -174,7 +180,23 @@ export const useLeaderboardData = ({
     const clamped = Math.min(Math.max(1, page), data.totalPages);
     if (clamped === data.page) return;
     dispatch({ type: "pageLoadStart" });
-    const leaderboard = await fetchDailyLeaderboard(idToken, clamped);
+    const leaderboard = await fetchDailyLeaderboard(
+      idToken,
+      clamped,
+      hideZeroWins
+    );
+    if (!leaderboard) {
+      dispatch({ type: "pageLoadError" });
+      return;
+    }
+    dispatch({ type: "pageLoadSuccess", data: leaderboard });
+  };
+
+  const toggleHideZeroWins = async (value: boolean) => {
+    if (isPageLoading) return;
+    dispatch({ type: "setHideZeroWins", value });
+    dispatch({ type: "pageLoadStart" });
+    const leaderboard = await fetchDailyLeaderboard(idToken, 1, value);
     if (!leaderboard) {
       dispatch({ type: "pageLoadError" });
       return;
@@ -211,7 +233,11 @@ export const useLeaderboardData = ({
         inputValue: outcome.username,
       });
       await onUsernameSaved();
-      const refreshed = await fetchDailyLeaderboard(idToken, data?.page ?? 1);
+      const refreshed = await fetchDailyLeaderboard(
+        idToken,
+        data?.page ?? 1,
+        hideZeroWins
+      );
       if (refreshed) dispatch({ type: "refreshData", data: refreshed });
       return;
     }
@@ -249,9 +275,11 @@ export const useLeaderboardData = ({
     isSubmitting,
     submitError,
     isPageLoading,
+    hideZeroWins,
     selfPage,
     dispatch,
     goToPage,
+    toggleHideZeroWins,
     handleSubmitUsername,
   };
 };

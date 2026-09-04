@@ -1,4 +1,4 @@
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols, SpellCheckingInspection
 
 export const GAME_TITLE = "VAGUDLE";
 
@@ -563,6 +563,8 @@ export const LEADERBOARD_JUMP_TO_MY_PAGE_BUTTON_TEXT = "HOPPA TILL MIN SIDA";
 export const LEADERBOARD_ROW_WINS_LOSSES_LABEL = "V/F";
 export const LEADERBOARD_ROW_STREAK_LABEL = "SVIT";
 export const LEADERBOARD_ROW_BEST_LABEL = "BÄST";
+export const LEADERBOARD_HIDE_ZERO_TOGGLE_LABEL =
+  "Dölj konton som inte har spelat";
 
 export const ATTRIBUTION_MODAL_BY_PREFIX = "av";
 export const ATTRIBUTION_MODAL_LICENSE_PREFIX = "Licens:";

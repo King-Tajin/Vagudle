@@ -28,10 +28,12 @@ export async function onRequestGet(context) {
 
     const url = new URL(context.request.url);
     const requestedPage = parseInt(url.searchParams.get("page") ?? "1", 10);
+    const hideZero = url.searchParams.get("hideZero") === "1";
+    const zeroFilterClause = hideZero ? "AND (wins > 0 OR losses > 0)" : "";
 
     const countResult = await db
       .prepare(
-        `SELECT COUNT(*) as count FROM daily_leaderboard WHERE username IS NOT NULL`
+        `SELECT COUNT(*) as count FROM daily_leaderboard WHERE username IS NOT NULL ${zeroFilterClause}`
       )
       .first();
     const totalEntries = countResult?.count ?? 0;
@@ -46,7 +48,7 @@ export async function onRequestGet(context) {
       .prepare(
         `SELECT uid, username, wins, losses, current_streak, best_streak
          FROM daily_leaderboard
-         WHERE username IS NOT NULL
+         WHERE username IS NOT NULL ${zeroFilterClause}
          ORDER BY best_streak DESC, wins DESC
          LIMIT ? OFFSET ?`
       )

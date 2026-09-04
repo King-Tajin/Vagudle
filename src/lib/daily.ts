@@ -348,15 +348,19 @@ export const submitDailyResult = async (
 
 export const fetchDailyLeaderboard = async (
   idToken: string | null,
-  page: number = 1
+  page: number = 1,
+  hideZero: boolean = false
 ): Promise<DailyLeaderboardResponse | null> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(`/api/daily-leaderboard?page=${page}`, {
-      headers: idToken ? { Authorization: `Bearer ${idToken}` } : {},
-      signal: controller.signal,
-    });
+    const res = await fetch(
+      `/api/daily-leaderboard?page=${page}${hideZero ? "&hideZero=1" : ""}`,
+      {
+        headers: idToken ? { Authorization: `Bearer ${idToken}` } : {},
+        signal: controller.signal,
+      }
+    );
     if (!res.ok) return null;
     const data = (await res.json()) as
       | {

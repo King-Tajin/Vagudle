@@ -556,6 +556,8 @@ export const LEADERBOARD_JUMP_TO_MY_PAGE_BUTTON_TEXT = "JUMP TO MY PAGE";
 export const LEADERBOARD_ROW_WINS_LOSSES_LABEL = "W/L";
 export const LEADERBOARD_ROW_STREAK_LABEL = "STREAK";
 export const LEADERBOARD_ROW_BEST_LABEL = "BEST";
+export const LEADERBOARD_HIDE_ZERO_TOGGLE_LABEL =
+  "Hide accounts that haven't played";
 
 export const ATTRIBUTION_MODAL_BY_PREFIX = "by";
 export const ATTRIBUTION_MODAL_LICENSE_PREFIX = "License:";
