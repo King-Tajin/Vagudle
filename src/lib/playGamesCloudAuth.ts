@@ -14,6 +14,8 @@ import type { CapacitorHapticsPlugin } from "./haptics";
 import type { CapacitorReviewPromptPlugin } from "./appReview";
 import type { CapacitorAppPlugin } from "./backButton";
 import type { CapacitorSharePlugin } from "./share";
+import type { CapacitorCrashlyticsPlugin } from "./crashReporting";
+import { setCrashUserId, logBreadcrumb } from "./crashReporting";
 import strings from "../constants/strings";
 
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
@@ -68,6 +70,7 @@ declare global {
         ReviewPrompt?: CapacitorReviewPromptPlugin;
         App?: CapacitorAppPlugin;
         Share?: CapacitorSharePlugin;
+        FirebaseCrashlytics?: CapacitorCrashlyticsPlugin;
       };
     };
   }
@@ -116,6 +119,7 @@ const storePlayGamesSession = (session: PlayGamesSession): void => {
       JSON.stringify(session)
     );
   } catch {}
+  void setCrashUserId(session.uid);
   dispatchPlayGamesSessionSync();
 };
 
@@ -123,6 +127,7 @@ export const clearPlayGamesSession = (): void => {
   try {
     localStorage.removeItem(PLAYGAMES_SESSION_STORAGE_KEY);
   } catch {}
+  void logBreadcrumb("Play Games session cleared");
   dispatchPlayGamesSessionSync();
 };
 

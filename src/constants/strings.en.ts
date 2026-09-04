@@ -1027,6 +1027,11 @@ export const NOTIFICATION_CUSTOM_REMINDER_BODY =
 export const NOTIFICATION_INACTIVITY_TITLE = "Haven't played in a while?";
 export const NOTIFICATION_INACTIVITY_BODY =
   "Come back and pick up where you left off.";
+export const NOTIFICATION_ACTION_PLAY_NOW = "Play Now";
+export const NOTIFICATION_ACTION_PLAY_DAILY = "Play Daily";
+
+export const CRASH_BOUNDARY_MESSAGE_TEXT = "Something went wrong.";
+export const CRASH_BOUNDARY_RELOAD_BUTTON_TEXT = "Reload";
 
 export const CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT =
   "Could not link your account.";

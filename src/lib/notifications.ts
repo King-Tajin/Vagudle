@@ -20,8 +20,18 @@ export const CUSTOM_TIME_REMINDER_NOTIFICATION_ID = 19823;
 export const INACTIVITY_REMINDER_NOTIFICATION_ID = 19822;
 export const REMINDER_NOTIFICATION_CHANNEL_ID = "vagudle-reminders";
 export const REMINDER_NOTIFICATION_LARGE_ICON = "ic_notification_large";
+export const REMINDER_NOTIFICATION_ACTION_TYPE_ID = "vagudle-reminder-actions";
+export const PLAY_NOW_ACTION_ID = "PLAY_NOW";
+export const STREAK_WARNING_ACTION_TYPE_ID = "vagudle-streak-warning-actions";
+export const PLAY_DAILY_ACTION_ID = "PLAY_DAILY";
 
 export const DEFAULT_DAILY_REMINDER_HOUR = 20;
+
+const REMINDER_NOTIFICATION_IDS = new Set([
+  STREAK_RESET_WARNING_NOTIFICATION_ID,
+  CUSTOM_TIME_REMINDER_NOTIFICATION_ID,
+  INACTIVITY_REMINDER_NOTIFICATION_ID,
+]);
 
 type CapacitorLocalNotificationsSchedule = {
   at?: Date;
@@ -39,11 +49,22 @@ type CapacitorLocalNotification = {
   body: string;
   channelId?: string;
   largeIcon?: string;
+  actionTypeId?: string;
   schedule?: CapacitorLocalNotificationsSchedule;
 };
 
 type CapacitorPermissionStatus = {
   display: "granted" | "denied" | "prompt" | "prompt-with-rationale";
+};
+
+type CapacitorNotificationActionType = {
+  id: string;
+  actions: { id: string; title: string }[];
+};
+
+export type CapacitorNotificationActionPerformed = {
+  actionId: string;
+  notification: { id: number };
 };
 
 export type CapacitorLocalNotificationsPlugin = {
@@ -59,6 +80,13 @@ export type CapacitorLocalNotificationsPlugin = {
   }) => Promise<void>;
   checkPermissions: () => Promise<CapacitorPermissionStatus>;
   requestPermissions: () => Promise<CapacitorPermissionStatus>;
+  registerActionTypes: (options: {
+    types: CapacitorNotificationActionType[];
+  }) => Promise<void>;
+  addListener: (
+    eventName: "localNotificationActionPerformed",
+    listenerFunc: (event: CapacitorNotificationActionPerformed) => void
+  ) => Promise<{ remove: () => void }>;
 };
 
 export type CapacitorNotificationPrimerResult = {
@@ -149,6 +177,35 @@ const ensureChannel = async (
   } catch {}
 };
 
+const ensureActionTypesRegistered = async (
+  plugin: CapacitorLocalNotificationsPlugin
+): Promise<void> => {
+  try {
+    await plugin.registerActionTypes({
+      types: [
+        {
+          id: REMINDER_NOTIFICATION_ACTION_TYPE_ID,
+          actions: [
+            {
+              id: PLAY_NOW_ACTION_ID,
+              title: strings.NOTIFICATION_ACTION_PLAY_NOW,
+            },
+          ],
+        },
+        {
+          id: STREAK_WARNING_ACTION_TYPE_ID,
+          actions: [
+            {
+              id: PLAY_DAILY_ACTION_ID,
+              title: strings.NOTIFICATION_ACTION_PLAY_DAILY,
+            },
+          ],
+        },
+      ],
+    });
+  } catch {}
+};
+
 const ensurePermission = async (
   plugin: CapacitorLocalNotificationsPlugin
 ): Promise<boolean> => {
@@ -190,6 +247,7 @@ export const syncNotificationSchedule = async (
   if (!granted) return;
 
   await ensureChannel(plugin);
+  await ensureActionTypesRegistered(plugin);
 
   try {
     await plugin.cancel({
@@ -216,6 +274,7 @@ export const syncNotificationSchedule = async (
         body: strings.NOTIFICATION_STREAK_WARNING_BODY,
         channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
         largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
+        actionTypeId: STREAK_WARNING_ACTION_TYPE_ID,
         schedule: {
           at: fireDate,
           allowWhileIdle: true,
@@ -232,6 +291,7 @@ export const syncNotificationSchedule = async (
       body: strings.NOTIFICATION_CUSTOM_REMINDER_BODY,
       channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
       largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
+      actionTypeId: REMINDER_NOTIFICATION_ACTION_TYPE_ID,
       schedule: {
         on: { hour, minute },
         allowWhileIdle: true,
@@ -251,6 +311,7 @@ export const syncNotificationSchedule = async (
         body: strings.NOTIFICATION_INACTIVITY_BODY,
         channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
         largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
+        actionTypeId: REMINDER_NOTIFICATION_ACTION_TYPE_ID,
         schedule: {
           at: fireDate,
           allowWhileIdle: true,
@@ -283,4 +344,16 @@ export const runNotificationPrimerFlow = async (
   if (result.alreadyShown || !result.accepted) return;
 
   await syncNotificationSchedule(settings, lastCompletedDate, currentDailyDate);
+};
+
+export const listenForReminderNotificationTaps = (
+  onOpenDaily: () => void
+): void => {
+  const plugin = getLocalNotificationsPlugin();
+  if (!plugin) return;
+
+  void plugin.addListener("localNotificationActionPerformed", (event) => {
+    if (!REMINDER_NOTIFICATION_IDS.has(event.notification.id)) return;
+    onOpenDaily();
+  });
 };

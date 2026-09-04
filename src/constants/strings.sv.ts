@@ -1047,6 +1047,11 @@ export const NOTIFICATION_CUSTOM_REMINDER_BODY =
 export const NOTIFICATION_INACTIVITY_TITLE = "Inte spelat på ett tag?";
 export const NOTIFICATION_INACTIVITY_BODY =
   "Kom tillbaka och fortsätt där du slutade.";
+export const NOTIFICATION_ACTION_PLAY_NOW = "Spela nu";
+export const NOTIFICATION_ACTION_PLAY_DAILY = "Spela dagens";
+
+export const CRASH_BOUNDARY_MESSAGE_TEXT = "Något gick fel.";
+export const CRASH_BOUNDARY_RELOAD_BUTTON_TEXT = "Ladda om";
 
 export const CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT =
   "Det gick inte att länka ditt konto.";
