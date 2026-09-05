@@ -389,6 +389,36 @@ export const fetchDailyLeaderboard = async (
   }
 };
 
+export type DailyLeaderboardRank =
+  | { linked: false }
+  | { linked: true; hasUsername: false }
+  | { linked: true; hasUsername: true; rank: number; outOf: number };
+
+export const fetchDailyLeaderboardRank = async (
+  idToken: string | null
+): Promise<DailyLeaderboardRank | null> => {
+  if (!idToken) return { linked: false };
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch("/api/daily-leaderboard-rank", {
+      headers: { Authorization: `Bearer ${idToken}` },
+      signal: controller.signal,
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as
+      | ({ success: true } & DailyLeaderboardRank)
+      | { success: false; error: string };
+    if (!data.success) return null;
+    const { success: _success, ...rank } = data;
+    return rank;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 export type DailyRotationEntry = { wordLength: number; hardMode: boolean };
 
 export const DAILY_SCHEDULE: DailyRotationEntry[] = [

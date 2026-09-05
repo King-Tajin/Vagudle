@@ -66,6 +66,7 @@ import { useGameSettings } from "./hooks/useGameSettings";
 import { useCrossTabSync } from "./hooks/useCrossTabSync";
 import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 import { useDailyMode } from "./hooks/useDailyMode";
+import { useDailyWidgetSync } from "./hooks/useDailyWidgetSync";
 import { useLeaderboardModal } from "./hooks/useLeaderboardModal";
 import {
   completeEmailLinkSignIn,
@@ -478,6 +479,17 @@ function App() {
     setIsGameWon,
     setIsGameLost,
   });
+  const { refreshRank: refreshDailyWidgetRank } = useDailyWidgetSync({
+    user,
+    dailyConfig,
+    dailyNumber,
+    dailyStats,
+    dailyResult,
+  });
+  const handleUsernameSavedForWidget = async () => {
+    await handleUsernameSaved();
+    void refreshDailyWidgetRank();
+  };
   const hasSyncedNotificationsRef = useRef(false);
   useEffect(() => {
     const notificationSettings = {
@@ -1027,7 +1039,7 @@ function App() {
           handleOpenLeaderboard={handleOpenLeaderboard}
           handleCloseLeaderboard={handleCloseLeaderboard}
           handleOpenSettingsFromLeaderboard={handleOpenSettingsFromLeaderboard}
-          handleUsernameSaved={handleUsernameSaved}
+          handleUsernameSaved={handleUsernameSavedForWidget}
           leaderboardIdToken={leaderboardIdToken}
           showGrayCount={showGrayCount}
           setShowGrayCount={setShowGrayCount}

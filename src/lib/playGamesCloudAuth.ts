@@ -15,6 +15,7 @@ import type { CapacitorReviewPromptPlugin } from "./appReview";
 import type { CapacitorAppPlugin } from "./backButton";
 import type { CapacitorSharePlugin } from "./share";
 import type { CapacitorCrashlyticsPlugin } from "./crashReporting";
+import type { CapacitorDailyWidgetPlugin } from "./dailyWidget";
 import { setCrashUserId, logBreadcrumb } from "./crashReporting";
 import strings from "../constants/strings";
 
@@ -71,6 +72,7 @@ declare global {
         App?: CapacitorAppPlugin;
         Share?: CapacitorSharePlugin;
         FirebaseCrashlytics?: CapacitorCrashlyticsPlugin;
+        DailyWidget?: CapacitorDailyWidgetPlugin;
       };
     };
   }

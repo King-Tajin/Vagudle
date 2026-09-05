@@ -83,6 +83,18 @@ export default {
         ],
         rules: ["react-doctor/no-set-state-after-await-in-effect"],
       },
+      {
+        // Setter after await is already guarded by the local ignore flag
+        // set in the effect's cleanup.
+        files: ["**/src/hooks/useDailyWidgetSync.ts"],
+        rules: ["react-doctor/no-set-state-after-await-in-effect"],
+      },
+      {
+        // Cleanup is already returned; listener.remove() runs inside a
+        // .then() because Capacitor's addListener resolves asynchronously.
+        files: ["**/src/hooks/useDailyWidgetSync.ts"],
+        rules: ["react-doctor/effect-needs-cleanup"],
+      },
     ],
   },
 } satisfies ReactDoctorConfig;

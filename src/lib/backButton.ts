@@ -4,11 +4,19 @@ export type CapacitorBackButtonEvent = {
   canGoBack: boolean;
 };
 
+export type CapacitorAppStateChangeEvent = {
+  isActive: boolean;
+};
+
 export type CapacitorAppPlugin = {
-  addListener: (
+  addListener: ((
     eventName: "backButton",
     listenerFunc: (event: CapacitorBackButtonEvent) => void
-  ) => Promise<{ remove: () => void }>;
+  ) => Promise<{ remove: () => void }>) &
+    ((
+      eventName: "appStateChange",
+      listenerFunc: (event: CapacitorAppStateChangeEvent) => void
+    ) => Promise<{ remove: () => void }>);
   exitApp: () => void;
 };
 
