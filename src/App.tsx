@@ -83,6 +83,7 @@ import {
 } from "./lib/localStorage";
 import { loadStats } from "./lib/stats";
 import { isDiscordActivity } from "./lib/discord";
+import { useDiscordRichPresence } from "./hooks/useDiscordRichPresence";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
 import { getPendingDiscordLinkCode } from "./lib/discordCloudAuth";
 import { linkDiscordOAuthWithCurrentUser } from "./lib/cloudSync";
@@ -550,6 +551,13 @@ function App() {
       : hardMode
         ? HARD_MODE_MAX_CHALLENGES
         : NORMAL_MODE_MAX_CHALLENGES);
+  useDiscordRichPresence({
+    gameMode,
+    guessCount: guesses.length,
+    maxGuesses: maxChallenges,
+    isGameWon,
+    isGameLost,
+  });
   const userStatuses = getStatusesFromCellColors(guesses, cellColors);
   const handleSetAutoGray = (value: boolean) => {
     setAutoGray(value);

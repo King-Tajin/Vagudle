@@ -68,6 +68,36 @@ const _logErr = (label: string, err: unknown): void => {
   }
 };
 
+export interface DiscordPresence {
+  details: string;
+  state: string;
+  largeImage?: string;
+  largeText?: string;
+}
+
+export const setDiscordActivity = async (
+  presence: DiscordPresence
+): Promise<void> => {
+  if (!isDiscordActivity || !_sdk) return;
+  try {
+    await _sdk.commands.setActivity({
+      activity: {
+        type: 0,
+        details: presence.details,
+        state: presence.state,
+        assets: presence.largeImage
+          ? {
+              large_image: presence.largeImage,
+              large_text: presence.largeText,
+            }
+          : undefined,
+      },
+    });
+  } catch (err) {
+    _logErr("setActivity failed", err);
+  }
+};
+
 type ActivityAuthResult =
   | {
       ok: true;
@@ -109,7 +139,7 @@ const _doAuthenticateActivity = async (): Promise<ActivityAuthResult> => {
         response_type: "code",
         state: "",
         prompt: "none",
-        scope: ["identify"],
+        scope: ["identify", "rpc.activities.write"],
       });
       code = result.code;
       console.warn("[Discord] Authorized successfully");
