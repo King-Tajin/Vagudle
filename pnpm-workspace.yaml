@@ -1,14 +1,14 @@
 minimumReleaseAge: 2160
 trustPolicy: no-downgrade
 trustPolicyExclude:
-  - 'semver@6.3.1'
-  - 'fastq@1.20.2'
+  - "semver@6.3.1"
+  - "fastq@1.20.2"
 
 overrides:
-  eslint-plugin-react>eslint: '^10.0.0'
+  eslint-plugin-react>eslint: "^10.0.0"
 
 allowBuilds:
-  '@firebase/util': true
+  "@firebase/util": true
   esbuild: true
   ffmpeg-static: true
   protobufjs: true
