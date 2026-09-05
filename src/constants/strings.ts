@@ -34,6 +34,8 @@ const loadStringsModule = (language: Language) => {
   switch (language) {
     case "sv":
       return import("./strings.sv");
+    case "pl":
+      return import("./strings.pl");
     case "en":
     default:
       return import("./strings.en");

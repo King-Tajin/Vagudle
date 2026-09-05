@@ -1,4 +1,4 @@
-export type Language = "en" | "sv";
+export type Language = "en" | "sv" | "pl";
 
 export type LanguageOption = {
   code: Language;
@@ -8,6 +8,7 @@ export type LanguageOption = {
 export const LANGUAGES: LanguageOption[] = [
   { code: "en", label: "English" },
   { code: "sv", label: "Svenska" },
+  { code: "pl", label: "Polski" },
 ];
 
 export const DEFAULT_LANGUAGE: Language = "en";
