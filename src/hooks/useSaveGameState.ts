@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { CharStatus } from "../lib/statuses";
 import type { ChallengeConfig } from "../lib/challenge";
 import type { DuelConfig } from "../lib/duel";
@@ -43,6 +43,8 @@ export const useSaveGameState = ({
   isDailyMode,
   dailyConfig,
 }: Params) => {
+  const lastDailyDateRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (isLoading) return;
     saveSettingsToLocalStorage({ wordLength, ...settings });
@@ -64,7 +66,11 @@ export const useSaveGameState = ({
         autoGrayLetters: Array.from(autoGrayLetters),
       });
     } else if (isDailyMode && dailyConfig) {
-      saveDailyProgress(dailyConfig.date, { guesses, cellColors });
+      const isDateRollover = lastDailyDateRef.current !== dailyConfig.date;
+      lastDailyDateRef.current = dailyConfig.date;
+      if (!isDateRollover) {
+        saveDailyProgress(dailyConfig.date, { guesses, cellColors });
+      }
     } else {
       saveGameStateToLocalStorage({
         guesses,

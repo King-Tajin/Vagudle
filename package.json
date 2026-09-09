@@ -30,7 +30,7 @@
     "firebase": "^12.18.0",
     "framer-motion": "^12.43.0",
     "lottie-web": "^5.13.0",
-    "lucide-react": "^1.41.0",
+    "lucide-react": "^1.42.0",
     "postcss": "^8.5.28",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -56,11 +56,11 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260906.1",
+    "@cloudflare/workers-types": "^5.20260908.1",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
-    "@types/node": "^26.4.1",
+    "@types/node": "^26.5.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@types/ua-parser-js": "^0.7.39",
@@ -76,8 +76,8 @@
     "react-doctor": "^0.9.13",
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
-    "typescript-eslint": "^8.69.0",
-    "wrangler": "^4.129.1"
+    "typescript-eslint": "^8.70.0",
+    "wrangler": "^4.130.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",

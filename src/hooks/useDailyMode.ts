@@ -138,6 +138,12 @@ export const useDailyMode = ({
       setDailyModalMode("error");
       return;
     }
+    if (dailyConfig && dailyConfig.date !== config.date) {
+      setGuesses([]);
+      setCellColors({});
+      setIsGameWon(false);
+      setIsGameLost(false);
+    }
     setDailyConfig(config);
 
     const existingResult = loadDailyResult(config.date);
