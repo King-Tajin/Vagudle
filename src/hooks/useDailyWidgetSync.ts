@@ -41,6 +41,31 @@ const getAppPlugin = (): CapacitorAppPlugin | null => {
   return window.Capacitor.Plugins?.App ?? null;
 };
 
+const buildGameStateFields = (
+  dailyConfig: DailyConfig,
+  dailyNumber: number,
+  dailyStats: DailyStats,
+  dailyResult: DailyResult | null,
+  isDailyMode: boolean,
+  guesses: string[]
+) => {
+  const hasPlayedToday = dailyResult?.date === dailyConfig.date;
+  const inProgress = isDailyMode && !hasPlayedToday && guesses.length > 0;
+  return {
+    date: dailyConfig.date,
+    dailyNumber,
+    wordLength: dailyConfig.wordLength,
+    hardMode: dailyConfig.hardMode,
+    currentStreak: dailyStats.currentStreak,
+    bestStreak: dailyStats.bestStreak,
+    hasPlayedToday,
+    inProgress,
+    wonToday: hasPlayedToday ? (dailyResult?.won ?? null) : null,
+    guessCount: hasPlayedToday ? (dailyResult?.guessCount ?? null) : null,
+    maxGuesses: hasPlayedToday ? (dailyResult?.maxGuesses ?? null) : null,
+  };
+};
+
 export const useDailyWidgetSync = ({
   user,
   dailyConfig,
@@ -83,21 +108,30 @@ export const useDailyWidgetSync = ({
   }, []);
 
   useEffect(() => {
+    if (!dailyConfig) return;
+    void syncDailyWidget(
+      buildGameStateFields(
+        dailyConfig,
+        dailyNumber,
+        dailyStats,
+        dailyResult,
+        isDailyMode,
+        guesses
+      )
+    );
+  }, [dailyConfig, dailyNumber, dailyStats, dailyResult, isDailyMode, guesses]);
+
+  useEffect(() => {
     if (!dailyConfig || !rankState) return;
-    const hasPlayedToday = dailyResult?.date === dailyConfig.date;
-    const inProgress = isDailyMode && !hasPlayedToday && guesses.length > 0;
     void syncDailyWidget({
-      date: dailyConfig.date,
-      dailyNumber,
-      wordLength: dailyConfig.wordLength,
-      hardMode: dailyConfig.hardMode,
-      currentStreak: dailyStats.currentStreak,
-      bestStreak: dailyStats.bestStreak,
-      hasPlayedToday,
-      inProgress,
-      wonToday: hasPlayedToday ? (dailyResult?.won ?? null) : null,
-      guessCount: hasPlayedToday ? (dailyResult?.guessCount ?? null) : null,
-      maxGuesses: hasPlayedToday ? (dailyResult?.maxGuesses ?? null) : null,
+      ...buildGameStateFields(
+        dailyConfig,
+        dailyNumber,
+        dailyStats,
+        dailyResult,
+        isDailyMode,
+        guesses
+      ),
       rank: rankState,
     });
   }, [

@@ -70,7 +70,7 @@ type DailyWidgetSyncPayload = {
   wonToday: boolean | null;
   guessCount: number | null;
   maxGuesses: number | null;
-  rank: DailyWidgetRankState;
+  rank?: DailyWidgetRankState;
 };
 
 type CapacitorDailyWidgetPlugin = {
