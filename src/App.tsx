@@ -92,6 +92,11 @@ import {
   runNotificationPrimerFlow,
   syncNotificationSchedule,
 } from "./lib/notifications";
+import {
+  getLastPlayedAt,
+  getOrInitFirstSeenAt,
+  getInactivityBaselineDate,
+} from "./lib/activity";
 import { requestAppReviewForWins } from "./lib/appReview";
 import type { ChallengeConfig } from "./lib/challenge";
 import type { DuelConfig } from "./lib/duel";
@@ -493,6 +498,7 @@ function App() {
     void refreshDailyWidgetRank();
   };
   const hasSyncedNotificationsRef = useRef(false);
+  const [firstSeenAt] = useState(() => getOrInitFirstSeenAt());
   useEffect(() => {
     const notificationSettings = {
       dailyStreakRemindersEnabled,
@@ -505,13 +511,20 @@ function App() {
       inactivityReminderDays,
     };
     const currentDailyDate = dailyConfig?.date ?? null;
+    const inactivityBaselineDate = getInactivityBaselineDate(
+      getLastPlayedAt(),
+      dailyStats.lastCompletedDate,
+      firstSeenAt
+    );
 
     if (!hasSyncedNotificationsRef.current) {
       hasSyncedNotificationsRef.current = true;
       void runNotificationPrimerFlow(
         notificationSettings,
         dailyStats.lastCompletedDate,
-        currentDailyDate
+        currentDailyDate,
+        dailyStats.currentStreak,
+        inactivityBaselineDate
       );
       return;
     }
@@ -519,7 +532,9 @@ function App() {
     void syncNotificationSchedule(
       notificationSettings,
       dailyStats.lastCompletedDate,
-      currentDailyDate
+      currentDailyDate,
+      dailyStats.currentStreak,
+      inactivityBaselineDate
     );
   }, [
     dailyStreakRemindersEnabled,
@@ -531,7 +546,11 @@ function App() {
     inactivityReminderEnabled,
     inactivityReminderDays,
     dailyStats.lastCompletedDate,
+    dailyStats.currentStreak,
     dailyConfig?.date,
+    firstSeenAt,
+    isGameWon,
+    isGameLost,
   ]);
   const openPostGameModal = () => {
     if (isDuelMode) setIsDuelModalOpen(true);

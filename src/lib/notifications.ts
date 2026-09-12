@@ -65,10 +65,12 @@ export const getCustomReminderTime = (
 export const getStreakResetWarningFireDate = (
   currentDailyDate: string | null,
   lastCompletedDate: DailyStats["lastCompletedDate"],
+  currentStreak: number,
   streakResetWarningHours: number,
   now: Date = new Date()
 ): Date | null => {
   if (!currentDailyDate) return null;
+  if (currentStreak <= 0) return null;
   if (lastCompletedDate === currentDailyDate) return null;
 
   const [year, month, day] = currentDailyDate.split("-").map(Number);
@@ -84,19 +86,19 @@ export const getStreakResetWarningFireDate = (
 };
 
 export const getInactivityReminderFireDate = (
-  lastCompletedDate: DailyStats["lastCompletedDate"],
+  inactivityBaselineDate: Date,
   inactivityReminderDays: number,
   now: Date = new Date()
-): Date | null => {
-  if (!lastCompletedDate) return null;
-  const lastPlayed = new Date(`${lastCompletedDate}T00:00:00Z`);
-  if (Number.isNaN(lastPlayed.getTime())) return null;
-
-  const fireDate = new Date(lastPlayed);
-  fireDate.setUTCDate(fireDate.getUTCDate() + inactivityReminderDays);
+): Date => {
+  const fireDate = new Date(inactivityBaselineDate.getTime());
   fireDate.setUTCHours(DEFAULT_DAILY_REMINDER_HOUR, 0, 0, 0);
+  fireDate.setUTCDate(fireDate.getUTCDate() + inactivityReminderDays);
 
-  return fireDate.getTime() > now.getTime() ? fireDate : null;
+  while (fireDate.getTime() <= now.getTime()) {
+    fireDate.setUTCDate(fireDate.getUTCDate() + inactivityReminderDays);
+  }
+
+  return fireDate;
 };
 
 const ensureChannel = async (
@@ -157,7 +159,9 @@ const ensurePermission = async (
 export const syncNotificationSchedule = async (
   settings: NotificationSettings,
   lastCompletedDate: DailyStats["lastCompletedDate"],
-  currentDailyDate: string | null
+  currentDailyDate: string | null,
+  currentStreak: number,
+  inactivityBaselineDate: Date
 ): Promise<void> => {
   const plugin = getLocalNotificationsPlugin();
   if (!plugin) return;
@@ -200,6 +204,7 @@ export const syncNotificationSchedule = async (
     const fireDate = getStreakResetWarningFireDate(
       currentDailyDate,
       lastCompletedDate,
+      currentStreak,
       settings.streakResetWarningHours
     );
     if (fireDate) {
@@ -236,23 +241,21 @@ export const syncNotificationSchedule = async (
 
   if (settings.inactivityReminderEnabled) {
     const fireDate = getInactivityReminderFireDate(
-      lastCompletedDate,
+      inactivityBaselineDate,
       settings.inactivityReminderDays
     );
-    if (fireDate) {
-      notificationsToSchedule.push({
-        id: INACTIVITY_REMINDER_NOTIFICATION_ID,
-        title: strings.NOTIFICATION_INACTIVITY_TITLE,
-        body: strings.NOTIFICATION_INACTIVITY_BODY,
-        channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
-        largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
-        actionTypeId: REMINDER_NOTIFICATION_ACTION_TYPE_ID,
-        schedule: {
-          at: fireDate,
-          allowWhileIdle: true,
-        },
-      });
-    }
+    notificationsToSchedule.push({
+      id: INACTIVITY_REMINDER_NOTIFICATION_ID,
+      title: strings.NOTIFICATION_INACTIVITY_TITLE,
+      body: strings.NOTIFICATION_INACTIVITY_BODY,
+      channelId: REMINDER_NOTIFICATION_CHANNEL_ID,
+      largeIcon: REMINDER_NOTIFICATION_LARGE_ICON,
+      actionTypeId: REMINDER_NOTIFICATION_ACTION_TYPE_ID,
+      schedule: {
+        at: fireDate,
+        allowWhileIdle: true,
+      },
+    });
   }
 
   if (notificationsToSchedule.length > 0) {
@@ -263,22 +266,31 @@ export const syncNotificationSchedule = async (
 export const runNotificationPrimerFlow = async (
   settings: NotificationSettings,
   lastCompletedDate: DailyStats["lastCompletedDate"],
-  currentDailyDate: string | null
+  currentDailyDate: string | null,
+  currentStreak: number,
+  inactivityBaselineDate: Date
 ): Promise<void> => {
   const primerPlugin = getNotificationPrimerPlugin();
   if (!primerPlugin) {
     await syncNotificationSchedule(
       settings,
       lastCompletedDate,
-      currentDailyDate
+      currentDailyDate,
+      currentStreak,
+      inactivityBaselineDate
     );
     return;
   }
 
-  const result = await primerPlugin.showPrimer();
-  if (result.alreadyShown || !result.accepted) return;
+  await primerPlugin.showPrimer();
 
-  await syncNotificationSchedule(settings, lastCompletedDate, currentDailyDate);
+  await syncNotificationSchedule(
+    settings,
+    lastCompletedDate,
+    currentDailyDate,
+    currentStreak,
+    inactivityBaselineDate
+  );
 };
 
 export const listenForReminderNotificationTaps = (

@@ -30,6 +30,8 @@ export async function onRequestGet(context) {
         dailyStats: row.daily_stats,
         settings: row.settings,
         backgroundId: row.background_id,
+        lastPlayedAt: row.last_played_at,
+        firstSeenAt: row.first_seen_at,
         updatedAt: row.updated_at,
       },
     });

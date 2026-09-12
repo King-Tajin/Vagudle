@@ -40,6 +40,14 @@ import {
   dailyStatsKey,
   type DailyStats,
 } from "./daily";
+import {
+  getLastPlayedAt,
+  recordLastPlayedAt,
+  getOrInitFirstSeenAt,
+  setFirstSeenAt,
+  LAST_PLAYED_AT_KEY,
+  FIRST_SEEN_AT_KEY,
+} from "./activity";
 import strings from "../constants/strings";
 
 export type CloudSavePayload = {
@@ -50,6 +58,8 @@ export type CloudSavePayload = {
   dailyStats: string;
   settings: string;
   backgroundId: string | null;
+  lastPlayedAt: string | null;
+  firstSeenAt: string | null;
 };
 
 export type CloudSave = CloudSavePayload & { updatedAt: string };
@@ -97,6 +107,8 @@ export const buildCloudSavePayloadFromLocalStorage = (
   dailyStats: JSON.stringify(loadDailyStats()),
   settings: JSON.stringify(loadSettingsFromLocalStorage()),
   backgroundId: loadBackgroundId(isMobile),
+  lastPlayedAt: getLastPlayedAt()?.toISOString() ?? null,
+  firstSeenAt: getOrInitFirstSeenAt().toISOString(),
 });
 
 export const cloudSaveMatchesLocal = (
@@ -166,6 +178,35 @@ export const resolveCloudSaveConflict = async (
     mergeWordConnoisseurLists(localWordConnoisseur, cloudWordConnoisseur)
   );
   dispatchStorageSync(WORD_CONNOISSEUR_KEY);
+
+  const localLastPlayedAt = getLastPlayedAt();
+  const cloudLastPlayedAt = cloudSave.lastPlayedAt
+    ? new Date(cloudSave.lastPlayedAt)
+    : null;
+  const mergedLastPlayedAt = [localLastPlayedAt, cloudLastPlayedAt]
+    .filter(
+      (date): date is Date => date !== null && !Number.isNaN(date.getTime())
+    )
+    .reduce<Date | null>(
+      (latest, candidate) =>
+        !latest || candidate.getTime() > latest.getTime() ? candidate : latest,
+      null
+    );
+  if (mergedLastPlayedAt) recordLastPlayedAt(mergedLastPlayedAt);
+  dispatchStorageSync(LAST_PLAYED_AT_KEY);
+
+  const localFirstSeenAt = getOrInitFirstSeenAt();
+  const cloudFirstSeenAt = cloudSave.firstSeenAt
+    ? new Date(cloudSave.firstSeenAt)
+    : null;
+  const mergedFirstSeenAt =
+    cloudFirstSeenAt &&
+    !Number.isNaN(cloudFirstSeenAt.getTime()) &&
+    cloudFirstSeenAt.getTime() < localFirstSeenAt.getTime()
+      ? cloudFirstSeenAt
+      : localFirstSeenAt;
+  setFirstSeenAt(mergedFirstSeenAt);
+  dispatchStorageSync(FIRST_SEEN_AT_KEY);
 
   if (pick === "cloud") {
     try {

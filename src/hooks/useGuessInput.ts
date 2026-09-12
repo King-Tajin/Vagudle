@@ -7,6 +7,7 @@ import {
 } from "../lib/words";
 import { REVEAL_TIME_MS } from "../constants/settings";
 import { triggerErrorHaptic } from "../lib/haptics";
+import { recordLastPlayedAt } from "../lib/activity";
 import type React from "react";
 import strings from "../constants/strings";
 
@@ -158,6 +159,7 @@ export const useGuessInput = ({
         });
         setCellColors(finalCellColors);
 
+        recordLastPlayedAt();
         if (!isChallengeMode && !isDuelMode && !isDailyMode)
           recordStats(guesses.length);
         if (isDailyMode)
@@ -171,6 +173,7 @@ export const useGuessInput = ({
       }
 
       if (guesses.length === maxChallenges - 1) {
+        recordLastPlayedAt();
         if (!isChallengeMode && !isDuelMode && !isDailyMode)
           recordStats(guesses.length + 1);
         if (isDailyMode)

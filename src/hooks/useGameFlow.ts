@@ -8,6 +8,7 @@ import {
 import { getRandomWord } from "../lib/words";
 import { DAILY_PATH } from "../lib/daily";
 import { getPublicOrigin } from "../lib/publicOrigin";
+import { recordLastPlayedAt } from "../lib/activity";
 import type React from "react";
 
 export const handleReturnToNormal = () => {
@@ -78,6 +79,7 @@ export const useGameFlow = ({
   dismissAlert,
 }: Params): Return => {
   const recordStats = (count: number) => {
+    recordLastPlayedAt();
     const base = loadStats(hardMode);
     const updated = addStatsForCompletedGame(base, count, maxChallenges);
     saveStatsToLocalStorage(updated, hardMode);

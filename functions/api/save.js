@@ -32,6 +32,12 @@ const isValidBackgroundId = (value) =>
   value === undefined ||
   (typeof value === "string" && /^[a-z0-9_]{1,64}$/.test(value));
 
+const isValidIsoDateOrNull = (value) => {
+  if (value === null || value === undefined) return true;
+  if (typeof value !== "string" || value.length > 64) return false;
+  return !Number.isNaN(new Date(value).getTime());
+};
+
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
 }
@@ -50,6 +56,8 @@ export async function onRequestPost(context) {
       dailyStats,
       settings,
       backgroundId,
+      lastPlayedAt,
+      firstSeenAt,
     } = body;
 
     if (
@@ -59,7 +67,9 @@ export async function onRequestPost(context) {
       !isJsonString(statsHard) ||
       !isJsonString(dailyStats) ||
       !isJsonString(settings) ||
-      !isValidBackgroundId(backgroundId)
+      !isValidBackgroundId(backgroundId) ||
+      !isValidIsoDateOrNull(lastPlayedAt) ||
+      !isValidIsoDateOrNull(firstSeenAt)
     )
       return json({ success: false, error: "Invalid save data." }, 400);
 
@@ -69,8 +79,8 @@ export async function onRequestPost(context) {
     const row = await db
       .prepare(
         `INSERT INTO player_saves
-           (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, daily_stats, settings, background_id, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+           (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, daily_stats, settings, background_id, last_played_at, first_seen_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(uid) DO UPDATE SET
            discord_id = COALESCE(excluded.discord_id, player_saves.discord_id),
            achievements = excluded.achievements,
@@ -80,6 +90,8 @@ export async function onRequestPost(context) {
            daily_stats = excluded.daily_stats,
            settings = excluded.settings,
            background_id = excluded.background_id,
+           last_played_at = excluded.last_played_at,
+           first_seen_at = excluded.first_seen_at,
            updated_at = CASE
              WHEN player_saves.achievements IS excluded.achievements
               AND player_saves.word_connoisseur IS excluded.word_connoisseur
@@ -88,6 +100,8 @@ export async function onRequestPost(context) {
               AND player_saves.daily_stats IS excluded.daily_stats
               AND player_saves.settings IS excluded.settings
               AND player_saves.background_id IS excluded.background_id
+              AND player_saves.last_played_at IS excluded.last_played_at
+              AND player_saves.first_seen_at IS excluded.first_seen_at
              THEN player_saves.updated_at
              ELSE excluded.updated_at
            END
@@ -103,6 +117,8 @@ export async function onRequestPost(context) {
         dailyStats,
         settings,
         backgroundId ?? null,
+        lastPlayedAt ?? null,
+        firstSeenAt ?? null,
         updatedAt
       )
       .first();
