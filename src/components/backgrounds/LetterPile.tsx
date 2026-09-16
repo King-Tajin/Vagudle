@@ -33,6 +33,13 @@ const SPIN_DECAY = 0.9;
 
 const FREEZE_AFTER_SECONDS = 6;
 
+const RAMP_ENABLED = true;
+const RAMP_HEIGHT_RATIO = 0.062;
+const RAMP_SPAN_RATIO = 0.285;
+const RAMP_EDGE_OFFSET_RATIO = 0.025;
+const RAMP_RESTITUTION = 0.275;
+const RAMP_FRICTION = 0.9985;
+
 const LETTER_SOURCE_MODE = "last_guess" as "random" | "last_guess";
 
 const pickPurpleColor = (): string => {
@@ -44,6 +51,43 @@ const pickPurpleColor = (): string => {
     PURPLE_SATURATION,
     Math.min(95, Math.max(20, lightness))
   );
+};
+
+const getRampSpan = (canvasWidth: number): number =>
+  Math.min(RAMP_SPAN_RATIO * canvasWidth, canvasWidth / 2);
+
+const getRampFloorY = (
+  x: number,
+  canvasWidth: number,
+  canvasHeight: number
+): number | null => {
+  const span = getRampSpan(canvasWidth);
+  if (span <= 0) return null;
+  const rise = RAMP_HEIGHT_RATIO * canvasHeight;
+  const peakY = canvasHeight + RAMP_EDGE_OFFSET_RATIO * canvasHeight;
+  if (x <= span) {
+    const t = x / span;
+    return peakY + rise * t;
+  }
+  if (x >= canvasWidth - span) {
+    const t = (canvasWidth - x) / span;
+    return peakY + rise * t;
+  }
+  return null;
+};
+
+const getRampNormal = (
+  x: number,
+  canvasWidth: number,
+  canvasHeight: number
+): { nx: number; ny: number } => {
+  const span = getRampSpan(canvasWidth);
+  if (span <= 0) return { nx: 0, ny: -1 };
+  const rise = RAMP_HEIGHT_RATIO * canvasHeight;
+  const isLeft = x <= span;
+  const m = isLeft ? rise / span : -(rise / span);
+  const norm = Math.sqrt(1 + m * m);
+  return { nx: m / norm, ny: -1 / norm };
 };
 
 interface LetterParticle {
@@ -234,6 +278,29 @@ export const LetterPile = ({
           if (Math.abs(p.vx) < REST_EPSILON) p.vx = 0;
         }
 
+        if (clearing && RAMP_ENABLED) {
+          const rampFloorY = getRampFloorY(p.x, canvas.width, canvas.height);
+          if (rampFloorY !== null && p.y + p.r > rampFloorY) {
+            const { nx, ny } = getRampNormal(p.x, canvas.width, canvas.height);
+            const overlap = p.y + p.r - rampFloorY;
+            p.x += nx * overlap;
+            p.y += ny * overlap;
+
+            const vDotN = p.vx * nx + p.vy * ny;
+            if (vDotN < 0) {
+              p.vx -= (1 + RAMP_RESTITUTION) * vDotN * nx;
+              p.vy -= (1 + RAMP_RESTITUTION) * vDotN * ny;
+            }
+
+            const tx = -ny;
+            const ty = nx;
+            const vt = (p.vx * tx + p.vy * ty) * RAMP_FRICTION;
+            const vn = p.vx * nx + p.vy * ny;
+            p.vx = vn * nx + vt * tx;
+            p.vy = vn * ny + vt * ty;
+          }
+        }
+
         p.angle += p.spin * dt;
         p.spin *= SPIN_DECAY;
       }
@@ -321,7 +388,7 @@ export const LetterPile = ({
         trackedGuessesUsed = gu;
       }
 
-      if (gu !== trackedGuessesUsed) {
+      if (!clearing && gu !== trackedGuessesUsed) {
         trackedGuessesUsed = gu;
         const target = computeTargetCount(canvas.width, canvas.height, gu, mg);
         const delta = target - plannedCount;
