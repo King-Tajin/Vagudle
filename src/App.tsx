@@ -369,6 +369,7 @@ function App() {
   }, [hapticsEnabled]);
   const startNewGame = (newSolution: string) => {
     achievementCheckedRef.current = false;
+    achievementRevealPendingRef.current = false;
     resetWinRecord();
     setNewlyUnlockedAchievements([]);
     hasAutoClosedTrayRef.current = false;
