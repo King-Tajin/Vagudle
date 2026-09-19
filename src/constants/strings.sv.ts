@@ -625,6 +625,8 @@ export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER = ". Slutför länkningen...";
 export const LINK_DISCORD_FALLBACK_ACCOUNT_TEXT = "ditt konto";
 export const LINK_DISCORD_SIGN_IN_PROMPT_TEXT =
   "Logga in med ditt befintliga Vagudle-konto för att länka det till Discord.";
+export const LINK_DISCORD_NO_ACCOUNT_ERROR_TEXT =
+  "Inget konto hittades. Skapa ett Vagudle-konto först och kom sedan tillbaka för att länka det till Discord.";
 export const LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT = "FORTSÄTT MED GOOGLE";
 export const LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT = "FORTSÄTT MED GITHUB";
 export const LINK_DISCORD_EMAIL_LABEL = "E-POST";
@@ -802,6 +804,23 @@ export const CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT = "LÄNKA DISCORD";
 export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "LOGGA UT";
 export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
   "Logga in för att hålla din statistik, prestationer och inställningar synkade mellan enheter.";
+export const CLOUD_SAVE_SIGN_IN_BUTTON_TEXT = "LOGGA IN";
+export const CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT = "SKAPA KONTO";
+export const CLOUD_SAVE_BACK_BUTTON_TEXT = "‹ TILLBAKA";
+export const CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT =
+  "Inget konto hittades. Skapa ett konto eller välj ett annat inloggningsalternativ.";
+export const CLOUD_SAVE_ALREADY_REGISTERED_ERROR_TEXT =
+  "Ett konto finns redan. Logga in istället.";
+export const CLOUD_SAVE_AGE_GATE_HEADING = "INNAN DU FORTSÄTTER";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART1 =
+  "Jag bekräftar att jag är 13 år eller äldre och godkänner";
+export const CLOUD_SAVE_AGE_GATE_TOS_LINK_TEXT = "Användarvillkoren";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART2 = "och";
+export const CLOUD_SAVE_AGE_GATE_PRIVACY_LINK_TEXT = "Integritetspolicyn";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART3 = ".";
+export const CLOUD_SAVE_AGE_GATE_BLOCKED_ERROR_TEXT =
+  "Du måste bekräfta att du är 13 år eller äldre och godkänna användarvillkoren och integritetspolicyn för att skapa ett konto.";
+export const CLOUD_SAVE_AGE_GATE_CONTINUE_BUTTON_TEXT = "FORTSÄTT";
 export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "DIREKT INLOGGNING";
 export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "E-postadress";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "SKICKA LÄNK";

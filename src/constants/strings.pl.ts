@@ -651,6 +651,8 @@ export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER = ". Kończenie łączenia...";
 export const LINK_DISCORD_FALLBACK_ACCOUNT_TEXT = "Twoje konto";
 export const LINK_DISCORD_SIGN_IN_PROMPT_TEXT =
   "Zaloguj się na swoje istniejące konto Vagudle, aby połączyć je z Discordem.";
+export const LINK_DISCORD_NO_ACCOUNT_ERROR_TEXT =
+  "Nie znaleziono konta. Najpierw utwórz konto Vagudle, a następnie wróć, aby połączyć je z Discordem.";
 export const LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT = "KONTYNUUJ Z GOOGLE";
 export const LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT = "KONTYNUUJ Z GITHUB";
 export const LINK_DISCORD_EMAIL_LABEL = "E-MAIL";
@@ -825,6 +827,23 @@ export const CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT = "POŁĄCZ DISCORD";
 export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "WYLOGUJ";
 export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
   "Zaloguj się, aby synchronizować statystyki, osiągnięcia i ustawienia między urządzeniami.";
+export const CLOUD_SAVE_SIGN_IN_BUTTON_TEXT = "ZALOGUJ SIĘ";
+export const CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT = "UTWÓRZ KONTO";
+export const CLOUD_SAVE_BACK_BUTTON_TEXT = "‹ WSTECZ";
+export const CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT =
+  "Nie znaleziono konta. Utwórz konto lub wybierz inną opcję logowania.";
+export const CLOUD_SAVE_ALREADY_REGISTERED_ERROR_TEXT =
+  "Konto już istnieje. Zaloguj się zamiast tego.";
+export const CLOUD_SAVE_AGE_GATE_HEADING = "ZANIM PRZEJDZIESZ DALEJ";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART1 =
+  "Potwierdzam, że mam ukończone 13 lat i akceptuję";
+export const CLOUD_SAVE_AGE_GATE_TOS_LINK_TEXT = "Regulamin";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART2 = "oraz";
+export const CLOUD_SAVE_AGE_GATE_PRIVACY_LINK_TEXT = "Politykę Prywatności";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART3 = ".";
+export const CLOUD_SAVE_AGE_GATE_BLOCKED_ERROR_TEXT =
+  "Aby utworzyć konto, musisz potwierdzić, że masz ukończone 13 lat i zaakceptować Regulamin oraz Politykę Prywatności.";
+export const CLOUD_SAVE_AGE_GATE_CONTINUE_BUTTON_TEXT = "DALEJ";
 export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "BEZPOŚREDNIE LOGOWANIE";
 export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Adres e-mail";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "WYŚLIJ LINK";

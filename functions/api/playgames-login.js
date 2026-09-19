@@ -6,6 +6,7 @@ import {
   fetchPlayGamesPlayer,
   buildPlayGamesSessionPayload,
 } from "../_shared/playGamesAuth.js";
+import { findPlayerSaveByPlayGamesId } from "../_shared/playerAccount.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -19,7 +20,8 @@ export async function onRequestPost(context) {
     const clientId = context.env.PLAYGAMES_CLIENT_ID;
     const clientSecret = context.env.PLAYGAMES_CLIENT_SECRET;
     const sessionKey = context.env.PLAYGAMES_SESSION_KEY;
-    if (!clientId || !clientSecret || !sessionKey)
+    const db = context.env.DB;
+    if (!clientId || !clientSecret || !sessionKey || !db)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
     const body = await context.request.json();
@@ -49,10 +51,15 @@ export async function onRequestPost(context) {
 
     const session = buildPlayGamesSessionPayload(player, refreshToken);
     const token = await encode(session, sessionKey);
+    const existingAccount = await findPlayerSaveByPlayGamesId(
+      db,
+      player.playerId
+    );
 
     return json({
       success: true,
       token,
+      isNewAccount: !existingAccount,
       user: {
         uid: session.uid,
         displayName: session.username,

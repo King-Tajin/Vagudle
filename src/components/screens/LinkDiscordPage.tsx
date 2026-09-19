@@ -36,6 +36,7 @@ export const LinkDiscordPage = () => {
   const {
     user,
     actionError,
+    authFlowMessage,
     emailLinkSent,
     signInWithGoogle,
     signInWithGithub,
@@ -120,7 +121,7 @@ export const LinkDiscordPage = () => {
         <div className="flex flex-col gap-2">
           <button
             type="button"
-            onClick={() => void signInWithGoogle()}
+            onClick={() => void signInWithGoogle("signin")}
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
@@ -128,7 +129,7 @@ export const LinkDiscordPage = () => {
           </button>
           <button
             type="button"
-            onClick={() => void signInWithGithub()}
+            onClick={() => void signInWithGithub("signin")}
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
             style={buttonStyle}
           >
@@ -153,7 +154,7 @@ export const LinkDiscordPage = () => {
           />
           <button
             type="button"
-            onClick={() => void sendEmailLink(email)}
+            onClick={() => void sendEmailLink(email, "signin")}
             disabled={!email}
             className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors disabled:opacity-40"
             style={buttonStyle}
@@ -169,6 +170,11 @@ export const LinkDiscordPage = () => {
         {actionError && (
           <p className="font-code text-xs text-spice-red leading-relaxed">
             {actionError}
+          </p>
+        )}
+        {authFlowMessage === "not_registered" && (
+          <p className="font-code text-xs text-spice-red leading-relaxed">
+            {strings.LINK_DISCORD_NO_ACCOUNT_ERROR_TEXT}
           </p>
         )}
       </div>

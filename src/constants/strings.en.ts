@@ -617,6 +617,8 @@ export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER = ". Finishing the link...";
 export const LINK_DISCORD_FALLBACK_ACCOUNT_TEXT = "your account";
 export const LINK_DISCORD_SIGN_IN_PROMPT_TEXT =
   "Sign in with your existing Vagudle account to link it to Discord.";
+export const LINK_DISCORD_NO_ACCOUNT_ERROR_TEXT =
+  "No account found. Create a Vagudle account first, then come back and link it to Discord.";
 export const LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT = "CONTINUE WITH GOOGLE";
 export const LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT = "CONTINUE WITH GITHUB";
 export const LINK_DISCORD_EMAIL_LABEL = "EMAIL";
@@ -789,6 +791,23 @@ export const CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT = "LINK DISCORD";
 export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "SIGN OUT";
 export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
   "Sign in to keep your stats, achievements, and settings synced across devices.";
+export const CLOUD_SAVE_SIGN_IN_BUTTON_TEXT = "SIGN IN";
+export const CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT = "CREATE ACCOUNT";
+export const CLOUD_SAVE_BACK_BUTTON_TEXT = "‹ BACK";
+export const CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT =
+  "No account found. Create an account or pick a different sign-in option.";
+export const CLOUD_SAVE_ALREADY_REGISTERED_ERROR_TEXT =
+  "An account already exists. Sign in instead.";
+export const CLOUD_SAVE_AGE_GATE_HEADING = "BEFORE YOU CONTINUE";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART1 =
+  "I confirm I'm 13 years of age or older and I agree to the";
+export const CLOUD_SAVE_AGE_GATE_TOS_LINK_TEXT = "Terms of Service";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART2 = "and";
+export const CLOUD_SAVE_AGE_GATE_PRIVACY_LINK_TEXT = "Privacy Policy";
+export const CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART3 = ".";
+export const CLOUD_SAVE_AGE_GATE_BLOCKED_ERROR_TEXT =
+  "You must confirm you're 13 or older and agree to the Terms of Service and Privacy Policy to create an account.";
+export const CLOUD_SAVE_AGE_GATE_CONTINUE_BUTTON_TEXT = "CONTINUE";
 export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "DIRECT SIGN-IN";
 export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Email address";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "SEND LINK";

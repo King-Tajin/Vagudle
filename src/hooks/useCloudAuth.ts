@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { User } from "firebase/auth";
+import type { User, UserCredential } from "firebase/auth";
 import { loadFirebaseAuth, scheduleFirebaseAuthPreload } from "../lib/firebase";
 import {
   signInWithDiscord as redirectToDiscord,
   completeDiscordSignIn as exchangeDiscordSignIn,
+  consumeDiscordAuthOutcome,
   getStoredDiscordSession,
   clearDiscordSession,
   maybeRenewDiscordSession,
@@ -24,6 +25,7 @@ import {
   isGoogleNativeAvailable,
   signInWithGoogleNative,
 } from "../lib/googleNativeAuth";
+import type { AuthIntent } from "../lib/authIntent";
 import strings from "../constants/strings";
 
 const EMAIL_LINK_STORAGE_KEY = "vagudle-email-link-address:v1";
@@ -40,6 +42,8 @@ export type DeleteAccountResult =
   | { status: "success" }
   | { status: "needs_reauth"; providerId: string }
   | { status: "error"; message: string };
+
+export type AuthFlowMessage = "not_registered" | "already_registered";
 
 const toCloudAuthUser = (user: User): CloudAuthUser => {
   const providerIds = user.providerData.map((p) => p.providerId);
@@ -117,7 +121,14 @@ export const useCloudAuth = () => {
     useState<PlayGamesSession | null>(() => getStoredPlayGamesSession());
   const [authLoading, setAuthLoading] = useState(true);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [authFlowMessage, setAuthFlowMessage] =
+    useState<AuthFlowMessage | null>(null);
   const [emailLinkSent, setEmailLinkSent] = useState(false);
+
+  useEffect(() => {
+    const outcome = consumeDiscordAuthOutcome();
+    if (outcome) setAuthFlowMessage(outcome);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -173,74 +184,173 @@ export const useCloudAuth = () => {
     };
   }, []);
 
-  const signInWithGoogle = useCallback(async () => {
-    setActionError(null);
-    try {
-      const { auth, googleProvider, authModule } = await loadFirebaseAuth();
+  const clearAuthFlowMessage = useCallback(() => {
+    setAuthFlowMessage(null);
+  }, []);
 
-      if (isGoogleNativeAvailable()) {
-        const idToken = await signInWithGoogleNative();
-        if (!idToken) {
-          setActionError(strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
+  const resolveFirebaseIntent = useCallback(
+    async (
+      authModule: Awaited<ReturnType<typeof loadFirebaseAuth>>["authModule"],
+      auth: Awaited<ReturnType<typeof loadFirebaseAuth>>["auth"],
+      userCredential: UserCredential,
+      intent: AuthIntent
+    ): Promise<boolean> => {
+      const isNewUser =
+        authModule.getAdditionalUserInfo(userCredential)?.isNewUser ?? false;
+
+      if (intent === "signin" && isNewUser) {
+        try {
+          await authModule.deleteUser(userCredential.user);
+        } catch {}
+        setAuthFlowMessage("not_registered");
+        return false;
+      }
+
+      if (intent === "create" && !isNewUser) {
+        try {
+          await authModule.signOut(auth);
+        } catch {}
+        setAuthFlowMessage("already_registered");
+        return false;
+      }
+
+      return true;
+    },
+    []
+  );
+
+  const signInWithGoogle = useCallback(
+    async (intent: AuthIntent) => {
+      setActionError(null);
+      setAuthFlowMessage(null);
+      try {
+        const { auth, googleProvider, authModule } = await loadFirebaseAuth();
+
+        if (isGoogleNativeAvailable()) {
+          const idToken = await signInWithGoogleNative();
+          if (!idToken) {
+            setActionError(strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
+            return;
+          }
+          const credential = authModule.GoogleAuthProvider.credential(idToken);
+          const result = await authModule.signInWithCredential(
+            auth,
+            credential
+          );
+          await resolveFirebaseIntent(authModule, auth, result, intent);
           return;
         }
-        const credential = authModule.GoogleAuthProvider.credential(idToken);
-        await authModule.signInWithCredential(auth, credential);
+
+        const result = await authModule.signInWithPopup(auth, googleProvider);
+        await resolveFirebaseIntent(authModule, auth, result, intent);
+      } catch {
+        setActionError(strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
+      }
+    },
+    [resolveFirebaseIntent]
+  );
+
+  const signInWithGithub = useCallback(
+    async (intent: AuthIntent) => {
+      setActionError(null);
+      setAuthFlowMessage(null);
+      try {
+        const { auth, githubProvider, authModule } = await loadFirebaseAuth();
+        const result = await authModule.signInWithPopup(auth, githubProvider);
+        await resolveFirebaseIntent(authModule, auth, result, intent);
+      } catch {
+        setActionError(strings.CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT);
+      }
+    },
+    [resolveFirebaseIntent]
+  );
+
+  const signInWithDiscord = useCallback((intent: AuthIntent) => {
+    setActionError(null);
+    setAuthFlowMessage(null);
+    redirectToDiscord(intent);
+  }, []);
+
+  const signInWithPlayGames = useCallback(async (intent: AuthIntent) => {
+    setActionError(null);
+    setAuthFlowMessage(null);
+    try {
+      const outcome = await triggerPlayGamesSignIn(intent);
+      if (outcome.status === "signed_in") {
+        setPlayGamesSession(outcome.session);
         return;
       }
-
-      await authModule.signInWithPopup(auth, googleProvider);
-    } catch {
-      setActionError(strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
-    }
-  }, []);
-
-  const signInWithGithub = useCallback(async () => {
-    setActionError(null);
-    try {
-      const { auth, githubProvider, authModule } = await loadFirebaseAuth();
-      await authModule.signInWithPopup(auth, githubProvider);
-    } catch {
-      setActionError(strings.CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT);
-    }
-  }, []);
-
-  const signInWithDiscord = useCallback(() => {
-    setActionError(null);
-    redirectToDiscord();
-  }, []);
-
-  const signInWithPlayGames = useCallback(async () => {
-    setActionError(null);
-    try {
-      const session = await triggerPlayGamesSignIn();
-      if (!session) {
-        setActionError(strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
+      if (
+        outcome.status === "not_registered" ||
+        outcome.status === "already_registered"
+      ) {
+        setAuthFlowMessage(outcome.status);
         return;
       }
-      setPlayGamesSession(session);
+      setActionError(strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
     } catch {
       setActionError(strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
     }
   }, []);
 
-  const sendEmailLink = useCallback(async (email: string) => {
-    setActionError(null);
-    setEmailLinkSent(false);
-    try {
-      const { auth, authModule } = await loadFirebaseAuth();
-      await authModule.sendSignInLinkToEmail(auth, email, {
-        url: window.location.href,
-        handleCodeInApp: true,
-      });
+  const checkEmailAccountExists = useCallback(
+    async (email: string): Promise<"exists" | "not_found" | "error"> => {
       try {
-        localStorage.setItem(EMAIL_LINK_STORAGE_KEY, email);
-      } catch {}
-      setEmailLinkSent(true);
-    } catch {
-      setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
-    }
-  }, []);
+        const res = await fetch("/api/check-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        if (!res.ok) return "error";
+
+        const data = (await res.json()) as {
+          success: boolean;
+          exists?: boolean;
+        };
+        if (!data.success) return "error";
+        return data.exists ? "exists" : "not_found";
+      } catch {
+        return "error";
+      }
+    },
+    []
+  );
+
+  const sendEmailLink = useCallback(
+    async (email: string, intent: AuthIntent) => {
+      setActionError(null);
+      setAuthFlowMessage(null);
+      setEmailLinkSent(false);
+      try {
+        const existsResult = await checkEmailAccountExists(email);
+        if (existsResult === "error") {
+          setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
+          return;
+        }
+        if (intent === "signin" && existsResult === "not_found") {
+          setAuthFlowMessage("not_registered");
+          return;
+        }
+        if (intent === "create" && existsResult === "exists") {
+          setAuthFlowMessage("already_registered");
+          return;
+        }
+
+        const { auth, authModule } = await loadFirebaseAuth();
+        await authModule.sendSignInLinkToEmail(auth, email, {
+          url: window.location.href,
+          handleCodeInApp: true,
+        });
+        try {
+          localStorage.setItem(EMAIL_LINK_STORAGE_KEY, email);
+        } catch {}
+        setEmailLinkSent(true);
+      } catch {
+        setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
+      }
+    },
+    [checkEmailAccountExists]
+  );
 
   const signOutUser = useCallback(async () => {
     setActionError(null);
@@ -344,6 +454,8 @@ export const useCloudAuth = () => {
     user,
     authLoading,
     actionError,
+    authFlowMessage,
+    clearAuthFlowMessage,
     emailLinkSent,
     signInWithGoogle,
     signInWithGithub,

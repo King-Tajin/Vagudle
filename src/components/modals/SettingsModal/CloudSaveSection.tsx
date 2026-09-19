@@ -4,10 +4,12 @@ import GoogleIcon from "../../../assets/icons/google.svg?react";
 import GithubIcon from "../../../assets/icons/github.svg?react";
 import DiscordIcon from "../../../assets/icons/discord.svg?react";
 import PlayGamesIcon from "../../../assets/icons/playgames.svg?react";
+import { ActivityLink } from "../../ActivityLink";
 import {
   useCloudAuth,
   isPlayGamesAvailable,
 } from "../../../hooks/useCloudAuth";
+import type { AuthIntent } from "../../../lib/authIntent";
 import {
   getStoredDiscordSession,
   openDiscordLinkFlow,
@@ -43,6 +45,8 @@ const PROVIDER_LABELS: Record<string, string> = {
 
 const getProviderLabel = (providerId: string): string =>
   PROVIDER_LABELS[providerId] ?? strings.CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN;
+
+type EntryMode = "choice" | "signin" | "create-gate" | "create-providers";
 
 const ActivityLinkSection = ({
   accessToken,
@@ -254,6 +258,150 @@ const LinkPlayGamesToAccountButton = ({
   );
 };
 
+const ProviderList = ({
+  intent,
+  isActivityMode,
+  playGamesAvailable,
+  email,
+  setEmail,
+  emailLinkSent,
+  authFlowMessage,
+  actionError,
+  onGoToOtherIntent,
+  signInWithGoogle,
+  signInWithGithub,
+  signInWithDiscord,
+  signInWithPlayGames,
+  sendEmailLink,
+}: {
+  intent: AuthIntent;
+  isActivityMode: boolean;
+  playGamesAvailable: boolean;
+  email: string;
+  setEmail: (email: string) => void;
+  emailLinkSent: boolean;
+  authFlowMessage: "not_registered" | "already_registered" | null;
+  actionError: string | null;
+  onGoToOtherIntent: () => void;
+  signInWithGoogle: (intent: AuthIntent) => void;
+  signInWithGithub: (intent: AuthIntent) => void;
+  signInWithDiscord: (intent: AuthIntent) => void;
+  signInWithPlayGames: (intent: AuthIntent) => void;
+  sendEmailLink: (email: string, intent: AuthIntent) => void;
+}) => (
+  <div className="space-y-2">
+    {authFlowMessage && (
+      <div className="space-y-1 mb-1">
+        <p className="font-code text-xs text-spice-red leading-snug">
+          {authFlowMessage === "not_registered"
+            ? strings.CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT
+            : strings.CLOUD_SAVE_ALREADY_REGISTERED_ERROR_TEXT}
+        </p>
+        <button
+          type="button"
+          onClick={onGoToOtherIntent}
+          className="font-pixel text-[10px] text-crown-amber tracking-widest underline"
+        >
+          {authFlowMessage === "not_registered"
+            ? strings.CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT
+            : strings.CLOUD_SAVE_SIGN_IN_BUTTON_TEXT}
+        </button>
+      </div>
+    )}
+
+    <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-2 mb-1">
+      {strings.CLOUD_SAVE_DIRECT_SIGNIN_HEADING}
+    </p>
+    <button
+      type="button"
+      onClick={() => signInWithGoogle(intent)}
+      className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+      style={providerButtonStyle}
+    >
+      <GoogleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+      {strings.LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
+    </button>
+    <button
+      type="button"
+      onClick={() => signInWithGithub(intent)}
+      className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+      style={providerButtonStyle}
+    >
+      <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+      {strings.LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
+    </button>
+    <div className="flex gap-2 pt-1">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="you@example.com"
+        aria-label={strings.CLOUD_SAVE_EMAIL_ARIA_LABEL}
+        className="flex-1 min-w-0 border-2 font-code text-xs p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber"
+        style={{
+          background: "#0a0014",
+          borderColor: "#3a3a4a",
+          color: "#d1d5db",
+        }}
+      />
+      <button
+        type="button"
+        onClick={() => email && sendEmailLink(email, intent)}
+        className="shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2"
+        style={providerButtonStyle}
+      >
+        <Mail className="w-3.5 h-3.5 shrink-0" />
+        {strings.CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
+      </button>
+    </div>
+    {emailLinkSent && (
+      <p className="font-code text-xs text-spice-lime">
+        {strings.CLOUD_SAVE_EMAIL_SENT_TEXT}
+      </p>
+    )}
+
+    {(!isActivityMode || playGamesAvailable) && (
+      <>
+        <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-3 mb-1">
+          {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING}
+        </p>
+        <p className="font-code text-xs text-gray-500 leading-snug mb-1">
+          {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION}
+        </p>
+        {!isActivityMode && (
+          <button
+            type="button"
+            onClick={() => signInWithDiscord(intent)}
+            className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+            style={providerButtonStyle}
+          >
+            <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+            {strings.LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
+          </button>
+        )}
+        {playGamesAvailable && (
+          <button
+            type="button"
+            onClick={() => void signInWithPlayGames(intent)}
+            className="w-full relative flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+            style={providerButtonStyle}
+          >
+            <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+            {strings.CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT}
+            <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
+              BETA
+            </span>
+          </button>
+        )}
+      </>
+    )}
+
+    {actionError && (
+      <p className="font-code text-xs text-spice-red">{actionError}</p>
+    )}
+  </div>
+);
+
 export const CloudSaveSection = ({
   cloudUpdatedAt,
   isCloudUpToDate,
@@ -273,6 +421,8 @@ export const CloudSaveSection = ({
     user,
     authLoading,
     actionError,
+    authFlowMessage,
+    clearAuthFlowMessage,
     emailLinkSent,
     signInWithGoogle,
     signInWithGithub,
@@ -285,6 +435,47 @@ export const CloudSaveSection = ({
   const [linkStatus, setLinkStatus] = useState<LinkStatus | null>(null);
   const playGamesAvailable = useMemo(() => isPlayGamesAvailable(), []);
   const linkStatusRequestIdRef = useRef(0);
+  const [entryMode, setEntryMode] = useState<EntryMode>("choice");
+  const [ageGateChecked, setAgeGateChecked] = useState(false);
+  const [ageGateBlockedError, setAgeGateBlockedError] = useState(false);
+
+  useEffect(() => {
+    if (!authFlowMessage) return;
+    setEntryMode((current) => {
+      if (current !== "choice") return current;
+      return authFlowMessage === "not_registered"
+        ? "signin"
+        : "create-providers";
+    });
+  }, [authFlowMessage]);
+
+  const goToChoice = () => {
+    setEntryMode("choice");
+    setAgeGateChecked(false);
+    setAgeGateBlockedError(false);
+    clearAuthFlowMessage();
+  };
+
+  const goToSignIn = () => {
+    setEntryMode("signin");
+    clearAuthFlowMessage();
+  };
+
+  const goToCreateGate = () => {
+    setEntryMode("create-gate");
+    setAgeGateChecked(false);
+    setAgeGateBlockedError(false);
+    clearAuthFlowMessage();
+  };
+
+  const handleAgeGateContinue = () => {
+    if (!ageGateChecked) {
+      setAgeGateBlockedError(true);
+      return;
+    }
+    setAgeGateBlockedError(false);
+    setEntryMode("create-providers");
+  };
 
   const refreshLinkStatus = useCallback(async () => {
     const requestId = ++linkStatusRequestIdRef.current;
@@ -461,105 +652,144 @@ export const CloudSaveSection = ({
         </div>
       ) : (
         <div className="space-y-2">
-          <p className="font-code text-xs text-gray-500 leading-snug mb-1">
-            {strings.CLOUD_SAVE_SIGN_IN_PROMPT_TEXT}
-          </p>
-
-          <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-2 mb-1">
-            {strings.CLOUD_SAVE_DIRECT_SIGNIN_HEADING}
-          </p>
-          <button
-            type="button"
-            onClick={signInWithGoogle}
-            className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-            style={providerButtonStyle}
-          >
-            <GoogleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-            {strings.LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
-          </button>
-          <button
-            type="button"
-            onClick={signInWithGithub}
-            className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-            style={providerButtonStyle}
-          >
-            <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-            {strings.LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
-          </button>
-          <div className="flex gap-2 pt-1">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              aria-label={strings.CLOUD_SAVE_EMAIL_ARIA_LABEL}
-              className="flex-1 min-w-0 border-2 font-code text-xs p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber"
-              style={{
-                background: "#0a0014",
-                borderColor: "#3a3a4a",
-                color: "#d1d5db",
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => email && sendEmailLink(email)}
-              className="shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2"
-              style={providerButtonStyle}
-            >
-              <Mail className="w-3.5 h-3.5 shrink-0" />
-              {strings.CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
-            </button>
-          </div>
-          {emailLinkSent && (
-            <p className="font-code text-xs text-spice-lime">
-              {strings.CLOUD_SAVE_EMAIL_SENT_TEXT}
-            </p>
-          )}
-
-          {(!isActivityMode || playGamesAvailable) && (
+          {entryMode === "choice" && (
             <>
-              <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-3 mb-1">
-                {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING}
-              </p>
               <p className="font-code text-xs text-gray-500 leading-snug mb-1">
-                {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION}
+                {strings.CLOUD_SAVE_SIGN_IN_PROMPT_TEXT}
               </p>
-              {!isActivityMode && (
-                <button
-                  type="button"
-                  onClick={signInWithDiscord}
-                  className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-                  style={providerButtonStyle}
-                >
-                  <DiscordIcon
-                    className="w-4 h-4 shrink-0"
-                    aria-hidden="true"
-                  />
-                  {strings.LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
-                </button>
-              )}
-              {playGamesAvailable && (
-                <button
-                  type="button"
-                  onClick={() => void signInWithPlayGames()}
-                  className="w-full relative flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-                  style={providerButtonStyle}
-                >
-                  <PlayGamesIcon
-                    className="w-4 h-4 shrink-0"
-                    aria-hidden="true"
-                  />
-                  {strings.CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT}
-                  <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
-                    BETA
-                  </span>
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={goToSignIn}
+                className="w-full font-pixel text-xs tracking-widest px-3 py-2"
+                style={providerButtonStyle}
+              >
+                {strings.CLOUD_SAVE_SIGN_IN_BUTTON_TEXT}
+              </button>
+              <button
+                type="button"
+                onClick={goToCreateGate}
+                className="w-full font-pixel text-xs tracking-widest px-3 py-2"
+                style={providerButtonStyle}
+              >
+                {strings.CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT}
+              </button>
             </>
           )}
 
-          {actionError && (
-            <p className="font-code text-xs text-spice-red">{actionError}</p>
+          {entryMode === "signin" && (
+            <>
+              <button
+                type="button"
+                onClick={goToChoice}
+                className="font-pixel text-[10px] tracking-widest px-3 py-1.5 mb-1"
+                style={providerButtonStyle}
+              >
+                {strings.CLOUD_SAVE_BACK_BUTTON_TEXT}
+              </button>
+              <ProviderList
+                intent="signin"
+                isActivityMode={isActivityMode}
+                playGamesAvailable={playGamesAvailable}
+                email={email}
+                setEmail={setEmail}
+                emailLinkSent={emailLinkSent}
+                authFlowMessage={authFlowMessage}
+                actionError={actionError}
+                onGoToOtherIntent={goToCreateGate}
+                signInWithGoogle={signInWithGoogle}
+                signInWithGithub={signInWithGithub}
+                signInWithDiscord={signInWithDiscord}
+                signInWithPlayGames={signInWithPlayGames}
+                sendEmailLink={sendEmailLink}
+              />
+            </>
+          )}
+
+          {entryMode === "create-gate" && (
+            <>
+              <button
+                type="button"
+                onClick={goToChoice}
+                className="font-pixel text-[10px] tracking-widest px-3 py-1.5 mb-1"
+                style={providerButtonStyle}
+              >
+                {strings.CLOUD_SAVE_BACK_BUTTON_TEXT}
+              </button>
+              <p className="font-pixel text-xs text-crown-amber tracking-widest leading-none mb-2">
+                {strings.CLOUD_SAVE_AGE_GATE_HEADING}
+              </p>
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={ageGateChecked}
+                  onChange={(e) => {
+                    setAgeGateChecked(e.target.checked);
+                    if (e.target.checked) setAgeGateBlockedError(false);
+                  }}
+                  className="mt-0.5 shrink-0"
+                />
+                <span className="font-code text-xs text-gray-300 leading-snug">
+                  {strings.CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART1}{" "}
+                  <ActivityLink
+                    href="https://vagudle.king-tajin.dev/terms.html"
+                    className="text-crown-gold underline hover:text-crown-amber transition-colors"
+                  >
+                    {strings.CLOUD_SAVE_AGE_GATE_TOS_LINK_TEXT}
+                  </ActivityLink>{" "}
+                  {strings.CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART2}{" "}
+                  <ActivityLink
+                    href="https://vagudle.king-tajin.dev/privacy.html"
+                    className="text-crown-gold underline hover:text-crown-amber transition-colors"
+                  >
+                    {strings.CLOUD_SAVE_AGE_GATE_PRIVACY_LINK_TEXT}
+                  </ActivityLink>
+                  {strings.CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART3}
+                </span>
+              </label>
+              {ageGateBlockedError && (
+                <p className="font-code text-xs text-spice-red leading-snug">
+                  {strings.CLOUD_SAVE_AGE_GATE_BLOCKED_ERROR_TEXT}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={handleAgeGateContinue}
+                disabled={!ageGateChecked}
+                className="w-full font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
+                style={providerButtonStyle}
+              >
+                {strings.CLOUD_SAVE_AGE_GATE_CONTINUE_BUTTON_TEXT}
+              </button>
+            </>
+          )}
+
+          {entryMode === "create-providers" && (
+            <>
+              <button
+                type="button"
+                onClick={goToChoice}
+                className="font-pixel text-[10px] tracking-widest px-3 py-1.5 mb-1"
+                style={providerButtonStyle}
+              >
+                {strings.CLOUD_SAVE_BACK_BUTTON_TEXT}
+              </button>
+              <ProviderList
+                intent="create"
+                isActivityMode={isActivityMode}
+                playGamesAvailable={playGamesAvailable}
+                email={email}
+                setEmail={setEmail}
+                emailLinkSent={emailLinkSent}
+                authFlowMessage={authFlowMessage}
+                actionError={actionError}
+                onGoToOtherIntent={goToSignIn}
+                signInWithGoogle={signInWithGoogle}
+                signInWithGithub={signInWithGithub}
+                signInWithDiscord={signInWithDiscord}
+                signInWithPlayGames={signInWithPlayGames}
+                sendEmailLink={sendEmailLink}
+              />
+            </>
           )}
         </div>
       )}

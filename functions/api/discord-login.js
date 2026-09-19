@@ -6,6 +6,7 @@ import {
   fetchDiscordUser,
   buildDiscordSessionPayload,
 } from "../_shared/discordAuth.js";
+import { findPlayerSaveByDiscordId } from "../_shared/playerAccount.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -19,7 +20,8 @@ export async function onRequestPost(context) {
     const clientId = context.env.DISCORD_CLIENT_ID;
     const clientSecret = context.env.DISCORD_CLIENT_SECRET;
     const sessionKey = context.env.DISCORD_SESSION_KEY;
-    if (!clientId || !clientSecret || !sessionKey)
+    const db = context.env.DB;
+    if (!clientId || !clientSecret || !sessionKey || !db)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
     const body = await context.request.json();
@@ -55,10 +57,12 @@ export async function onRequestPost(context) {
 
     const session = buildDiscordSessionPayload(discordUser, refreshToken);
     const token = await encode(session, sessionKey);
+    const existingAccount = await findPlayerSaveByDiscordId(db, discordUser.id);
 
     return json({
       success: true,
       token,
+      isNewAccount: !existingAccount,
       user: {
         uid: session.uid,
         displayName: session.username,

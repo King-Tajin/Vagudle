@@ -6,6 +6,7 @@ import {
 } from "./achievements";
 import { loadStats } from "./stats";
 import { setCrashUserId, logBreadcrumb } from "./crashReporting";
+import type { AuthIntent } from "./authIntent";
 import strings from "../constants/strings";
 
 export const PLAYGAMES_SESSION_STORAGE_KEY = "vagudle-playgames-session:v1";
@@ -20,6 +21,12 @@ export type PlayGamesSession = {
   avatarUrl: string | null;
   expiresAt: number;
 };
+
+export type PlayGamesSignInOutcome =
+  | { status: "signed_in"; session: PlayGamesSession }
+  | { status: "not_registered" }
+  | { status: "already_registered" }
+  | { status: "error" };
 
 export type PlayGamesProgressSnapshot = {
   unlockedIds: string[];
@@ -90,16 +97,21 @@ export const isPlayGamesAvailable = (): boolean => {
   return !!capacitor.Plugins?.PlayGamesAuth;
 };
 
-const sessionFromResponse = (data: {
+type PlayGamesLoginResponse = {
   success: boolean;
   token?: string;
+  isNewAccount?: boolean;
   user?: {
     uid: string;
     displayName: string;
     avatarUrl: string | null;
     expiresAt: number;
   };
-}): PlayGamesSession | null => {
+};
+
+const sessionFromResponse = (
+  data: PlayGamesLoginResponse
+): PlayGamesSession | null => {
   if (!data.success || !data.token || !data.user) return null;
   return {
     token: data.token,
@@ -110,31 +122,35 @@ const sessionFromResponse = (data: {
   };
 };
 
-export const signInWithPlayGames =
-  async (): Promise<PlayGamesSession | null> => {
-    const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
-    if (!plugin) return null;
+export const signInWithPlayGames = async (
+  intent: AuthIntent
+): Promise<PlayGamesSignInOutcome> => {
+  const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
+  if (!plugin) return { status: "error" };
 
-    const { serverAuthCode } = await plugin.signIn();
-    if (!serverAuthCode) return null;
+  const { serverAuthCode } = await plugin.signIn();
+  if (!serverAuthCode) return { status: "error" };
 
-    const res = await fetch("/api/playgames-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverAuthCode }),
-    });
-    if (!res.ok) return null;
+  const res = await fetch("/api/playgames-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ serverAuthCode }),
+  });
+  if (!res.ok) return { status: "error" };
 
-    const data = (await res.json()) as Parameters<
-      typeof sessionFromResponse
-    >[0];
-    const session = sessionFromResponse(data);
-    if (!session) return null;
+  const data = (await res.json()) as PlayGamesLoginResponse;
+  const session = sessionFromResponse(data);
+  if (!session) return { status: "error" };
 
-    storePlayGamesSession(session);
-    backfillPlayGamesAchievements();
-    return session;
-  };
+  if (intent === "signin" && data.isNewAccount)
+    return { status: "not_registered" };
+  if (intent === "create" && !data.isNewAccount)
+    return { status: "already_registered" };
+
+  storePlayGamesSession(session);
+  backfillPlayGamesAchievements();
+  return { status: "signed_in", session };
+};
 
 export const startPlayGamesLinkAuthCode = async (): Promise<
   { code: string } | { error: string }
