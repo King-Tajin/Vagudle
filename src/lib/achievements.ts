@@ -1,3 +1,8 @@
+import {
+  ACHIEVEMENT_PROGRESS,
+  WIDGET_ONLY_PROGRESS,
+} from "./achievementProgress";
+
 export type AchievementContext = {
   totalWins: number;
   wonInHardMode5Plus: boolean;
@@ -49,31 +54,33 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: "first_win",
     ...strings.ACHIEVEMENT_TEXT.first_win,
     hidden: false,
-    check: (ctx) => ctx.totalWins >= 1,
+    check: (ctx) => ctx.totalWins >= WIDGET_ONLY_PROGRESS.first_win.target,
   },
   {
     id: "win_15",
     ...strings.ACHIEVEMENT_TEXT.win_15,
     hidden: false,
-    check: (ctx) => ctx.totalWins >= 15,
+    check: (ctx) => ctx.totalWins >= ACHIEVEMENT_PROGRESS.win_15.target,
   },
   {
     id: "win_50",
     ...strings.ACHIEVEMENT_TEXT.win_50,
     hidden: false,
-    check: (ctx) => ctx.totalWins >= 50,
+    check: (ctx) => ctx.totalWins >= ACHIEVEMENT_PROGRESS.win_50.target,
   },
   {
     id: "on_a_roll",
     ...strings.ACHIEVEMENT_TEXT.on_a_roll,
     hidden: false,
-    check: (ctx) => ctx.bestCurrentStreak >= 5,
+    check: (ctx) =>
+      ctx.bestCurrentStreak >= ACHIEVEMENT_PROGRESS.on_a_roll.target,
   },
   {
     id: "unstoppable",
     ...strings.ACHIEVEMENT_TEXT.unstoppable,
     hidden: false,
-    check: (ctx) => ctx.bestCurrentStreak >= 15,
+    check: (ctx) =>
+      ctx.bestCurrentStreak >= ACHIEVEMENT_PROGRESS.unstoppable.target,
   },
   {
     id: "hard_5plus",
@@ -109,7 +116,8 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: "word_connoisseur",
     ...strings.ACHIEVEMENT_TEXT.word_connoisseur,
     hidden: false,
-    check: (ctx) => ctx.uniqueWordCount >= 200,
+    check: (ctx) =>
+      ctx.uniqueWordCount >= ACHIEVEMENT_PROGRESS.word_connoisseur.target,
   },
   {
     id: "quack",

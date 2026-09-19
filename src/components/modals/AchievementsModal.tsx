@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { ACHIEVEMENTS, type Achievement } from "../../lib/achievements";
+import { getAchievementProgressRule } from "../../lib/achievementProgress";
 import { BACKGROUNDS } from "../../lib/backgrounds";
 import strings from "../../constants/strings";
 
@@ -18,17 +19,6 @@ type Props = {
   totalWins: number;
   uniqueWordCount: number;
   currentWinStreak: number;
-};
-
-const PROGRESS_CONFIG: Record<
-  string,
-  { target: number; getValue: (props: Props) => number }
-> = {
-  win_15: { target: 15, getValue: (p) => p.totalWins },
-  win_50: { target: 50, getValue: (p) => p.totalWins },
-  word_connoisseur: { target: 200, getValue: (p) => p.uniqueWordCount },
-  on_a_roll: { target: 5, getValue: (p) => p.currentWinStreak },
-  unstoppable: { target: 15, getValue: (p) => p.currentWinStreak },
 };
 
 const bgUnlockedBy = (achievementId: string) =>
@@ -112,9 +102,9 @@ const AchievementRow = ({
   const isUnlocked = unlockedIds.includes(a.id);
   const isHiddenLocked = !isUnlocked && a.hidden;
   const bg = bgUnlockedBy(a.id);
-  const cfg = PROGRESS_CONFIG[a.id];
+  const cfg = getAchievementProgressRule(a.id);
   const showProgress = cfg !== undefined && !isUnlocked;
-  const progress = cfg ? Math.min(cfg.getValue(ctx), cfg.target) : 0;
+  const progress = cfg ? Math.min(ctx[cfg.source], cfg.target) : 0;
   const pct = cfg ? Math.round((progress / cfg.target) * 100) : 0;
 
   return (

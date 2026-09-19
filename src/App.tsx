@@ -67,6 +67,7 @@ import { useCrossTabSync } from "./hooks/useCrossTabSync";
 import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 import { useDailyMode } from "./hooks/useDailyMode";
 import { useDailyWidgetSync } from "./hooks/useDailyWidgetSync";
+import { useAchievementsWidgetSync } from "./hooks/useAchievementsWidgetSync";
 import { useLeaderboardModal } from "./hooks/useLeaderboardModal";
 import {
   completeEmailLinkSignIn,
@@ -290,6 +291,10 @@ function App() {
     stats.currentStreak,
     hardStats.currentStreak
   );
+  const totalWins =
+    stats.totalGames -
+    stats.gamesFailed +
+    (hardStats.totalGames - hardStats.gamesFailed);
   const [newlyUnlockedAchievements, setNewlyUnlockedAchievements] = useState<
     Achievement[]
   >([]);
@@ -351,6 +356,12 @@ function App() {
     recordGuess,
     resetWinRecord,
   } = useAchievements();
+  useAchievementsWidgetSync({
+    unlockedIds,
+    totalWins,
+    uniqueWordCount,
+    currentWinStreak,
+  });
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
   const duelSubmittedRef = useRef(false);
@@ -1102,11 +1113,7 @@ function App() {
           handleRestoreHiddenAttributions={handleRestoreHiddenAttributions}
           uniqueWordCount={uniqueWordCount}
           currentWinStreak={currentWinStreak}
-          totalWins={
-            stats.totalGames -
-            stats.gamesFailed +
-            (hardStats.totalGames - hardStats.gamesFailed)
-          }
+          totalWins={totalWins}
           handleNewGame={handleNewGame}
           handleReturnToNormal={handleReturnToNormal}
           handleWordLengthChange={handleWordLengthChange}

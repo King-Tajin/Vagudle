@@ -15,6 +15,7 @@ import {
   saveWordConnoisseurList,
   deleteWordConnoisseurList,
 } from "../lib/achievements";
+import { ACHIEVEMENT_PROGRESS } from "../lib/achievementProgress";
 import { loadStats } from "../lib/stats";
 import { getGuessStatuses } from "../lib/statuses";
 import { useStorageSync } from "./useStorageSync";
@@ -162,7 +163,9 @@ export const computeAllGrayCount = (
 };
 
 const computeUniqueWordCount = (p: AchievementProgress): number => {
-  if (p.unlockedIds.includes("word_connoisseur")) return 200;
+  if (p.unlockedIds.includes("word_connoisseur")) {
+    return ACHIEVEMENT_PROGRESS.word_connoisseur.target;
+  }
   return loadWordConnoisseurList().length;
 };
 
@@ -205,7 +208,7 @@ export const useAchievements = () => {
 
     if (newlyUnlocked.some((a) => a.id === "word_connoisseur")) {
       deleteWordConnoisseurList();
-      setUniqueWordCount(200);
+      setUniqueWordCount(ACHIEVEMENT_PROGRESS.word_connoisseur.target);
     }
 
     setProgress(next);

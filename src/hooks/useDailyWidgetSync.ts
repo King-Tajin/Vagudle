@@ -6,7 +6,7 @@ import {
   type DailyResult,
   type DailyStats,
 } from "../lib/daily";
-import { syncDailyWidget } from "../lib/dailyWidget";
+import { syncWidget } from "../lib/widgetSync";
 import type { CloudAuthUser } from "./useCloudAuth";
 
 type Params = {
@@ -109,7 +109,8 @@ export const useDailyWidgetSync = ({
 
   useEffect(() => {
     if (!dailyConfig) return;
-    void syncDailyWidget(
+    void syncWidget(
+      "daily",
       buildGameStateFields(
         dailyConfig,
         dailyNumber,
@@ -123,7 +124,7 @@ export const useDailyWidgetSync = ({
 
   useEffect(() => {
     if (!dailyConfig || !rankState) return;
-    void syncDailyWidget({
+    void syncWidget("daily", {
       ...buildGameStateFields(
         dailyConfig,
         dailyNumber,

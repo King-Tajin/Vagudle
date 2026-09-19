@@ -73,8 +73,24 @@ type DailyWidgetSyncPayload = {
   rank?: DailyWidgetRankState;
 };
 
-type CapacitorDailyWidgetPlugin = {
-  syncWidgetData: (payload: DailyWidgetSyncPayload) => Promise<void>;
+type AchievementsWidgetSyncPayload = {
+  unlockedCount: number;
+  totalAchievements: number;
+  nextUpTitle: string;
+  nextUpProgress: number | null;
+  nextUpTarget: number | null;
+};
+
+type WidgetSyncPayloadMap = {
+  daily: DailyWidgetSyncPayload;
+  achievements: AchievementsWidgetSyncPayload;
+};
+
+type CapacitorWidgetSyncPlugin = {
+  syncWidgetData: <K extends keyof WidgetSyncPayloadMap>(options: {
+    widget: K;
+    payload: WidgetSyncPayloadMap[K];
+  }) => Promise<void>;
 };
 
 type CapacitorFirebaseAuthPlugin = {
@@ -194,7 +210,7 @@ interface Window {
       BackNavigation?: BackNavigationPlugin;
       ReviewPrompt?: CapacitorReviewPromptPlugin;
       FirebaseCrashlytics?: CapacitorCrashlyticsPlugin;
-      DailyWidget?: CapacitorDailyWidgetPlugin;
+      WidgetSync?: CapacitorWidgetSyncPlugin;
       FirebaseAuthentication?: CapacitorFirebaseAuthPlugin;
       Haptics?: CapacitorHapticsPlugin;
       LocalNotifications?: CapacitorLocalNotificationsPlugin;
