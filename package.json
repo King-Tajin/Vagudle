@@ -56,7 +56,7 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260917.1",
+    "@cloudflare/workers-types": "^5.20260918.1",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
