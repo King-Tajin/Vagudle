@@ -8,6 +8,7 @@ import { ActivityLink } from "../../ActivityLink";
 import {
   useCloudAuth,
   isPlayGamesAvailable,
+  type AuthFlowMessage,
 } from "../../../hooks/useCloudAuth";
 import type { AuthIntent } from "../../../lib/authIntent";
 import {
@@ -439,15 +440,16 @@ export const CloudSaveSection = ({
   const [ageGateChecked, setAgeGateChecked] = useState(false);
   const [ageGateBlockedError, setAgeGateBlockedError] = useState(false);
 
-  useEffect(() => {
-    if (!authFlowMessage) return;
-    setEntryMode((current) => {
-      if (current !== "choice") return current;
-      return authFlowMessage === "not_registered"
-        ? "signin"
-        : "create-providers";
-    });
-  }, [authFlowMessage]);
+  const [previousAuthFlowMessage, setPreviousAuthFlowMessage] =
+    useState<AuthFlowMessage | null>(null);
+  if (authFlowMessage !== previousAuthFlowMessage) {
+    setPreviousAuthFlowMessage(authFlowMessage);
+    if (authFlowMessage && entryMode === "choice") {
+      setEntryMode(
+        authFlowMessage === "not_registered" ? "signin" : "create-providers"
+      );
+    }
+  }
 
   const goToChoice = () => {
     setEntryMode("choice");

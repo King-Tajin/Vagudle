@@ -122,13 +122,8 @@ export const useCloudAuth = () => {
   const [authLoading, setAuthLoading] = useState(true);
   const [actionError, setActionError] = useState<string | null>(null);
   const [authFlowMessage, setAuthFlowMessage] =
-    useState<AuthFlowMessage | null>(null);
+    useState<AuthFlowMessage | null>(() => consumeDiscordAuthOutcome());
   const [emailLinkSent, setEmailLinkSent] = useState(false);
-
-  useEffect(() => {
-    const outcome = consumeDiscordAuthOutcome();
-    if (outcome) setAuthFlowMessage(outcome);
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
