@@ -49,10 +49,13 @@ export default {
         rules: ["react-doctor/effect-needs-cleanup"],
       },
       {
-        // The reconnect timer is scheduled inside a nested WebSocket "close"
-        // handler but the rule can't trace it back to the effect's own cleanup,
-        // which does clear it via clearTimeout(reconnectTimeoutId).
-        files: ["**/src/hooks/useSyncSocket.ts"],
+        // The reconnect/debounce timer is scheduled inside a nested event
+        // handler but the rule can't trace it back to the effect's own
+        // cleanup, which does clear it via an unconditional clearTimeout(id).
+        files: [
+          "**/src/hooks/useSyncSocket.ts",
+          "**/src/hooks/useOfflineModeCheck.ts",
+        ],
         rules: ["react-doctor/effect-needs-cleanup"],
       },
       {
@@ -95,6 +98,7 @@ export default {
         files: [
           "**/src/hooks/useDailyWidgetSync.ts",
           "**/src/lib/backButton.ts",
+          "**/src/hooks/useOfflineModeCheck.ts",
         ],
         rules: ["react-doctor/effect-needs-cleanup"],
       },

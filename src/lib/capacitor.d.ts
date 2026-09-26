@@ -201,6 +201,21 @@ type CapacitorSharePlugin = {
   share: (options: CapacitorShareOptions) => Promise<{ activityType?: string }>;
 };
 
+type CapacitorNetworkConnectionType = "wifi" | "cellular" | "none" | "unknown";
+
+type CapacitorNetworkStatus = {
+  connected: boolean;
+  connectionType: CapacitorNetworkConnectionType;
+};
+
+type CapacitorNetworkPlugin = {
+  getStatus: () => Promise<CapacitorNetworkStatus>;
+  addListener: (
+    eventName: "networkStatusChange",
+    listenerFunc: (status: CapacitorNetworkStatus) => void
+  ) => Promise<{ remove: () => void }>;
+};
+
 interface Window {
   Capacitor?: {
     isNativePlatform?: () => boolean;
@@ -218,6 +233,7 @@ interface Window {
       PlayGamesAuth?: CapacitorPlayGamesPlugin;
       Browser?: CapacitorBrowserPlugin;
       Share?: CapacitorSharePlugin;
+      Network?: CapacitorNetworkPlugin;
     };
   };
 }
