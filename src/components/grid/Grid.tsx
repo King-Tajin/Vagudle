@@ -273,12 +273,15 @@ export const Grid = ({
               <div className="relative flex items-center justify-center">
                 <RecycleIcon className="w-9 h-9 text-gray-400" />
                 <span
-                  className="absolute font-bold text-gray-400 pointer-events-none"
+                  className="absolute font-bold text-gray-400 pointer-events-none select-none"
                   style={{
                     fontSize: 18,
                     lineHeight: 1,
                     transform: "translate(1px, 2px)",
+                    userSelect: "none",
+                    WebkitUserSelect: "none",
                   }}
+                  aria-hidden="true"
                 >
                   *
                 </span>
