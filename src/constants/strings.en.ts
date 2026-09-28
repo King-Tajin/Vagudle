@@ -251,7 +251,7 @@ export const HOWTO_BADGE_COUNT_DESCRIPTION =
   "Count of correct, present, and absent letters per row";
 export const HOWTO_KEYBOARD_HEADING = "KEYBOARD";
 export const HOWTO_KEYBOARD_DESCRIPTION =
-  "Key colors update as you paint — confirmed, present, and eliminated letters are always visible at a glance.";
+  "Keyboard colors reflect the letters you have painted on the board, so confirmed, present, and eliminated letters are always visible at a glance.";
 
 export const FEEDBACK_VALIDATION_ERROR_MESSAGE =
   "Please fill in all required fields.";
@@ -289,7 +289,7 @@ export const OPEN_SOURCE_STATS_CARD_ALT = "Vagudle GitHub repo stats";
 export const FEATURES_LIST: [string, string][] = [
   [
     "Variable word length",
-    "Play with anywhere between 4 and 7-letter words via Settings.",
+    "Play with anywhere between 4 and 7 letter words via Settings.",
   ],
   [
     "Hard mode",
@@ -297,7 +297,7 @@ export const FEATURES_LIST: [string, string][] = [
   ],
   [
     "Daily",
-    "A new word unlocks once a day, alternating between 4- and 5-letter, normal and hard mode. Track your streak on the leaderboard, and subscribe to a calendar reminder so you never miss one.",
+    "A new word unlocks once a day, alternating between 4 and 5 letter, normal and hard mode. Track your streak on the leaderboard, and subscribe to a calendar reminder so you never miss one.",
   ],
   [
     "Cell painting",

@@ -258,7 +258,7 @@ export const HOWTO_BADGE_COUNT_DESCRIPTION =
   "Antal rätta, förekommande och saknade bokstäver per rad";
 export const HOWTO_KEYBOARD_HEADING = "TANGENTBORD";
 export const HOWTO_KEYBOARD_DESCRIPTION =
-  "Tangentfärgerna uppdateras när du målar — bekräftade, förekommande och uteslutna bokstäver syns alltid direkt.";
+  "Tangentbordets färger speglar bokstäverna du har målat på brädet, så bekräftade, förekommande och uteslutna bokstäver syns alltid direkt.";
 
 export const FEEDBACK_VALIDATION_ERROR_MESSAGE =
   "Fyll i alla obligatoriska fält.";

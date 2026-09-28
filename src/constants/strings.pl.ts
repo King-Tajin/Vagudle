@@ -275,7 +275,7 @@ export const HOWTO_BADGE_COUNT_DESCRIPTION =
   "Liczba poprawnych, obecnych i nieobecnych liter w wierszu";
 export const HOWTO_KEYBOARD_HEADING = "KLAWIATURA";
 export const HOWTO_KEYBOARD_DESCRIPTION =
-  "Kolory klawiszy aktualizują się w miarę malowania — potwierdzone, obecne i wykluczone litery są zawsze widoczne na pierwszy rzut oka.";
+  "Kolory klawiatury odzwierciedlają litery pomalowane na planszy, dzięki czemu potwierdzone, obecne i wykluczone litery są zawsze widoczne na pierwszy rzut oka.";
 
 export const FEEDBACK_VALIDATION_ERROR_MESSAGE =
   "Wypełnij wszystkie wymagane pola.";
