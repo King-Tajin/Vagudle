@@ -4,18 +4,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "vite",
-    "start:backend": "pnpm run build && pnpm exec wrangler pages dev --proxy 5173",
     "build": "vite build && node scripts/optimize-dist.mjs",
-    "types": "wrangler types",
-    "typecheck": "pnpm run types && node ./node_modules/typescript-7/bin/tsc --noEmit && node ./node_modules/typescript-7/bin/tsc --noEmit -p functions/tsconfig.json",
-    "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
-    "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
     "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && react-doctor --verbose",
+    "check:overrides": "node scripts/check-unused-overrides.mjs",
     "doctor": "pnpm dlx react-doctor@latest --verbose",
     "doctor:report": "node scripts/doctor-report.mjs",
-    "check:overrides": "node scripts/check-unused-overrides.mjs"
+    "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
+    "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
+    "start": "vite",
+    "start:backend": "pnpm run build && pnpm exec wrangler pages dev --proxy 5173",
+    "typecheck": "pnpm run types && node ./node_modules/typescript-7/bin/tsc --noEmit && node ./node_modules/typescript-7/bin/tsc --noEmit -p functions/tsconfig.json",
+    "types": "wrangler types"
   },
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.5.0",
@@ -56,7 +56,7 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260926.1",
+    "@cloudflare/workers-types": "^5.20260927.1",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
@@ -77,7 +77,7 @@
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.70.1",
-    "wrangler": "^4.142.0"
+    "wrangler": "^4.143.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",

@@ -1,6 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
 
 const DAILY_RELEASE_HOUR_UTC = 8;
+const MAX_SOCKETS_PER_ROOM = 8;
 
 const getUtcDateString = (date = new Date()) => {
   const shifted = new Date(
@@ -29,7 +30,6 @@ export class SyncRoom {
   constructor(state, env) {
     this.state = state;
     this.env = env;
-    this.sockets = new Set();
   }
 
   async fetch(request) {
@@ -37,24 +37,21 @@ export class SyncRoom {
       return new Response("Expected websocket upgrade.", { status: 426 });
     }
 
+    if (this.state.getWebSockets().length >= MAX_SOCKETS_PER_ROOM) {
+      return new Response("Too many connections.", { status: 429 });
+    }
+
     const pair = new WebSocketPair();
     const [client, server] = Object.values(pair);
 
-    server.accept();
-    this.sockets.add(server);
-
-    server.addEventListener("message", (event) => {
-      this.handleMessage(server, event.data);
-    });
-
-    const cleanup = () => this.sockets.delete(server);
-    server.addEventListener("close", cleanup);
-    server.addEventListener("error", cleanup);
+    this.state.acceptWebSocket(server);
 
     return new Response(null, { status: 101, webSocket: client });
   }
 
-  handleMessage(sender, raw) {
+  webSocketMessage(sender, raw) {
+    if (typeof raw !== "string") return;
+
     let parsed;
     try {
       parsed = JSON.parse(raw);
@@ -63,14 +60,30 @@ export class SyncRoom {
     }
     if (parsed?.type !== "changed") return;
 
-    for (const socket of this.sockets) {
+    const payload = JSON.stringify({ type: "sync" });
+
+    for (const socket of this.state.getWebSockets()) {
       if (socket === sender) continue;
       try {
-        socket.send(JSON.stringify({ type: "sync" }));
+        socket.send(payload);
       } catch {
-        this.sockets.delete(socket);
+        this.closeQuietly(socket, 1011, "Send failed.");
       }
     }
+  }
+
+  webSocketClose(socket) {
+    this.closeQuietly(socket, 1000, "Closing.");
+  }
+
+  webSocketError(socket) {
+    this.closeQuietly(socket, 1011, "Socket error.");
+  }
+
+  closeQuietly(socket, code, reason) {
+    try {
+      socket.close(code, reason);
+    } catch {}
   }
 }
 

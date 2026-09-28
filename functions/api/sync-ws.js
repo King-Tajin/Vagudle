@@ -16,7 +16,12 @@ export async function onRequestGet(context) {
   if (!verified)
     return new Response("Invalid or expired ticket.", { status: 401 });
 
-  const id = env.SYNC_ROOM.idFromName(verified.roomId);
-  const stub = env.SYNC_ROOM.get(id);
-  return stub.fetch(request);
+  try {
+    const id = env.SYNC_ROOM.idFromName(verified.roomId);
+    const stub = env.SYNC_ROOM.get(id);
+    return await stub.fetch(request);
+  } catch (error) {
+    console.error("[sync-ws] Durable Object request failed:", error);
+    return new Response("Sync unavailable.", { status: 503 });
+  }
 }
