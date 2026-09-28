@@ -870,6 +870,13 @@ function App() {
     isDailyMode,
     language: settings.language,
   });
+  const pageHeadingText = isDuelMode
+    ? strings.PAGE_TITLE_DUEL
+    : isChallengeMode
+      ? strings.PAGE_TITLE_CHALLENGE
+      : isDailyMode
+        ? strings.PAGE_TITLE_DAILY
+        : "Vagudle";
   useDiscourageInAppBrowser({ showErrorAlert });
   const { isOfflineModalOpen, handleCloseOfflineModal } = useOfflineModeCheck();
   const {
@@ -941,6 +948,7 @@ function App() {
       className="h-screen flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
       style={{ background: "#0A0A0A" }}
     >
+      <h1 className="sr-only">{pageHeadingText}</h1>
       {SHOW_KING_TAJIN_DISCLAIMER && <DisclaimerBanner />}
       <BackgroundStage
         backgroundId={backgroundId}

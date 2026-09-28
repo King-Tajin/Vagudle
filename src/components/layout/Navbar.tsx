@@ -187,12 +187,12 @@ export const Navbar = ({
                   aria-hidden="true"
                 />
                 <div ref={brandRef} className="min-w-0">
-                  <h1
+                  <p
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
                     Yellow Skipper
-                  </h1>
+                  </p>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
@@ -214,12 +214,12 @@ export const Navbar = ({
                   aria-hidden="true"
                 />
                 <div ref={brandRef} className="min-w-0">
-                  <h1
+                  <p
                     ref={brandTitleRef}
                     className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
                     Yellow Skipper
-                  </h1>
+                  </p>
                   <p
                     ref={brandSubtitleRef}
                     className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
