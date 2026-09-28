@@ -1,6 +1,6 @@
 VAGUDLE PRIVACY POLICY
 
-Last updated: August 2026
+Last updated: September 2026
 
 Vagudle (https://vagudle.king-tajin.dev) is operated by Roland Shikoski.
 
@@ -16,13 +16,26 @@ Vagudle is also available as an Android app. The app displays the same
 Vagudle experience described in this policy and follows the same data
 practices; it does not collect any additional data of its own.
 
-The app requests the following Android permission:
+The app requests the following Android permissions:
 
   - Internet access, required to load the game and sync cloud save data
+  - Notifications, used only if you turn on optional daily reminders in
+    Settings; these reminders are scheduled entirely on your device
+  - Receive boot completed, used to re-schedule your reminders after your
+    device restarts
+  - Loopback interface, used internally by the app's runtime to let its
+    components communicate with each other on-device; no data leaves your
+    device as a result
 
-The app does not include any analytics, advertising, or crash-reporting
-software. It does integrate with Google Play Games Services to offer
-Play Games sign-in, described in the CLOUD SAVE ACCOUNTS section below.
+The app does not include any analytics or advertising software. It does
+use Firebase Crashlytics, a crash-reporting service provided by Google, to
+help us detect and fix crashes and errors. Crash reports include the error
+message and, if you are signed in with Google Play Games, your account
+identifier, so we can investigate whether a crash is tied to a specific
+account. Crashlytics does not receive your email address, cloud save
+contents, or gameplay data. The app also integrates with Google Play Games
+Services to offer Play Games sign-in, described in the CLOUD SAVE ACCOUNTS
+section below.
 
 ---
 
@@ -51,22 +64,29 @@ You can sign in with:
 When you sign in, we store the following in a database to power cloud save:
 
   - Your account identifier, issued by Firebase (or, for Discord and Play
-    Games sign-in, derived from your Discord user ID or Play Games player
-    ID, respectively)
+    Games sign-in, your Discord user ID or Play Games player ID,
+    respectively)
   - Your email address and/or display name, depending on the sign-in method
     you use
-  - For Discord sign-in specifically: your Discord user ID, username, and
-    avatar image URL
-  - For Play Games sign-in specifically: your Play Games player ID, display
-    name, and avatar image URL
-  - Your achievement progress, word statistics, settings, and selected
-    background
+  - Your achievement progress, word statistics, settings, selected
+    background, and the dates you first played and last played
+
+Your Discord username, Discord avatar image, Play Games display name, and
+Play Games avatar image are not stored in our database. They are held only
+inside the signed, encrypted session described below, and are re-fetched
+from Discord or Google Play Games each time you sign in so we can display
+them to you.
 
 This data is retained until you request deletion. To request deletion of
 your cloud save or account data, contact us at the email addresses above.
 
 Your browser may also store a local sign-in session (using localStorage or
 IndexedDB, not cookies) so you stay signed in between visits. If you sign
+in with Discord or Play Games, this local session also includes an
+encrypted refresh token issued by that provider, which lets the app keep
+you signed in without asking you to log in again. This token is stored
+only on your device, never on our servers, and cannot be used to access
+your Discord or Google account beyond verifying your identity. If you sign
 in with Google, GitHub, Discord, or Play Games, that sign-in is also
 subject to the provider's own privacy policy. We never receive your
 password from these providers.
@@ -140,8 +160,10 @@ Activity). What we store depends on how you play:
 
 ACCOUNT DELETION
 
-You can request deletion of your account and associated data at any time by
-contacting us at the email addresses above. When you do, we delete:
+If you are signed in, you can delete your account and its associated data
+at any time from the Account section of Settings, which deletes this data
+immediately. You can also request deletion at any time by contacting us at
+the email addresses above. Either way, we delete:
 
   - Your cloud save data (achievements, stats, settings, background)
   - Your daily leaderboard entry (username, wins, losses, streaks)
@@ -168,6 +190,17 @@ data is stored:
 This data is retained indefinitely and used only to review and respond to
 feedback. To request deletion of your data, contact us at the email
 addresses above.
+
+---
+
+SECURITY AND RATE LIMITING
+
+To protect the Site from spam and abuse, our servers briefly check the IP
+address of each request against automated rate limits (for example, to
+prevent someone from flooding a feature with automated submissions).
+Outside of the feedback form described above, these IP addresses are not
+stored in a database or linked to your account; they are used only in the
+moment to decide whether to allow or block a request.
 
 ---
 

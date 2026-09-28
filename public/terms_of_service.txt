@@ -1,11 +1,11 @@
 VAGUDLE TERMS OF SERVICE
 
-Last updated: August 2026
+Last updated: September 2026
 
 These Terms of Service ("Terms") govern your use of Vagudle, a free online
-word game available at vagudle.com ("the Game", "the Site"). By using the
-Site, you agree to these Terms. If you do not agree, please do not use the
-Site.
+word game available at vagudle.king-tajin.dev ("the Game", "the Site"). By
+using the Site, you agree to these Terms. If you do not agree, please do
+not use the Site.
 
 ---
 
@@ -37,6 +37,8 @@ Vagudle is a free word-guessing game. It offers:
   - Daily mode, a once-a-day word with a public leaderboard, streak
     tracking, and integration with Discord Activities
   - Optional cloud save, letting you sync progress across devices
+  - Optional daily reminder notifications on the Android app, scheduled
+    entirely on your device
 
 The Site is provided free of charge. We reserve the right to modify,
 suspend, or discontinue any part of the Site at any time without notice.
@@ -68,11 +70,12 @@ Your use of Google, GitHub, Discord, or Google Play Games to sign in is
 also subject to that provider's own terms of service, separate from these
 Terms.
 
-You may request deletion of your account and associated data at any time by
-contacting us using the information in Section 16. Certain group-level data,
-such as a Discord server's combined Daily mode streak, is not tied to any
-single individual and is not deleted as part of an individual account
-deletion request.
+If you are signed in, you may delete your account and associated data at
+any time from the Account section of Settings, or by contacting us using
+the information in Section 16. Certain group-level data, such as a
+Discord server's combined Daily mode streak, is not tied to any single
+individual and is not deleted as part of an individual account deletion
+request.
 
 ---
 
@@ -154,7 +157,8 @@ Vagudle is also available as an Android app on Google Play. Your use of the
 app is also subject to Google Play's Terms of Service. The app provides the
 same Game described in these Terms; it does not offer any additional
 features beyond what is described here, aside from Google Play Games
-sign-in as described in Section 4.
+sign-in as described in Section 4. The app uses Firebase Crashlytics to
+help us diagnose crashes, as described in our Privacy Policy.
 
 We are not affiliated with or endorsed by Google LLC.
 
