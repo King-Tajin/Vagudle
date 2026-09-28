@@ -1,19 +1,29 @@
 # Vagudle
 
-> Vagudle is a free word game with more challenge: unlimited plays, harder dictionaries, up to 11 tries, custom word challenges, plus a daily mode with a leaderboard.
+> Vagudle is a free word game where each guess only reveals color counts, not which letters are green, yellow or gray. Unlimited plays, harder words, custom challenges and a daily leaderboard.
 
 Vagudle is a free word-guessing game inspired by Hardle, built for more challenge: unlimited plays, harder dictionaries, and no pesky daily limit to get in your way. There's also an optional daily mode with its own leaderboard. Built and maintained by [King-Tajin](https://King-Tajin.dev).
 
 ## How to Play
 
-Type a word and press Enter to submit a guess. You have 11 tries to find the hidden word. Select a brush, then click or drag cells to mark what you know: green for the right letter in the right spot, yellow for the right letter in the wrong spot, and gray for letters not in the word.
+Type a word and press Enter to submit a guess. You have 11 tries to find the hidden word.
+
+Unlike Wordle, Vagudle does not tell you which letters are green, yellow or gray. After each guess it only shows how many letters of each color are in that row. You work out which specific letters earned each color by deduction, then paint the cells yourself with the brushes. Green means the right letter in the right spot, yellow means the right letter in the wrong spot, and gray means the letter is not in the word.
+
+## How the Clues Work
+
+- Does Vagudle show which letters are green, yellow or gray? No. Players are only given the count of green, yellow and gray letters for each guess, not which letters they belong to.
+- Are the cells colored automatically? Mostly no. Cells stay unpainted until you mark them with a brush, so the colors you see are your own deductions. Auto-Gray and Auto-Green can fill in a few cells for you, but when the result certain, so they save clicks rather than giving away information.
+- How do players figure out which letters are which? By comparing counts across guesses, using the keyboard, and painting cells as they narrow things down. Auto-Gray and Auto-Green can fill in some cells for you once a result is certain.
+- Why is it harder than Wordle? Because Wordle reveals the color of every letter, while Vagudle only reveals how many of each color there are.
 
 ## Features
 
 - Variable Word Length: Play with anywhere between 4 and 7-letter words via Settings.
 - Hard Mode: Solutions are selected from uncommon words and the player is limited to 9 guesses.
 - Daily: A new word unlocks once a day, alternating between 4- and 5-letter, normal and hard mode. Track your streak on the leaderboard, and subscribe to a calendar reminder so you never miss one.
-- Cell Painting: Select a brush and click or drag across cells to color them.
+- Color Counts: Each row shows how many green, yellow and gray letters the guess has, but not which letters they are.
+- Cell Painting: Select a brush and click or drag across cells to mark which letters you think are green, yellow or gray.
 - Auto-Gray: Automatically grays out letters from fully-gray rows.
 - Auto-Green: Fills in user marked correct letters across all rows automatically.
 - Custom Challenges: Open Settings and go to the Challenge tab. Pick a dictionary, choose how many guesses to allow, type your secret word, and hit Generate Link. Share the link to let others play your custom word with exactly the settings you chose. Results never count toward the recipient's stats.

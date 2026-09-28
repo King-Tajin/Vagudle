@@ -7,7 +7,7 @@ export const DAILY_DESCRIPTION =
 export const DAILY_URL = "https://vagudle.king-tajin.dev/daily";
 
 const ROOT_DESCRIPTION =
-  "Vagudle is a free word game with more challenge: unlimited plays, harder dictionaries, up to 11 tries, custom word challenges, plus a daily mode with a leaderboard.";
+  "Vagudle is a free word game where each guess only reveals color counts, not which letters are green, yellow or gray. Unlimited plays, harder words, custom challenges and a daily leaderboard.";
 
 const ROOT_TITLE = "Vagudle: A Harder Word Guessing Game";
 
@@ -60,9 +60,11 @@ const DAILY_HIDDEN_MAIN = `<main
 
         <h2>How to Play</h2>
         <p>
-          Type a word and press Enter to submit a guess. Color counts indicate
-          right letter/right spot (Green), right letter/wrong spot (Yellow),
-          or letter not in the word (Gray).
+          Type a word and press Enter to submit a guess. Vagudle does not tell
+          you which letters are green, yellow or gray. Each guess only shows
+          how many letters are right letter/right spot (Green), right
+          letter/wrong spot (Yellow), or not in the word (Gray), and you work
+          out which letters are which yourself.
         </p>
 
         <h2>Open Source</h2>

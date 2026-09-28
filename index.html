@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Vagudle is a free word game with more challenge: unlimited plays, harder dictionaries, up to 11 tries, custom word challenges, plus a daily mode with a leaderboard."
+      content="Vagudle is a free word game where each guess only reveals color counts, not which letters are green, yellow or gray. Unlimited plays, harder words, custom challenges and a daily leaderboard."
     />
     <link rel="canonical" href="https://vagudle.king-tajin.dev/" />
 
@@ -16,7 +16,7 @@
     <meta property="og:title" content="Vagudle: A Harder Word Guessing Game" />
     <meta
       property="og:description"
-      content="Vagudle is a free word game with more challenge: unlimited plays, harder dictionaries, up to 11 tries, custom word challenges, plus a daily mode with a leaderboard."
+      content="Vagudle is a free word game where each guess only reveals color counts, not which letters are green, yellow or gray. Unlimited plays, harder words, custom challenges and a daily leaderboard."
     />
     <meta
       property="og:image"
@@ -35,7 +35,7 @@
     <meta name="twitter:title" content="Vagudle: A Harder Word Guessing Game" />
     <meta
       name="twitter:description"
-      content="Vagudle is a free word game with more challenge: unlimited plays, harder dictionaries, up to 11 tries, custom word challenges, plus a daily mode with a leaderboard."
+      content="Vagudle is a free word game where each guess only reveals color counts, not which letters are green, yellow or gray. Unlimited plays, harder words, custom challenges and a daily leaderboard."
     />
     <meta
       name="twitter:image"
@@ -57,7 +57,7 @@
         "name": "Vagudle",
         "operatingSystem": "All",
         "applicationCategory": "GameApplication",
-        "description": "Vagudle is a word-guessing game inspired by Hardle, with extra tools to help you solve the puzzle and no pesky daily limit to get in your way.",
+        "description": "Vagudle is a word-guessing game inspired by Hardle. Each guess only reveals how many letters are green, yellow or gray, not which letters they are, so players must deduce the answer. No pesky daily limit to get in your way.",
         "author": {
           "@type": "Person",
           "name": "King-Tajin",
@@ -69,7 +69,8 @@
           "Variable word length: Play with anywhere between 4 and 7-letter words via Settings.",
           "Hard mode: Solutions are selected from uncommon words and the player is limited to 9 guesses.",
           "Daily: A new word unlocks once a day, alternating between 4- and 5-letter, normal and hard mode. Track your streak on the leaderboard, and subscribe to a calendar reminder so you never miss one.",
-          "Cell painting: Select a brush and click or drag across cells to color them.",
+          "Color counts: Each row shows how many green, yellow and gray letters a guess has, but not which letters they are.",
+          "Cell painting: Select a brush and click or drag across cells to mark which letters you think are green, yellow or gray.",
           "Auto-Gray: Automatically grays out letters from fully-gray rows.",
           "Auto-Green: Fills in user marked correct letters across all rows automatically.",
           "Gray count: Shows how many absent letters are in a row.",
@@ -104,7 +105,7 @@
                 "@type": "ListItem",
                 "position": 4,
                 "name": "Cell painting",
-                "description": "Select a brush and click or drag across cells to color them."
+                "description": "Select a brush and click or drag across cells to mark which letters you think are green, yellow or gray."
               },
               {
                 "@type": "ListItem",
@@ -121,8 +122,8 @@
               {
                 "@type": "ListItem",
                 "position": 7,
-                "name": "Gray count",
-                "description": "Shows how many absent letters are in a row."
+                "name": "Color counts",
+                "description": "Each row shows how many green, yellow and gray letters the guess has, but not which letters they are."
               },
               {
                 "@type": "ListItem",
@@ -150,10 +151,39 @@
               },
               {
                 "@type": "HowToStep",
-                "name": "Paint the Cells",
-                "text": "Select a brush, then click or drag cells to mark what you can figure out. Color counts indicate right letter/right spot (Green), right letter/wrong spot (Yellow), or letter not in the word (Gray)."
+                "name": "Read the Counts",
+                "text": "Vagudle does not show which letters are green, yellow or gray. Each guess only shows how many letters are right letter/right spot (Green), right letter/wrong spot (Yellow), or not in the word (Gray)."
+              },
+              {
+                "@type": "HowToStep",
+                "name": "Deduce and Paint the Cells",
+                "text": "Work out which letters earned each color by comparing counts across guesses, then select a brush and click or drag cells to mark your deductions."
               }
             ]
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does Vagudle show which letters are green, yellow or gray?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Vagudle only gives you the count of green, yellow and gray letters for each guess, not which letters they are. Cells stay unpainted until you mark them yourself, so you deduce which letters are which. Optional Auto-Gray and Auto-Green settings can fill in a few cells for you, but only once the result is already certain, so they save clicks rather than giving away new information."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How is Vagudle different from Wordle?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Wordle colors every letter for you. Vagudle only reveals how many letters of each color a guess has, so players have to work out which letters are right, misplaced or absent. It also has unlimited plays, harder dictionaries, up to 11 tries, custom challenges and an optional daily mode with a leaderboard."
+            }
           }
         ]
       }
@@ -185,10 +215,18 @@
         <h2>How to Play</h2>
         <p>
           Type a word and press Enter to submit a guess. You have 11 tries to
-          find the hidden word. Select a brush, then click or drag cells to mark
-          what you know: green for the right letter in the right spot, yellow
-          for the right letter in the wrong spot, and gray for letters not in
-          the word.
+          find the hidden word.
+        </p>
+
+        <h2>How the Clues Work</h2>
+        <p>
+          Unlike Wordle, Vagudle does not tell you which letters are green,
+          yellow or gray. After each guess it only shows how many letters of
+          each color are in that row: green for the right letter in the right
+          spot, yellow for the right letter in the wrong spot, and gray for
+          letters not in the word. You work out which specific letters earned
+          each color by deduction, then select a brush and click or drag cells
+          to paint them yourself.
         </p>
 
         <h2>Features</h2>
@@ -205,8 +243,16 @@
           normal and hard mode. Track your streak on the leaderboard, and
           subscribe to a calendar reminder so you never miss one.
         </p>
+        <h3>Color Counts</h3>
+        <p>
+          Each row shows how many green, yellow and gray letters the guess has,
+          but not which letters they are.
+        </p>
         <h3>Cell Painting</h3>
-        <p>Select a brush and click or drag across cells to color them.</p>
+        <p>
+          Select a brush and click or drag across cells to mark which letters
+          you think are green, yellow or gray.
+        </p>
         <h3>Auto-Gray</h3>
         <p>Automatically grays out letters from fully-gray rows.</p>
         <h3>Auto-Green</h3>
