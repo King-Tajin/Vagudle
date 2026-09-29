@@ -36,6 +36,8 @@ const loadStringsModule = (language: Language) => {
       return import("./strings.sv");
     case "pl":
       return import("./strings.pl");
+    case "pt":
+      return import("./strings.pt");
     case "en":
     default:
       return import("./strings.en");

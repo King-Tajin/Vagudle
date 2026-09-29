@@ -144,6 +144,8 @@ export const BANNER_DIFFICULTY_HARD_TEXT = "Hard";
 export const BANNER_DIFFICULTY_NORMAL_TEXT = "Normal";
 export const BANNER_DAILY_ATTEMPT_TEXT = "1 attempt/day";
 export const BANNER_DUEL_WINDOW_TEXT = "24h";
+export const BANNER_DICTIONARY_TEXT = (dictLabel: string) =>
+  `${dictLabel} word`;
 
 export const ERROR_INVALID_CHALLENGE_TITLE = "INVALID CHALLENGE LINK";
 export const ERROR_INVALID_CHALLENGE_DESCRIPTION =
@@ -1067,14 +1069,7 @@ export const CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT =
 export const CLOUD_SYNC_LINK_PLAYGAMES_RETRY_ERROR_TEXT =
   "Could not link your Play Games account. Please try again.";
 export const RELATIVE_TIME_JUST_NOW_TEXT = "just now";
-export const RELATIVE_TIME_UNIT_LABELS: Record<string, string> = {
-  second: "second",
-  minute: "minute",
-  hour: "hour",
-  day: "day",
-  month: "month",
-  year: "year",
-};
+export const LOCALE_TAG = "en";
 
 export const DAILY_MODE_SIGNIN_WARNING_TEXT =
   "Sign in to save to the leaderboard";

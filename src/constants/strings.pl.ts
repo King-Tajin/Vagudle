@@ -167,6 +167,8 @@ export const BANNER_DIFFICULTY_HARD_TEXT = "Trudny";
 export const BANNER_DIFFICULTY_NORMAL_TEXT = "Normalny";
 export const BANNER_DAILY_ATTEMPT_TEXT = "1 próba/dzień";
 export const BANNER_DUEL_WINDOW_TEXT = "24h";
+export const BANNER_DICTIONARY_TEXT = (dictLabel: string) =>
+  `słownik ${dictLabel}`;
 
 export const ERROR_INVALID_CHALLENGE_TITLE = "NIEPRAWIDŁOWY LINK WYZWANIA";
 export const ERROR_INVALID_CHALLENGE_DESCRIPTION =
@@ -1113,14 +1115,7 @@ export const CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT =
 export const CLOUD_SYNC_LINK_PLAYGAMES_RETRY_ERROR_TEXT =
   "Nie udało się połączyć konta Play Games. Spróbuj ponownie.";
 export const RELATIVE_TIME_JUST_NOW_TEXT = "przed chwilą";
-export const RELATIVE_TIME_UNIT_LABELS: Record<string, string> = {
-  second: "sekunda",
-  minute: "minuta",
-  hour: "godzina",
-  day: "dzień",
-  month: "miesiąc",
-  year: "rok",
-};
+export const LOCALE_TAG = "pl";
 
 export const DAILY_MODE_SIGNIN_WARNING_TEXT =
   "Zaloguj się, aby zapisać wynik na tablicy wyników";

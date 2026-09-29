@@ -151,6 +151,8 @@ export const BANNER_DIFFICULTY_HARD_TEXT = "Svårt";
 export const BANNER_DIFFICULTY_NORMAL_TEXT = "Normal";
 export const BANNER_DAILY_ATTEMPT_TEXT = "1 försök/dag";
 export const BANNER_DUEL_WINDOW_TEXT = "24h";
+export const BANNER_DICTIONARY_TEXT = (dictLabel: string) =>
+  `${dictLabel} ordlista`;
 
 export const ERROR_INVALID_CHALLENGE_TITLE = "OGILTIG UTMANINGSLÄNK";
 export const ERROR_INVALID_CHALLENGE_DESCRIPTION =
@@ -1087,14 +1089,7 @@ export const CLOUD_SYNC_LINK_PLAYGAMES_ERROR_TEXT =
 export const CLOUD_SYNC_LINK_PLAYGAMES_RETRY_ERROR_TEXT =
   "Det gick inte att länka ditt Play Games-konto. Försök igen.";
 export const RELATIVE_TIME_JUST_NOW_TEXT = "just nu";
-export const RELATIVE_TIME_UNIT_LABELS: Record<string, string> = {
-  second: "sekund",
-  minute: "minut",
-  hour: "timme",
-  day: "dag",
-  month: "månad",
-  year: "år",
-};
+export const LOCALE_TAG = "sv";
 
 export const DAILY_MODE_SIGNIN_WARNING_TEXT =
   "Logga in för att spara till topplistan";

@@ -584,7 +584,7 @@ export const pullCloudSave = async (
 const RELATIVE_TIME_UNITS: {
   limitSeconds: number;
   divisorSeconds: number;
-  label: string;
+  label: Intl.RelativeTimeFormatUnit;
 }[] = [
   { limitSeconds: 60, divisorSeconds: 1, label: "second" },
   { limitSeconds: 3600, divisorSeconds: 60, label: "minute" },
@@ -604,6 +604,7 @@ export const formatRelativeTime = (iso: string): string => {
     RELATIVE_TIME_UNITS.find((u) => diffSeconds < u.limitSeconds) ??
     RELATIVE_TIME_UNITS[RELATIVE_TIME_UNITS.length - 1];
   const value = Math.floor(diffSeconds / unit.divisorSeconds);
-  const label = strings.RELATIVE_TIME_UNIT_LABELS[unit.label] ?? unit.label;
-  return `${value} ${label}${value === 1 ? "" : "s"} ago`;
+  return new Intl.RelativeTimeFormat(strings.LOCALE_TAG, {
+    numeric: "always",
+  }).format(-value, unit.label);
 };

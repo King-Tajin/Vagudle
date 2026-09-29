@@ -53,15 +53,15 @@ const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
     <BannerLabel>{strings.BANNER_LABEL_CUSTOM_CHALLENGE}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
-        {config.length} letters
+        {strings.CHALLENGE_CREATOR_LETTERS_TEXT(config.length)}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
-        {DICT_LABELS[config.dict]} word
+        {strings.BANNER_DICTIONARY_TEXT(DICT_LABELS[config.dict])}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<Target className="w-3 h-3 text-crown-amber" />}>
-        {config.guesses} guesses
+        {strings.CHALLENGE_CREATOR_GUESSES_TEXT(config.guesses)}
       </BannerStat>
     </div>
   </BannerFrame>
@@ -72,15 +72,15 @@ const DuelBanner = ({ config }: { config: DuelConfig }) => (
     <BannerLabel>{strings.BANNER_LABEL_DUEL}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
-        {config.length} letters
+        {strings.CHALLENGE_CREATOR_LETTERS_TEXT(config.length)}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
-        {DICT_LABELS[config.dict]} word
+        {strings.BANNER_DICTIONARY_TEXT(DICT_LABELS[config.dict])}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<Target className="w-3 h-3 text-crown-amber" />}>
-        {config.guesses} guesses
+        {strings.CHALLENGE_CREATOR_GUESSES_TEXT(config.guesses)}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<Swords className="w-3 h-3 text-crown-amber" />}>
@@ -106,7 +106,7 @@ const DailyBanner = ({
     </BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
       <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
-        {config.wordLength} letters
+        {strings.DAILY_SCHEDULE_WORD_LENGTH_TEXT(config.wordLength)}
       </BannerStat>
       <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
