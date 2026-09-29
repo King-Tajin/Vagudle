@@ -594,6 +594,13 @@ const RELATIVE_TIME_UNITS: {
   { limitSeconds: Infinity, divisorSeconds: 31536000, label: "year" },
 ];
 
+const RELATIVE_TIME_FORMATTER = new Intl.RelativeTimeFormat(
+  strings.LOCALE_TAG,
+  {
+    numeric: "always",
+  }
+);
+
 export const formatRelativeTime = (iso: string): string => {
   const diffSeconds = Math.max(
     0,
@@ -604,7 +611,5 @@ export const formatRelativeTime = (iso: string): string => {
     RELATIVE_TIME_UNITS.find((u) => diffSeconds < u.limitSeconds) ??
     RELATIVE_TIME_UNITS[RELATIVE_TIME_UNITS.length - 1];
   const value = Math.floor(diffSeconds / unit.divisorSeconds);
-  return new Intl.RelativeTimeFormat(strings.LOCALE_TAG, {
-    numeric: "always",
-  }).format(-value, unit.label);
+  return RELATIVE_TIME_FORMATTER.format(-value, unit.label);
 };
