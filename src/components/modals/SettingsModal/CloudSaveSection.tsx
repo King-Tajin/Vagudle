@@ -733,14 +733,14 @@ export const CloudSaveSection = ({
                 <span className="font-code text-xs text-gray-300 leading-snug">
                   {strings.CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART1}{" "}
                   <ActivityLink
-                    href="https://vagudle.king-tajin.dev/terms.html"
+                    href="https://vagudle.king-tajin.dev/terms"
                     className="text-crown-gold underline hover:text-crown-amber transition-colors"
                   >
                     {strings.CLOUD_SAVE_AGE_GATE_TOS_LINK_TEXT}
                   </ActivityLink>{" "}
                   {strings.CLOUD_SAVE_AGE_GATE_AGREEMENT_TEXT_PART2}{" "}
                   <ActivityLink
-                    href="https://vagudle.king-tajin.dev/privacy.html"
+                    href="https://vagudle.king-tajin.dev/privacy"
                     className="text-crown-gold underline hover:text-crown-amber transition-colors"
                   >
                     {strings.CLOUD_SAVE_AGE_GATE_PRIVACY_LINK_TEXT}

@@ -238,7 +238,7 @@ export const InfoModal = ({
                 >
                   <p className="font-pixel text-xs text-obsidian-500 tracking-widest text-center">
                     <ActivityLink
-                      href="https://vagudle.king-tajin.dev/terms.html"
+                      href="https://vagudle.king-tajin.dev/terms"
                       className="hover:text-crown-amber transition-colors underline"
                     >
                       {strings.INFO_MODAL_FOOTER_TOS_LABEL}
@@ -252,7 +252,7 @@ export const InfoModal = ({
                     </ActivityLink>{" "}
                     ·{" "}
                     <ActivityLink
-                      href="https://vagudle.king-tajin.dev/privacy.html"
+                      href="https://vagudle.king-tajin.dev/privacy"
                       className="hover:text-crown-amber transition-colors underline"
                     >
                       {strings.INFO_MODAL_FOOTER_PRIVACY_LABEL}

@@ -14,13 +14,13 @@
     </url>
 
     <url>
-        <loc>https://vagudle.king-tajin.dev/privacy.html</loc>
+        <loc>https://vagudle.king-tajin.dev/privacy</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
 
     <url>
-        <loc>https://vagudle.king-tajin.dev/terms.html</loc>
+        <loc>https://vagudle.king-tajin.dev/terms</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
