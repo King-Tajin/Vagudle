@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, Trash2, ShieldAlert, Info } from "lucide-react";
+import { AlertTriangle, Trash2, ShieldAlert, Info, X } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { useCloudAuth } from "../../hooks/useCloudAuth";
@@ -139,14 +139,15 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             <button
               type="button"
               onClick={handleCancelReauth}
-              className="flex-1 py-3 font-pixel text-xs tracking-widest transition-colors"
+              className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
               style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "2px solid rgba(255,255,255,0.12)",
-                color: "#9ca3af",
+                background: "linear-gradient(180deg, #5a9c4a 0%, #2f5a27 100%)",
+                border: "2px solid #5a9c4a",
+                color: "#fff",
               }}
             >
               {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
+              <X className="w-4 h-4" />
             </button>
             <button
               type="button"
@@ -159,8 +160,10 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
                 cursor: "pointer",
               }}
             >
-              <Trash2 className="w-3.5 h-3.5" />
-              {strings.RESET_DATA_AUTHORIZE_BUTTON_TEXT}
+              <Trash2 className="w-6 h-6 shrink-0" />
+              <span className="w-min text-center leading-tight">
+                {strings.RESET_DATA_AUTHORIZE_BUTTON_TEXT}
+              </span>
             </button>
           </div>
         </div>
@@ -241,14 +244,15 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
           <button
             type="button"
             onClick={handleClose}
-            className="flex-1 py-3 font-pixel text-xs tracking-widest transition-colors"
+            className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
             style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "2px solid rgba(255,255,255,0.12)",
-              color: "#9ca3af",
+              background: "linear-gradient(180deg, #5a9c4a 0%, #2f5a27 100%)",
+              border: "2px solid #5a9c4a",
+              color: "#fff",
             }}
           >
             {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
+            <X className="w-4 h-4" />
           </button>
           <button
             type="button"
@@ -265,14 +269,18 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
               cursor: isLocked || isDeleting ? "default" : "pointer",
             }}
           >
-            <Trash2 className="w-3.5 h-3.5" />
-            {isLocked
-              ? strings.RESET_DATA_WAIT_BUTTON_TEXT(secondsLeft)
-              : isDeleting
-                ? strings.RESET_DATA_DELETING_BUTTON_TEXT
-                : alsoDeleteAccount
-                  ? strings.RESET_DATA_DELETE_ACCOUNT_AND_DATA_BUTTON_TEXT
-                  : strings.RESET_DATA_DELETE_EVERYTHING_BUTTON_TEXT}
+            <Trash2 className="w-6 h-6 shrink-0" />
+            <span
+              className={`text-center leading-tight ${isLocked ? "" : "w-min"}`}
+            >
+              {isLocked
+                ? strings.RESET_DATA_WAIT_BUTTON_TEXT(secondsLeft)
+                : isDeleting
+                  ? strings.RESET_DATA_DELETING_BUTTON_TEXT
+                  : alsoDeleteAccount
+                    ? strings.RESET_DATA_DELETE_ACCOUNT_AND_DATA_BUTTON_TEXT
+                    : strings.RESET_DATA_DELETE_EVERYTHING_BUTTON_TEXT}
+            </span>
           </button>
         </div>
       </div>
