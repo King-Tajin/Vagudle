@@ -9,6 +9,7 @@ const CORS_HEADERS = {
 };
 
 const EMAIL_MAX = 254;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/;
 const MESSAGE_MAX = 15000;
 
 const json = (data, status = 200) =>
@@ -41,6 +42,14 @@ export async function onRequestPost(context) {
         { success: false, error: "Email exceeds maximum length" },
         400
       );
+    }
+
+    if (
+      typeof feedbackData.email === "string" &&
+      feedbackData.email.trim() &&
+      !EMAIL_PATTERN.test(feedbackData.email.trim())
+    ) {
+      return json({ success: false, error: "Invalid email address" }, 400);
     }
 
     if (feedbackData.message.length > MESSAGE_MAX) {

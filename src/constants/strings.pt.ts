@@ -843,6 +843,7 @@ export const CLOUD_SAVE_AGE_GATE_BLOCKED_ERROR_TEXT =
 export const CLOUD_SAVE_AGE_GATE_CONTINUE_BUTTON_TEXT = "CONTINUAR";
 export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "LOGIN DIRETO";
 export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Endereço de e-mail";
+export const EMAIL_INVALID_ERROR_TEXT = "Insira um endereço de e-mail válido.";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "ENVIAR LINK";
 export const CLOUD_SAVE_EMAIL_SENT_TEXT =
   "Verifique o seu e-mail para encontrar um link de login.";

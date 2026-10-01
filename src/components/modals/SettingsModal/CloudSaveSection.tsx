@@ -33,6 +33,7 @@ import {
   checkActivityAccountStatus,
   openExternalLink,
 } from "../../../lib/discord";
+import { isValidEmail } from "../../../lib/email";
 import { providerButtonStyle } from "./styles";
 import strings from "../../../constants/strings";
 
@@ -289,119 +290,139 @@ const ProviderList = ({
   signInWithDiscord: (intent: AuthIntent) => void;
   signInWithPlayGames: (intent: AuthIntent) => void;
   sendEmailLink: (email: string, intent: AuthIntent) => void;
-}) => (
-  <div className="space-y-2">
-    {authFlowMessage && (
-      <div className="space-y-1 mb-1">
-        <p className="font-code text-xs text-spice-red leading-snug">
-          {authFlowMessage === "not_registered"
-            ? strings.CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT
-            : strings.CLOUD_SAVE_ALREADY_REGISTERED_ERROR_TEXT}
-        </p>
-        <button
-          type="button"
-          onClick={onGoToOtherIntent}
-          className="font-pixel text-[10px] text-crown-amber tracking-widest underline"
-        >
-          {authFlowMessage === "not_registered"
-            ? strings.CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT
-            : strings.CLOUD_SAVE_SIGN_IN_BUTTON_TEXT}
-        </button>
-      </div>
-    )}
+}) => {
+  const trimmedEmail = email.trim();
+  const emailValid = isValidEmail(trimmedEmail);
+  const showEmailInvalid = trimmedEmail.length > 0 && !emailValid;
 
-    <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-2 mb-1">
-      {strings.CLOUD_SAVE_DIRECT_SIGNIN_HEADING}
-    </p>
-    <button
-      type="button"
-      onClick={() => signInWithGoogle(intent)}
-      className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-      style={providerButtonStyle}
-    >
-      <GoogleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-      {strings.LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
-    </button>
-    <button
-      type="button"
-      onClick={() => signInWithGithub(intent)}
-      className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-      style={providerButtonStyle}
-    >
-      <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-      {strings.LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
-    </button>
-    <div className="flex gap-2 pt-1">
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="you@example.com"
-        aria-label={strings.CLOUD_SAVE_EMAIL_ARIA_LABEL}
-        className="flex-1 min-w-0 border-2 font-code text-xs p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber"
-        style={{
-          background: "#0a0014",
-          borderColor: "#3a3a4a",
-          color: "#d1d5db",
-        }}
-      />
+  return (
+    <div className="space-y-2">
+      {authFlowMessage && (
+        <div className="space-y-1 mb-1">
+          <p className="font-code text-xs text-spice-red leading-snug">
+            {authFlowMessage === "not_registered"
+              ? strings.CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT
+              : strings.CLOUD_SAVE_ALREADY_REGISTERED_ERROR_TEXT}
+          </p>
+          <button
+            type="button"
+            onClick={onGoToOtherIntent}
+            className="font-pixel text-[10px] text-crown-amber tracking-widest underline"
+          >
+            {authFlowMessage === "not_registered"
+              ? strings.CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT
+              : strings.CLOUD_SAVE_SIGN_IN_BUTTON_TEXT}
+          </button>
+        </div>
+      )}
+
+      <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-2 mb-1">
+        {strings.CLOUD_SAVE_DIRECT_SIGNIN_HEADING}
+      </p>
       <button
         type="button"
-        onClick={() => email && sendEmailLink(email, intent)}
-        className="shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2"
+        onClick={() => signInWithGoogle(intent)}
+        className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
         style={providerButtonStyle}
       >
-        <Mail className="w-3.5 h-3.5 shrink-0" />
-        {strings.CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
+        <GoogleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+        {strings.LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
       </button>
+      <button
+        type="button"
+        onClick={() => signInWithGithub(intent)}
+        className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+        style={providerButtonStyle}
+      >
+        <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+        {strings.LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
+      </button>
+      <div className="flex gap-2 pt-1">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          aria-label={strings.CLOUD_SAVE_EMAIL_ARIA_LABEL}
+          aria-invalid={showEmailInvalid}
+          aria-describedby={
+            showEmailInvalid ? "cloud-save-email-error" : undefined
+          }
+          className="flex-1 min-w-0 border-2 font-code text-xs p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber"
+          style={{
+            background: "#0a0014",
+            borderColor: showEmailInvalid ? "#ef4444" : "#3a3a4a",
+            color: "#d1d5db",
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => emailValid && sendEmailLink(trimmedEmail, intent)}
+          disabled={!emailValid}
+          className="shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
+          style={providerButtonStyle}
+        >
+          <Mail className="w-3.5 h-3.5 shrink-0" />
+          {strings.CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
+        </button>
+      </div>
+      {showEmailInvalid && (
+        <p
+          id="cloud-save-email-error"
+          role="alert"
+          className="font-code text-xs text-spice-red leading-snug"
+        >
+          {strings.EMAIL_INVALID_ERROR_TEXT}
+        </p>
+      )}
+      {emailLinkSent && (
+        <p className="font-code text-xs text-spice-lime">
+          {strings.CLOUD_SAVE_EMAIL_SENT_TEXT}
+        </p>
+      )}
+
+      {(!isActivityMode || playGamesAvailable) && (
+        <>
+          <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-3 mb-1">
+            {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING}
+          </p>
+          <p className="font-code text-xs text-gray-500 leading-snug mb-1">
+            {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION}
+          </p>
+          {!isActivityMode && (
+            <button
+              type="button"
+              onClick={() => signInWithDiscord(intent)}
+              className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+              style={providerButtonStyle}
+            >
+              <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+              {strings.LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
+            </button>
+          )}
+          {playGamesAvailable && (
+            <button
+              type="button"
+              onClick={() => void signInWithPlayGames(intent)}
+              className="w-full relative flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+              style={providerButtonStyle}
+            >
+              <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
+              {strings.CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT}
+              <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
+                BETA
+              </span>
+            </button>
+          )}
+        </>
+      )}
+
+      {actionError && (
+        <p className="font-code text-xs text-spice-red">{actionError}</p>
+      )}
     </div>
-    {emailLinkSent && (
-      <p className="font-code text-xs text-spice-lime">
-        {strings.CLOUD_SAVE_EMAIL_SENT_TEXT}
-      </p>
-    )}
-
-    {(!isActivityMode || playGamesAvailable) && (
-      <>
-        <p className="font-pixel text-[10px] text-crown-amber tracking-widest leading-none mt-3 mb-1">
-          {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING}
-        </p>
-        <p className="font-code text-xs text-gray-500 leading-snug mb-1">
-          {strings.CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION}
-        </p>
-        {!isActivityMode && (
-          <button
-            type="button"
-            onClick={() => signInWithDiscord(intent)}
-            className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-            style={providerButtonStyle}
-          >
-            <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-            {strings.LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
-          </button>
-        )}
-        {playGamesAvailable && (
-          <button
-            type="button"
-            onClick={() => void signInWithPlayGames(intent)}
-            className="w-full relative flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
-            style={providerButtonStyle}
-          >
-            <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
-            {strings.CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT}
-            <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
-              BETA
-            </span>
-          </button>
-        )}
-      </>
-    )}
-
-    {actionError && (
-      <p className="font-code text-xs text-spice-red">{actionError}</p>
-    )}
-  </div>
-);
+  );
+};
 
 export const CloudSaveSection = ({
   cloudUpdatedAt,

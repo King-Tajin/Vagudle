@@ -9,6 +9,7 @@ import {
   Minimize2,
 } from "lucide-react";
 import strings from "../../../../constants/strings";
+import { isValidEmail } from "../../../../lib/email";
 
 const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
@@ -32,8 +33,12 @@ export const FeedbackTab = () => {
   const messageNearLimit = messageRemaining <= 500;
   const messageAtLimit = messageRemaining <= 0;
 
+  const trimmedEmail = formData.email.trim();
+  const emailInvalid = trimmedEmail.length > 0 && !isValidEmail(trimmedEmail);
+  const submitDisabled = status === "submitting" || emailInvalid;
+
   const handleSubmit = async () => {
-    if (isSubmittingRef.current) return;
+    if (isSubmittingRef.current || emailInvalid) return;
 
     if (!formData.sentiment || !formData.category || !formData.message) {
       setStatus("error");
@@ -51,6 +56,7 @@ export const FeedbackTab = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          email: trimmedEmail,
           timestamp: new Date().toISOString(),
         }),
       });
@@ -227,16 +233,28 @@ export const FeedbackTab = () => {
           onKeyDown={(e) => e.stopPropagation()}
           placeholder="your.email@example.com"
           maxLength={EMAIL_MAX}
+          aria-invalid={emailInvalid}
+          aria-describedby={emailInvalid ? "feedback-email-error" : undefined}
           className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"
           style={{
             background: "#0a0014",
-            borderColor: "rgba(255,255,255,0.1)",
+            borderColor: emailInvalid ? "#ef4444" : "rgba(255,255,255,0.1)",
             color: "#d1d5db",
           }}
         />
-        <p className="font-code text-xs text-gray-600 mt-1">
-          {strings.FEEDBACK_EMAIL_HINT}
-        </p>
+        {emailInvalid ? (
+          <p
+            id="feedback-email-error"
+            role="alert"
+            className="font-code text-xs text-spice-red mt-1"
+          >
+            {strings.EMAIL_INVALID_ERROR_TEXT}
+          </p>
+        ) : (
+          <p className="font-code text-xs text-gray-600 mt-1">
+            {strings.FEEDBACK_EMAIL_HINT}
+          </p>
+        )}
       </div>
       <div>
         <div className="flex justify-between items-baseline mb-2">
@@ -373,19 +391,17 @@ export const FeedbackTab = () => {
       )}
       <button
         type="button"
-        disabled={status === "submitting"}
+        disabled={submitDisabled}
         onClick={handleSubmit}
         className="w-full py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
         style={{
-          background:
-            status === "submitting"
-              ? "rgba(255,215,0,0.05)"
-              : "rgba(255,215,0,0.12)",
+          background: submitDisabled
+            ? "rgba(255,215,0,0.05)"
+            : "rgba(255,215,0,0.12)",
           border: "2px solid",
-          borderColor:
-            status === "submitting" ? "rgba(255,215,0,0.2)" : "#d4af37",
-          color: status === "submitting" ? "#6b7280" : "#d4af37",
-          cursor: status === "submitting" ? "not-allowed" : "pointer",
+          borderColor: submitDisabled ? "rgba(255,215,0,0.2)" : "#d4af37",
+          color: submitDisabled ? "#6b7280" : "#d4af37",
+          cursor: submitDisabled ? "not-allowed" : "pointer",
         }}
       >
         <Send className="w-4 h-4" />

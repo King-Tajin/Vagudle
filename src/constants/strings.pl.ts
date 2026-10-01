@@ -848,6 +848,7 @@ export const CLOUD_SAVE_AGE_GATE_BLOCKED_ERROR_TEXT =
 export const CLOUD_SAVE_AGE_GATE_CONTINUE_BUTTON_TEXT = "DALEJ";
 export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "BEZPOŚREDNIE LOGOWANIE";
 export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Adres e-mail";
+export const EMAIL_INVALID_ERROR_TEXT = "Podaj prawidłowy adres e-mail.";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "WYŚLIJ LINK";
 export const CLOUD_SAVE_EMAIL_SENT_TEXT =
   "Sprawdź e-mail w poszukiwaniu linku logowania.";
