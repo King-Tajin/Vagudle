@@ -597,6 +597,7 @@ export const NORMAL_STATS_TAB_HARD_LABEL = "HARD";
 export const NORMAL_STATS_TAB_DAILY_LABEL = "DAILY";
 export const NORMAL_STATS_GAMES_WON_TEXT = (games: number) =>
   `${games} GAME${games === 1 ? "" : "S"} WON`;
+export const NORMAL_STATS_WORD_LABEL = "Word:";
 export const NORMAL_STATS_SHARE_STATS_BUTTON_TEXT = "SHARE STATS";
 export const NORMAL_STATS_NEW_GAME_BUTTON_TEXT = "NEW GAME";
 export const NORMAL_STATS_SHARE_GAME_BUTTON_TEXT = "SHARE GAME";

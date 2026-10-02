@@ -72,6 +72,8 @@ export const NormalStatsView = ({
     ? dailyStats.totalPlayed > 0
     : displayStats.totalGames > 0;
   const isCurrentTab = activeTab === (hardMode ? "hard" : "normal");
+  const showSolution = !isDailyTab && gameOutcome !== "playing" && !!solution;
+  const showStatsActions = hasGames && (!isActivityMode || showSolution);
   return (
     <BaseModal
       title={strings.STATISTICS_TITLE}
@@ -140,35 +142,45 @@ export const NormalStatsView = ({
           </p>
         </div>
       )}
-      {hasGames && !isActivityMode && (
-        <div className="mt-4 flex justify-end">
-          <button
-            type="button"
-            className="flex items-center gap-1.5 px-3 py-2 font-pixel text-xs tracking-wider transition-colors"
-            style={{
-              background: "rgba(255,215,0,0.06)",
-              border: "1px solid rgba(255,215,0,0.25)",
-              color: "#d4af37",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.filter = "brightness(1.2)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.filter = "brightness(1)";
-            }}
-            onClick={() =>
-              isDailyTab
-                ? shareDailyStats(dailyStats, handleShareToClipboard)
-                : shareStats(
-                    displayStats,
-                    activeTab === "hard",
-                    handleShareToClipboard
-                  )
-            }
-          >
-            <Share2 className="w-3 h-3" />
-            {strings.NORMAL_STATS_SHARE_STATS_BUTTON_TEXT}
-          </button>
+      {showStatsActions && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          {showSolution ? (
+            <p className="font-code text-[16px] text-gray-500">
+              {strings.NORMAL_STATS_WORD_LABEL}{" "}
+              <span className="text-crown-amber uppercase">{solution}</span>
+            </p>
+          ) : (
+            <span />
+          )}
+          {!isActivityMode && (
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-2 font-pixel text-xs tracking-wider transition-colors"
+              style={{
+                background: "rgba(255,215,0,0.06)",
+                border: "1px solid rgba(255,215,0,0.25)",
+                color: "#d4af37",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.filter = "brightness(1.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.filter = "brightness(1)";
+              }}
+              onClick={() =>
+                isDailyTab
+                  ? shareDailyStats(dailyStats, handleShareToClipboard)
+                  : shareStats(
+                      displayStats,
+                      activeTab === "hard",
+                      handleShareToClipboard
+                    )
+              }
+            >
+              <Share2 className="w-3 h-3" />
+              {strings.NORMAL_STATS_SHARE_STATS_BUTTON_TEXT}
+            </button>
+          )}
         </div>
       )}
       {!isDailyTab && gameOutcome !== "playing" && (

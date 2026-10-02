@@ -605,6 +605,7 @@ export const NORMAL_STATS_TAB_HARD_LABEL = "SVÅRT";
 export const NORMAL_STATS_TAB_DAILY_LABEL = "DAGLIGT";
 export const NORMAL_STATS_GAMES_WON_TEXT = (games: number) =>
   `${games} SPEL ${games === 1 ? "VUNNET" : "VUNNA"}`;
+export const NORMAL_STATS_WORD_LABEL = "Ord:";
 export const NORMAL_STATS_SHARE_STATS_BUTTON_TEXT = "DELA STATISTIK";
 export const NORMAL_STATS_NEW_GAME_BUTTON_TEXT = "NYTT SPEL";
 export const NORMAL_STATS_SHARE_GAME_BUTTON_TEXT = "DELA SPEL";

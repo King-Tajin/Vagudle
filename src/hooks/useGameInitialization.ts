@@ -550,9 +550,6 @@ export const useGameInitialization = ({
         } else if (savedState.guesses.length >= savedMaxChallenges) {
           restoredGameRef.current = true;
           setIsGameLost(true);
-          showErrorAlert(strings.CORRECT_WORD_MESSAGE(savedState.solution), {
-            persist: true,
-          });
           modalTimeoutId = setTimeout(() => {
             if (!cancelled) setIsStatsModalOpen(true);
           }, 500);

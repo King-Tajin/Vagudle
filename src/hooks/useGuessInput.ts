@@ -5,7 +5,7 @@ import {
   unicodeLength,
   unicodeSplit,
 } from "../lib/words";
-import { REVEAL_TIME_MS } from "../constants/settings";
+import { LOSS_ALERT_TIME_MS, REVEAL_TIME_MS } from "../constants/settings";
 import { triggerErrorHaptic } from "../lib/haptics";
 import { recordLastPlayedAt } from "../lib/activity";
 import type React from "react";
@@ -38,7 +38,12 @@ type Params = {
   >;
   showErrorAlert: (
     message: string,
-    options?: { onClose?: () => void; persist?: boolean; delayMs?: number }
+    options?: {
+      onClose?: () => void;
+      persist?: boolean;
+      delayMs?: number;
+      durationMs?: number;
+    }
   ) => void;
   recordStats: (count: number) => void;
   onGuessSubmit?: (word: string) => void;
@@ -186,7 +191,7 @@ export const useGuessInput = ({
         setIsGameLost(true);
         if (!isChallengeMode && !isDuelMode) {
           showErrorAlert(strings.CORRECT_WORD_MESSAGE(solution), {
-            persist: true,
+            durationMs: LOSS_ALERT_TIME_MS,
             delayMs: REVEAL_TIME_MS * solution.length + 1,
           });
         }
