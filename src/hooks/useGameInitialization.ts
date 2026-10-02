@@ -117,7 +117,6 @@ export const useGameInitialization = ({
   setIsChallengeModalOpen,
   setIsDuelModalOpen,
   setIsInfoModalOpen,
-  setIsStatsModalOpen,
   setIsDailyActive,
   setDailyConfig,
   setDailyResult,
@@ -550,9 +549,6 @@ export const useGameInitialization = ({
         } else if (savedState.guesses.length >= savedMaxChallenges) {
           restoredGameRef.current = true;
           setIsGameLost(true);
-          modalTimeoutId = setTimeout(() => {
-            if (!cancelled) setIsStatsModalOpen(true);
-          }, 500);
         }
       } else {
         const newSolution = getRandomWord(

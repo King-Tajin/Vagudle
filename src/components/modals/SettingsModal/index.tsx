@@ -134,6 +134,14 @@ export const SettingsModal = ({
     };
   }, []);
 
+  const settingsPages: { page: 1 | 2 | 3; label: string }[] = [
+    { page: 1, label: strings.SETTINGS_PAGE_GAMEPLAY_LABEL },
+    { page: 2, label: strings.SETTINGS_PAGE_ACCOUNT_LABEL },
+    ...(ENABLE_NOTIFICATION_SETTINGS || ENABLE_HAPTICS_SETTINGS
+      ? [{ page: 3 as const, label: strings.SETTINGS_PAGE_NOTIFICATIONS_LABEL }]
+      : []),
+  ];
+
   const showError = (msg: string) => {
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     setErrorMessage(msg);
@@ -264,21 +272,19 @@ export const SettingsModal = ({
               />
             )}
 
-          <div className="flex justify-center gap-2 pt-4">
-            {(ENABLE_NOTIFICATION_SETTINGS || ENABLE_HAPTICS_SETTINGS
-              ? ([1, 2, 3] as const)
-              : ([1, 2] as const)
-            ).map((page) => (
+          <div className="flex gap-2 pt-4">
+            {settingsPages.map(({ page, label }) => (
               <button
                 key={page}
                 type="button"
                 onClick={() => setSettingsPage(page)}
-                className="w-7 h-7 font-pixel text-xs flex items-center justify-center"
+                aria-pressed={settingsPage === page}
+                className="flex-1 min-w-0 py-2 px-1 font-pixel text-[10px] tracking-wider transition-colors"
                 style={
                   settingsPage === page ? activeTabStyle : inactiveTabStyle
                 }
               >
-                {page}
+                {label}
               </button>
             ))}
           </div>

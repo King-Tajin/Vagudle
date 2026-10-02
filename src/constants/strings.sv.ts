@@ -881,6 +881,9 @@ export const SETTINGS_DIFFICULTY_CHANGE_BLOCKED_ERROR_TEXT =
   "Avsluta eller starta ett nytt spel innan du ändrar svårighetsgrad!";
 export const SETTINGS_MODAL_TAB_SETTINGS_LABEL = "INSTÄLLNINGAR";
 export const SETTINGS_MODAL_TAB_CHALLENGE_LABEL = "UTMANING";
+export const SETTINGS_PAGE_GAMEPLAY_LABEL = "GAMEPLAY";
+export const SETTINGS_PAGE_ACCOUNT_LABEL = "KONTO";
+export const SETTINGS_PAGE_NOTIFICATIONS_LABEL = "NOTISER";
 
 export const CHALLENGE_RESULT_MODAL_TITLE = "Utmaningsresultat";
 export const CHALLENGE_RESULT_HEADING = "ANPASSAD UTMANING";
