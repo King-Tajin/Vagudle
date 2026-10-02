@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { User, UserCredential } from "firebase/auth";
 import { loadFirebaseAuth, scheduleFirebaseAuthPreload } from "../lib/firebase";
+import { getPublicOrigin } from "../lib/publicOrigin";
 import {
   signInWithDiscord as redirectToDiscord,
   completeDiscordSignIn as exchangeDiscordSignIn,
@@ -333,7 +334,7 @@ export const useCloudAuth = () => {
 
         const { auth, authModule } = await loadFirebaseAuth();
         await authModule.sendSignInLinkToEmail(auth, email, {
-          url: window.location.href,
+          url: `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`,
           handleCodeInApp: true,
         });
         try {

@@ -1,3 +1,5 @@
+import { getPublicOrigin } from "./publicOrigin";
+
 type SyncTicketRequest =
   | { mode: "daily"; idToken: string }
   | { mode: "daily"; accessToken: string }
@@ -137,9 +139,10 @@ export const openSyncSocket = (
   ticket: string,
   onSync: () => void
 ): WebSocket => {
-  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const origin = new URL(getPublicOrigin());
+  const protocol = origin.protocol === "https:" ? "wss:" : "ws:";
   const ws = new WebSocket(
-    `${protocol}//${window.location.host}/api/sync-ws?ticket=${encodeURIComponent(
+    `${protocol}//${origin.host}/api/sync-ws?ticket=${encodeURIComponent(
       ticket
     )}`
   );

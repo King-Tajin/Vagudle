@@ -14,6 +14,9 @@ const browser = parser.getBrowser();
 
 const EMOJI_TILES = ["🟩", "🟨", "⬛"];
 
+const getShareUrl = () =>
+  `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`;
+
 const attemptShare = (shareData: object) => {
   return (
     browser.name?.toUpperCase().indexOf("FIREFOX") === -1 &&
@@ -73,7 +76,7 @@ export const shareStatus = async (
         solution.length
       );
   const textToShare =
-    `${header}\n${window.location.href}\n` +
+    `${header}\n${getShareUrl()}\n` +
     generateEmojiGrid(solution, guesses, EMOJI_TILES);
 
   await doShare(
@@ -148,7 +151,7 @@ export const shareStats = async (
     : strings.SHARE_NORMAL_MODE_TAG;
   const lines = [
     strings.SHARE_STATS_TITLE(modeTag),
-    `${window.location.href}`,
+    `${getShareUrl()}`,
     ``,
     `${strings.SHARE_STATS_PLAYED_LABEL}${stats.totalGames}`,
     `${strings.SHARE_STATS_WIN_RATE_LABEL}${stats.successRate}%`,
@@ -186,7 +189,7 @@ export const shareDailyStats = async (
       : 0;
   const lines = [
     strings.SHARE_DAILY_STATS_TITLE(),
-    `${window.location.href}`,
+    `${getShareUrl()}`,
     ``,
     `${strings.SHARE_STATS_PLAYED_LABEL}${stats.totalPlayed}`,
     `${strings.SHARE_STATS_WIN_RATE_LABEL}${winRate}%`,
@@ -215,7 +218,7 @@ export const shareChallengeInvite = async (
       config.guesses
     )}\n` +
     `${strings.SHARE_CHALLENGE_INVITE_NOTE_TEXT}\n` +
-    window.location.href;
+    getShareUrl();
 
   await doShare(
     { title: strings.SHARE_CHALLENGE_INVITE_TITLE, text },
@@ -237,7 +240,7 @@ export const shareAchievement = async (
     (bgUnlock
       ? `${strings.SHARE_ACHIEVEMENT_BACKGROUND_UNLOCKED_TEXT(bgUnlock.desktopLabel)}\n`
       : "") +
-    window.location.href;
+    getShareUrl();
 
   await doShare(
     { title: strings.SHARE_ACHIEVEMENT_TITLE, text },
