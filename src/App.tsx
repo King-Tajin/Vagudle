@@ -68,6 +68,7 @@ import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 import { useDailyMode } from "./hooks/useDailyMode";
 import { useDailyWidgetSync } from "./hooks/useDailyWidgetSync";
 import { useAchievementsWidgetSync } from "./hooks/useAchievementsWidgetSync";
+import { useAchievementsDeepLink } from "./hooks/useAchievementsDeepLink";
 import { useLeaderboardModal } from "./hooks/useLeaderboardModal";
 import {
   completeEmailLinkSignIn,
@@ -282,7 +283,14 @@ function App() {
   const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
   const [settingsBackgroundJumpKey, setSettingsBackgroundJumpKey] = useState(0);
   const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
-  const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(false);
+  const {
+    shouldOpenAchievements,
+    focusAchievementId,
+    clearFocusAchievementId,
+  } = useAchievementsDeepLink();
+  const [isAchievementsModalOpen, setIsAchievementsModalOpen] = useState(
+    shouldOpenAchievements
+  );
   const [isAttributionModalOpen, setIsAttributionModalOpen] = useState(false);
   const [isTrayOpen, setIsTrayOpen] = useState(true);
   const [stats, setStats] = useState(() => loadStats(false));
@@ -1154,7 +1162,11 @@ function App() {
           isAttributionModalOpen={isAttributionModalOpen}
           handleCloseAttribution={() => setIsAttributionModalOpen(false)}
           isAchievementsModalOpen={isAchievementsModalOpen}
-          handleCloseAchievements={() => setIsAchievementsModalOpen(false)}
+          handleCloseAchievements={() => {
+            setIsAchievementsModalOpen(false);
+            clearFocusAchievementId();
+          }}
+          focusAchievementId={focusAchievementId}
         />
         <AlertContainer />
         <Suspense fallback={null}>

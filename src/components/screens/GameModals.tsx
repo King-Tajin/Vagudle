@@ -133,6 +133,7 @@ type Props = {
   handleCloseAttribution: () => void;
   isAchievementsModalOpen: boolean;
   handleCloseAchievements: () => void;
+  focusAchievementId: string | null;
 };
 
 export const GameModals = ({
@@ -232,6 +233,7 @@ export const GameModals = ({
   handleCloseAttribution,
   isAchievementsModalOpen,
   handleCloseAchievements,
+  focusAchievementId,
 }: Props) => {
   const { isActivityMode } = activityContext;
   return (
@@ -420,6 +422,7 @@ export const GameModals = ({
         <AchievementsModal
           isOpen={isAchievementsModalOpen}
           handleClose={handleCloseAchievements}
+          focusAchievementId={focusAchievementId}
           unlockedIds={unlockedIds}
           totalWins={totalWins}
           uniqueWordCount={uniqueWordCount}

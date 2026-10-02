@@ -76,6 +76,7 @@ type DailyWidgetSyncPayload = {
 type AchievementsWidgetSyncPayload = {
   unlockedCount: number;
   totalAchievements: number;
+  nextUpId: string;
   nextUpTitle: string;
   nextUpProgress: number | null;
   nextUpTarget: number | null;

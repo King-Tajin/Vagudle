@@ -12,7 +12,12 @@ const findNextWithCounter = (
   input: AchievementsWidgetInput,
   unlocked: Set<string>
 ): AchievementsWidgetSyncPayload | null => {
-  let best: { title: string; progress: number; target: number } | null = null;
+  let best: {
+    id: string;
+    title: string;
+    progress: number;
+    target: number;
+  } | null = null;
   let bestFraction = -1;
 
   for (const achievement of ACHIEVEMENTS) {
@@ -22,7 +27,12 @@ const findNextWithCounter = (
     const fraction = progress / rule.target;
     if (fraction > bestFraction) {
       bestFraction = fraction;
-      best = { title: achievement.title, progress, target: rule.target };
+      best = {
+        id: achievement.id,
+        title: achievement.title,
+        progress,
+        target: rule.target,
+      };
     }
   }
 
@@ -30,6 +40,7 @@ const findNextWithCounter = (
   return {
     unlockedCount: unlocked.size,
     totalAchievements: ACHIEVEMENTS.length,
+    nextUpId: best.id,
     nextUpTitle: best.title,
     nextUpProgress: best.progress,
     nextUpTarget: best.target,
@@ -50,7 +61,11 @@ export const buildAchievementsWidgetPayload = (
 
   if (unlocked.size >= ACHIEVEMENTS.length) {
     const completionist = ACHIEVEMENTS.find((a) => a.id === COMPLETIONIST_ID);
-    return { ...base, nextUpTitle: completionist?.title ?? "" };
+    return {
+      ...base,
+      nextUpId: completionist?.id ?? "",
+      nextUpTitle: completionist?.title ?? "",
+    };
   }
 
   const withCounter = findNextWithCounter(input, unlocked);
@@ -59,5 +74,9 @@ export const buildAchievementsWidgetPayload = (
   const firstLocked = ACHIEVEMENTS.find(
     (a) => !a.hidden && !unlocked.has(a.id)
   );
-  return { ...base, nextUpTitle: firstLocked?.title ?? "" };
+  return {
+    ...base,
+    nextUpId: firstLocked?.id ?? "",
+    nextUpTitle: firstLocked?.title ?? "",
+  };
 };

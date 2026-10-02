@@ -15,6 +15,7 @@ import strings from "../../constants/strings";
 type Props = {
   isOpen: boolean;
   handleClose: () => void;
+  focusAchievementId?: string | null;
   unlockedIds: string[];
   totalWins: number;
   uniqueWordCount: number;
@@ -207,10 +208,18 @@ export const AchievementsModal = (props: Props) => {
   const [pages, setPages] = useState<Achievement[][]>([ACHIEVEMENTS]);
   const [pageIndex, setPageIndex] = useState(0);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [focusId, setFocusId] = useState<string | null>(
+    props.focusAchievementId ?? null
+  );
 
   if (isOpen !== prevIsOpen) {
     setPrevIsOpen(isOpen);
-    if (!isOpen) setPageIndex(0);
+    if (isOpen) {
+      setFocusId(props.focusAchievementId ?? null);
+    } else {
+      setPageIndex(0);
+      setFocusId(null);
+    }
   }
 
   useLayoutEffect(() => {
@@ -275,7 +284,19 @@ export const AchievementsModal = (props: Props) => {
     };
   }, [isOpen]);
 
-  const safePageIndex = pageIndex > pages.length - 1 ? 0 : pageIndex;
+  const focusPageIndex = focusId
+    ? pages.findIndex((page) => page.some((a) => a.id === focusId))
+    : -1;
+  const safePageIndex =
+    focusPageIndex >= 0
+      ? focusPageIndex
+      : pageIndex > pages.length - 1
+        ? 0
+        : pageIndex;
+  const goToPage = (index: number) => {
+    setFocusId(null);
+    setPageIndex(index);
+  };
   const currentPage = pages[safePageIndex] ?? ACHIEVEMENTS;
   const canPrev = safePageIndex > 0;
   const canNext = safePageIndex < pages.length - 1;
@@ -327,7 +348,7 @@ export const AchievementsModal = (props: Props) => {
       >
         <button
           type="button"
-          onClick={() => canPrev && setPageIndex((i) => i - 1)}
+          onClick={() => canPrev && goToPage(safePageIndex - 1)}
           disabled={!canPrev}
           className="p-2 bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-30 disabled:hover:bg-obsidian-700 text-gray-300 transition-colors pixel-border-sm"
           aria-label={strings.ACHIEVEMENTS_PREV_PAGE_LABEL}
@@ -344,7 +365,7 @@ export const AchievementsModal = (props: Props) => {
 
         <button
           type="button"
-          onClick={() => canNext && setPageIndex((i) => i + 1)}
+          onClick={() => canNext && goToPage(safePageIndex + 1)}
           disabled={!canNext}
           className="p-2 bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-30 disabled:hover:bg-obsidian-700 text-gray-300 transition-colors pixel-border-sm"
           aria-label={strings.ACHIEVEMENTS_NEXT_PAGE_LABEL}
