@@ -68,6 +68,8 @@ import { useBackgroundAttribution } from "./hooks/useBackgroundAttribution";
 import { useDailyMode } from "./hooks/useDailyMode";
 import { useDailyWidgetSync } from "./hooks/useDailyWidgetSync";
 import { useAchievementsWidgetSync } from "./hooks/useAchievementsWidgetSync";
+import { useStatsWidgetSync } from "./hooks/useStatsWidgetSync";
+import { useStatsDeepLink } from "./hooks/useStatsDeepLink";
 import { useAchievementsDeepLink } from "./hooks/useAchievementsDeepLink";
 import { useLeaderboardModal } from "./hooks/useLeaderboardModal";
 import {
@@ -255,7 +257,8 @@ function App() {
       window.location.pathname === "/delete-account"
   );
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(isDeleteAccountRoute);
-  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
+  const { shouldOpenStats } = useStatsDeepLink();
+  const [isStatsModalOpen, setIsStatsModalOpen] = useState(shouldOpenStats);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -370,6 +373,7 @@ function App() {
     uniqueWordCount,
     currentWinStreak,
   });
+  useStatsWidgetSync({ normal: stats, hard: hardStats });
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restoredGameRef = useRef(false);
   const duelSubmittedRef = useRef(false);

@@ -82,9 +82,24 @@ type AchievementsWidgetSyncPayload = {
   nextUpTarget: number | null;
 };
 
+type StatsWidgetModePayload = {
+  totalGames: number;
+  successRate: number;
+  currentStreak: number;
+  bestStreak: number;
+  firstBucketMax: number;
+  distribution: number[];
+};
+
+type StatsWidgetSyncPayload = {
+  normal: StatsWidgetModePayload;
+  hard: StatsWidgetModePayload;
+};
+
 type WidgetSyncPayloadMap = {
   daily: DailyWidgetSyncPayload;
   achievements: AchievementsWidgetSyncPayload;
+  stats: StatsWidgetSyncPayload;
 };
 
 type CapacitorWidgetSyncPlugin = {
