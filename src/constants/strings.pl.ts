@@ -74,6 +74,13 @@ export const OFFLINE_MODE_UNAVAILABLE_ITEMS = [
   "Zapis w chmurze i logowanie do konta",
 ];
 export const OFFLINE_MODE_DISMISS_BUTTON_TEXT = "GRAJ OFFLINE";
+export const OFFLINE_MODE_CHECK_AGAIN_BUTTON_TEXT = "SPRAWDŹ PONOWNIE";
+export const OFFLINE_MODE_CHECKING_BUTTON_TEXT = "SPRAWDZANIE...";
+export const OFFLINE_MODE_STILL_OFFLINE_TEXT =
+  "Nadal nie można połączyć się z serwerami Vagudle. Spróbuj ponownie za chwilę.";
+export const OFFLINE_MODE_CONNECTED_TEXT =
+  "Połączenie przywrócone i połączono z serwerami Vagudle. Wszystko gotowe do gry!";
+export const OFFLINE_MODE_CONTINUE_BUTTON_TEXT = "KONTYNUUJ";
 
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} wymaga technologii WebGL, której Twoja przeglądarka lub urządzenie nie obsługuje. Spróbuj zaktualizować sterowniki grafiki, zmienić przeglądarkę lub wybrać inne tło.`;

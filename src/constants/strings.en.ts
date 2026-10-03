@@ -58,6 +58,13 @@ export const OFFLINE_MODE_UNAVAILABLE_ITEMS = [
   "Cloud save and account sign-in",
 ];
 export const OFFLINE_MODE_DISMISS_BUTTON_TEXT = "PLAY OFFLINE";
+export const OFFLINE_MODE_CHECK_AGAIN_BUTTON_TEXT = "CHECK AGAIN";
+export const OFFLINE_MODE_CHECKING_BUTTON_TEXT = "CHECKING...";
+export const OFFLINE_MODE_STILL_OFFLINE_TEXT =
+  "Still can't reach the Vagudle servers. Try again in a moment.";
+export const OFFLINE_MODE_CONNECTED_TEXT =
+  "You're back online and connected to the Vagudle servers. You're good to go!";
+export const OFFLINE_MODE_CONTINUE_BUTTON_TEXT = "CONTINUE";
 
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} needs WebGL, which your browser or device doesn't support. Try updating your graphics drivers, switching browsers, or picking a different background.`;

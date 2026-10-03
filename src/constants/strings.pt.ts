@@ -60,6 +60,13 @@ export const OFFLINE_MODE_UNAVAILABLE_ITEMS = [
   "Save na nuvem e login na conta",
 ];
 export const OFFLINE_MODE_DISMISS_BUTTON_TEXT = "JOGAR OFFLINE";
+export const OFFLINE_MODE_CHECK_AGAIN_BUTTON_TEXT = "VERIFICAR NOVAMENTE";
+export const OFFLINE_MODE_CHECKING_BUTTON_TEXT = "VERIFICANDO...";
+export const OFFLINE_MODE_STILL_OFFLINE_TEXT =
+  "Ainda não conseguimos acessar os servidores do Vagudle. Tente novamente em instantes.";
+export const OFFLINE_MODE_CONNECTED_TEXT =
+  "Você está online e conectado aos servidores do Vagudle. Tudo pronto para jogar!";
+export const OFFLINE_MODE_CONTINUE_BUTTON_TEXT = "CONTINUAR";
 
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} precisa de WebGL, que seu navegador ou dispositivo não suporta. Tente atualizar os drivers gráficos, trocar de navegador ou escolher outro plano de fundo.`;

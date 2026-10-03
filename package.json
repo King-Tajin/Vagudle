@@ -89,5 +89,5 @@
     "public/**/*.svg": "svgo",
     ".github/**/*.md": "prettier --write"
   },
-  "packageManager": "pnpm@12.6.0"
+  "packageManager": "pnpm@12.8.1"
 }

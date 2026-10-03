@@ -60,6 +60,13 @@ export const OFFLINE_MODE_UNAVAILABLE_ITEMS = [
   "Molnsparning och kontoinloggning",
 ];
 export const OFFLINE_MODE_DISMISS_BUTTON_TEXT = "SPELA OFFLINE";
+export const OFFLINE_MODE_CHECK_AGAIN_BUTTON_TEXT = "KONTROLLERA IGEN";
+export const OFFLINE_MODE_CHECKING_BUTTON_TEXT = "KONTROLLERAR...";
+export const OFFLINE_MODE_STILL_OFFLINE_TEXT =
+  "Vi kan fortfarande inte nå Vagudles servrar. Försök igen om en stund.";
+export const OFFLINE_MODE_CONNECTED_TEXT =
+  "Du är online igen och ansluten till Vagudles servrar. Det är bara att köra!";
+export const OFFLINE_MODE_CONTINUE_BUTTON_TEXT = "FORTSÄTT";
 
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} kräver WebGL, vilket din webbläsare eller enhet inte stöder. Försök uppdatera dina grafikdrivrutiner, byta webbläsare eller välja en annan bakgrund.`;
