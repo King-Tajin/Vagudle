@@ -1,9 +1,15 @@
 import { type CharStatus } from "../../lib/statuses";
 import { Key } from "./Key";
-import React, { useEffect, useEffectEvent } from "react";
+import React, { useEffect, useEffectEvent, useRef } from "react";
 import { localeAwareUpperCase } from "../../lib/words";
 import { isNativeApp } from "../../lib/browser";
 import strings from "../../constants/strings";
+import {
+  isActivatableControl,
+  isGameplayKey,
+  isTextEntryElement,
+  releaseStrayControlFocus,
+} from "../../lib/keyboardFocus";
 
 type Props = {
   onChar: (value: string) => void;
@@ -36,16 +42,29 @@ export const Keyboard = ({
     }
   };
 
-  const onKeyup = useEffectEvent((e: KeyboardEvent) => {
-    const active = document.activeElement;
-    const isTyping =
-      active instanceof HTMLInputElement ||
-      active instanceof HTMLTextAreaElement ||
-      active instanceof HTMLSelectElement;
+  const enterHandledByControl = useRef(false);
 
-    if (isTyping) return;
+  const onKeydown = useEffectEvent((e: KeyboardEvent) => {
+    const active = document.activeElement;
+
+    if (e.key === "Enter") {
+      enterHandledByControl.current = isActivatableControl(active);
+      return;
+    }
+
+    if (isTextEntryElement(active)) return;
+
+    if (isGameplayKey(e)) releaseStrayControlFocus(active);
+  });
+
+  const onKeyup = useEffectEvent((e: KeyboardEvent) => {
+    if (isTextEntryElement(document.activeElement)) return;
 
     if (e.code === "Enter") {
+      if (enterHandledByControl.current) {
+        enterHandledByControl.current = false;
+        return;
+      }
       onEnter();
     } else if (e.code === "Backspace") {
       onDelete();
@@ -58,10 +77,13 @@ export const Keyboard = ({
   });
 
   useEffect(() => {
-    const listener = (e: KeyboardEvent) => onKeyup(e);
-    window.addEventListener("keyup", listener);
+    const keydownListener = (e: KeyboardEvent) => onKeydown(e);
+    const keyupListener = (e: KeyboardEvent) => onKeyup(e);
+    window.addEventListener("keydown", keydownListener, true);
+    window.addEventListener("keyup", keyupListener);
     return () => {
-      window.removeEventListener("keyup", listener);
+      window.removeEventListener("keydown", keydownListener, true);
+      window.removeEventListener("keyup", keyupListener);
     };
   }, []);
 
