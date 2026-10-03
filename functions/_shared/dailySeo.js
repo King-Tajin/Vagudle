@@ -94,7 +94,7 @@ export const applyDailySeo = (html) => {
   );
   out = out.replaceAll(`content="${ROOT_TITLE}"`, `content="${DAILY_TITLE}"`);
   out = out.replaceAll(
-    `<title>Vagudle</title>`,
+    `<title>${ROOT_TITLE}</title>`,
     `<title>${DAILY_TITLE}</title>`
   );
   out = out.replaceAll(
