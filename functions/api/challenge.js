@@ -9,6 +9,7 @@ import {
   VALID_GUESSES,
   checkRateLimit,
 } from "../_shared/api.js";
+import { isWordInDict } from "../_shared/wordLists.js";
 
 const generateId = () =>
   Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-6);
@@ -39,6 +40,15 @@ export async function onRequestPost(context) {
     const body = await context.request.json();
     if (!validateConfig(body))
       return json({ success: false, error: "Invalid challenge config." }, 400);
+
+    if (!isWordInDict(body.word, body.dict))
+      return json(
+        {
+          success: false,
+          error: `${body.word.toUpperCase()} is not in the ${body.dict} word list.`,
+        },
+        400
+      );
 
     const id = generateId();
     const config = {
