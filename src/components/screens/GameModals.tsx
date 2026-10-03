@@ -407,7 +407,10 @@ export const GameModals = ({
           onUsernameSaved={handleUsernameSaved}
           isActivityMode={isActivityMode}
         />
-        {currentBackground?.attribution && (
+      </Suspense>
+
+      {currentBackground?.attribution && (
+        <Suspense fallback={null}>
           <AttributionModal
             isOpen={isAttributionModalOpen}
             handleClose={handleCloseAttribution}
@@ -415,8 +418,8 @@ export const GameModals = ({
             isHidden={hiddenAttributionIds.includes(backgroundId)}
             onHideForeverChange={handleAttributionHideForeverChange}
           />
-        )}
-      </Suspense>
+        </Suspense>
+      )}
 
       <Suspense fallback={null}>
         <AchievementsModal

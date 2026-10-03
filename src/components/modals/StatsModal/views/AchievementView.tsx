@@ -1,6 +1,7 @@
+import { useState } from "react";
 import RibbonIcon from "../../../../assets/icons/ribon.svg?react";
 import { BaseModal } from "../../BaseModal";
-import { Share2 } from "lucide-react";
+import { Check, Share2 } from "lucide-react";
 import { shareAchievement } from "../../../../lib/share";
 import type { Achievement } from "../../../../lib/achievements";
 import { BACKGROUNDS, type BackgroundId } from "../../../../lib/backgrounds";
@@ -30,6 +31,13 @@ export const AchievementView = ({
   const bgUnlock = BACKGROUNDS.find(
     (b) => b.requiresAchievementId === achievement.id
   );
+  const [equippedId, setEquippedId] = useState<BackgroundId | null>(null);
+  const isEquipped = !!bgUnlock && equippedId === bgUnlock.id;
+  const handleEquip = () => {
+    if (!bgUnlock || isEquipped) return;
+    setBackgroundId?.(bgUnlock.id);
+    setEquippedId(bgUnlock.id);
+  };
   const modalTitle =
     totalAchievements > 1
       ? strings.ACHIEVEMENT_VIEW_UNLOCKED_TITLE_WITH_COUNT(
@@ -97,21 +105,31 @@ export const AchievementView = ({
         {bgUnlock && (
           <button
             type="button"
+            disabled={isEquipped}
+            aria-live="polite"
             className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
             style={{
-              background: "rgba(255,215,0,0.1)",
-              border: "2px solid rgba(255,215,0,0.4)",
-              color: "#FFD700",
+              background: isEquipped
+                ? "rgba(34,197,94,0.15)"
+                : "rgba(255,215,0,0.1)",
+              border: isEquipped
+                ? "2px solid rgba(34,197,94,0.6)"
+                : "2px solid rgba(255,215,0,0.4)",
+              color: isEquipped ? "#4ade80" : "#FFD700",
+              cursor: isEquipped ? "default" : "pointer",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.filter = "brightness(1.2)";
+              if (!isEquipped) e.currentTarget.style.filter = "brightness(1.2)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.filter = "brightness(1)";
             }}
-            onClick={() => setBackgroundId?.(bgUnlock.id)}
+            onClick={handleEquip}
           >
-            {strings.ACHIEVEMENT_VIEW_EQUIP_BUTTON_TEXT}
+            {isEquipped && <Check className="w-3.5 h-3.5" />}
+            {isEquipped
+              ? strings.ACHIEVEMENT_VIEW_EQUIPPED_BUTTON_TEXT
+              : strings.ACHIEVEMENT_VIEW_EQUIP_BUTTON_TEXT}
           </button>
         )}
         <button
