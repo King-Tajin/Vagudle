@@ -28,11 +28,19 @@ Unlike Wordle, Vagudle does not tell you which letters are green, yellow or gray
 - Auto-Green: Fills in user marked correct letters across all rows automatically.
 - Custom Challenges: Open Settings and go to the Challenge tab. Pick a dictionary, choose how many guesses to allow, type your secret word, and hit Generate Link. Share the link to let others play your custom word with exactly the settings you chose. Results never count toward the recipient's stats.
 - Discord Integration: Use the /vagudle_challenge slash command to generate a challenge link directly from Discord, or compete in head-to-head Duels on a live leaderboard.
+- AI Assistant Integration: Connect an AI assistant to Vagudle's public MCP server and ask it to create a custom challenge for you. It can ask about difficulty, word length, theme and hints, pick a real word, and hand back a link to play or share.
 
 ## Pages
 
 - [Vagudle](https://vagudle.king-tajin.dev/): The main game. Unlimited plays, harder dictionaries, up to 11 tries, and custom word challenges.
 - [Vagudle Daily](https://vagudle.king-tajin.dev/daily): Vagudle Daily is a free once-a-day word puzzle. A new word unlocks every day at 08:00 UTC, rotating between 4- and 5-letter, normal and hard mode. Track your streak on the leaderboard and subscribe to a calendar reminder so you never miss one.
+
+## MCP Server
+
+Vagudle has a public Model Context Protocol server that lets AI assistants find valid words and create custom challenge links.
+
+- [MCP server documentation](https://vagudle.king-tajin.dev/docs/mcp.md): Setup steps, the available tools (create_challenge, check_words, search_words), the new_challenge prompt, dictionaries and rate limits.
+- Server URL: https://vagudle.king-tajin.dev/mcp
 
 ## Open Source
 

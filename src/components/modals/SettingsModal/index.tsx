@@ -94,6 +94,7 @@ export const SettingsModal = ({
 
   const [activeTab, setActiveTab] = useState<Tab>("settings");
   const [settingsPage, setSettingsPage] = useState<1 | 2 | 3>(1);
+  const [aiGuideOpen, setAiGuideOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSavingLanguage, setIsSavingLanguage] = useState(false);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -194,6 +195,7 @@ export const SettingsModal = ({
       title={strings.MODAL_TITLE_SETTINGS}
       isOpen={isOpen}
       handleClose={handleClose}
+      maxWidthClass={aiGuideOpen ? "sm:max-w-2xl" : undefined}
     >
       <div className="flex gap-2 mb-4">
         <button
@@ -290,7 +292,9 @@ export const SettingsModal = ({
           </div>
         </>
       )}
-      {activeTab === "challenge" && <ChallengeCreatorModal />}
+      {activeTab === "challenge" && (
+        <ChallengeCreatorModal onAiGuideChange={setAiGuideOpen} />
+      )}
     </BaseModal>
   );
 };

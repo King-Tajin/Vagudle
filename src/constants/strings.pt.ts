@@ -778,6 +778,34 @@ export const CHALLENGE_FORM_GENERATE_ERROR_TEXT =
   "Falha ao gerar o link. Verifique a sua conexão e tente novamente.";
 export const CHALLENGE_FORM_GENERATING_BUTTON_TEXT = "GERANDO...";
 export const CHALLENGE_FORM_GENERATE_BUTTON_TEXT = "GERAR LINK";
+export const CHALLENGE_FORM_AI_BUTTON_TEXT = "GENERATE INTERACTIVE CHALLENGE";
+export const CHALLENGE_FORM_OR_DIVIDER_TEXT = "OR";
+export const CHALLENGE_AI_BACK_BUTTON_TEXT = "BACK TO CHALLENGE";
+export const CHALLENGE_AI_HEADING = "VIA AI ASSISTANT";
+export const CHALLENGE_AI_INTRO_TEXT =
+  "Vagudle has a public MCP server, which lets AI assistants like Claude create challenges for you. Tell the AI what kind of challenge you want. It picks a real word, builds the link, and hands it back to play or share.";
+export const CHALLENGE_AI_NOTE_TEXT =
+  "The word stays hidden inside the link, and results never count toward stats.";
+export const CHALLENGE_AI_CONNECT_HEADING = "CONNECT IT ONCE";
+export const CHALLENGE_AI_SERVER_URL_LABEL = "SERVER URL";
+export const CHALLENGE_AI_CLAUDE_LABEL = "CLAUDE";
+export const CHALLENGE_AI_CLAUDE_STEPS_TEXT =
+  "Settings → Connectors → Add custom connector → paste the URL.";
+export const CHALLENGE_AI_CLAUDE_CODE_LABEL = "CLAUDE CODE";
+export const CHALLENGE_AI_OTHER_LABEL = "OTHER ASSISTANTS";
+export const CHALLENGE_AI_OTHER_TEXT =
+  "Any assistant that supports remote MCP servers can use the same URL.";
+export const CHALLENGE_AI_SETUP_GUIDE_LINK_TEXT = "Full setup guide →";
+export const CHALLENGE_AI_NO_INSTALL_TEXT =
+  "Nothing to install and no account needed.";
+export const CHALLENGE_AI_PROMPT_HEADING = "START WITH THIS PROMPT";
+export const CHALLENGE_AI_PROMPT_INTRO_TEXT =
+  "Turn the Vagudle connector on in the chat first, then paste this. The AI will ask a few questions, then build your challenge.";
+export const CHALLENGE_AI_PROMPT_TEXT = `Make me a Vagudle challenge with the Vagudle connector. First ask me, in one message, about: difficulty (Easy, Medium, Hard or Extreme), word length (4 to 7 letters, or surprise me), a theme (mine or a random one), and whether I want hints (none, the theme, the first letter, or a short clue). Then pick a word, create the challenge, and send me the link without revealing the word.
+
+Easy = normal dictionary, 11 guesses. Medium = normal, 9. Hard = hard, 9. Extreme = full, 9.
+
+If you can't find the Vagudle tools, read https://vagudle.king-tajin.dev/docs/mcp.md and tell me how to connect them. Don't invent a link.`;
 
 export const CHALLENGE_CREATOR_BACK_TO_STATS_BUTTON_TEXT =
   "VOLTAR ÀS ESTATÍSTICAS";

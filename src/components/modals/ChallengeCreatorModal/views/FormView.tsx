@@ -1,5 +1,5 @@
 import React from "react";
-import { AlertCircle, CheckCircle, Info, Link } from "lucide-react";
+import { AlertCircle, CheckCircle, Info, Link, Sparkles } from "lucide-react";
 import {
   DICT_LABELS,
   DICT_DESCRIPTIONS,
@@ -35,6 +35,7 @@ export const FormView = ({
   onKeyDown,
   onGuessesChange,
   onGenerate,
+  onOpenAiGuide,
 }: {
   onBack?: () => void;
   hasAutoFilledWord: boolean;
@@ -51,6 +52,7 @@ export const FormView = ({
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onGuessesChange: (v: 9 | 11) => void;
   onGenerate: () => void;
+  onOpenAiGuide: () => void;
 }) => {
   return (
     <div className="space-y-4">
@@ -254,6 +256,33 @@ export const FormView = ({
         {generateStatus === "loading"
           ? strings.CHALLENGE_FORM_GENERATING_BUTTON_TEXT
           : strings.CHALLENGE_FORM_GENERATE_BUTTON_TEXT}
+      </button>
+      <div className="flex items-center gap-3" aria-hidden="true">
+        <div className="flex-1 border-t border-obsidian-700" />
+        <span className="font-pixel text-[9px] text-gray-500 tracking-widest">
+          {strings.CHALLENGE_FORM_OR_DIVIDER_TEXT}
+        </span>
+        <div className="flex-1 border-t border-obsidian-700" />
+      </div>
+      <button
+        type="button"
+        onClick={onOpenAiGuide}
+        className="w-full px-3 py-3 font-pixel text-xs tracking-widest leading-relaxed transition-colors flex items-center justify-center gap-2"
+        style={{
+          background: "rgba(80,0,170,0.15)",
+          border: "2px solid #5000aa",
+          color: "#a78bfa",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.filter = "brightness(1.2)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.filter = "brightness(1)";
+        }}
+      >
+        <Sparkles className="w-3.5 h-3.5 shrink-0" />
+        {strings.CHALLENGE_FORM_AI_BUTTON_TEXT}
+        <Sparkles className="w-3.5 h-3.5 shrink-0" />
       </button>
     </div>
   );

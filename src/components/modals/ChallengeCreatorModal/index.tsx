@@ -1,14 +1,17 @@
+import { useEffect, useState } from "react";
 import { type ChallengeDict } from "../../../lib/challenge";
 import { useChallengeCreator } from "./useChallengeCreator";
 import { LoadingView } from "./views/LoadingView";
 import { ResultView } from "./views/ResultView";
 import { FormView } from "./views/FormView";
+import { AiGuideView } from "./views/AiGuideView";
 
 type Props = {
   autoFilledWord?: string;
   autoFilledDict?: ChallengeDict;
   autoFilledGuesses?: 9 | 11;
   onBack?: () => void;
+  onAiGuideChange?: (open: boolean) => void;
 };
 
 export const ChallengeCreatorModal = ({
@@ -16,6 +19,7 @@ export const ChallengeCreatorModal = ({
   autoFilledDict,
   autoFilledGuesses,
   onBack,
+  onAiGuideChange,
 }: Props = {}) => {
   const {
     dict,
@@ -42,6 +46,16 @@ export const ChallengeCreatorModal = ({
     autoFilledDict,
     autoFilledGuesses,
   });
+  const [showAiGuide, setShowAiGuide] = useState(false);
+
+  useEffect(() => {
+    return () => onAiGuideChange?.(false);
+  }, [onAiGuideChange]);
+
+  const toggleAiGuide = (open: boolean) => {
+    setShowAiGuide(open);
+    onAiGuideChange?.(open);
+  };
 
   if (generateStatus === "loading" && autoFilledWord && !generated) {
     return <LoadingView onBack={onBack} />;
@@ -63,6 +77,10 @@ export const ChallengeCreatorModal = ({
     );
   }
 
+  if (showAiGuide) {
+    return <AiGuideView onBack={() => toggleAiGuide(false)} />;
+  }
+
   return (
     <FormView
       onBack={onBack}
@@ -80,6 +98,7 @@ export const ChallengeCreatorModal = ({
       onKeyDown={handleKeyDown}
       onGuessesChange={handleGuessesChange}
       onGenerate={() => void generate()}
+      onOpenAiGuide={() => toggleAiGuide(true)}
     />
   );
 };

@@ -31,6 +31,10 @@ The keyboard updates as you paint, so confirmed, present, and eliminated letters
 | **Challenges**           | Create a custom word challenge and share a link for others to play                                                          |
 | **Daily**                | A new word unlocks once a day, alternating length and difficulty, with a streak-tracking leaderboard and calendar reminders |
 
+## MCP Server
+
+Vagudle has a public [MCP](https://modelcontextprotocol.io) server at `https://vagudle.king-tajin.dev/mcp`, so AI assistants like Claude can search the word lists, check words, and create challenge links for you. See [public/docs/mcp.md](public/docs/mcp.md) for setup and the available tools.
+
 ## Running Locally
 
 ```bash

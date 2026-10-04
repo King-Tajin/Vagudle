@@ -1,4 +1,5 @@
 import { version } from "../../package.json";
+import { getMcpPrompt, INSTRUCTIONS, listMcpPrompts } from "./mcpPrompts.js";
 import { findMcpTool, listMcpTools } from "./mcpTools.js";
 
 const MODERN_VERSIONS = ["2026-07-28"];
@@ -10,8 +11,6 @@ const CAPABILITIES_KEY = "io.modelcontextprotocol/clientCapabilities";
 const SERVER_INFO_KEY = "io.modelcontextprotocol/serverInfo";
 
 const SERVER_INFO = { name: "vagudle", version };
-const INSTRUCTIONS =
-  "Vagudle is a word-guessing game. Use search_words and check_words to find valid words and see which dictionaries contain them, then create_challenge to make a shareable link that anyone can open and play.";
 const CACHE = { ttlMs: 300000, cacheScope: "public" };
 
 const NAME_FIELDS = {
@@ -181,6 +180,13 @@ const dispatchTool = async (id, params, context, finalize) => {
   return rpcResult(id, finalize(outcome.result));
 };
 
+const dispatchPrompt = (id, params, finalize) => {
+  const outcome = getMcpPrompt(params);
+  if (outcome.invalid)
+    return rpcError(id, CODES.invalidParams, outcome.invalid);
+  return rpcResult(id, finalize(outcome.result));
+};
+
 const handleModern = async (message, params, context) => {
   const { id, method } = message;
 
@@ -190,7 +196,7 @@ const handleModern = async (message, params, context) => {
         id,
         modernResult({
           supportedVersions: SUPPORTED_VERSIONS,
-          capabilities: { tools: {} },
+          capabilities: { tools: {}, prompts: {} },
           instructions: INSTRUCTIONS,
           ...CACHE,
         })
@@ -199,6 +205,13 @@ const handleModern = async (message, params, context) => {
       return rpcResult(id, modernResult({ tools: listMcpTools(), ...CACHE }));
     case "tools/call":
       return dispatchTool(id, params, context, modernResult);
+    case "prompts/list":
+      return rpcResult(
+        id,
+        modernResult({ prompts: listMcpPrompts(), ...CACHE })
+      );
+    case "prompts/get":
+      return dispatchPrompt(id, params, modernResult);
     default:
       return rpcError(
         id,
@@ -225,7 +238,10 @@ const handleLegacy = async (message, params, context) => {
         : LEGACY_VERSIONS[0];
       return rpcResult(id, {
         protocolVersion,
-        capabilities: { tools: { listChanged: false } },
+        capabilities: {
+          tools: { listChanged: false },
+          prompts: { listChanged: false },
+        },
         serverInfo: SERVER_INFO,
         instructions: INSTRUCTIONS,
       });
@@ -236,6 +252,10 @@ const handleLegacy = async (message, params, context) => {
       return rpcResult(id, { tools: listMcpTools() });
     case "tools/call":
       return dispatchTool(id, params, context, (result) => result);
+    case "prompts/list":
+      return rpcResult(id, { prompts: listMcpPrompts() });
+    case "prompts/get":
+      return dispatchPrompt(id, params, (result) => result);
     default:
       return rpcError(id, CODES.methodNotFound, `Method not found: ${method}`);
   }

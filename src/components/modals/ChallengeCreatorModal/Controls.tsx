@@ -40,7 +40,13 @@ export function ButtonGroup<T extends string | number>({
   );
 }
 
-export const BackButton = ({ onClick }: { onClick: () => void }) => {
+export const BackButton = ({
+  onClick,
+  label = strings.CHALLENGE_CREATOR_BACK_TO_STATS_BUTTON_TEXT,
+}: {
+  onClick: () => void;
+  label?: string;
+}) => {
   return (
     <button
       type="button"
@@ -55,7 +61,7 @@ export const BackButton = ({ onClick }: { onClick: () => void }) => {
       }}
     >
       <ArrowLeft className="w-3 h-3" />
-      {strings.CHALLENGE_CREATOR_BACK_TO_STATS_BUTTON_TEXT}
+      {label}
     </button>
   );
 };

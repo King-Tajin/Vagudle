@@ -138,7 +138,7 @@ const checkWordsTool = {
     idempotentHint: true,
     openWorldHint: false,
   },
-  handler: async ({ words }) => {
+  handler: async ({ words }, _context) => {
     if (
       !Array.isArray(words) ||
       words.length < 1 ||
@@ -210,7 +210,7 @@ const searchWordsTool = {
     idempotentHint: false,
     openWorldHint: false,
   },
-  handler: async (args) => {
+  handler: async (args, _context) => {
     const {
       pattern,
       length,

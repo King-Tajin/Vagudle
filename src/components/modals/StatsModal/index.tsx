@@ -76,6 +76,7 @@ export const StatsModal = ({
     gameMode === "daily" ? "daily" : hardMode ? "hard" : "normal"
   );
   const [showChallengeCreator, setShowChallengeCreator] = useState(false);
+  const [aiGuideOpen, setAiGuideOpen] = useState(false);
   const [achievementIdx, setAchievementIdx] = useState(0);
   const hasPlayedSoundRef = useRef(false);
   const [prevResetKey, setPrevResetKey] = useState(`${isOpen}:${solution}`);
@@ -156,12 +157,14 @@ export const StatsModal = ({
         title={strings.MODAL_TITLE_CREATE_CHALLENGE}
         isOpen={isOpen}
         handleClose={handleClose}
+        maxWidthClass={aiGuideOpen ? "sm:max-w-2xl" : undefined}
       >
         <ChallengeCreatorModal
           autoFilledWord={solution}
           autoFilledDict={presetDict}
           autoFilledGuesses={presetGuesses}
           onBack={() => setShowChallengeCreator(false)}
+          onAiGuideChange={setAiGuideOpen}
         />
       </BaseModal>
     );

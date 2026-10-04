@@ -75,7 +75,8 @@
           "Auto-Green: Fills in user marked correct letters across all rows automatically.",
           "Gray count: Shows how many absent letters are in a row.",
           "Custom Challenges: Generate unique challenge links with a custom word, dictionary, and guess limit. Share the link to let others play your custom word with exactly the settings you chose.",
-          "Discord Integration: Generate challenges via the /vagudle_challenge slash command directly from Discord, or compete in head-to-head Duels on a live leaderboard."
+          "Discord Integration: Generate challenges via the /vagudle_challenge slash command directly from Discord, or compete in head-to-head Duels on a live leaderboard.",
+          "AI Assistant Integration: Connect an AI assistant to Vagudle's public MCP server and ask it to create a custom challenge for you. It can ask about difficulty, word length, theme and hints, pick a real word, and hand back a link to play or share."
         ],
         "hasPart": [
           {
@@ -136,6 +137,12 @@
                 "position": 9,
                 "name": "Discord Integration",
                 "description": "Use the /vagudle_challenge slash command to generate a challenge link directly from Discord, or compete in head-to-head Duels on a live leaderboard to see who can crack the word in the fewest guesses."
+              },
+              {
+                "@type": "ListItem",
+                "position": 10,
+                "name": "AI Assistant Integration",
+                "description": "Connect an AI assistant like Claude to Vagudle's public MCP server at https://vagudle.king-tajin.dev/mcp and ask it to create a custom challenge. It can ask about difficulty, word length, theme and hints, pick a real word, and hand back a link to play or share."
               }
             ]
           },
@@ -272,6 +279,16 @@
           Use the /vagudle_challenge slash command to generate a challenge link
           directly from <a href="https://discord.gg/sU2XRxK8EB">Discord</a>, or
           compete in head-to-head Duels on a live leaderboard.
+        </p>
+        <h3>AI Assistant Integration</h3>
+        <p>
+          Connect an AI assistant to Vagudle's public MCP server and ask it to
+          create a custom challenge for you. It can ask about difficulty, word
+          length, theme and hints, pick a real word, and hand back a link to
+          play or share. Setup is a one-time connector, see the
+          <a href="https://vagudle.king-tajin.dev/docs/mcp.md"
+            >MCP server documentation</a
+          >.
         </p>
 
         <h2>Open Source</h2>
