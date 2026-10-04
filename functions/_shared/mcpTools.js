@@ -116,7 +116,7 @@ const checkWordsTool = {
   title: "Check words",
   description:
     "Checks whether words are valid Vagudle words and tells you which dictionaries contain each one. " +
-    "The dictionaries overlap only partly: a word can be in 'normal', 'hard', 'full', or any combination, and some 'normal' words are missing from 'full'. " +
+    "'normal' and 'hard' never share a word, and every word in either of them is also in 'full', so a word is in 'full' only, 'normal' and 'full', or 'hard' and 'full'. " +
     "Use this before create_challenge to find a dictionary that accepts your word.",
   inputSchema: {
     type: "object",

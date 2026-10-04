@@ -46,7 +46,7 @@ Challenges draw their secret word from one of three dictionaries:
 | `hard`   | Uncommon words                   |
 | `full`   | The complete Scrabble dictionary |
 
-The dictionaries only partly overlap. A word can be in one, two or all three, and some `normal` words are not in `full`. A challenge only works if its word is in the dictionary it was created with, which is why the lookup tools report every dictionary a word belongs to. All words are 4 to 7 letters long.
+The `normal` and `hard` dictionaries never share a word, and every word in either of them is also in `full`. So a word is in `full` only, in `normal` and `full`, or in `hard` and `full`. A challenge only works if its word is in the dictionary it was created with, which is why the lookup tools report every dictionary a word belongs to. All words are 4 to 7 letters long.
 
 ## Tools
 
