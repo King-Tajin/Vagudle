@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build && node scripts/optimize-dist.mjs",
+    "build": "pnpm run check:words && vite build && node scripts/optimize-dist.mjs",
     "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && react-doctor --verbose",
     "check:overrides": "node scripts/check-unused-overrides.mjs",
+    "check:words": "node scripts/check-word-lists.mjs",
     "doctor": "pnpm dlx react-doctor@latest --verbose",
     "doctor:report": "node scripts/doctor-report.mjs",
     "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml,md}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
