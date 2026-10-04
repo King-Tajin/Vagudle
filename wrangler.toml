@@ -29,6 +29,16 @@ name = "FEEDBACK_RATE_LIMITER"
 namespace_id = "1003"
 simple = { limit = 2, period = 60 }
 
+[[ratelimits]]
+name = "CHALLENGE_RATE_LIMITER"
+namespace_id = "1005"
+simple = { limit = 60, period = 60 }
+
+[[ratelimits]]
+name = "MCP_RATE_LIMITER"
+namespace_id = "1004"
+simple = { limit = 60, period = 60 }
+
 [[durable_objects.bindings]]
 name = "SYNC_ROOM"
 class_name = "SyncRoom"
