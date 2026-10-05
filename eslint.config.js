@@ -93,6 +93,18 @@ export default tseslint.config(
   },
   {
     extends: [js.configs.recommended],
+    files: ["docs/**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: globals.browser,
+    },
+    rules: {
+      "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    },
+  },
+  {
+    extends: [js.configs.recommended],
     files: ["*.cjs"],
     languageOptions: {
       ecmaVersion: "latest",

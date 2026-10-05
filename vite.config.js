@@ -15,6 +15,10 @@ export default defineConfig({
   },
   build: {
     rolldownOptions: {
+      input: {
+        main: path.resolve(import.meta.dirname, "index.html"),
+        docs: path.resolve(import.meta.dirname, "docs/index.html"),
+      },
       output: {
         codeSplitting: {
           groups: [

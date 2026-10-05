@@ -5,7 +5,7 @@ import { BackButton } from "../Controls";
 import strings from "../../../../constants/strings";
 
 const MCP_SERVER_URL = "https://vagudle.king-tajin.dev/mcp";
-const MCP_SETUP_GUIDE_URL = "https://vagudle.king-tajin.dev/docs/mcp.md";
+const MCP_SETUP_GUIDE_URL = "https://vagudle.king-tajin.dev/docs/?doc=mcp";
 const CLAUDE_CODE_COMMAND = `claude mcp add --transport http vagudle ${MCP_SERVER_URL}`;
 
 const CopyButton = ({
@@ -162,7 +162,7 @@ export const AiGuideView = ({ onBack }: { onBack: () => void }) => {
           border: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        <pre className="font-code text-xs text-gray-300 whitespace-pre-wrap break-words max-h-48 overflow-y-auto leading-relaxed">
+        <pre className="font-code text-xs text-gray-300 whitespace-pre-wrap wrap-break-word max-h-48 overflow-y-auto leading-relaxed">
           {strings.CHALLENGE_AI_PROMPT_TEXT}
         </pre>
         <CopyButton text={strings.CHALLENGE_AI_PROMPT_TEXT} fullWidth />

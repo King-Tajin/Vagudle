@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+    <title>Docs – Vagudle</title>
+    <meta
+      name="description"
+      content="Documentation for Vagudle, including how to connect an AI assistant to create challenges."
+    />
+    <link rel="canonical" href="https://vagudle.king-tajin.dev/docs/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="module" src="./docs.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/docs/">
+        <img src="/favicon.svg" alt="" width="28" height="28" />
+        <span>VAGUDLE DOCS</span>
+      </a>
+      <a class="play" href="/">PLAY VAGUDLE &rarr;</a>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" id="sidebar" hidden>
+        <nav id="docs-nav" aria-label="Documents" hidden>
+          <p class="side-label">DOCS</p>
+          <ul id="docs-list"></ul>
+        </nav>
+        <details id="toc" hidden>
+          <summary class="side-label">ON THIS PAGE</summary>
+          <ul id="toc-list"></ul>
+        </details>
+        <a class="raw" id="raw-link" href="/docs/" hidden>VIEW RAW MARKDOWN</a>
+      </aside>
+
+      <main class="content">
+        <p class="status" id="status">Loading…</p>
+        <section id="index-view" hidden>
+          <h1 class="page-title">DOCUMENTATION</h1>
+          <ul class="card-list" id="index-list"></ul>
+        </section>
+        <section id="doc-view" hidden></section>
+        <noscript>
+          <p class="status">
+            This page needs JavaScript. You can read the raw Markdown instead:
+            <a href="/docs/mcp.md">MCP server</a>.
+          </p>
+        </noscript>
+      </main>
+    </div>
+  </body>
+</html>

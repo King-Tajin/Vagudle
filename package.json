@@ -10,8 +10,8 @@
     "check:words": "node scripts/check-word-lists.mjs",
     "doctor": "pnpm dlx react-doctor@latest --verbose",
     "doctor:report": "node scripts/doctor-report.mjs",
-    "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml,md}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml,md}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
+    "format": "svgo -f src -r && svgo -f public -r && prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml,md}\" \"docs/**/*.{html,css,js}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,md}\" \"functions/**/*.{js,json}\" \"workers/**/*.{js,json,md}\" \"workers/**/pnpm-workspace.yaml\" \"*.{html,json,js,cjs,md,ts}\" \"public/**/*.{html,json,xml,md}\" \"docs/**/*.{html,css,js}\" \".github/**/*.md\" \".github/workflows/*.yml\" \"scripts/*.mjs\" \"pnpm-workspace.yaml\" \"migrations/*.sql\" \"*.toml\" \"workers/**/*.toml\"",
     "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
     "start": "vite",
     "start:backend": "pnpm run build && pnpm exec wrangler pages dev --proxy 5173",
@@ -31,7 +31,9 @@
     "firebase": "^12.19.0",
     "framer-motion": "^12.43.0",
     "lottie-web": "^5.13.0",
-    "lucide-react": "^1.49.0",
+    "lucide-react": "^1.51.0",
+    "marked": "^18.0.14",
+    "marked-gfm-heading-id": "^4.1.4",
     "postcss": "^8.5.28",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -42,7 +44,8 @@
     "unicode-emoji-json": "^0.9.0",
     "vite": "^8.3.2",
     "vite-plugin-svgr": "^5.2.0",
-    "webgl-fluid-enhanced": "^0.8.0"
+    "webgl-fluid-enhanced": "^0.8.0",
+    "zero-md": "^3.1.8"
   },
   "browserslist": {
     "production": [
@@ -57,7 +60,7 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261002.1",
+    "@cloudflare/workers-types": "^5.20261003.1",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
@@ -65,7 +68,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/ua-parser-js": "^0.7.39",
-    "eslint": "^10.11.0",
+    "eslint": "^10.12.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
@@ -74,7 +77,7 @@
     "prettier": "^3.9.9",
     "prettier-plugin-sql": "^0.20.0",
     "prettier-plugin-toml": "^2.0.6",
-    "react-doctor": "^0.9.14",
+    "react-doctor": "^0.9.16",
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.71.0",
@@ -87,8 +90,9 @@
     "workers/**/*.{js,json,md}": "prettier --write",
     "*.{html,json,js,cjs,md}": "prettier --write",
     "public/**/*.{html,json}": "prettier --write",
+    "docs/**/*.{html,css,js}": "prettier --write",
     "public/**/*.svg": "svgo",
     ".github/**/*.md": "prettier --write"
   },
-  "packageManager": "pnpm@12.8.1"
+  "packageManager": "pnpm@12.9.1"
 }
