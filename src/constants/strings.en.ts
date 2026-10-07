@@ -856,6 +856,7 @@ export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "DIRECT SIGN-IN";
 export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Email address";
 export const EMAIL_INVALID_ERROR_TEXT = "Enter a valid email address.";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "SEND LINK";
+export const CLOUD_SAVE_SENDING_BUTTON_TEXT = "SENDING...";
 export const CLOUD_SAVE_EMAIL_SENT_TEXT =
   "Check your email for a sign-in link.";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING = "FLEXIBLE SIGN-IN";

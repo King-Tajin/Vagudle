@@ -5,6 +5,7 @@ import signInText from "./sign-in.txt";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
+const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
 const escapeHtml = (value) =>
   value
@@ -28,6 +29,27 @@ const isTrustedSignInLink = (value, env) => {
   }
 };
 
+const toSiteLink = (link, env) => {
+  try {
+    const source = new URL(link);
+    const apiKey = source.searchParams.get("apiKey");
+    const oobCode = source.searchParams.get("oobCode");
+    const continueUrl = source.searchParams.get("continueUrl");
+    if (!apiKey || !oobCode || !continueUrl) return link;
+
+    const target = new URL(continueUrl);
+    if (target.origin !== env.SITE_ORIGIN) return link;
+
+    target.searchParams.set("apiKey", apiKey);
+    target.searchParams.set("mode", "signIn");
+    target.searchParams.set("oobCode", oobCode);
+    target.searchParams.set("lang", source.searchParams.get("lang") ?? "en");
+    return target.toString();
+  } catch {
+    return link;
+  }
+};
+
 const fillTemplate = (template, values) =>
   template.replace(/\{\{(\w+)}}/g, (match, key) => values[key] ?? match);
 
@@ -36,9 +58,36 @@ const renderSignInEmail = (link, env) => ({
   html: fillTemplate(signInHtml, {
     href: escapeHtml(link),
     logo: `${env.SITE_ORIGIN}/logo192.png`,
+    title: `${env.SITE_ORIGIN}/vagudle-title.png`,
   }),
   text: fillTemplate(signInText, { link }),
 });
+
+const sendWithResend = async (email, message, env) => {
+  const res = await fetch(RESEND_ENDPOINT, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: `${env.FROM_NAME} <${env.FROM_ADDRESS}>`,
+      to: [email],
+      ...message,
+    }),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    console.error(
+      "Email send failed.",
+      res.status,
+      detail?.name,
+      detail?.message
+    );
+    return false;
+  }
+  return true;
+};
 
 export default {
   async fetch(request, env) {
@@ -66,14 +115,20 @@ export default {
       return new Response("Bad request.", { status: 400 });
     }
 
+    if (!env.RESEND_API_KEY) {
+      console.error("RESEND_API_KEY is not set.");
+      return new Response("Send failed.", { status: 502 });
+    }
+
     try {
-      await env.EMAIL.send({
-        to: email,
-        from: { email: env.FROM_ADDRESS, name: env.FROM_NAME },
-        ...renderSignInEmail(link, env),
-      });
+      const sent = await sendWithResend(
+        email,
+        renderSignInEmail(toSiteLink(link, env), env),
+        env
+      );
+      if (!sent) return new Response("Send failed.", { status: 502 });
     } catch (error) {
-      console.error("Email send failed.", error?.code, error?.message);
+      console.error("Email send failed.", error?.message);
       return new Response("Send failed.", { status: 502 });
     }
 

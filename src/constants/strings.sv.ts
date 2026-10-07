@@ -869,6 +869,7 @@ export const CLOUD_SAVE_DIRECT_SIGNIN_HEADING = "DIREKT INLOGGNING";
 export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "E-postadress";
 export const EMAIL_INVALID_ERROR_TEXT = "Ange en giltig e-postadress.";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "SKICKA LÄNK";
+export const CLOUD_SAVE_SENDING_BUTTON_TEXT = "SKICKAR...";
 export const CLOUD_SAVE_EMAIL_SENT_TEXT =
   "Kolla din e-post efter en inloggningslänk.";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING = "FLEXIBEL INLOGGNING";

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { m } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import { title } from "./screenHelpers";
 import { linkDiscordWithCurrentUser } from "../../lib/cloudSync";
@@ -38,6 +39,8 @@ export const LinkDiscordPage = () => {
     actionError,
     authFlowMessage,
     emailLinkSent,
+    emailLinkSending,
+    emailLinkBusy,
     signInWithGoogle,
     signInWithGithub,
     sendEmailLink,
@@ -154,12 +157,20 @@ export const LinkDiscordPage = () => {
           />
           <button
             type="button"
-            onClick={() => void sendEmailLink(email, "signin")}
-            disabled={!email}
-            className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors disabled:opacity-40"
+            onClick={() =>
+              !emailLinkBusy && void sendEmailLink(email, "signin")
+            }
+            disabled={!email || emailLinkBusy}
+            aria-busy={emailLinkSending}
+            className="flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-4 py-2 transition duration-75 enabled:active:scale-95 enabled:active:brightness-150 disabled:opacity-40 disabled:cursor-not-allowed"
             style={buttonStyle}
           >
-            {strings.LINK_DISCORD_SEND_LINK_BUTTON_TEXT}
+            {emailLinkSending && (
+              <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin" />
+            )}
+            {emailLinkSending
+              ? strings.CLOUD_SAVE_SENDING_BUTTON_TEXT
+              : strings.LINK_DISCORD_SEND_LINK_BUTTON_TEXT}
           </button>
           {emailLinkSent && (
             <p className="font-code text-xs text-gray-500 leading-relaxed">

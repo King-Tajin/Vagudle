@@ -43,8 +43,18 @@ import {
   markSignedIn,
 } from "../lib/signInMarker";
 import { CloudAuthContext } from "../context/cloud-auth-context";
+import { useAlert } from "../context/alert-context";
 
 const EMAIL_LINK_STORAGE_KEY = "vagudle-email-link-address:v1";
+const EMAIL_LINK_URL_PARAMS = [
+  "apiKey",
+  "oobCode",
+  "mode",
+  "lang",
+  "continueUrl",
+];
+const EMAIL_LINK_RESEND_COOLDOWN_MS = 30 * 1000;
+const EMAIL_LINK_RETRY_DELAY_MS = 3 * 1000;
 const RENEW_LOCK_NAME = "vagudle-session-renew";
 const SESSION_CHECK_INTERVAL_MS = 60 * 1000;
 
@@ -128,31 +138,64 @@ export { isPlayGamesAvailable };
 const looksLikeEmailSignInLink = (href: string): boolean =>
   href.includes("mode=signIn");
 
-export const completeEmailLinkSignIn = async (): Promise<void> => {
-  if (!looksLikeEmailSignInLink(window.location.href)) return;
+export type EmailLinkSignInResult = "signed_in" | "failed" | "skipped";
 
-  const { auth, authModule } = await loadFirebaseAuth();
-  if (!authModule.isSignInWithEmailLink(auth, window.location.href)) return;
-
-  let email: string | null = null;
+const stripEmailLinkParams = (): void => {
   try {
-    email = localStorage.getItem(EMAIL_LINK_STORAGE_KEY);
+    const url = new URL(window.location.href);
+    for (const param of EMAIL_LINK_URL_PARAMS) url.searchParams.delete(param);
+    window.history.replaceState({}, document.title, url.toString());
   } catch {}
+};
 
-  if (!email) {
-    email = window.prompt(strings.CLOUD_AUTH_EMAIL_PROMPT_TEXT);
-  }
-  if (!email) return;
+const runEmailLinkSignIn = async (
+  href: string
+): Promise<EmailLinkSignInResult> => {
+  if (!looksLikeEmailSignInLink(href)) return "skipped";
 
   try {
-    await authModule.signInWithEmailLink(auth, email, window.location.href);
+    const { auth, authModule } = await loadFirebaseAuth();
+    if (!authModule.isSignInWithEmailLink(auth, href)) return "skipped";
+
+    let email: string | null = null;
+    try {
+      email = localStorage.getItem(EMAIL_LINK_STORAGE_KEY);
+    } catch {}
+
+    if (!email) {
+      email = window.prompt(strings.CLOUD_AUTH_EMAIL_PROMPT_TEXT);
+    }
+    const trimmedEmail = email?.trim();
+    if (!trimmedEmail) return "skipped";
+
+    try {
+      await authModule.signInWithEmailLink(auth, trimmedEmail, href);
+    } catch {
+      stripEmailLinkParams();
+      return "failed";
+    }
+
     try {
       localStorage.removeItem(EMAIL_LINK_STORAGE_KEY);
     } catch {}
-    const url = new URL(window.location.href);
-    url.search = "";
-    window.history.replaceState({}, document.title, url.toString());
-  } catch {}
+    stripEmailLinkParams();
+    return "signed_in";
+  } catch {
+    return "failed";
+  }
+};
+
+let emailLinkCompletion: {
+  href: string;
+  promise: Promise<EmailLinkSignInResult>;
+} | null = null;
+
+export const completeEmailLinkSignIn = (): Promise<EmailLinkSignInResult> => {
+  const href = window.location.href;
+  if (emailLinkCompletion?.href === href) return emailLinkCompletion.promise;
+  const promise = runEmailLinkSignIn(href);
+  emailLinkCompletion = { href, promise };
+  return promise;
 };
 
 export const completeDiscordSignIn = async (): Promise<void> => {
@@ -175,7 +218,14 @@ export const useCloudAuthState = ({
   const [authFlowMessage, setAuthFlowMessage] =
     useState<AuthFlowMessage | null>(() => consumeDiscordAuthOutcome());
   const [emailLinkSent, setEmailLinkSent] = useState(false);
+  const [emailLinkSending, setEmailLinkSending] = useState(false);
+  const [emailLinkCoolingDown, setEmailLinkCoolingDown] = useState(false);
+  const { showError } = useAlert();
 
+  const emailLinkLockRef = useRef(false);
+  const emailLinkCooldownTimerRef = useRef<ReturnType<
+    typeof setTimeout
+  > | null>(null);
   const firebaseUserRef = useRef<User | null>(null);
   const discordSessionRef = useRef<DiscordSession | null>(discordSession);
   const playGamesSessionRef = useRef<PlayGamesSession | null>(playGamesSession);
@@ -203,6 +253,30 @@ export const useCloudAuthState = ({
     },
     []
   );
+
+  useEffect(() => {
+    void completeEmailLinkSignIn().then((result) => {
+      if (result === "failed") showError(strings.GENERIC_ERROR_TEXT);
+    });
+  }, [showError]);
+
+  useEffect(
+    () => () => {
+      if (emailLinkCooldownTimerRef.current)
+        clearTimeout(emailLinkCooldownTimerRef.current);
+    },
+    []
+  );
+
+  const startEmailLinkCooldown = useCallback((durationMs: number) => {
+    if (emailLinkCooldownTimerRef.current)
+      clearTimeout(emailLinkCooldownTimerRef.current);
+    setEmailLinkCoolingDown(true);
+    emailLinkCooldownTimerRef.current = setTimeout(() => {
+      emailLinkCooldownTimerRef.current = null;
+      setEmailLinkCoolingDown(false);
+    }, durationMs);
+  }, []);
 
   const reportUnexpectedSignOut = useCallback(() => {
     if (!warnOnSessionEnd || !hasSignedInMarker()) return;
@@ -522,9 +596,14 @@ export const useCloudAuthState = ({
 
   const sendEmailLink = useCallback(
     async (email: string, intent: AuthIntent) => {
+      if (emailLinkLockRef.current) return;
+      emailLinkLockRef.current = true;
+      setEmailLinkSending(true);
       setActionError(null);
       setAuthFlowMessage(null);
       setEmailLinkSent(false);
+
+      let cooldownMs = EMAIL_LINK_RETRY_DELAY_MS;
       try {
         const existsResult = await checkEmailAccountExists(email);
         if (existsResult === "error") {
@@ -557,11 +636,16 @@ export const useCloudAuthState = ({
           localStorage.setItem(EMAIL_LINK_STORAGE_KEY, email);
         } catch {}
         setEmailLinkSent(true);
+        cooldownMs = EMAIL_LINK_RESEND_COOLDOWN_MS;
       } catch {
         setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
+      } finally {
+        emailLinkLockRef.current = false;
+        setEmailLinkSending(false);
+        startEmailLinkCooldown(cooldownMs);
       }
     },
-    [checkEmailAccountExists]
+    [checkEmailAccountExists, startEmailLinkCooldown]
   );
 
   const signOutUser = useCallback(async () => {
@@ -697,6 +781,8 @@ export const useCloudAuthState = ({
     authFlowMessage,
     clearAuthFlowMessage,
     emailLinkSent,
+    emailLinkSending,
+    emailLinkBusy: emailLinkSending || emailLinkCoolingDown,
     signInWithGoogle,
     signInWithGithub,
     signInWithDiscord,

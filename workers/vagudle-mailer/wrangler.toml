@@ -13,6 +13,3 @@ FROM_ADDRESS = "login@king-tajin.dev"
 FROM_NAME = "Vagudle"
 SITE_ORIGIN = "https://vagudle.king-tajin.dev"
 AUTH_LINK_HOST = "vagudle.firebaseapp.com"
-
-[[send_email]]
-name = "EMAIL"
