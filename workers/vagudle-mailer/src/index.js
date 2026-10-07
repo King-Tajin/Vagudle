@@ -2,10 +2,40 @@
 
 import signInHtml from "./sign-in.html";
 import signInText from "./sign-in.txt";
+import logoPng from "./vagudle-logo.png";
+import titlePng from "./vagudle-title.png";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
+
+const toBase64 = (buffer) => {
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+};
+
+const LOGO_CID = "vagudle-logo";
+const TITLE_CID = "vagudle-title";
+
+const INLINE_IMAGES = [
+  {
+    filename: "vagudle-logo.png",
+    content: toBase64(logoPng),
+    content_type: "image/png",
+    content_id: LOGO_CID,
+  },
+  {
+    filename: "vagudle-title.png",
+    content: toBase64(titlePng),
+    content_type: "image/png",
+    content_id: TITLE_CID,
+  },
+];
 
 const escapeHtml = (value) =>
   value
@@ -53,14 +83,15 @@ const toSiteLink = (link, env) => {
 const fillTemplate = (template, values) =>
   template.replace(/\{\{(\w+)}}/g, (match, key) => values[key] ?? match);
 
-const renderSignInEmail = (link, env) => ({
+const renderSignInEmail = (link) => ({
   subject: "Sign in to Vagudle",
   html: fillTemplate(signInHtml, {
     href: escapeHtml(link),
-    logo: `${env.SITE_ORIGIN}/logo192.png`,
-    title: `${env.SITE_ORIGIN}/vagudle-title.png`,
+    logo: `cid:${LOGO_CID}`,
+    title: `cid:${TITLE_CID}`,
   }),
   text: fillTemplate(signInText, { link }),
+  attachments: INLINE_IMAGES,
 });
 
 const sendWithResend = async (email, message, env) => {
@@ -123,7 +154,7 @@ export default {
     try {
       const sent = await sendWithResend(
         email,
-        renderSignInEmail(toSiteLink(link, env), env),
+        renderSignInEmail(toSiteLink(link, env)),
         env
       );
       if (!sent) return new Response("Send failed.", { status: 502 });
