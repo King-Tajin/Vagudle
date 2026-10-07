@@ -43,6 +43,7 @@ export const MODAL_TITLE_RESET_ALL_DATA = "Återställ all data";
 export const MODAL_TITLE_CREATE_CHALLENGE = "Skapa utmaning";
 export const MODAL_TITLE_OFFLINE_MODE = "Du är offline";
 export const MODAL_TITLE_WEBGL_UNAVAILABLE = "Grafik stöds inte";
+export const MODAL_TITLE_SESSION_ENDED = "Utloggad";
 
 export const OFFLINE_MODE_INTRO_TEXT =
   "Vi kunde inte nå Vagudles servrar. Du kan fortfarande spela grundspelet offline.";
@@ -67,6 +68,10 @@ export const OFFLINE_MODE_STILL_OFFLINE_TEXT =
 export const OFFLINE_MODE_CONNECTED_TEXT =
   "Du är online igen och ansluten till Vagudles servrar. Det är bara att köra!";
 export const OFFLINE_MODE_CONTINUE_BUTTON_TEXT = "FORTSÄTT";
+export const SESSION_ENDED_INTRO_TEXT =
+  "Din inloggningssession har avslutats. Tills du loggar in igen sparas dina framsteg bara på den här enheten.";
+export const SESSION_ENDED_OPEN_ACCOUNT_BUTTON_TEXT = "KONTOINSTÄLLNINGAR";
+export const SESSION_ENDED_CONTINUE_BUTTON_TEXT = "FORTSÄTT ÄNDÅ";
 
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} kräver WebGL, vilket din webbläsare eller enhet inte stöder. Försök uppdatera dina grafikdrivrutiner, byta webbläsare eller välja en annan bakgrund.`;

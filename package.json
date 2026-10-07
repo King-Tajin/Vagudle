@@ -23,7 +23,7 @@
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.3.3",
-    "@vitejs/plugin-react": "^6.1.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.6.1",
     "classnames": "^2.5.1",
     "exiftool-vendored": "^37.2.0",
@@ -31,10 +31,10 @@
     "firebase": "^12.19.0",
     "framer-motion": "^12.43.0",
     "lottie-web": "^5.13.0",
-    "lucide-react": "^1.51.0",
+    "lucide-react": "^1.52.0",
     "marked": "^18.0.14",
     "marked-gfm-heading-id": "^4.1.4",
-    "postcss": "^8.5.28",
+    "postcss": "^8.5.29",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "svgo": "^4.1.0",
@@ -60,7 +60,7 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261003.1",
+    "@cloudflare/workers-types": "^5.20261005.1",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
@@ -77,11 +77,11 @@
     "prettier": "^3.9.9",
     "prettier-plugin-sql": "^0.20.0",
     "prettier-plugin-toml": "^2.0.6",
-    "react-doctor": "^0.9.16",
+    "react-doctor": "^0.9.17",
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.71.0",
-    "wrangler": "^4.147.0"
+    "wrangler": "^4.148.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",

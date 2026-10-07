@@ -39,6 +39,7 @@ import {
   ActivityAlreadyPlayedScreen,
   OfflineModeModal,
   WebglUnavailableModal,
+  SessionEndedModal,
 } from "./lazyComponents";
 
 import { LoadingScreen } from "./components/screens/GameScreens";
@@ -146,7 +147,7 @@ function App() {
     showPlayGamesLinkPrompt,
     dismissPlayGamesLinkPrompt,
   } = useCloudSync(isMobile);
-  const { user } = useCloudAuth();
+  const { user, sessionEnded, dismissSessionEnded } = useCloudAuth();
 
   useEffect(() => {
     void completeEmailLinkSignIn();
@@ -1184,6 +1185,17 @@ function App() {
             isOpen={isWebglUnavailableModalOpen}
             backgroundLabel={webglUnavailableBackgroundLabel}
             handleClose={handleCloseWebglUnavailableModal}
+          />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SessionEndedModal
+            isOpen={sessionEnded}
+            handleClose={dismissSessionEnded}
+            handleOpenAccount={() => {
+              dismissSessionEnded();
+              setSettingsAccountJumpKey((prev) => prev + 1);
+              setIsSettingsModalOpen(true);
+            }}
           />
         </Suspense>
       </div>

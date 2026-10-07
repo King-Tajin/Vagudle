@@ -199,7 +199,7 @@ export const renewDiscordSession = async (
     storeDiscordSession(renewed);
     return renewed;
   } catch {
-    return null;
+    return session;
   }
 };
 

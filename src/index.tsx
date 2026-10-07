@@ -4,7 +4,8 @@ import { LazyMotion, domAnimation, MotionConfig } from "framer-motion";
 import "./index.css";
 import App from "./App";
 import { AlertProvider } from "./context/AlertContext";
-import { initDiscordSDK } from "./lib/discord";
+import { CloudAuthProvider } from "./context/CloudAuthContext";
+import { initDiscordSDK, isDiscordActivity } from "./lib/discord";
 import { LinkDiscordPage } from "./components/screens/LinkDiscordPage";
 import { LinkPlayGamesPage } from "./components/screens/LinkPlayGamesPage";
 import { initCrashReporting, logBreadcrumb } from "./lib/crashReporting";
@@ -33,13 +34,21 @@ async function bootstrap() {
         <MotionConfig reducedMotion="user">
           <CrashBoundary>
             <AlertProvider>
-              {isLinkDiscordRoute ? (
-                <LinkDiscordPage />
-              ) : isLinkPlayGamesRoute ? (
-                <LinkPlayGamesPage />
-              ) : (
-                <App />
-              )}
+              <CloudAuthProvider
+                warnOnSessionEnd={
+                  !isDiscordActivity &&
+                  !isLinkDiscordRoute &&
+                  !isLinkPlayGamesRoute
+                }
+              >
+                {isLinkDiscordRoute ? (
+                  <LinkDiscordPage />
+                ) : isLinkPlayGamesRoute ? (
+                  <LinkPlayGamesPage />
+                ) : (
+                  <App />
+                )}
+              </CloudAuthProvider>
             </AlertProvider>
           </CrashBoundary>
         </MotionConfig>

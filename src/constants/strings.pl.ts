@@ -57,6 +57,7 @@ export const MODAL_TITLE_RESET_ALL_DATA = "Zresetuj wszystkie dane";
 export const MODAL_TITLE_CREATE_CHALLENGE = "Utwórz wyzwanie";
 export const MODAL_TITLE_OFFLINE_MODE = "Jesteś offline";
 export const MODAL_TITLE_WEBGL_UNAVAILABLE = "Grafika niedostępna";
+export const MODAL_TITLE_SESSION_ENDED = "Wylogowano";
 
 export const OFFLINE_MODE_INTRO_TEXT =
   "Nie udało się połączyć z serwerami Vagudle. Nadal możesz grać w podstawową wersję gry offline.";
@@ -81,6 +82,10 @@ export const OFFLINE_MODE_STILL_OFFLINE_TEXT =
 export const OFFLINE_MODE_CONNECTED_TEXT =
   "Połączenie przywrócone i połączono z serwerami Vagudle. Wszystko gotowe do gry!";
 export const OFFLINE_MODE_CONTINUE_BUTTON_TEXT = "KONTYNUUJ";
+export const SESSION_ENDED_INTRO_TEXT =
+  "Twoja sesja logowania wygasła. Dopóki nie zalogujesz się ponownie, Twój postęp będzie zapisywany tylko na tym urządzeniu.";
+export const SESSION_ENDED_OPEN_ACCOUNT_BUTTON_TEXT = "USTAWIENIA KONTA";
+export const SESSION_ENDED_CONTINUE_BUTTON_TEXT = "KONTYNUUJ MIMO TO";
 
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} wymaga technologii WebGL, której Twoja przeglądarka lub urządzenie nie obsługuje. Spróbuj zaktualizować sterowniki grafiki, zmienić przeglądarkę lub wybrać inne tło.`;

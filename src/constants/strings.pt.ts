@@ -43,6 +43,7 @@ export const MODAL_TITLE_RESET_ALL_DATA = "Redefinir todos os dados";
 export const MODAL_TITLE_CREATE_CHALLENGE = "Criar desafio";
 export const MODAL_TITLE_OFFLINE_MODE = "Você está offline";
 export const MODAL_TITLE_WEBGL_UNAVAILABLE = "Gráficos não suportados";
+export const MODAL_TITLE_SESSION_ENDED = "Sessão encerrada";
 
 export const OFFLINE_MODE_INTRO_TEXT =
   "Não conseguimos acessar os servidores do Vagudle. Você ainda pode jogar o jogo básico offline.";
@@ -67,6 +68,10 @@ export const OFFLINE_MODE_STILL_OFFLINE_TEXT =
 export const OFFLINE_MODE_CONNECTED_TEXT =
   "Você está online e conectado aos servidores do Vagudle. Tudo pronto para jogar!";
 export const OFFLINE_MODE_CONTINUE_BUTTON_TEXT = "CONTINUAR";
+export const SESSION_ENDED_INTRO_TEXT =
+  "Sua sessão de login terminou. Até entrar novamente, seu progresso será salvo apenas neste dispositivo.";
+export const SESSION_ENDED_OPEN_ACCOUNT_BUTTON_TEXT = "CONFIGURAÇÕES DA CONTA";
+export const SESSION_ENDED_CONTINUE_BUTTON_TEXT = "CONTINUAR MESMO ASSIM";
 
 export const WEBGL_UNAVAILABLE_BODY_TEXT = (backgroundLabel: string) =>
   `${backgroundLabel} precisa de WebGL, que seu navegador ou dispositivo não suporta. Tente atualizar os drivers gráficos, trocar de navegador ou escolher outro plano de fundo.`;

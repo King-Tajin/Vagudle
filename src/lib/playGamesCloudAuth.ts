@@ -230,7 +230,7 @@ export const renewPlayGamesSession = async (
     syncPlayGamesLeaderboard();
     return renewed;
   } catch {
-    return null;
+    return session;
   }
 };
 

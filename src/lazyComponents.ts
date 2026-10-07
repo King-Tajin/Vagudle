@@ -196,3 +196,8 @@ export const WebglUnavailableModal = lazy(() =>
     default: m.WebglUnavailableModal,
   }))
 );
+export const SessionEndedModal = lazy(() =>
+  import("./components/modals/SessionEndedModal").then((m) => ({
+    default: m.SessionEndedModal,
+  }))
+);
