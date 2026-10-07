@@ -4,7 +4,18 @@ import { ChallengeCreatorModal } from "../ChallengeCreatorModal";
 import { GeneralSettingsPage } from "./pages/GeneralSettingsPage";
 import { AccountPage } from "./pages/AccountPage";
 import { NotificationsPage } from "./pages/NotificationsPage";
-import { tabBase, activeTabStyle, inactiveTabStyle } from "./styles";
+import {
+  activeTabStyle,
+  inactiveTabStyle,
+  mainTabBarClass,
+  mainTabBarStyle,
+  mainTabBase,
+  mainTabLabelClass,
+  activeMainTabStyle,
+  inactiveMainTabStyle,
+  activeMainTabLabelStyle,
+  inactiveMainTabLabelStyle,
+} from "./styles";
 import { type ChallengeConfig } from "../../../lib/challenge";
 import type { DuelConfig } from "../../../lib/duel";
 import {
@@ -197,25 +208,51 @@ export const SettingsModal = ({
       handleClose={handleClose}
       maxWidthClass={aiGuideOpen ? "sm:max-w-2xl" : undefined}
     >
-      <div className="flex gap-2 mb-4">
+      <div className={mainTabBarClass} style={mainTabBarStyle} role="tablist">
         <button
           type="button"
-          className={tabBase}
-          style={activeTab === "settings" ? activeTabStyle : inactiveTabStyle}
+          role="tab"
+          aria-selected={activeTab === "settings"}
+          className={mainTabBase}
+          style={
+            activeTab === "settings" ? activeMainTabStyle : inactiveMainTabStyle
+          }
           onClick={() => setActiveTab("settings")}
         >
-          {strings.SETTINGS_MODAL_TAB_SETTINGS_LABEL}
+          <span
+            className={mainTabLabelClass}
+            style={
+              activeTab === "settings"
+                ? activeMainTabLabelStyle
+                : inactiveMainTabLabelStyle
+            }
+          >
+            {strings.SETTINGS_MODAL_TAB_SETTINGS_LABEL}
+          </span>
         </button>
         {!isActivityMode && (
           <button
             type="button"
-            className={tabBase}
+            role="tab"
+            aria-selected={activeTab === "challenge"}
+            className={mainTabBase}
             style={
-              activeTab === "challenge" ? activeTabStyle : inactiveTabStyle
+              activeTab === "challenge"
+                ? activeMainTabStyle
+                : inactiveMainTabStyle
             }
             onClick={() => setActiveTab("challenge")}
           >
-            {strings.SETTINGS_MODAL_TAB_CHALLENGE_LABEL}
+            <span
+              className={mainTabLabelClass}
+              style={
+                activeTab === "challenge"
+                  ? activeMainTabLabelStyle
+                  : inactiveMainTabLabelStyle
+              }
+            >
+              {strings.SETTINGS_MODAL_TAB_CHALLENGE_LABEL}
+            </span>
           </button>
         )}
       </div>
