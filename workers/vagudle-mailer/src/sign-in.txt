@@ -1,0 +1,8 @@
+Sign in to Vagudle
+
+Open this link to finish signing in:
+{{link}}
+
+The link works once and expires after a short time. For the smoothest sign-in, open it in the same browser you used to request it.
+
+If you didn't ask to sign in, you can safely ignore this email.

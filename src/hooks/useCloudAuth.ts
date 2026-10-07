@@ -540,11 +540,19 @@ export const useCloudAuthState = ({
           return;
         }
 
-        const { auth, authModule } = await loadFirebaseAuth();
-        await authModule.sendSignInLinkToEmail(auth, email, {
-          url: `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`,
-          handleCodeInApp: true,
+        const res = await fetch("/api/send-email-link", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            url: `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`,
+          }),
         });
+        const data = (await res.json()) as { success: boolean };
+        if (!res.ok || !data.success) {
+          setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
+          return;
+        }
         try {
           localStorage.setItem(EMAIL_LINK_STORAGE_KEY, email);
         } catch {}

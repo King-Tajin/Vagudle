@@ -39,6 +39,15 @@ name = "MCP_RATE_LIMITER"
 namespace_id = "1004"
 simple = { limit = 60, period = 60 }
 
+[[ratelimits]]
+name = "EMAIL_RATE_LIMITER"
+namespace_id = "1006"
+simple = { limit = 3, period = 60 }
+
+[[services]]
+binding = "MAILER"
+service = "vagudle-mailer"
+
 [[durable_objects.bindings]]
 name = "SYNC_ROOM"
 class_name = "SyncRoom"

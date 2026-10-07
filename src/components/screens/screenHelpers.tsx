@@ -18,7 +18,7 @@ export const title = (
   <m.p
     initial={{ opacity: 0, y: -10 }}
     animate={{ opacity: 1, y: 0 }}
-    className="font-pixel text-center text-4xl text-crown-gold crown-glow tracking-widest"
+    className="font-jakarta font-bold text-center text-4xl text-crown-gold crown-glow tracking-widest"
   >
     VAGUDLE
   </m.p>

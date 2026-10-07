@@ -1,9 +1,9 @@
 {
-  "name": "vagudle-worker",
+  "name": "vagudle-mailer",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --test-scheduled",
+    "dev": "wrangler dev",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {

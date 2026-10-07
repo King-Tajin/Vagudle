@@ -27,3 +27,4 @@ yarn-error.log*
 /workers/vagudle-worker/.wrangler/
 /workers/vagudle-worker/node_modules/
 /scripts/output/
+/workers/vagudle-mailer/node_modules/
