@@ -98,6 +98,7 @@ type SpriteParticleData = {
   dy: number;
   size: number;
   driftY: number;
+  rotation: number;
 };
 
 type Explosion = {
@@ -144,6 +145,7 @@ const buildSpriteGroup = (
       driftY:
         PARTICLE_DRIFT_MIN +
         Math.random() * (PARTICLE_DRIFT_MAX - PARTICLE_DRIFT_MIN),
+      rotation: Math.floor(Math.random() * 4) * 90,
     };
   });
 };
@@ -185,6 +187,7 @@ function SpriteParticle({
   y,
   size,
   driftY,
+  rotation,
   filter,
 }: {
   frames: string[];
@@ -193,6 +196,7 @@ function SpriteParticle({
   y: number;
   size: number;
   driftY: number;
+  rotation: number;
   filter?: string;
 }) {
   const [frameIndex, setFrameIndex] = useState(0);
@@ -224,6 +228,7 @@ function SpriteParticle({
         top: y - size / 2,
         width: size,
         height: size,
+        rotate: rotation,
         imageRendering: "pixelated",
         filter,
         pointerEvents: "none",
@@ -431,6 +436,7 @@ export function TntRain({
               y={explosion.y + p.dy}
               size={p.size}
               driftY={p.driftY}
+              rotation={p.rotation}
               filter={GRAY_DUST_FILTER}
             />
           ))}
@@ -443,6 +449,7 @@ export function TntRain({
               y={explosion.y + p.dy}
               size={p.size}
               driftY={p.driftY}
+              rotation={p.rotation}
             />
           ))}
           {explosion.explosionSprites.map((p) => (
@@ -454,6 +461,7 @@ export function TntRain({
               y={explosion.y + p.dy}
               size={p.size}
               driftY={p.driftY}
+              rotation={p.rotation}
             />
           ))}
         </React.Fragment>
