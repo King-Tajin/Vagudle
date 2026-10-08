@@ -9,6 +9,7 @@ import YellowBrushIcon from "@/assets/icons/yellow-brush.svg?react";
 import GrayBrushIcon from "@/assets/icons/gray-brush.svg?react";
 import RecycleIcon from "@/assets/icons/recycle.svg?react";
 import strings from "../../constants/strings";
+import { isTextEntryElement } from "../../lib/keyboardFocus";
 
 type Props = {
   solution: string;
@@ -48,6 +49,23 @@ const useCellSize = (solutionLength: number, showGrayCount?: boolean) => {
     return () => window.removeEventListener("resize", compute);
   }, [solutionLength, showGrayCount]);
   return cellSize;
+};
+
+const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
+
+const useHasFinePointer = () => {
+  const [hasFinePointer, setHasFinePointer] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia(FINE_POINTER_QUERY).matches
+  );
+  useEffect(() => {
+    const query = window.matchMedia(FINE_POINTER_QUERY);
+    const handler = () => setHasFinePointer(query.matches);
+    query.addEventListener("change", handler);
+    return () => query.removeEventListener("change", handler);
+  }, []);
+  return hasFinePointer;
 };
 
 const BRUSHES: {
@@ -112,6 +130,8 @@ export const Grid = ({
   autoGray,
 }: Props) => {
   const cellSize = useCellSize(solution.length, showGrayCount);
+  const hasFinePointer = useHasFinePointer();
+  const hasGuesses = guesses.length > 0;
   const [selectedBrush, setSelectedBrush] = useState<CharStatus | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const isPainting = useRef(false);
@@ -132,6 +152,26 @@ export const Grid = ({
   useEffect(() => {
     selectedBrushRef.current = selectedBrush;
   });
+
+  useEffect(() => {
+    if (!hasGuesses) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+      if (!/^[1-3]$/.test(e.key)) return;
+      if (isTextEntryElement(document.activeElement)) return;
+      if (
+        document.querySelector(
+          'dialog[open], [role="dialog"], [aria-modal="true"]'
+        )
+      )
+        return;
+      const brush = BRUSHES[Number(e.key) - 1];
+      if (!brush) return;
+      setSelectedBrush((prev) => (prev === brush.status ? null : brush.status));
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [hasGuesses]);
 
   useEffect(() => {
     const stop = () => {
@@ -217,20 +257,20 @@ export const Grid = ({
 
   return (
     <>
-      {guesses.length > 0 && (
+      {hasGuesses && (
         <>
           <div
             className="flex justify-center items-center gap-3 mb-3 relative"
             style={{ zIndex: 1 }}
           >
-            {BRUSHES.map(({ status, Icon, border, bg }) => (
+            {BRUSHES.map(({ status, Icon, border, bg }, index) => (
               <button
                 key={status}
                 type="button"
                 onClick={() =>
                   setSelectedBrush(selectedBrush === status ? null : status)
                 }
-                className="flex items-center justify-center rounded transition-colors"
+                className="relative flex items-center justify-center rounded transition-colors"
                 style={{
                   width: 52,
                   height: 52,
@@ -244,8 +284,27 @@ export const Grid = ({
                 }}
                 aria-label={strings.GRID_BRUSH_ARIA_LABEL(status)}
                 aria-pressed={selectedBrush === status}
+                aria-keyshortcuts={String(index + 1)}
               >
                 <Icon className="w-9 h-9" />
+                {hasFinePointer && (
+                  <span
+                    className="absolute font-code font-bold pointer-events-none select-none"
+                    style={{
+                      top: 1,
+                      left: 4,
+                      fontSize: 11,
+                      lineHeight: 1,
+                      color:
+                        selectedBrush === status
+                          ? border
+                          : "rgba(255,255,255,0.55)",
+                    }}
+                    aria-hidden="true"
+                  >
+                    {index + 1}
+                  </span>
+                )}
               </button>
             ))}
             <div
