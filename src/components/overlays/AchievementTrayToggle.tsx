@@ -2,7 +2,6 @@ import { m } from "framer-motion";
 import RibbonIcon from "../../assets/icons/ribon.svg?react";
 import strings from "../../constants/strings";
 
-// icon (w-14 = 56px) + padding (p-2 = 8px * 2) + right border (border-2 = 2px) = 74px
 const ACHIEVEMENT_TRAY_WIDTH = 74;
 
 type Props = {
@@ -18,7 +17,9 @@ export const AchievementTrayToggle = ({
 }: Props) => (
   <m.div
     className="fixed left-0 z-20 flex items-stretch"
-    style={{ top: "calc(5rem + 6px + env(safe-area-inset-top))" }}
+    style={{
+      top: "calc(var(--navbar-height) + 10px + env(safe-area-inset-top))",
+    }}
     initial={false}
     animate={{ x: isTrayOpen ? 0 : -ACHIEVEMENT_TRAY_WIDTH }}
     transition={{ type: "spring", stiffness: 280, damping: 28 }}

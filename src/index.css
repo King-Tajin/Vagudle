@@ -10,6 +10,7 @@
 }
 
 :root {
+  --navbar-height: calc(3.5rem + 4px);
   --animation-speed: 1000ms;
   --animation-speed-fast: 250ms;
   --default-cell-bg-color: #141420;
@@ -105,6 +106,10 @@ body {
 }
 
 @media (min-width: 640px) {
+  :root {
+    --navbar-height: calc(4.5rem + 4px);
+  }
+
   .navbar-content {
     height: 4.5rem;
   }
