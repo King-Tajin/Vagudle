@@ -66,6 +66,7 @@ const GRAY_DUST_SPEED_MS = 55;
 const GRAY_DUST_FILTER = "brightness(0.25) contrast(1.25)";
 
 const PARTICLE_FADE_DURATION_MS = 250;
+const GRAY_DUST_FADE_DURATION_MS = 1025;
 const PARTICLE_DRIFT_MIN = 10;
 const PARTICLE_DRIFT_MAX = 22;
 const PARTICLE_DRIFT_DURATION_S = 3.75;
@@ -76,7 +77,7 @@ const EXPLOSION_LIFETIME_MS =
     WHITE_DUST_SPEED_MS * GENERIC_FRAME_COUNT,
     GRAY_DUST_SPEED_MS * GENERIC_FRAME_COUNT
   ) +
-  PARTICLE_FADE_DURATION_MS +
+  Math.max(PARTICLE_FADE_DURATION_MS, GRAY_DUST_FADE_DURATION_MS) +
   150;
 
 type FallingTnt = {
@@ -188,6 +189,7 @@ function SpriteParticle({
   size,
   driftY,
   rotation,
+  fadeDurationMs = PARTICLE_FADE_DURATION_MS,
   filter,
 }: {
   frames: string[];
@@ -197,6 +199,7 @@ function SpriteParticle({
   size: number;
   driftY: number;
   rotation: number;
+  fadeDurationMs?: number;
   filter?: string;
 }) {
   const [frameIndex, setFrameIndex] = useState(0);
@@ -219,7 +222,7 @@ function SpriteParticle({
       initial={{ opacity: 1, y: 0 }}
       animate={{ opacity: finished ? 0 : 1, y: driftY }}
       transition={{
-        opacity: { duration: PARTICLE_FADE_DURATION_MS / 1000, ease: "easeIn" },
+        opacity: { duration: fadeDurationMs / 1000, ease: "easeIn" },
         y: { duration: PARTICLE_DRIFT_DURATION_S, ease: "easeIn" },
       }}
       style={{
@@ -437,6 +440,7 @@ export function TntRain({
               size={p.size}
               driftY={p.driftY}
               rotation={p.rotation}
+              fadeDurationMs={GRAY_DUST_FADE_DURATION_MS}
               filter={GRAY_DUST_FILTER}
             />
           ))}
