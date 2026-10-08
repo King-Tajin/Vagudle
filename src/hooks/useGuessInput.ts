@@ -145,11 +145,7 @@ export const useGuessInput = ({
       setGuesses(updatedGuesses);
       setCurrentGuess("");
 
-      if (
-        isMobileRef.current &&
-        guesses.length === 0 &&
-        !hasAutoClosedTrayRef.current
-      ) {
+      if (isMobileRef.current && !hasAutoClosedTrayRef.current) {
         hasAutoClosedTrayRef.current = true;
         setIsTrayOpen(false);
       }
