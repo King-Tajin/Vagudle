@@ -30,7 +30,6 @@ module.exports = {
       },
       fontFamily: {
         pixel: ["VT323", "monospace"],
-        royal: ["Cinzel", "serif"],
         code: ["JetBrains Mono", "monospace"],
         jakarta: ["'Plus Jakarta Sans'", "sans-serif"],
       },

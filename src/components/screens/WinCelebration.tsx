@@ -184,7 +184,7 @@ export function WinCelebration({ word, onDone }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15, duration: 0.5, ease: "easeIn" }}
-          className="font-royal font-bold text-crown-gold crown-glow tracking-wider win-celebration-title"
+          className="font-jakarta font-bold text-crown-gold crown-glow tracking-widest win-celebration-title"
         >
           {strings.WIN_CELEBRATION_TITLE_TEXT}
         </m.p>

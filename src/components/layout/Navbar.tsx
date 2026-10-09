@@ -189,7 +189,7 @@ export const Navbar = ({
                 <div ref={brandRef} className="min-w-0">
                   <p
                     ref={brandTitleRef}
-                    className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
+                    className="font-jakarta font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
                     Yellow Skipper
                   </p>
@@ -216,7 +216,7 @@ export const Navbar = ({
                 <div ref={brandRef} className="min-w-0">
                   <p
                     ref={brandTitleRef}
-                    className="font-royal font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
+                    className="font-jakarta font-bold text-crown-gold crown-glow tracking-wider whitespace-nowrap"
                   >
                     Yellow Skipper
                   </p>

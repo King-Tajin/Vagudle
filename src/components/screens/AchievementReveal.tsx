@@ -525,7 +525,7 @@ export function AchievementReveal({ onDone, hapticsEnabled }: Props) {
           </m.div>
 
           <m.p
-            className="font-royal font-bold text-crown-gold crown-glow tracking-wider text-center"
+            className="font-jakarta font-bold text-crown-gold crown-glow tracking-wider text-center"
             style={{
               marginTop: 20,
               fontSize: "clamp(20px, 5vw, 32px)",
