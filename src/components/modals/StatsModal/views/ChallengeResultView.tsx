@@ -1,6 +1,13 @@
 import { BaseModal } from "../../BaseModal";
-import { Share2, RotateCcw, Hash, BookOpen, Target } from "lucide-react";
-import { shareChallengeInvite } from "../../../../lib/share";
+import {
+  Share2,
+  RotateCcw,
+  Hash,
+  BookOpen,
+  Target,
+  Trophy,
+} from "lucide-react";
+import { shareChallengeInvite, shareStatus } from "../../../../lib/share";
 import {
   DICT_LABELS,
   DICT_DESCRIPTIONS,
@@ -13,6 +20,7 @@ type Props = {
   isOpen: boolean;
   handleClose: () => void;
   challengeConfig: ChallengeConfig;
+  solution: string;
   guesses: string[];
   gameOutcome: GameOutcome;
   isActivityMode: boolean;
@@ -24,6 +32,7 @@ export const ChallengeResultView = ({
   isOpen,
   handleClose,
   challengeConfig,
+  solution,
   guesses,
   gameOutcome,
   isActivityMode,
@@ -99,25 +108,35 @@ export const ChallengeResultView = ({
       )}
 
       <div className="mt-3 grid grid-cols-2 gap-3">
-        {handleReturnToNormal && (
+        {!isActivityMode && (
           <button
             type="button"
             className="flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
             style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "2px solid rgba(255,255,255,0.12)",
-              color: "#9ca3af",
+              background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
+              border: "2px solid #5000aa",
+              color: "#fff",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.filter = "brightness(1.2)";
+              e.currentTarget.style.filter = "brightness(1.15)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.filter = "brightness(1)";
             }}
-            onClick={handleReturnToNormal}
+            onClick={() =>
+              shareStatus(
+                solution,
+                guesses,
+                gameOutcome === "lost",
+                handleShareToClipboard,
+                false,
+                challengeConfig.guesses,
+                true
+              )
+            }
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            {strings.RESULT_LEAVE_BUTTON_TEXT}
+            <Trophy className="w-3.5 h-3.5" />
+            {strings.CHALLENGE_RESULT_SHARE_RESULT_BUTTON_TEXT}
           </button>
         )}
         {!isActivityMode && (
@@ -141,6 +160,27 @@ export const ChallengeResultView = ({
           >
             <Share2 className="w-3.5 h-3.5" />
             {strings.CHALLENGE_RESULT_SHARE_BUTTON_TEXT}
+          </button>
+        )}
+        {handleReturnToNormal && (
+          <button
+            type="button"
+            className="col-span-2 flex items-center justify-center gap-2 py-3 font-pixel text-xs tracking-wider transition-colors"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "2px solid rgba(255,255,255,0.12)",
+              color: "#9ca3af",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.filter = "brightness(1.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.filter = "brightness(1)";
+            }}
+            onClick={handleReturnToNormal}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            {strings.RESULT_LEAVE_BUTTON_TEXT}
           </button>
         )}
       </div>

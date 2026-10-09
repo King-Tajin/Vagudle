@@ -190,6 +190,7 @@ export const StatsModal = ({
         isOpen={isOpen}
         handleClose={handleClose}
         challengeConfig={challengeConfig}
+        solution={solution}
         guesses={guesses}
         gameOutcome={gameOutcome}
         isActivityMode={isActivityMode}
