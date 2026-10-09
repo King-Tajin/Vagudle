@@ -16,7 +16,8 @@ const BannerFrame = ({ children }: { children: React.ReactNode }) => (
     className="mx-auto mb-4 max-w-sm w-full px-4 py-2.5"
     style={{
       background: "rgba(80,0,170,0.48)",
-      border: "1px solid rgba(80,0,170,0.65)",
+      border: "3px solid #7020cc",
+      borderRadius: 16,
       backdropFilter: "blur(10px)",
       WebkitBackdropFilter: "blur(10px)",
     }}
@@ -26,7 +27,7 @@ const BannerFrame = ({ children }: { children: React.ReactNode }) => (
 );
 
 const BannerLabel = ({ children }: { children: React.ReactNode }) => (
-  <p className="font-pixel text-[9px] text-crown-amber tracking-widest text-center mb-1.5">
+  <p className="font-pixel text-xs text-crown-amber tracking-widest text-center mb-2">
     {children}
   </p>
 );
@@ -45,17 +46,13 @@ const BannerStat = ({
 );
 
 const BannerDivider = () => (
-  <span className="font-code text-xs text-gray-600">&middot;</span>
+  <span className="w-1.5 h-1.5 rounded-full bg-gray-500 shrink-0" />
 );
 
 const ChallengeBanner = ({ config }: { config: ChallengeConfig }) => (
   <BannerFrame>
     <BannerLabel>{strings.BANNER_LABEL_CUSTOM_CHALLENGE}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
-      <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
-        {strings.CHALLENGE_CREATOR_LETTERS_TEXT(config.length)}
-      </BannerStat>
-      <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
         {strings.BANNER_DICTIONARY_TEXT(DICT_LABELS[config.dict])}
       </BannerStat>
