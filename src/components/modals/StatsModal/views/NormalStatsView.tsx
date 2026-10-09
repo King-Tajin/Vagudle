@@ -14,9 +14,9 @@ import type { GameOutcome } from "../../../../lib/gameOutcome";
 import strings from "../../../../constants/strings";
 
 const TAB_ACTIVE_STYLE = {
-  background: "linear-gradient(180deg, #5000aa 0%, #28007c 100%)",
-  border: "2px solid #5000aa",
-  color: "#fff",
+  background: "linear-gradient(180deg, #FFD700 0%, #FFBF00 100%)",
+  border: "2px solid #FFBF00",
+  color: "#0a0014",
 };
 const TAB_INACTIVE_STYLE = {
   background: "rgba(255,255,255,0.03)",
