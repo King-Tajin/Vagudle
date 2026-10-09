@@ -1,6 +1,8 @@
 import { ActivityLink } from "../../../ActivityLink";
 import strings from "../../../../constants/strings";
 
+const MCP_DOCS_URL = "https://vagudle.king-tajin.dev/docs/?doc=mcp";
+
 export const ChallengesTab = () => {
   return (
     <div className="space-y-4">
@@ -38,6 +40,21 @@ export const ChallengesTab = () => {
         {strings.CHALLENGES_DISCORD_TEXT_PART2}{" "}
         <span className="text-crown-gold">/vagudle_challenge</span>{" "}
         {strings.CHALLENGES_DISCORD_TEXT_PART3}
+      </p>
+
+      <div className="border-t border-obsidian-700" />
+
+      <p className="font-pixel text-xs text-crown-amber tracking-widest">
+        {strings.CHALLENGES_VIA_AI_HEADING}
+      </p>
+      <p className="font-code text-sm text-gray-400 leading-relaxed">
+        {strings.CHALLENGES_AI_TEXT}{" "}
+        <ActivityLink
+          href={MCP_DOCS_URL}
+          className="text-crown-gold underline hover:text-crown-amber transition-colors"
+        >
+          {strings.CHALLENGES_AI_DOCS_LINK_TEXT}
+        </ActivityLink>
       </p>
     </div>
   );

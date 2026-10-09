@@ -256,6 +256,10 @@ export const CHALLENGES_DISCORD_LINK_TEXT = "King-Tajin Discord-server";
 export const CHALLENGES_DISCORD_TEXT_PART2 = ", använd snabbkommandot";
 export const CHALLENGES_DISCORD_TEXT_PART3 =
   "för att generera en utmaningslänk direkt från Discord.";
+export const CHALLENGES_VIA_AI_HEADING = "VIA AI-ASSISTENT";
+export const CHALLENGES_AI_TEXT =
+  "Vagudle har en offentlig MCP-server som låter AI-assistenter skapa utmaningar åt dig. Berätta för AI:n vilken sorts utmaning du vill ha, så väljer den ett riktigt ord och ger dig en länk att spela eller dela. Inget att installera och inget konto behövs.";
+export const CHALLENGES_AI_DOCS_LINK_TEXT = "Läs MCP-dokumentationen →";
 
 export const HOWTO_INTRO_TEXT_PART1 = "Skriv ett ord och tryck på";
 export const HOWTO_INTRO_TEXT_PART2 =

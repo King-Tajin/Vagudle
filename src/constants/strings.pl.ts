@@ -272,6 +272,10 @@ export const CHALLENGES_DISCORD_LINK_TEXT = "serwerze Discord King-Tajin";
 export const CHALLENGES_DISCORD_TEXT_PART2 = ", użyj polecenia";
 export const CHALLENGES_DISCORD_TEXT_PART3 =
   "aby wygenerować link do wyzwania bezpośrednio z Discorda.";
+export const CHALLENGES_VIA_AI_HEADING = "PRZEZ ASYSTENTA AI";
+export const CHALLENGES_AI_TEXT =
+  "Vagudle ma publiczny serwer MCP, który pozwala asystentom AI tworzyć dla Ciebie wyzwania. Powiedz AI, jakiego wyzwania chcesz, a wybierze prawdziwe słowo i poda Ci link do gry lub udostępnienia. Nie trzeba niczego instalować ani zakładać konta.";
+export const CHALLENGES_AI_DOCS_LINK_TEXT = "Przeczytaj dokumentację MCP →";
 
 export const HOWTO_INTRO_TEXT_PART1 = "Wpisz słowo i naciśnij";
 export const HOWTO_INTRO_TEXT_PART2 =
