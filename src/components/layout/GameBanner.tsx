@@ -1,5 +1,5 @@
 import { m } from "framer-motion";
-import { BookOpen, Hash, Target, Swords, CalendarDays } from "lucide-react";
+import { BookOpen, Flame, Target, Swords, CalendarDays } from "lucide-react";
 import { DICT_LABELS } from "../../lib/challenge";
 import type { ChallengeConfig } from "../../lib/challenge";
 import type { DuelConfig } from "../../lib/duel";
@@ -68,10 +68,6 @@ const DuelBanner = ({ config }: { config: DuelConfig }) => (
   <BannerFrame>
     <BannerLabel>{strings.BANNER_LABEL_DUEL}</BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
-      <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
-        {strings.CHALLENGE_CREATOR_LETTERS_TEXT(config.length)}
-      </BannerStat>
-      <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
         {strings.BANNER_DICTIONARY_TEXT(DICT_LABELS[config.dict])}
       </BannerStat>
@@ -90,10 +86,12 @@ const DuelBanner = ({ config }: { config: DuelConfig }) => (
 const DailyBanner = ({
   config,
   dailyNumber,
+  streak,
   usernameWarning,
 }: {
   config: DailyConfig;
   dailyNumber: number;
+  streak: number;
   usernameWarning: string | null;
 }) => (
   <BannerFrame>
@@ -102,10 +100,6 @@ const DailyBanner = ({
       {dailyNumber}
     </BannerLabel>
     <div className="flex items-center justify-center gap-3 flex-wrap">
-      <BannerStat icon={<Hash className="w-3 h-3 text-crown-amber" />}>
-        {strings.DAILY_SCHEDULE_WORD_LENGTH_TEXT(config.wordLength)}
-      </BannerStat>
-      <BannerDivider />
       <BannerStat icon={<BookOpen className="w-3 h-3 text-crown-amber" />}>
         {config.hardMode
           ? strings.BANNER_DIFFICULTY_HARD_TEXT
@@ -114,6 +108,10 @@ const DailyBanner = ({
       <BannerDivider />
       <BannerStat icon={<CalendarDays className="w-3 h-3 text-crown-amber" />}>
         {strings.BANNER_DAILY_ATTEMPT_TEXT}
+      </BannerStat>
+      <BannerDivider />
+      <BannerStat icon={<Flame className="w-3 h-3 text-crown-amber" />}>
+        {strings.DAILY_MODAL_STREAK_DAYS_TEXT(streak)}
       </BannerStat>
     </div>
     {usernameWarning && (
@@ -133,6 +131,7 @@ type Props = {
   duelConfig: DuelConfig | null;
   dailyConfig: DailyConfig | null;
   dailyNumber: number;
+  dailyStreak: number;
   usernameWarning: string | null;
 };
 
@@ -142,6 +141,7 @@ export const GameBanner = ({
   duelConfig,
   dailyConfig,
   dailyNumber,
+  dailyStreak,
   usernameWarning,
 }: Props) => {
   if (gameMode === "challenge" && challengeConfig)
@@ -153,6 +153,7 @@ export const GameBanner = ({
       <DailyBanner
         config={dailyConfig}
         dailyNumber={dailyNumber}
+        streak={dailyStreak}
         usernameWarning={usernameWarning}
       />
     );

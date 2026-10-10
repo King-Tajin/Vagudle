@@ -1023,6 +1023,7 @@ function App() {
             duelConfig={duelConfig}
             dailyConfig={dailyConfig}
             dailyNumber={dailyNumber}
+            dailyStreak={dailyStats.currentStreak}
             usernameWarning={dailyUsernameWarning}
           />
           <Grid
