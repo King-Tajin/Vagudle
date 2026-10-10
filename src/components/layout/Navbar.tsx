@@ -195,7 +195,7 @@ export const Navbar = ({
                   </p>
                   <p
                     ref={brandSubtitleRef}
-                    className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
+                    className="font-jakarta font-bold text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
                     Games
                   </p>
@@ -222,7 +222,7 @@ export const Navbar = ({
                   </p>
                   <p
                     ref={brandSubtitleRef}
-                    className="font-pixel text-crown-amber -mt-1 whitespace-nowrap text-center"
+                    className="font-jakarta font-bold text-crown-amber -mt-1 whitespace-nowrap text-center"
                   >
                     Games
                   </p>

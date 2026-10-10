@@ -1,6 +1,6 @@
 {
   "name": "vagudle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -46,7 +46,7 @@
     "vite": "^8.3.4",
     "vite-plugin-svgr": "^5.2.0",
     "webgl-fluid-enhanced": "^0.8.0",
-    "zero-md": "^3.1.8"
+    "zero-md": "^3.1.9"
   },
   "browserslist": {
     "production": [
@@ -95,5 +95,5 @@
     "public/**/*.svg": "svgo",
     ".github/**/*.md": "prettier --write"
   },
-  "packageManager": "pnpm@12.9.1"
+  "packageManager": "pnpm@12.10.1"
 }
