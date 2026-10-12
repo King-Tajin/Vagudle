@@ -1,5 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { m } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import twemoji from "twemoji";
 import emojiByChar from "unicode-emoji-json/data-by-emoji.json";
 
@@ -73,10 +73,14 @@ const ICON_POOL: string[] = Object.entries(emojiByChar).reduce<string[]>(
 const randomIcon = (): string =>
   ICON_POOL[Math.floor(Math.random() * ICON_POOL.length)];
 
+const nativeEmojiFor = (icon: string): string =>
+  String.fromCodePoint(...icon.split("-").map((hex) => parseInt(hex, 16)));
+
 interface EmojiParticle {
   id: number;
   icon: string;
   x: number;
+  y: number;
   size: number;
   fallDuration: number;
   fallDelay: number;
@@ -102,6 +106,7 @@ const buildParticles = (): EmojiParticle[] => {
     id: i,
     icon: randomIcon(),
     x: Math.random() * 100,
+    y: Math.random() * 100,
     size: SIZE_MIN + Math.random() * (SIZE_MAX - SIZE_MIN),
     fallDuration:
       FALL_DURATION_MIN +
@@ -137,6 +142,55 @@ const createParticlesStore = () => {
   };
 };
 
+const EmojiGlyph = ({ icon, size }: { icon: string; size: number }) => {
+  const [failedIcon, setFailedIcon] = useState<string | null>(null);
+
+  if (failedIcon === icon) {
+    return (
+      <span
+        aria-hidden="true"
+        style={{
+          display: "block",
+          width: size,
+          height: size,
+          fontSize: size * 0.85,
+          lineHeight: `${size}px`,
+          textAlign: "center",
+        }}
+      >
+        {nativeEmojiFor(icon)}
+      </span>
+    );
+  }
+
+  return (
+    <img
+      src={`${TWEMOJI_BASE}/${icon}.svg`}
+      alt=""
+      decoding="async"
+      width={size}
+      height={size}
+      style={{ display: "block", width: size, height: size }}
+      onError={() => setFailedIcon(icon)}
+    />
+  );
+};
+
+const StaticEmojiItem = ({ particle }: { particle: EmojiParticle }) => (
+  <div
+    style={{
+      position: "absolute",
+      left: `${particle.x}%`,
+      top: `${particle.y}%`,
+      width: particle.size,
+      height: particle.size,
+      opacity: particle.opacity,
+    }}
+  >
+    <EmojiGlyph icon={particle.icon} size={particle.size} />
+  </div>
+);
+
 const EmojiItem = ({ particle }: { particle: EmojiParticle }) => {
   const [icon, setIcon] = useState(randomIcon);
   const [cycleId, setCycleId] = useState(0);
@@ -153,11 +207,8 @@ const EmojiItem = ({ particle }: { particle: EmojiParticle }) => {
   );
 
   return (
-    <m.img
+    <m.div
       key={cycleId}
-      src={`${TWEMOJI_BASE}/${icon}.svg`}
-      alt=""
-      decoding="async"
       style={{
         position: "absolute",
         left: `${particle.x}%`,
@@ -205,7 +256,9 @@ const EmojiItem = ({ particle }: { particle: EmojiParticle }) => {
             }
           : { duration: 0 },
       }}
-    />
+    >
+      <EmojiGlyph icon={icon} size={particle.size} />
+    </m.div>
   );
 };
 
@@ -215,6 +268,7 @@ export const EmojiRain = () => {
     particlesStore.subscribe,
     particlesStore.getSnapshot
   );
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     window.addEventListener("resize", particlesStore.handleResize);
@@ -227,9 +281,13 @@ export const EmojiRain = () => {
       className="fixed inset-0 pointer-events-none overflow-hidden"
       style={{ background: BACKGROUND_COLOR, zIndex: 0 }}
     >
-      {particles.map((particle) => (
-        <EmojiItem key={particle.id} particle={particle} />
-      ))}
+      {particles.map((particle) =>
+        reducedMotion ? (
+          <StaticEmojiItem key={particle.id} particle={particle} />
+        ) : (
+          <EmojiItem key={particle.id} particle={particle} />
+        )
+      )}
     </div>
   );
 };
