@@ -8,7 +8,6 @@ import {
 } from "react";
 import type { User, UserCredential } from "firebase/auth";
 import { loadFirebaseAuth, scheduleFirebaseAuthPreload } from "../lib/firebase";
-import { getPublicOrigin } from "../lib/publicOrigin";
 import {
   signInWithDiscord as redirectToDiscord,
   completeDiscordSignIn as exchangeDiscordSignIn,
@@ -42,165 +41,36 @@ import {
   hasSignedInMarker,
   markSignedIn,
 } from "../lib/signInMarker";
-import {
-  clearLastUsedAccount,
-  saveLastUsedAccount,
-} from "../lib/lastUsedAccount";
+import { saveLastUsedAccount } from "../lib/lastUsedAccount";
 import { CloudAuthContext } from "../context/cloud-auth-context";
 import { useAlert } from "../context/alert-context";
+import {
+  runExclusive,
+  isSameSession,
+  startedFromAuthRedirect,
+} from "../lib/authSession";
+import {
+  toCloudAuthUser,
+  toCloudAuthUserFromDiscord,
+  toCloudAuthUserFromPlayGames,
+  type AuthFlowMessage,
+} from "../lib/cloudAuthUser";
+import { completeEmailLinkSignIn } from "../lib/emailLinkSignIn";
+import { useEmailLinkSender } from "./useEmailLinkSender";
+import { useAccountDeletion } from "./useAccountDeletion";
 
-const EMAIL_LINK_STORAGE_KEY = "vagudle-email-link-address:v1";
-const EMAIL_LINK_URL_PARAMS = [
-  "apiKey",
-  "oobCode",
-  "mode",
-  "lang",
-  "continueUrl",
-];
-const EMAIL_LINK_RESEND_COOLDOWN_MS = 30 * 1000;
-const EMAIL_LINK_RETRY_DELAY_MS = 3 * 1000;
-const RENEW_LOCK_NAME = "vagudle-session-renew";
 const SESSION_CHECK_INTERVAL_MS = 60 * 1000;
 
-const detectAuthRedirect = (): boolean => {
-  try {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("mode") === "signIn") return true;
-    return url.searchParams.has("code") && url.searchParams.has("state");
-  } catch {
-    return false;
-  }
-};
-
-const startedFromAuthRedirect = detectAuthRedirect();
-
-const runExclusive = <T>(task: () => Promise<T>): Promise<T> => {
-  const locks = typeof navigator !== "undefined" ? navigator.locks : undefined;
-  return locks ? locks.request(RENEW_LOCK_NAME, task) : task();
-};
-
-type TimedSession = { token: string; expiresAt: number };
-
-const isSameSession = (
-  a: TimedSession | null,
-  b: TimedSession | null
-): boolean =>
-  a === b ||
-  (a !== null &&
-    b !== null &&
-    a.token === b.token &&
-    a.expiresAt === b.expiresAt);
-
-export type CloudAuthUser = {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  providerId: string;
-  providerIds: string[];
-};
-
-export type DeleteAccountResult =
-  | { status: "success" }
-  | { status: "needs_reauth"; providerId: string }
-  | { status: "error"; message: string };
-
-export type AuthFlowMessage = "not_registered" | "already_registered";
-
-const toCloudAuthUser = (user: User): CloudAuthUser => {
-  const providerIds = user.providerData.map((p) => p.providerId);
-  return {
-    uid: user.uid,
-    email: user.email,
-    displayName: user.displayName,
-    providerId: providerIds[0] ?? "unknown",
-    providerIds,
-  };
-};
-
-const toCloudAuthUserFromDiscord = (
-  session: DiscordSession
-): CloudAuthUser => ({
-  uid: session.uid,
-  email: null,
-  displayName: session.displayName,
-  providerId: "discord.com",
-  providerIds: ["discord.com"],
-});
-
-const toCloudAuthUserFromPlayGames = (
-  session: PlayGamesSession
-): CloudAuthUser => ({
-  uid: session.uid,
-  email: null,
-  displayName: session.displayName,
-  providerId: "playgames.google.com",
-  providerIds: ["playgames.google.com"],
-});
-
+export type {
+  CloudAuthUser,
+  DeleteAccountResult,
+  AuthFlowMessage,
+} from "../lib/cloudAuthUser";
+export {
+  completeEmailLinkSignIn,
+  type EmailLinkSignInResult,
+} from "../lib/emailLinkSignIn";
 export { isPlayGamesAvailable };
-
-const looksLikeEmailSignInLink = (href: string): boolean =>
-  href.includes("mode=signIn");
-
-export type EmailLinkSignInResult = "signed_in" | "failed" | "skipped";
-
-const stripEmailLinkParams = (): void => {
-  try {
-    const url = new URL(window.location.href);
-    for (const param of EMAIL_LINK_URL_PARAMS) url.searchParams.delete(param);
-    window.history.replaceState({}, document.title, url.toString());
-  } catch {}
-};
-
-const runEmailLinkSignIn = async (
-  href: string
-): Promise<EmailLinkSignInResult> => {
-  if (!looksLikeEmailSignInLink(href)) return "skipped";
-
-  try {
-    const { auth, authModule } = await loadFirebaseAuth();
-    if (!authModule.isSignInWithEmailLink(auth, href)) return "skipped";
-
-    let email: string | null = null;
-    try {
-      email = localStorage.getItem(EMAIL_LINK_STORAGE_KEY);
-    } catch {}
-
-    if (!email) {
-      email = window.prompt(strings.CLOUD_AUTH_EMAIL_PROMPT_TEXT);
-    }
-    const trimmedEmail = email?.trim();
-    if (!trimmedEmail) return "skipped";
-
-    try {
-      await authModule.signInWithEmailLink(auth, trimmedEmail, href);
-    } catch {
-      stripEmailLinkParams();
-      return "failed";
-    }
-
-    try {
-      localStorage.removeItem(EMAIL_LINK_STORAGE_KEY);
-    } catch {}
-    stripEmailLinkParams();
-    return "signed_in";
-  } catch {
-    return "failed";
-  }
-};
-
-let emailLinkCompletion: {
-  href: string;
-  promise: Promise<EmailLinkSignInResult>;
-} | null = null;
-
-export const completeEmailLinkSignIn = (): Promise<EmailLinkSignInResult> => {
-  const href = window.location.href;
-  if (emailLinkCompletion?.href === href) return emailLinkCompletion.promise;
-  const promise = runEmailLinkSignIn(href);
-  emailLinkCompletion = { href, promise };
-  return promise;
-};
 
 export const completeDiscordSignIn = async (): Promise<void> => {
   await exchangeDiscordSignIn();
@@ -221,15 +91,10 @@ export const useCloudAuthState = ({
   const [actionError, setActionError] = useState<string | null>(null);
   const [authFlowMessage, setAuthFlowMessage] =
     useState<AuthFlowMessage | null>(() => consumeDiscordAuthOutcome());
-  const [emailLinkSent, setEmailLinkSent] = useState(false);
-  const [emailLinkSending, setEmailLinkSending] = useState(false);
-  const [emailLinkCoolingDown, setEmailLinkCoolingDown] = useState(false);
   const { showError } = useAlert();
+  const { emailLinkSent, emailLinkSending, emailLinkBusy, sendEmailLink } =
+    useEmailLinkSender({ setActionError, setAuthFlowMessage });
 
-  const emailLinkLockRef = useRef(false);
-  const emailLinkCooldownTimerRef = useRef<ReturnType<
-    typeof setTimeout
-  > | null>(null);
   const firebaseUserRef = useRef<User | null>(null);
   const discordSessionRef = useRef<DiscordSession | null>(discordSession);
   const playGamesSessionRef = useRef<PlayGamesSession | null>(playGamesSession);
@@ -263,24 +128,6 @@ export const useCloudAuthState = ({
       if (result === "failed") showError(strings.GENERIC_ERROR_TEXT);
     });
   }, [showError]);
-
-  useEffect(
-    () => () => {
-      if (emailLinkCooldownTimerRef.current)
-        clearTimeout(emailLinkCooldownTimerRef.current);
-    },
-    []
-  );
-
-  const startEmailLinkCooldown = useCallback((durationMs: number) => {
-    if (emailLinkCooldownTimerRef.current)
-      clearTimeout(emailLinkCooldownTimerRef.current);
-    setEmailLinkCoolingDown(true);
-    emailLinkCooldownTimerRef.current = setTimeout(() => {
-      emailLinkCooldownTimerRef.current = null;
-      setEmailLinkCoolingDown(false);
-    }, durationMs);
-  }, []);
 
   const reportUnexpectedSignOut = useCallback(() => {
     if (!warnOnSessionEnd || !hasSignedInMarker()) return;
@@ -575,83 +422,6 @@ export const useCloudAuthState = ({
     [applyPlayGamesSession]
   );
 
-  const checkEmailAccountExists = useCallback(
-    async (email: string): Promise<"exists" | "not_found" | "error"> => {
-      try {
-        const res = await fetch("/api/check-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-        if (!res.ok) return "error";
-
-        const data = (await res.json()) as {
-          success: boolean;
-          exists?: boolean;
-        };
-        if (!data.success) return "error";
-        return data.exists ? "exists" : "not_found";
-      } catch {
-        return "error";
-      }
-    },
-    []
-  );
-
-  const sendEmailLink = useCallback(
-    async (email: string, intent: AuthIntent) => {
-      if (emailLinkLockRef.current) return;
-      emailLinkLockRef.current = true;
-      setEmailLinkSending(true);
-      setActionError(null);
-      setAuthFlowMessage(null);
-      setEmailLinkSent(false);
-
-      let cooldownMs = EMAIL_LINK_RETRY_DELAY_MS;
-      try {
-        const existsResult = await checkEmailAccountExists(email);
-        if (existsResult === "error") {
-          setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
-          return;
-        }
-        if (intent === "signin" && existsResult === "not_found") {
-          setAuthFlowMessage("not_registered");
-          return;
-        }
-        if (intent === "create" && existsResult === "exists") {
-          setAuthFlowMessage("already_registered");
-          return;
-        }
-
-        const res = await fetch("/api/send-email-link", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email,
-            url: `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`,
-          }),
-        });
-        const data = (await res.json()) as { success: boolean };
-        if (!res.ok || !data.success) {
-          setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
-          return;
-        }
-        try {
-          localStorage.setItem(EMAIL_LINK_STORAGE_KEY, email);
-        } catch {}
-        setEmailLinkSent(true);
-        cooldownMs = EMAIL_LINK_RESEND_COOLDOWN_MS;
-      } catch {
-        setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
-      } finally {
-        emailLinkLockRef.current = false;
-        setEmailLinkSending(false);
-        startEmailLinkCooldown(cooldownMs);
-      }
-    },
-    [checkEmailAccountExists, startEmailLinkCooldown]
-  );
-
   const signOutUser = useCallback(async () => {
     setActionError(null);
     clearSignedInMarker();
@@ -669,99 +439,15 @@ export const useCloudAuthState = ({
       setActionError(strings.CLOUD_AUTH_SIGNOUT_ERROR_TEXT);
     }
   }, [applyDiscordSession, applyPlayGamesSession, restoreSignedInMarker]);
-
-  const deleteAccount = useCallback(async (): Promise<DeleteAccountResult> => {
-    if (firebaseUser) {
-      clearSignedInMarker();
-      expectedFirebaseLossRef.current = true;
-      try {
-        const { authModule } = await loadFirebaseAuth();
-        await authModule.deleteUser(firebaseUser);
-        clearLastUsedAccount();
-        return { status: "success" };
-      } catch (error) {
-        expectedFirebaseLossRef.current = false;
-        restoreSignedInMarker();
-        const code = (error as { code?: string })?.code;
-        if (code === "auth/requires-recent-login") {
-          const providerId =
-            firebaseUser.providerData[0]?.providerId ?? "unknown";
-          return { status: "needs_reauth", providerId };
-        }
-        return {
-          status: "error",
-          message: strings.CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
-        };
-      }
-    }
-    if (discordSession) {
-      clearSignedInMarker();
-      clearDiscordSession();
-      applyDiscordSession(null);
-      clearLastUsedAccount();
-      return { status: "success" };
-    }
-    if (playGamesSession) {
-      clearSignedInMarker();
-      clearPlayGamesSession();
-      applyPlayGamesSession(null);
-      clearLastUsedAccount();
-      return { status: "success" };
-    }
-    return {
-      status: "error",
-      message: strings.CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT,
-    };
-  }, [
+  const { deleteAccount, reauthenticateAndDeleteAccount } = useAccountDeletion({
     firebaseUser,
     discordSession,
     playGamesSession,
     applyDiscordSession,
     applyPlayGamesSession,
     restoreSignedInMarker,
-  ]);
-
-  const reauthenticateAndDeleteAccount =
-    useCallback(async (): Promise<DeleteAccountResult> => {
-      if (!firebaseUser)
-        return {
-          status: "error",
-          message: strings.CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT,
-        };
-
-      const providerId = firebaseUser.providerData[0]?.providerId;
-
-      try {
-        const { authModule, googleProvider, githubProvider } =
-          await loadFirebaseAuth();
-        const provider =
-          providerId === "google.com"
-            ? googleProvider
-            : providerId === "github.com"
-              ? githubProvider
-              : null;
-
-        if (!provider)
-          return {
-            status: "error",
-            message: strings.CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT,
-          };
-
-        await authModule.reauthenticateWithPopup(firebaseUser, provider);
-        clearSignedInMarker();
-        expectedFirebaseLossRef.current = true;
-        await authModule.deleteUser(firebaseUser);
-        clearLastUsedAccount();
-        return { status: "success" };
-      } catch {
-        expectedFirebaseLossRef.current = false;
-        restoreSignedInMarker();
-        return {
-          status: "error",
-          message: strings.CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT,
-        };
-      }
-    }, [firebaseUser, restoreSignedInMarker]);
+    expectedFirebaseLossRef,
+  });
 
   const user = useMemo(
     () =>
@@ -792,7 +478,7 @@ export const useCloudAuthState = ({
     clearAuthFlowMessage,
     emailLinkSent,
     emailLinkSending,
-    emailLinkBusy: emailLinkSending || emailLinkCoolingDown,
+    emailLinkBusy,
     signInWithGoogle,
     signInWithGithub,
     signInWithDiscord,
