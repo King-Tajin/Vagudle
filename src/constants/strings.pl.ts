@@ -876,6 +876,7 @@ export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "WYLOGUJ";
 export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
   "Zaloguj się, aby synchronizować statystyki, osiągnięcia i ustawienia między urządzeniami.";
 export const CLOUD_SAVE_SIGN_IN_BUTTON_TEXT = "ZALOGUJ SIĘ";
+export const CLOUD_SAVE_LAST_USED_BADGE_TEXT = "OSTATNIO UŻYTE";
 export const CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT = "UTWÓRZ KONTO";
 export const CLOUD_SAVE_BACK_BUTTON_TEXT = "‹ WSTECZ";
 export const CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT =

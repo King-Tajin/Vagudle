@@ -853,6 +853,7 @@ export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "LOGGA UT";
 export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
   "Logga in för att hålla din statistik, prestationer och inställningar synkade mellan enheter.";
 export const CLOUD_SAVE_SIGN_IN_BUTTON_TEXT = "LOGGA IN";
+export const CLOUD_SAVE_LAST_USED_BADGE_TEXT = "SENAST ANVÄND";
 export const CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT = "SKAPA KONTO";
 export const CLOUD_SAVE_BACK_BUTTON_TEXT = "‹ TILLBAKA";
 export const CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT =

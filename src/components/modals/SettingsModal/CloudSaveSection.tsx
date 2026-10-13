@@ -34,6 +34,10 @@ import {
   openExternalLink,
 } from "../../../lib/discord";
 import { isValidEmail } from "../../../lib/email";
+import {
+  getLastUsedAccount,
+  type LastUsedAccount,
+} from "../../../lib/lastUsedAccount";
 import { providerButtonStyle } from "./styles";
 import strings from "../../../constants/strings";
 
@@ -47,6 +51,18 @@ const PROVIDER_LABELS: Record<string, string> = {
 
 const getProviderLabel = (providerId: string): string =>
   PROVIDER_LABELS[providerId] ?? strings.CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN;
+
+const LastUsedBadge = ({
+  offsetClass = "-right-2",
+}: {
+  offsetClass?: string;
+}) => (
+  <span
+    className={`absolute -top-2 ${offsetClass} font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black`}
+  >
+    {strings.CLOUD_SAVE_LAST_USED_BADGE_TEXT}
+  </span>
+);
 
 type EntryMode = "choice" | "signin" | "create-gate" | "create-providers";
 
@@ -277,6 +293,7 @@ const ProviderList = ({
   signInWithDiscord,
   signInWithPlayGames,
   sendEmailLink,
+  lastUsed,
 }: {
   intent: AuthIntent;
   isActivityMode: boolean;
@@ -294,7 +311,10 @@ const ProviderList = ({
   signInWithDiscord: (intent: AuthIntent) => void;
   signInWithPlayGames: (intent: AuthIntent) => void;
   sendEmailLink: (email: string, intent: AuthIntent) => void;
+  lastUsed: LastUsedAccount | null;
 }) => {
+  const isLastUsed = (providerId: string): boolean =>
+    lastUsed?.providerId === providerId;
   const [lastMethod, setLastMethod] = useState<"email" | "provider">(
     "provider"
   );
@@ -337,20 +357,22 @@ const ProviderList = ({
       <button
         type="button"
         onClick={withProvider(signInWithGoogle)}
-        className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+        className="relative w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
         style={providerButtonStyle}
       >
         <GoogleIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
         {strings.LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT}
+        {isLastUsed("google.com") && <LastUsedBadge />}
       </button>
       <button
         type="button"
         onClick={withProvider(signInWithGithub)}
-        className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+        className="relative w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
         style={providerButtonStyle}
       >
         <GithubIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
         {strings.LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT}
+        {isLastUsed("github.com") && <LastUsedBadge />}
       </button>
       <div className="flex gap-2 pt-1">
         <input
@@ -379,7 +401,7 @@ const ProviderList = ({
           }}
           disabled={!emailValid || emailLinkBusy}
           aria-busy={emailLinkSending}
-          className="shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2 transition duration-75 enabled:active:scale-95 enabled:active:brightness-150 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="relative shrink-0 flex items-center gap-1.5 font-pixel text-xs tracking-widest px-3 py-2 transition duration-75 enabled:active:scale-95 enabled:active:brightness-150 disabled:opacity-40 disabled:cursor-not-allowed"
           style={providerButtonStyle}
         >
           {emailLinkSending ? (
@@ -390,6 +412,7 @@ const ProviderList = ({
           {emailLinkSending
             ? strings.CLOUD_SAVE_SENDING_BUTTON_TEXT
             : strings.CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
+          {isLastUsed("password") && <LastUsedBadge />}
         </button>
       </div>
       {showEmailInvalid && (
@@ -423,11 +446,12 @@ const ProviderList = ({
             <button
               type="button"
               onClick={withProvider(signInWithDiscord)}
-              className="w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
+              className="relative w-full flex items-center justify-center gap-2 font-pixel text-xs tracking-widest px-3 py-2"
               style={providerButtonStyle}
             >
               <DiscordIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
               {strings.LINK_PLAYGAMES_CONTINUE_DISCORD_BUTTON_TEXT}
+              {isLastUsed("discord.com") && <LastUsedBadge />}
             </button>
           )}
           {playGamesAvailable && (
@@ -439,6 +463,9 @@ const ProviderList = ({
             >
               <PlayGamesIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
               {strings.CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT}
+              {isLastUsed("playgames.google.com") && (
+                <LastUsedBadge offsetClass="right-10" />
+              )}
               <span className="absolute -top-2 -right-2 font-pixel text-[8px] tracking-widest px-1.5 py-0.5 rounded-full bg-yellow-400 text-black">
                 BETA
               </span>
@@ -503,6 +530,8 @@ export const CloudSaveSection = ({
       );
     }
   }
+
+  const lastUsed = user ? null : getLastUsedAccount();
 
   const goToChoice = () => {
     setEntryMode("choice");
@@ -715,10 +744,11 @@ export const CloudSaveSection = ({
               <button
                 type="button"
                 onClick={goToSignIn}
-                className="w-full font-pixel text-xs tracking-widest px-3 py-2"
+                className="relative w-full font-pixel text-xs tracking-widest px-3 py-2"
                 style={providerButtonStyle}
               >
                 {strings.CLOUD_SAVE_SIGN_IN_BUTTON_TEXT}
+                {lastUsed && <LastUsedBadge />}
               </button>
               <button
                 type="button"
@@ -743,6 +773,7 @@ export const CloudSaveSection = ({
               </button>
               <ProviderList
                 intent="signin"
+                lastUsed={lastUsed}
                 isActivityMode={isActivityMode}
                 playGamesAvailable={playGamesAvailable}
                 email={email}
@@ -832,6 +863,7 @@ export const CloudSaveSection = ({
               </button>
               <ProviderList
                 intent="create"
+                lastUsed={null}
                 isActivityMode={isActivityMode}
                 playGamesAvailable={playGamesAvailable}
                 email={email}

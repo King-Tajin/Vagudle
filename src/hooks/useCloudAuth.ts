@@ -42,6 +42,10 @@ import {
   hasSignedInMarker,
   markSignedIn,
 } from "../lib/signInMarker";
+import {
+  clearLastUsedAccount,
+  saveLastUsedAccount,
+} from "../lib/lastUsedAccount";
 import { CloudAuthContext } from "../context/cloud-auth-context";
 import { useAlert } from "../context/alert-context";
 
@@ -673,6 +677,7 @@ export const useCloudAuthState = ({
       try {
         const { authModule } = await loadFirebaseAuth();
         await authModule.deleteUser(firebaseUser);
+        clearLastUsedAccount();
         return { status: "success" };
       } catch (error) {
         expectedFirebaseLossRef.current = false;
@@ -693,12 +698,14 @@ export const useCloudAuthState = ({
       clearSignedInMarker();
       clearDiscordSession();
       applyDiscordSession(null);
+      clearLastUsedAccount();
       return { status: "success" };
     }
     if (playGamesSession) {
       clearSignedInMarker();
       clearPlayGamesSession();
       applyPlayGamesSession(null);
+      clearLastUsedAccount();
       return { status: "success" };
     }
     return {
@@ -744,6 +751,7 @@ export const useCloudAuthState = ({
         clearSignedInMarker();
         expectedFirebaseLossRef.current = true;
         await authModule.deleteUser(firebaseUser);
+        clearLastUsedAccount();
         return { status: "success" };
       } catch {
         expectedFirebaseLossRef.current = false;
@@ -768,7 +776,9 @@ export const useCloudAuthState = ({
   );
 
   useEffect(() => {
-    if (user) markSignedIn(user.providerId);
+    if (!user) return;
+    markSignedIn(user.providerId);
+    saveLastUsedAccount(user.providerId);
   }, [user]);
 
   return {

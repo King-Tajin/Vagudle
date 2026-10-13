@@ -840,6 +840,7 @@ export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "SIGN OUT";
 export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
   "Sign in to keep your stats, achievements, and settings synced across devices.";
 export const CLOUD_SAVE_SIGN_IN_BUTTON_TEXT = "SIGN IN";
+export const CLOUD_SAVE_LAST_USED_BADGE_TEXT = "LAST USED";
 export const CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT = "CREATE ACCOUNT";
 export const CLOUD_SAVE_BACK_BUTTON_TEXT = "‹ BACK";
 export const CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT =

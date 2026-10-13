@@ -871,6 +871,7 @@ export const CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT = "SAIR";
 export const CLOUD_SAVE_SIGN_IN_PROMPT_TEXT =
   "Entre para manter as suas estatísticas, conquistas e configurações sincronizadas entre dispositivos.";
 export const CLOUD_SAVE_SIGN_IN_BUTTON_TEXT = "ENTRAR";
+export const CLOUD_SAVE_LAST_USED_BADGE_TEXT = "ÚLTIMO USADO";
 export const CLOUD_SAVE_CREATE_ACCOUNT_BUTTON_TEXT = "CRIAR CONTA";
 export const CLOUD_SAVE_BACK_BUTTON_TEXT = "‹ VOLTAR";
 export const CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT =
