@@ -82,11 +82,13 @@ export const useDailyMode = ({
   const dailyNumber = dailyConfig
     ? getDailyNumber(dailyConfig.date, dailyConfig.originDate)
     : 0;
-  const dailyUsernameWarning = !user
-    ? strings.DAILY_MODE_SIGNIN_WARNING_TEXT
-    : hasUsername === false
-      ? strings.DAILY_MODE_USERNAME_WARNING_TEXT
-      : null;
+  const dailyUsernameWarning = isDiscordActivity
+    ? null
+    : !user
+      ? strings.DAILY_MODE_SIGNIN_WARNING_TEXT
+      : hasUsername === false
+        ? strings.DAILY_MODE_USERNAME_WARNING_TEXT
+        : null;
 
   const dailyLeaderboardSubmittedForRef = useRef<string | null>(null);
 
