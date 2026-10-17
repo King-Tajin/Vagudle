@@ -36,8 +36,8 @@
     "marked": "^18.1.1",
     "marked-gfm-heading-id": "^4.1.4",
     "postcss": "^8.5.30",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "svgo": "^4.1.0",
     "tailwindcss": "^4.3.3",
     "twemoji": "^14.0.2",
@@ -61,7 +61,7 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261014.1",
+    "@cloudflare/workers-types": "^5.20261016.1",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
@@ -82,7 +82,7 @@
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.71.2",
-    "wrangler": "^4.151.0"
+    "wrangler": "^4.151.1"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",
