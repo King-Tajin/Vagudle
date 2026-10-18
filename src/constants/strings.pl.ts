@@ -717,6 +717,8 @@ export const DAILY_MODAL_ALREADY_PLAYING_TEXT =
   "Grasz już w dzisiejsze słowo. Opuść, aby wrócić do zwykłej gry, lub zamknij to okno, aby kontynuować zgadywanie.";
 export const DAILY_MODAL_LOCKOUT_WARNING_TEXT =
   "⚠ Po ukończeniu nie będziesz mieć dostępu aż do następnego resetu. ⚠";
+export const DAILY_MODAL_STREAK_RESET_WARNING_TEXT = (days: number) =>
+  `⚠ Twoja seria (${DAILY_MODAL_STREAK_DAYS_TEXT(days)}) została zresetowana z powodu braku gry. ⚠`;
 export const DAILY_MODAL_LEAVE_BUTTON_TEXT = "OPUŚĆ DZIENNE";
 export const DAILY_MODAL_PLAY_BUTTON_TEXT = "ZAGRAJ W DZISIEJSZE DZIENNE";
 export const DAILY_MODAL_SOLVED_TEXT = (

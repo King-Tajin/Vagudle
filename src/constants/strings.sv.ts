@@ -691,6 +691,8 @@ export const DAILY_MODAL_ALREADY_PLAYING_TEXT =
   "Du spelar redan dagens ord. Lämna för att gå tillbaka till ett normalt spel, eller stäng det här för att fortsätta gissa.";
 export const DAILY_MODAL_LOCKOUT_WARNING_TEXT =
   "⚠ När du är klar blir du utelåst till nästa återställning. ⚠";
+export const DAILY_MODAL_STREAK_RESET_WARNING_TEXT = (days: number) =>
+  `⚠ Din svit på ${DAILY_MODAL_STREAK_DAYS_TEXT(days)} återställdes eftersom du inte spelade. ⚠`;
 export const DAILY_MODAL_LEAVE_BUTTON_TEXT = "LÄMNA DAGLIGT";
 export const DAILY_MODAL_PLAY_BUTTON_TEXT = "SPELA DAGENS ORD";
 export const DAILY_MODAL_SOLVED_TEXT = (

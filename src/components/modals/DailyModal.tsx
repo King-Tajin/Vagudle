@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import type { DailyConfig, DailyStats } from "../../lib/daily";
-import { msUntilNextDailyRelease } from "../../lib/daily";
+import { getLapsedStreak, msUntilNextDailyRelease } from "../../lib/daily";
 import { useBackButtonClose, useBackGestureStyle } from "../../lib/backButton";
 import strings from "../../constants/strings";
 
@@ -84,6 +84,8 @@ const DailyModalPlayContent = ({
   onLeaveDaily: () => void;
 }) => {
   const isDailyMode = origin.type === "daily";
+  const lapsedStreak = getLapsedStreak(dailyStats, config.date);
+  const currentStreak = lapsedStreak === null ? dailyStats.currentStreak : 0;
 
   return (
     <>
@@ -124,7 +126,7 @@ const DailyModalPlayContent = ({
           </div>
         </div>
 
-        {dailyStats.currentStreak > 0 && (
+        {currentStreak > 0 && (
           <div className="flex items-center gap-3">
             <Flame className="w-4 h-4 text-crown-amber shrink-0" />
             <div>
@@ -132,7 +134,7 @@ const DailyModalPlayContent = ({
                 {strings.DAILY_MODAL_CURRENT_STREAK_LABEL}
               </p>
               <p className="font-code text-sm text-gray-200 mt-0.5">
-                {strings.DAILY_MODAL_STREAK_DAYS_TEXT(dailyStats.currentStreak)}
+                {strings.DAILY_MODAL_STREAK_DAYS_TEXT(currentStreak)}
               </p>
             </div>
           </div>
@@ -150,6 +152,21 @@ const DailyModalPlayContent = ({
         >
           {strings.DAILY_MODAL_LOCKOUT_WARNING_TEXT}
         </p>
+      )}
+
+      {!isDailyMode && lapsedStreak !== null && (
+        <div
+          className="p-3"
+          style={{
+            background: "rgba(239,68,68,0.08)",
+            border: "1px solid rgba(239,68,68,0.45)",
+          }}
+          role="alert"
+        >
+          <p className="font-code text-xs leading-snug text-center text-gray-200">
+            {strings.DAILY_MODAL_STREAK_RESET_WARNING_TEXT(lapsedStreak)}
+          </p>
+        </div>
       )}
 
       {isDailyMode ? (

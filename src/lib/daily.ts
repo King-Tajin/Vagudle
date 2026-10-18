@@ -297,6 +297,17 @@ const isDayAfter = (previousDate: string, date: string): boolean => {
   return current - previous === ONE_DAY_MS;
 };
 
+export const getLapsedStreak = (
+  stats: DailyStats,
+  currentDailyDate: string
+): number | null => {
+  if (stats.currentStreak <= 0 || !stats.lastCompletedDate) return null;
+  const previous = new Date(`${stats.lastCompletedDate}T00:00:00Z`).getTime();
+  const current = new Date(`${currentDailyDate}T00:00:00Z`).getTime();
+  if (Number.isNaN(previous) || Number.isNaN(current)) return null;
+  return current - previous > ONE_DAY_MS ? stats.currentStreak : null;
+};
+
 export type DailyLeaderboardEntry = {
   username: string;
   wins: number;

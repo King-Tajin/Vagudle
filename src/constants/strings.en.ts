@@ -683,6 +683,8 @@ export const DAILY_MODAL_ALREADY_PLAYING_TEXT =
   "You're already playing today's word. Leave to head back to a normal game, or close this to keep guessing.";
 export const DAILY_MODAL_LOCKOUT_WARNING_TEXT =
   "⚠ Once you finish, you're locked out until the next reset. ⚠";
+export const DAILY_MODAL_STREAK_RESET_WARNING_TEXT = (days: number) =>
+  `⚠ Your ${days}-day streak was reset because you didn't play. ⚠`;
 export const DAILY_MODAL_LEAVE_BUTTON_TEXT = "LEAVE DAILY";
 export const DAILY_MODAL_PLAY_BUTTON_TEXT = "PLAY TODAY'S DAILY";
 export const DAILY_MODAL_SOLVED_TEXT = (

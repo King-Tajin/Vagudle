@@ -710,6 +710,8 @@ export const DAILY_MODAL_ALREADY_PLAYING_TEXT =
   "Você já está jogando a palavra de hoje. Saia para voltar ao jogo normal ou feche esta janela para continuar adivinhando.";
 export const DAILY_MODAL_LOCKOUT_WARNING_TEXT =
   "⚠ Depois de terminar, você fica bloqueado até a próxima redefinição. ⚠";
+export const DAILY_MODAL_STREAK_RESET_WARNING_TEXT = (days: number) =>
+  `⚠ Sua sequência de ${DAILY_MODAL_STREAK_DAYS_TEXT(days)} foi redefinida porque você não jogou. ⚠`;
 export const DAILY_MODAL_LEAVE_BUTTON_TEXT = "SAIR DO DIÁRIO";
 export const DAILY_MODAL_PLAY_BUTTON_TEXT = "JOGAR A PALAVRA DE HOJE";
 export const DAILY_MODAL_SOLVED_TEXT = (
