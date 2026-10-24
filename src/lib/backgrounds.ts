@@ -10,6 +10,7 @@ import strings from "../constants/strings";
 export type BackgroundId =
   | "sprinkles"
   | "flakes"
+  | "wrapping_paper"
   | "tnt_rain"
   | "pulsing_purple"
   | "carrots"
@@ -61,6 +62,11 @@ export const BACKGROUNDS: BackgroundDef[] = [
   {
     id: "flakes",
     ...strings.BACKGROUND_TEXT.flakes,
+    kind: "css",
+  },
+  {
+    id: "wrapping_paper",
+    ...strings.BACKGROUND_TEXT.wrapping_paper,
     kind: "css",
   },
   {

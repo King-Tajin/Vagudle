@@ -19,6 +19,7 @@ import {
   LetterPile,
   TntRain,
   LiquidRipple,
+  WrappingPaper,
 } from "../../lazyComponents";
 
 type Props = {
@@ -269,6 +270,19 @@ export const BackgroundStage = ({
           }
         >
           <LiquidRipple />
+        </Suspense>
+      );
+    case "wrapping_paper":
+      return (
+        <Suspense
+          fallback={
+            <div
+              className="fixed inset-0 pointer-events-none"
+              style={{ background: "#111a30", zIndex: 0 }}
+            />
+          }
+        >
+          <WrappingPaper />
         </Suspense>
       );
     default:

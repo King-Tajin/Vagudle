@@ -135,6 +135,11 @@ export const LiquidRipple = lazy(() =>
     default: m.LiquidRipple,
   }))
 );
+export const WrappingPaper = lazy(() =>
+  import("./components/backgrounds/WrappingPaper").then((m) => ({
+    default: m.WrappingPaper,
+  }))
+);
 export const AchievementsModal = lazy(() =>
   import("./components/modals/AchievementsModal").then((m) => ({
     default: m.AchievementsModal,

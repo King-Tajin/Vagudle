@@ -1158,6 +1158,7 @@ export const BACKGROUND_TEXT: Record<
 > = {
   sprinkles: { desktopLabel: "VAGUDLE SPRINKLES", mobileLabel: "GRAY" },
   flakes: { desktopLabel: "FLAKE RAIN", mobileLabel: "GRID" },
+  wrapping_paper: { desktopLabel: "WRAPPING PAPER", mobileLabel: "PATTERN" },
   tnt_rain: { desktopLabel: "TNT RAIN", mobileLabel: "TNT" },
   pulsing_purple: { desktopLabel: "PULSING PURPLE", mobileLabel: "PURPLE" },
   carrots: { desktopLabel: "SPINNING CARROTS", mobileLabel: "CARROTS" },
