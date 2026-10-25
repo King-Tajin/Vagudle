@@ -1048,6 +1048,7 @@ function App() {
           solution={solution}
           userStatuses={userStatuses}
           isRevealing={isRevealing}
+          hapticsEnabled={hapticsEnabled}
           containerRef={keyboardRef}
         />
         <GameModals

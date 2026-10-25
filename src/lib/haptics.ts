@@ -1,3 +1,5 @@
+import { REVEAL_TIME_MS } from "../constants/settings";
+
 const getHapticsPlugin = (): CapacitorHapticsPlugin | null => {
   if (typeof window === "undefined") return null;
   if (!window.Capacitor?.isNativePlatform?.()) return null;
@@ -32,3 +34,19 @@ export const triggerLossHaptic = (enabled: boolean): void =>
 
 export const triggerAchievementHaptic = (enabled: boolean): void =>
   triggerImpact(enabled, "HEAVY");
+
+export const triggerKeyHaptic = (enabled: boolean): void =>
+  triggerImpact(enabled, "LIGHT");
+
+export const triggerRevealHaptics = (
+  enabled: boolean,
+  tileCount: number
+): void => {
+  if (!enabled || !getHapticsPlugin()) return;
+  for (let i = 0; i < tileCount; i++) {
+    setTimeout(
+      () => triggerImpact(enabled, "LIGHT"),
+      i * REVEAL_TIME_MS + REVEAL_TIME_MS / 2
+    );
+  }
+};

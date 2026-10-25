@@ -3,6 +3,7 @@ import { Key } from "./Key";
 import React, { useEffect, useEffectEvent, useRef } from "react";
 import { localeAwareUpperCase } from "../../lib/words";
 import { isNativeApp } from "../../lib/browser";
+import { triggerKeyHaptic } from "../../lib/haptics";
 import strings from "../../constants/strings";
 import {
   isActivatableControl,
@@ -18,6 +19,7 @@ type Props = {
   solution: string;
   userStatuses: { [key: string]: CharStatus };
   isRevealing?: boolean;
+  hapticsEnabled: boolean;
   containerRef?: React.RefObject<HTMLDivElement | null>;
 };
 
@@ -28,11 +30,13 @@ export const Keyboard = ({
   solution,
   userStatuses,
   isRevealing,
+  hapticsEnabled,
   containerRef,
 }: Props) => {
   const charStatuses = userStatuses;
 
   const onClick = (value: string) => {
+    triggerKeyHaptic(hapticsEnabled);
     if (value === "ENTER") {
       onEnter();
     } else if (value === "DELETE") {

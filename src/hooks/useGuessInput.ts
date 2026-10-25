@@ -6,7 +6,7 @@ import {
   unicodeSplit,
 } from "../lib/words";
 import { LOSS_ALERT_TIME_MS, REVEAL_TIME_MS } from "../constants/settings";
-import { triggerErrorHaptic } from "../lib/haptics";
+import { triggerErrorHaptic, triggerRevealHaptics } from "../lib/haptics";
 import { recordLastPlayedAt } from "../lib/activity";
 import type React from "react";
 import strings from "../constants/strings";
@@ -133,6 +133,7 @@ export const useGuessInput = ({
       () => setIsRevealing(false),
       REVEAL_TIME_MS * solution.length
     );
+    triggerRevealHaptics(hapticsEnabledRef.current, solution.length);
 
     const winningWord = isWinningWord(currentGuess, solution);
 
