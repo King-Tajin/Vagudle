@@ -33,6 +33,7 @@ export const LinkDiscordPage = () => {
     new URLSearchParams(window.location.search).get("token")
   );
   const [email, setEmail] = useState("");
+  const [confirmation, setConfirmation] = useState("");
 
   const {
     user,
@@ -50,12 +51,8 @@ export const LinkDiscordPage = () => {
     void completeEmailLinkSignIn();
   }, []);
 
-  const { linkStatus, linkError, resetLinkStatus } = useAccountLinkFlow(
-    token,
-    user,
-    "discord.com",
-    linkDiscordWithCurrentUser
-  );
+  const { linkStatus, linkError, resetLinkStatus, startLink } =
+    useAccountLinkFlow(token, user, "discord.com", linkDiscordWithCurrentUser);
 
   const renderBody = () => {
     if (!token)
@@ -107,13 +104,39 @@ export const LinkDiscordPage = () => {
 
     if (user && user.providerId !== "discord.com")
       return (
-        <p className="font-code text-sm text-gray-400 leading-relaxed">
-          {strings.LINK_DISCORD_SIGNED_IN_TEXT_BEFORE}{" "}
-          {user.email ??
-            user.displayName ??
-            strings.LINK_DISCORD_FALLBACK_ACCOUNT_TEXT}
-          {strings.LINK_DISCORD_SIGNED_IN_TEXT_AFTER}
-        </p>
+        <div className="flex flex-col gap-3 text-left">
+          <p className="font-code text-sm text-gray-400 leading-relaxed">
+            {strings.LINK_DISCORD_SIGNED_IN_TEXT_BEFORE}{" "}
+            {user.email ??
+              user.displayName ??
+              strings.LINK_DISCORD_FALLBACK_ACCOUNT_TEXT}
+            {strings.LINK_DISCORD_SIGNED_IN_TEXT_AFTER}
+          </p>
+          <label
+            htmlFor="link-discord-confirmation"
+            className="font-code text-sm text-gray-400 leading-relaxed"
+          >
+            {strings.LINK_CONFIRM_LABEL_DISCORD}
+          </label>
+          <input
+            id="link-discord-confirmation"
+            type="text"
+            value={confirmation}
+            onChange={(e) => setConfirmation(e.target.value)}
+            autoComplete="off"
+            className="font-code text-sm px-3 py-2 rounded-none"
+            style={inputStyle}
+          />
+          <button
+            type="button"
+            onClick={() => void startLink(confirmation)}
+            disabled={!confirmation.trim()}
+            className="font-pixel text-xs tracking-widest px-4 py-2 transition duration-75 enabled:active:scale-95 enabled:active:brightness-150 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={buttonStyle}
+          >
+            {strings.LINK_CONFIRM_BUTTON_TEXT}
+          </button>
+        </div>
       );
 
     return (

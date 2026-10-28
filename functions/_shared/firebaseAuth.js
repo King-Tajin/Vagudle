@@ -79,6 +79,8 @@ export const verifyFirebaseIdToken = async (idToken, projectId) => {
     throw new Error("Invalid auth_time.");
   if (typeof payload.sub !== "string" || payload.sub.length === 0)
     throw new Error("Missing subject.");
+  if (typeof payload.email === "string" && payload.email_verified !== true)
+    throw new Error("Email address not verified.");
 
   const key = await getSigningKey(header.kid);
   const signedData = new TextEncoder().encode(`${headerB64}.${payloadB64}`);

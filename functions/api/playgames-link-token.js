@@ -33,7 +33,11 @@ export async function onRequestPost(context) {
       );
 
     const token = await encode(
-      { playGamesId, exp: Date.now() + LINK_TOKEN_TTL_MS },
+      {
+        playGamesId,
+        playGamesUsername: session.username,
+        exp: Date.now() + LINK_TOKEN_TTL_MS,
+      },
       linkSecret
     );
 

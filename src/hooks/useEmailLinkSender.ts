@@ -10,6 +10,7 @@ import { getPublicOrigin } from "../lib/publicOrigin";
 import type { AuthIntent } from "../lib/authIntent";
 import type { AuthFlowMessage } from "../lib/cloudAuthUser";
 import { EMAIL_LINK_STORAGE_KEY } from "../lib/emailLinkSignIn";
+import { getTurnstileToken } from "../lib/turnstile";
 import strings from "../constants/strings";
 
 const EMAIL_LINK_RESEND_COOLDOWN_MS = 30 * 1000;
@@ -51,10 +52,11 @@ export const useEmailLinkSender = ({
   const checkEmailAccountExists = useCallback(
     async (email: string): Promise<"exists" | "not_found" | "error"> => {
       try {
+        const turnstileToken = await getTurnstileToken();
         const res = await fetch("/api/check-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, turnstileToken }),
         });
         if (!res.ok) return "error";
 
@@ -96,12 +98,15 @@ export const useEmailLinkSender = ({
           return;
         }
 
+        const turnstileToken = await getTurnstileToken();
+
         const res = await fetch("/api/send-email-link", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email,
             url: `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`,
+            turnstileToken,
           }),
         });
         const data = (await res.json()) as { success: boolean };

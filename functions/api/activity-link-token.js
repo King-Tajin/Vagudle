@@ -38,7 +38,11 @@ export async function onRequestPost(context) {
       );
 
     const token = await encode(
-      { discordId, exp: Date.now() + LINK_TOKEN_TTL_MS },
+      {
+        discordId,
+        discordUsername: discordUser.global_name || discordUser.username,
+        exp: Date.now() + LINK_TOKEN_TTL_MS,
+      },
       linkSecret
     );
 

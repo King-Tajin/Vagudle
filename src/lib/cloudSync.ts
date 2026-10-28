@@ -308,6 +308,7 @@ export type LinkDiscordResult =
 const requestDiscordLink = async (
   idToken: string,
   linkToken: string,
+  confirmation: string,
   signal?: AbortSignal
 ): Promise<LinkDiscordResult> => {
   const controller = new AbortController();
@@ -321,7 +322,7 @@ const requestDiscordLink = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${idToken}`,
       },
-      body: JSON.stringify({ link_token: linkToken }),
+      body: JSON.stringify({ link_token: linkToken, confirmation }),
       signal: controller.signal,
     });
     if (!res.ok) {
@@ -349,6 +350,7 @@ const requestDiscordLink = async (
 
 export const linkDiscordWithCurrentUser = async (
   linkToken: string,
+  confirmation: string,
   signal?: AbortSignal
 ): Promise<LinkDiscordResult> => {
   const idToken = await getIdTokenForCurrentUser();
@@ -358,7 +360,7 @@ export const linkDiscordWithCurrentUser = async (
       message: strings.CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
     };
   }
-  return requestDiscordLink(idToken, linkToken, signal);
+  return requestDiscordLink(idToken, linkToken, confirmation, signal);
 };
 
 export type LinkPlayGamesResult =
@@ -367,6 +369,7 @@ export type LinkPlayGamesResult =
 const requestPlayGamesLink = async (
   idToken: string,
   linkToken: string,
+  confirmation: string,
   signal?: AbortSignal
 ): Promise<LinkPlayGamesResult> => {
   const controller = new AbortController();
@@ -380,7 +383,7 @@ const requestPlayGamesLink = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${idToken}`,
       },
-      body: JSON.stringify({ link_token: linkToken }),
+      body: JSON.stringify({ link_token: linkToken, confirmation }),
       signal: controller.signal,
     });
     if (!res.ok) {
@@ -408,6 +411,7 @@ const requestPlayGamesLink = async (
 
 export const linkPlayGamesWithCurrentUser = async (
   linkToken: string,
+  confirmation: string,
   signal?: AbortSignal
 ): Promise<LinkPlayGamesResult> => {
   const idToken = await getIdTokenForCurrentUser();
@@ -417,7 +421,7 @@ export const linkPlayGamesWithCurrentUser = async (
       message: strings.CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
     };
   }
-  return requestPlayGamesLink(idToken, linkToken, signal);
+  return requestPlayGamesLink(idToken, linkToken, confirmation, signal);
 };
 
 export type LinkStatus = { discordLinked: boolean; playGamesLinked: boolean };

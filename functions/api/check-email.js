@@ -1,5 +1,8 @@
+// noinspection JSUnresolvedReference
+
 import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
 import { getGoogleServiceAccountToken } from "../_shared/googleServiceAccount.js";
+import { verifyTurnstileToken } from "../_shared/turnstile.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -12,12 +15,17 @@ export async function onRequestPost(context) {
   try {
     const clientEmail = context.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const privateKey = context.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
-    if (!clientEmail || !privateKey)
+    const turnstileSecret = context.env.TURNSTILE_SECRET_KEY;
+    if (!clientEmail || !privateKey || !turnstileSecret)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
-    const { email } = await context.request.json();
+    const { email, turnstileToken } = await context.request.json();
     if (typeof email !== "string" || !email.includes("@"))
       return json({ success: false, error: "Invalid email." }, 400);
+
+    const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
+    if (!(await verifyTurnstileToken(turnstileSecret, turnstileToken, ip)))
+      return json({ success: false, error: "Verification failed." }, 403);
 
     const accessToken = await getGoogleServiceAccountToken(
       clientEmail,

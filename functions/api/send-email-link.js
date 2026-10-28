@@ -2,6 +2,7 @@
 
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { getGoogleServiceAccountToken } from "../_shared/googleServiceAccount.js";
+import { verifyTurnstileToken } from "../_shared/turnstile.js";
 
 const PUBLIC_HOST = "vagudle.king-tajin.dev";
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
@@ -87,6 +88,7 @@ export async function onRequestPost(context) {
   try {
     if (
       !env.MAILER ||
+      !env.TURNSTILE_SECRET_KEY ||
       !env.FIREBASE_PROJECT_ID ||
       !env.GOOGLE_SERVICE_ACCOUNT_EMAIL ||
       !env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
@@ -113,6 +115,15 @@ export async function onRequestPost(context) {
         { success: false, error: "Too many requests. Please slow down." },
         429
       );
+
+    if (
+      !(await verifyTurnstileToken(
+        env.TURNSTILE_SECRET_KEY,
+        body?.turnstileToken,
+        ip
+      ))
+    )
+      return json({ success: false, error: "Verification failed." }, 403);
 
     const link = await generateSignInLink(env, email, continueUrl);
     if (!link)

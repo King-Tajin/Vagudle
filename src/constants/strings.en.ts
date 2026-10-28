@@ -632,8 +632,14 @@ export const LINK_DISCORD_LINKED_TEXT =
 export const LINK_DISCORD_RETURN_BUTTON_TEXT = "RETURN TO VAGUDLE";
 export const LINK_DISCORD_LINKING_TEXT = "Linking your account...";
 export const LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT = "TRY AGAIN";
+export const LINK_CONFIRM_LABEL_DISCORD =
+  "Type your Discord name to confirm you want to link this Discord account.";
+export const LINK_CONFIRM_LABEL_PLAYGAMES =
+  "Type your Play Games name to confirm you want to link this Play Games account.";
+export const LINK_CONFIRM_BUTTON_TEXT = "CONFIRM LINK";
 export const LINK_DISCORD_SIGNED_IN_TEXT_BEFORE = "Signed in as";
-export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER = ". Finishing the link...";
+export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER =
+  ". Confirm below to finish linking.";
 export const LINK_DISCORD_FALLBACK_ACCOUNT_TEXT = "your account";
 export const LINK_DISCORD_SIGN_IN_PROMPT_TEXT =
   "Sign in with your existing Vagudle account to link it to Discord.";

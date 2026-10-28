@@ -11,7 +11,8 @@ export async function onRequestPost(context) {
   try {
     const { db, uid, payload, error } = await resolveAccountLinkToken(
       context,
-      "playGamesId"
+      "playGamesId",
+      "playGamesUsername"
     );
     if (error) return error;
 

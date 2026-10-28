@@ -666,8 +666,14 @@ export const LINK_DISCORD_LINKED_TEXT =
 export const LINK_DISCORD_RETURN_BUTTON_TEXT = "WRÓĆ DO VAGUDLE";
 export const LINK_DISCORD_LINKING_TEXT = "Łączenie konta...";
 export const LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT = "SPRÓBUJ PONOWNIE";
+export const LINK_CONFIRM_LABEL_DISCORD =
+  "Wpisz swoją nazwę w Discordzie, aby potwierdzić połączenie tego konta Discord.";
+export const LINK_CONFIRM_LABEL_PLAYGAMES =
+  "Wpisz swoją nazwę w Play Games, aby potwierdzić połączenie tego konta Play Games.";
+export const LINK_CONFIRM_BUTTON_TEXT = "POTWIERDŹ POŁĄCZENIE";
 export const LINK_DISCORD_SIGNED_IN_TEXT_BEFORE = "Zalogowano jako";
-export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER = ". Kończenie łączenia...";
+export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER =
+  ". Potwierdź poniżej, aby zakończyć łączenie.";
 export const LINK_DISCORD_FALLBACK_ACCOUNT_TEXT = "Twoje konto";
 export const LINK_DISCORD_SIGN_IN_PROMPT_TEXT =
   "Zaloguj się na swoje istniejące konto Vagudle, aby połączyć je z Discordem.";

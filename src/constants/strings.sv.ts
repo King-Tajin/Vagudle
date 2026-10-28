@@ -640,8 +640,14 @@ export const LINK_DISCORD_LINKED_TEXT =
 export const LINK_DISCORD_RETURN_BUTTON_TEXT = "ÅTERGÅ TILL VAGUDLE";
 export const LINK_DISCORD_LINKING_TEXT = "Länkar ditt konto...";
 export const LINK_DISCORD_TRY_AGAIN_BUTTON_TEXT = "FÖRSÖK IGEN";
+export const LINK_CONFIRM_LABEL_DISCORD =
+  "Skriv ditt Discord-namn för att bekräfta att du vill länka det här Discord-kontot.";
+export const LINK_CONFIRM_LABEL_PLAYGAMES =
+  "Skriv ditt Play Games-namn för att bekräfta att du vill länka det här Play Games-kontot.";
+export const LINK_CONFIRM_BUTTON_TEXT = "BEKRÄFTA LÄNKNING";
 export const LINK_DISCORD_SIGNED_IN_TEXT_BEFORE = "Inloggad som";
-export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER = ". Slutför länkningen...";
+export const LINK_DISCORD_SIGNED_IN_TEXT_AFTER =
+  ". Bekräfta nedan för att slutföra länkningen.";
 export const LINK_DISCORD_FALLBACK_ACCOUNT_TEXT = "ditt konto";
 export const LINK_DISCORD_SIGN_IN_PROMPT_TEXT =
   "Logga in med ditt befintliga Vagudle-konto för att länka det till Discord.";

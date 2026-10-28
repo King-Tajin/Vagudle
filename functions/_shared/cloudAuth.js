@@ -101,7 +101,11 @@ export const requireCloudAuth = async (context) => {
   return { db, uid: authResult.uid, username: authResult.username };
 };
 
-export const resolveAccountLinkToken = async (context, payloadField) => {
+export const resolveAccountLinkToken = async (
+  context,
+  payloadField,
+  usernameField
+) => {
   const linkSecret = context.env.ACCOUNT_LINK_SECRET;
   if (!linkSecret)
     return {
@@ -134,6 +138,22 @@ export const resolveAccountLinkToken = async (context, payloadField) => {
   )
     return {
       error: json({ success: false, error: "Invalid or expired link." }, 400),
+    };
+
+  const normalizeName = (value) =>
+    typeof value === "string" ? value.trim().toLowerCase() : "";
+  const expectedName = normalizeName(payload[usernameField]);
+  const confirmedName = normalizeName(body.confirmation);
+  if (!expectedName || confirmedName !== expectedName)
+    return {
+      error: json(
+        {
+          success: false,
+          error:
+            "The name you entered does not match the account being linked.",
+        },
+        400
+      ),
     };
 
   await ensurePlayerSaveExists(db, uid);
