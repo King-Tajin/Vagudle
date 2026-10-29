@@ -1,10 +1,11 @@
+// noinspection JSUnresolvedReference
+
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const IDENTITY_TOOLKIT_SCOPE =
   "https://www.googleapis.com/auth/identitytoolkit";
 const TOKEN_CACHE_SAFETY_MARGIN_SECONDS = 60;
 
-let cachedToken = null;
-let cachedTokenExpiresAt = 0;
+const tokenCache = new Map();
 
 const base64UrlEncode = (bytes) =>
   btoa(String.fromCharCode(...bytes))
@@ -27,12 +28,12 @@ const pemToArrayBuffer = (pem) => {
   return bytes.buffer;
 };
 
-const signJwt = async (clientEmail, privateKeyPem) => {
+const signJwt = async (clientEmail, privateKeyPem, scope) => {
   const now = Math.floor(Date.now() / 1000);
   const header = { alg: "RS256", typ: "JWT" };
   const claims = {
     iss: clientEmail,
-    scope: IDENTITY_TOOLKIT_SCOPE,
+    scope,
     aud: TOKEN_URL,
     iat: now,
     exp: now + 3600,
@@ -57,16 +58,15 @@ const signJwt = async (clientEmail, privateKeyPem) => {
 
 export const getGoogleServiceAccountToken = async (
   clientEmail,
-  privateKeyPem
+  privateKeyPem,
+  scope = IDENTITY_TOOLKIT_SCOPE
 ) => {
   const now = Math.floor(Date.now() / 1000);
-  if (
-    cachedToken &&
-    now < cachedTokenExpiresAt - TOKEN_CACHE_SAFETY_MARGIN_SECONDS
-  )
-    return cachedToken;
+  const cached = tokenCache.get(scope);
+  if (cached && now < cached.expiresAt - TOKEN_CACHE_SAFETY_MARGIN_SECONDS)
+    return cached.token;
 
-  const assertion = await signJwt(clientEmail, privateKeyPem);
+  const assertion = await signJwt(clientEmail, privateKeyPem, scope);
   const res = await fetch(TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -78,7 +78,9 @@ export const getGoogleServiceAccountToken = async (
   if (!res.ok) throw new Error("Failed to obtain Google access token.");
 
   const data = await res.json();
-  cachedToken = data.access_token;
-  cachedTokenExpiresAt = now + (data.expires_in ?? 3600);
-  return cachedToken;
+  tokenCache.set(scope, {
+    token: data.access_token,
+    expiresAt: now + (data.expires_in ?? 3600),
+  });
+  return data.access_token;
 };

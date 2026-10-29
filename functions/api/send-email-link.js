@@ -2,13 +2,13 @@
 
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { getGoogleServiceAccountToken } from "../_shared/googleServiceAccount.js";
-import { verifyTurnstileToken } from "../_shared/turnstile.js";
+import { verifyRequestToken } from "../_shared/requestVerification.js";
 
 const PUBLIC_HOST = "vagudle.king-tajin.dev";
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
-const TURNSTILE_ACTION = "send-email-link";
+const VERIFICATION_ACTION = "send-email-link";
 const AUTH_PARAMS = ["apiKey", "oobCode", "mode", "lang", "continueUrl"];
 
 export async function onRequestOptions() {
@@ -83,7 +83,6 @@ export async function onRequestPost(context) {
   try {
     if (
       !env.MAILER ||
-      !env.TURNSTILE_SECRET_KEY ||
       !env.FIREBASE_PROJECT_ID ||
       !env.GOOGLE_SERVICE_ACCOUNT_EMAIL ||
       !env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
@@ -100,14 +99,16 @@ export async function onRequestPost(context) {
       return json({ success: false, error: "Invalid return URL." }, 400);
 
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-    if (
-      !(await verifyTurnstileToken(
-        env.TURNSTILE_SECRET_KEY,
-        body?.turnstileToken,
-        ip,
-        { expectedAction: TURNSTILE_ACTION }
-      ))
-    )
+    const verification = await verifyRequestToken({
+      env,
+      body,
+      ip,
+      action: VERIFICATION_ACTION,
+      fields: [body.email, body.url],
+    });
+    if (verification === "misconfigured")
+      return json({ success: false, error: "Server misconfiguration." }, 500);
+    if (verification !== "ok")
       return json({ success: false, error: "Verification failed." }, 403);
 
     const link = await generateSignInLink(env, email, continueUrl);

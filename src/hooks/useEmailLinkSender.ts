@@ -10,7 +10,7 @@ import { getPublicOrigin } from "../lib/publicOrigin";
 import type { AuthIntent } from "../lib/authIntent";
 import type { AuthFlowMessage } from "../lib/cloudAuthUser";
 import { EMAIL_LINK_STORAGE_KEY } from "../lib/emailLinkSignIn";
-import { getTurnstileToken } from "../lib/turnstile";
+import { getRequestVerification } from "../lib/requestVerification";
 import strings from "../constants/strings";
 
 const CHECK_EMAIL_ACTION = "check-email";
@@ -54,11 +54,13 @@ export const useEmailLinkSender = ({
   const checkEmailAccountExists = useCallback(
     async (email: string): Promise<"exists" | "not_found" | "error"> => {
       try {
-        const turnstileToken = await getTurnstileToken(CHECK_EMAIL_ACTION);
+        const verification = await getRequestVerification(CHECK_EMAIL_ACTION, [
+          email,
+        ]);
         const res = await fetch("/api/check-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, turnstileToken }),
+          body: JSON.stringify({ email, ...verification }),
         });
         if (!res.ok) return "error";
 
@@ -100,15 +102,19 @@ export const useEmailLinkSender = ({
           return;
         }
 
-        const turnstileToken = await getTurnstileToken(SEND_EMAIL_LINK_ACTION);
+        const returnUrl = `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`;
+        const verification = await getRequestVerification(
+          SEND_EMAIL_LINK_ACTION,
+          [email, returnUrl]
+        );
 
         const res = await fetch("/api/send-email-link", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email,
-            url: `${getPublicOrigin()}${window.location.pathname}${window.location.search}${window.location.hash}`,
-            turnstileToken,
+            url: returnUrl,
+            ...verification,
           }),
         });
         const data = (await res.json()) as { success: boolean };

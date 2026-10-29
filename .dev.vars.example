@@ -9,3 +9,5 @@ ACCOUNT_LINK_SECRET=your_secret_key_here
 PLAYGAMES_CLIENT_ID=your_secret_key_here
 PLAYGAMES_CLIENT_SECRET=your_secret_key_here
 PLAYGAMES_SESSION_KEY=your_secret_key_here
+TURNSTILE_SECRET_KEY=your_secret_key_here
+ANDROID_PACKAGE_NAME=your_android_package_name_here

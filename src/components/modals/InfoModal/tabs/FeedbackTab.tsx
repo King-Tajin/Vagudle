@@ -9,7 +9,12 @@ import {
   Minimize2,
 } from "lucide-react";
 import strings from "../../../../constants/strings";
+import { isNativeApp } from "../../../../lib/browser";
 import { isValidEmail } from "../../../../lib/email";
+import {
+  getIntegrityToken,
+  hashRequestFields,
+} from "../../../../lib/playIntegrity";
 import {
   renderTurnstileWidget,
   type TurnstileWidgetHandle,
@@ -18,6 +23,7 @@ import {
 const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
 const TURNSTILE_ACTION = "feedback";
+const USES_INTEGRITY = isNativeApp();
 
 export const FeedbackTab = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +47,7 @@ export const FeedbackTab = () => {
 
   useEffect(() => {
     const container = widgetContainerRef.current;
-    if (!showForm || !container) return;
+    if (USES_INTEGRITY || !showForm || !container) return;
 
     let cancelled = false;
     let handle: TurnstileWidgetHandle | null = null;
@@ -84,10 +90,13 @@ export const FeedbackTab = () => {
   const trimmedEmail = formData.email.trim();
   const emailInvalid = trimmedEmail.length > 0 && !isValidEmail(trimmedEmail);
   const submitDisabled =
-    status === "submitting" || emailInvalid || !turnstileToken;
+    status === "submitting" ||
+    emailInvalid ||
+    (!USES_INTEGRITY && !turnstileToken);
 
   const handleSubmit = async () => {
-    if (isSubmittingRef.current || emailInvalid || !turnstileToken) return;
+    if (isSubmittingRef.current || emailInvalid) return;
+    if (!USES_INTEGRITY && !turnstileToken) return;
 
     if (!formData.sentiment || !formData.category || !formData.message) {
       setStatus("error");
@@ -100,6 +109,28 @@ export const FeedbackTab = () => {
     setErrorMessage("");
 
     try {
+      let verification: { integrityToken: string } | { turnstileToken: string };
+      if (USES_INTEGRITY) {
+        try {
+          const requestHash = await hashRequestFields([
+            TURNSTILE_ACTION,
+            formData.sentiment,
+            formData.category,
+            trimmedEmail,
+            formData.message,
+          ]);
+          verification = {
+            integrityToken: await getIntegrityToken(requestHash),
+          };
+        } catch {
+          setStatus("error");
+          setErrorMessage(strings.FEEDBACK_VERIFICATION_ERROR_MESSAGE);
+          return;
+        }
+      } else {
+        verification = { turnstileToken };
+      }
+
       const response = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -107,7 +138,7 @@ export const FeedbackTab = () => {
           ...formData,
           email: trimmedEmail,
           timestamp: new Date().toISOString(),
-          turnstileToken,
+          ...verification,
         }),
       });
 
@@ -437,9 +468,11 @@ export const FeedbackTab = () => {
           </div>
         )}
       </div>
-      <div className="flex justify-center" style={{ minHeight: 65 }}>
-        <div ref={widgetContainerRef} />
-      </div>
+      {!USES_INTEGRITY && (
+        <div className="flex justify-center" style={{ minHeight: 65 }}>
+          <div ref={widgetContainerRef} />
+        </div>
+      )}
       {turnstileFailed && (
         <p role="alert" className="font-code text-xs text-spice-red">
           {strings.FEEDBACK_VERIFICATION_ERROR_MESSAGE}

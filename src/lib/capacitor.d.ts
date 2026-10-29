@@ -232,6 +232,12 @@ type CapacitorNetworkPlugin = {
   ) => Promise<{ remove: () => void }>;
 };
 
+type CapacitorPlayIntegrityPlugin = {
+  requestToken: (options: {
+    requestHash: string;
+  }) => Promise<{ token: string }>;
+};
+
 interface Window {
   Capacitor?: {
     isNativePlatform?: () => boolean;
@@ -250,6 +256,7 @@ interface Window {
       Browser?: CapacitorBrowserPlugin;
       Share?: CapacitorSharePlugin;
       Network?: CapacitorNetworkPlugin;
+      PlayIntegrity?: CapacitorPlayIntegrityPlugin;
     };
   };
 }

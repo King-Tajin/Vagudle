@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { verifyTurnstileToken } from "../_shared/turnstile.js";
+import { verifyRequestToken } from "../_shared/requestVerification.js";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -12,14 +12,8 @@ const EMAIL_MAX = 254;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/;
 const MESSAGE_MAX = 15000;
 
-const TURNSTILE_ACTION = "feedback";
+const VERIFICATION_ACTION = "feedback";
 const TURNSTILE_MAX_AGE_MS = 2 * 60 * 1000;
-const TURNSTILE_HOSTNAMES = [
-  "vagudle.king-tajin.dev",
-  "localhost",
-  "127.0.0.1",
-  ".discordsays.com",
-];
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -43,9 +37,6 @@ export async function onRequestPost(context) {
         500
       );
     }
-
-    if (!context.env.TURNSTILE_SECRET_KEY)
-      return json({ success: false, error: "Server misconfiguration." }, 500);
 
     const feedbackData = await context.request.json();
 
@@ -81,17 +72,22 @@ export async function onRequestPost(context) {
 
     const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
 
-    const verified = await verifyTurnstileToken(
-      context.env.TURNSTILE_SECRET_KEY,
-      feedbackData.turnstileToken,
+    const verification = await verifyRequestToken({
+      env: context.env,
+      body: feedbackData,
       ip,
-      {
-        expectedAction: TURNSTILE_ACTION,
-        allowedHostnames: TURNSTILE_HOSTNAMES,
-        maxAgeMs: TURNSTILE_MAX_AGE_MS,
-      }
-    );
-    if (!verified)
+      action: VERIFICATION_ACTION,
+      fields: [
+        feedbackData.sentiment,
+        feedbackData.category,
+        feedbackData.email ?? "",
+        feedbackData.message,
+      ],
+      turnstileMaxAgeMs: TURNSTILE_MAX_AGE_MS,
+    });
+    if (verification === "misconfigured")
+      return json({ success: false, error: "Server misconfiguration." }, 500);
+    if (verification !== "ok")
       return json({ success: false, error: "Verification failed." }, 403);
 
     const feedbackId = `feedback_${Date.now()}_${Math.random()
