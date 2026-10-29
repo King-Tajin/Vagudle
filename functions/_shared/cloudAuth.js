@@ -161,8 +161,8 @@ export const resolveAccountLinkToken = async (
   return { db, uid, payload };
 };
 
-const resolveUidForDiscordAccessToken = async (accessToken, db) => {
-  const discordUser = await requireDiscordUser(accessToken);
+const resolveUidForDiscordAccessToken = async (accessToken, db, clientId) => {
+  const discordUser = await requireDiscordUser(accessToken, clientId);
   if (discordUser instanceof Response) return null;
 
   const existingAccount = await db
@@ -182,7 +182,11 @@ export const requireUsernameAuth = async (context) => {
   if (authResult)
     return { db, uid: authResult.uid, username: authResult.username };
 
-  const discordUid = await resolveUidForDiscordAccessToken(token, db);
+  const discordUid = await resolveUidForDiscordAccessToken(
+    token,
+    db,
+    context.env.DISCORD_CLIENT_ID
+  );
   if (discordUid) return { db, uid: discordUid, username: null };
 
   return {

@@ -55,7 +55,11 @@ export async function onRequestPost(context) {
         400
       );
 
-    const discordUser = await requireDiscordUser(access_token);
+    const discordUser = await requireDiscordUser(
+      access_token,
+
+      context.env.DISCORD_CLIENT_ID
+    );
     if (discordUser instanceof Response) return discordUser;
     const discordId = discordUser.id;
 

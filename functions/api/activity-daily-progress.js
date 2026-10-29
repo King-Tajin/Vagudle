@@ -24,7 +24,11 @@ export async function onRequestGet(context) {
     if (!accessToken)
       return json({ success: false, error: "Missing access_token." }, 400);
 
-    const discordUser = await requireDiscordUser(accessToken);
+    const discordUser = await requireDiscordUser(
+      accessToken,
+
+      context.env.DISCORD_CLIENT_ID
+    );
     if (discordUser instanceof Response) return discordUser;
     const uid = await resolveUidForDiscordId(db, discordUser.id);
 

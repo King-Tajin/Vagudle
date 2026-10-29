@@ -30,7 +30,11 @@ export async function onRequestGet(context) {
         400
       );
 
-    const discordUser = await requireDiscordUser(accessToken);
+    const discordUser = await requireDiscordUser(
+      accessToken,
+
+      context.env.DISCORD_CLIENT_ID
+    );
     if (discordUser instanceof Response) return discordUser;
 
     const row = await db
@@ -71,7 +75,11 @@ export async function onRequestPost(context) {
     )
       return json({ success: false, error: "Invalid request body." }, 400);
 
-    const discordUser = await requireDiscordUser(access_token);
+    const discordUser = await requireDiscordUser(
+      access_token,
+
+      context.env.DISCORD_CLIENT_ID
+    );
     if (discordUser instanceof Response) return discordUser;
 
     await db

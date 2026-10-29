@@ -70,17 +70,36 @@ export const fetchDiscordUser = async (accessToken) => {
   return res.json();
 };
 
-export const requireDiscordUser = async (accessToken) => {
-  let discordUser;
+export const fetchDiscordTokenInfo = async (accessToken) => {
+  const res = await fetch(`${DISCORD_API}/oauth2/@me`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error("Failed to introspect Discord token.");
+  return res.json();
+};
+
+export const requireDiscordUser = async (accessToken, clientId) => {
+  if (typeof clientId !== "string" || !clientId)
+    return json({ success: false, error: "Server misconfiguration." }, 500);
+
+  let tokenInfo;
   try {
-    discordUser = await fetchDiscordUser(accessToken);
+    tokenInfo = await fetchDiscordTokenInfo(accessToken);
   } catch {
     return json(
       { success: false, error: "Failed to verify Discord identity." },
       401
     );
   }
-  if (!discordUser.id)
+
+  if (tokenInfo?.application?.id !== clientId)
+    return json(
+      { success: false, error: "Failed to verify Discord identity." },
+      401
+    );
+
+  const discordUser = tokenInfo.user;
+  if (!discordUser?.id)
     return json(
       { success: false, error: "Could not resolve Discord user ID." },
       401
@@ -93,7 +112,7 @@ export const requireDiscordUserFromBody = async (context) => {
   const { access_token } = body;
   if (!access_token || typeof access_token !== "string")
     return json({ success: false, error: "Missing access_token." }, 400);
-  return requireDiscordUser(access_token);
+  return requireDiscordUser(access_token, context.env.DISCORD_CLIENT_ID);
 };
 
 const USERNAME_PATTERN = /^[A-Za-z0-9_ -]{3,20}$/;

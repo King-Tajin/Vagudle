@@ -30,7 +30,11 @@ const resolveDailyTicket = async (context, body) => {
     const rateLimited = await checkRateLimit(context);
     if (rateLimited) return { error: rateLimited };
 
-    const discordUser = await requireDiscordUser(access_token);
+    const discordUser = await requireDiscordUser(
+      access_token,
+
+      context.env.DISCORD_CLIENT_ID
+    );
     if (discordUser instanceof Response) return { error: discordUser };
 
     const uid = await resolveUidForDiscordId(db, discordUser.id);
@@ -54,7 +58,11 @@ const resolveDuelTicket = async (context, body) => {
     const rateLimited = await checkRateLimit(context);
     if (rateLimited) return { error: rateLimited };
 
-    const discordUser = await requireDiscordUser(access_token);
+    const discordUser = await requireDiscordUser(
+      access_token,
+
+      context.env.DISCORD_CLIENT_ID
+    );
     if (discordUser instanceof Response) return { error: discordUser };
 
     return {
