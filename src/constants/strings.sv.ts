@@ -282,6 +282,10 @@ export const FEEDBACK_VALIDATION_ERROR_MESSAGE =
   "Fyll i alla obligatoriska fält.";
 export const FEEDBACK_SUBMIT_ERROR_MESSAGE =
   "Det gick inte att skicka feedback. Försök igen.";
+export const FEEDBACK_VERIFICATION_ERROR_MESSAGE =
+  "Verifieringen misslyckades. Slutför kontrollen och försök igen.";
+export const FEEDBACK_RATE_LIMITED_MESSAGE =
+  "För många inskick. Försök igen senare.";
 export const FEEDBACK_SUCCESS_TITLE = "FEEDBACK MOTTAGEN!";
 export const FEEDBACK_SUCCESS_MESSAGE =
   "Tack för att du hjälper till att förbättra Vagudle.";

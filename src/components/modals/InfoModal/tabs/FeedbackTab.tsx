@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Send,
   CheckCircle,
@@ -10,9 +10,14 @@ import {
 } from "lucide-react";
 import strings from "../../../../constants/strings";
 import { isValidEmail } from "../../../../lib/email";
+import {
+  renderTurnstileWidget,
+  type TurnstileWidgetHandle,
+} from "../../../../lib/turnstile";
 
 const EMAIL_MAX = 254;
 const MESSAGE_MAX = 15000;
+const TURNSTILE_ACTION = "feedback";
 
 export const FeedbackTab = () => {
   const [formData, setFormData] = useState({
@@ -28,6 +33,49 @@ export const FeedbackTab = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isSubmittingRef = useRef(false);
+  const widgetContainerRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<TurnstileWidgetHandle | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileFailed, setTurnstileFailed] = useState(false);
+  const showForm = status !== "success";
+
+  useEffect(() => {
+    const container = widgetContainerRef.current;
+    if (!showForm || !container) return;
+
+    let cancelled = false;
+    let handle: TurnstileWidgetHandle | null = null;
+
+    renderTurnstileWidget(container, {
+      action: TURNSTILE_ACTION,
+      onToken: (token) => {
+        setTurnstileToken(token);
+        setTurnstileFailed(false);
+      },
+      onInvalidate: () => setTurnstileToken(""),
+      onError: () => {
+        setTurnstileToken("");
+        setTurnstileFailed(true);
+      },
+    })
+      .then((created) => {
+        if (cancelled) {
+          created.remove();
+          return;
+        }
+        handle = created;
+        widgetRef.current = created;
+      })
+      .catch(() => {
+        if (!cancelled) setTurnstileFailed(true);
+      });
+
+    return () => {
+      cancelled = true;
+      widgetRef.current = null;
+      handle?.remove();
+    };
+  }, [showForm]);
 
   const messageRemaining = MESSAGE_MAX - formData.message.length;
   const messageNearLimit = messageRemaining <= 500;
@@ -35,10 +83,11 @@ export const FeedbackTab = () => {
 
   const trimmedEmail = formData.email.trim();
   const emailInvalid = trimmedEmail.length > 0 && !isValidEmail(trimmedEmail);
-  const submitDisabled = status === "submitting" || emailInvalid;
+  const submitDisabled =
+    status === "submitting" || emailInvalid || !turnstileToken;
 
   const handleSubmit = async () => {
-    if (isSubmittingRef.current || emailInvalid) return;
+    if (isSubmittingRef.current || emailInvalid || !turnstileToken) return;
 
     if (!formData.sentiment || !formData.category || !formData.message) {
       setStatus("error");
@@ -58,12 +107,19 @@ export const FeedbackTab = () => {
           ...formData,
           email: trimmedEmail,
           timestamp: new Date().toISOString(),
+          turnstileToken,
         }),
       });
 
       if (!response.ok) {
         setStatus("error");
-        setErrorMessage(strings.FEEDBACK_SUBMIT_ERROR_MESSAGE);
+        setErrorMessage(
+          response.status === 403
+            ? strings.FEEDBACK_VERIFICATION_ERROR_MESSAGE
+            : response.status === 429
+              ? strings.FEEDBACK_RATE_LIMITED_MESSAGE
+              : strings.FEEDBACK_SUBMIT_ERROR_MESSAGE
+        );
         return;
       }
 
@@ -73,6 +129,7 @@ export const FeedbackTab = () => {
       setErrorMessage(strings.FEEDBACK_SUBMIT_ERROR_MESSAGE);
     } finally {
       isSubmittingRef.current = false;
+      widgetRef.current?.reset();
     }
   };
 
@@ -380,6 +437,14 @@ export const FeedbackTab = () => {
           </div>
         )}
       </div>
+      <div className="flex justify-center" style={{ minHeight: 65 }}>
+        <div ref={widgetContainerRef} />
+      </div>
+      {turnstileFailed && (
+        <p role="alert" className="font-code text-xs text-spice-red">
+          {strings.FEEDBACK_VERIFICATION_ERROR_MESSAGE}
+        </p>
+      )}
       {status === "error" && (
         <div
           className="p-3 border-l-4 flex items-start gap-2"

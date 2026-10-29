@@ -283,6 +283,10 @@ export const FEEDBACK_VALIDATION_ERROR_MESSAGE =
   "Preencha todos os campos obrigatórios.";
 export const FEEDBACK_SUBMIT_ERROR_MESSAGE =
   "Falha ao enviar o feedback. Tente novamente.";
+export const FEEDBACK_VERIFICATION_ERROR_MESSAGE =
+  "Falha na verificação. Conclua a verificação e tente novamente.";
+export const FEEDBACK_RATE_LIMITED_MESSAGE =
+  "Muitos envios. Tente novamente mais tarde.";
 export const FEEDBACK_SUCCESS_TITLE = "FEEDBACK RECEBIDO!";
 export const FEEDBACK_SUCCESS_MESSAGE =
   "Obrigado por ajudar a melhorar o Vagudle.";

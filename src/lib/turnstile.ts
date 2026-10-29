@@ -29,7 +29,7 @@ const loadTurnstile = (): Promise<TurnstileApi> => {
   return promise;
 };
 
-export const getTurnstileToken = async (): Promise<string> => {
+export const getTurnstileToken = async (action: string): Promise<string> => {
   if (!TURNSTILE_SITE_KEY) throw new Error("Turnstile site key missing.");
   const turnstile = await loadTurnstile();
 
@@ -71,6 +71,7 @@ export const getTurnstileToken = async (): Promise<string> => {
       widgetId = turnstile.render(holder, {
         sitekey: TURNSTILE_SITE_KEY,
         appearance: "interaction-only",
+        action,
         callback: (token) => finish(() => resolve(token)),
         "error-callback": fail("Turnstile failed."),
         "expired-callback": fail("Turnstile expired."),
@@ -80,4 +81,49 @@ export const getTurnstileToken = async (): Promise<string> => {
       fail("Turnstile failed to render.")();
     }
   });
+};
+
+export type TurnstileWidgetHandle = {
+  reset: () => void;
+  remove: () => void;
+};
+
+export const renderTurnstileWidget = async (
+  container: HTMLElement,
+  options: {
+    action: string;
+    onToken: (token: string) => void;
+    onInvalidate: () => void;
+    onError: () => void;
+  }
+): Promise<TurnstileWidgetHandle> => {
+  if (!TURNSTILE_SITE_KEY) throw new Error("Turnstile site key missing.");
+  const turnstile = await loadTurnstile();
+
+  const widgetId = turnstile.render(container, {
+    sitekey: TURNSTILE_SITE_KEY,
+    appearance: "always",
+    action: options.action,
+    theme: "dark",
+    retry: "never",
+    "refresh-expired": "manual",
+    callback: options.onToken,
+    "error-callback": options.onError,
+    "expired-callback": options.onInvalidate,
+    "timeout-callback": options.onInvalidate,
+  });
+
+  return {
+    reset: () => {
+      options.onInvalidate();
+      try {
+        turnstile.reset(widgetId);
+      } catch {}
+    },
+    remove: () => {
+      try {
+        turnstile.remove(widgetId);
+      } catch {}
+    },
+  };
 };

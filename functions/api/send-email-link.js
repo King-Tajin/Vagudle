@@ -8,6 +8,7 @@ const PUBLIC_HOST = "vagudle.king-tajin.dev";
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
+const TURNSTILE_ACTION = "send-email-link";
 const AUTH_PARAMS = ["apiKey", "oobCode", "mode", "lang", "continueUrl"];
 
 export async function onRequestOptions() {
@@ -103,7 +104,8 @@ export async function onRequestPost(context) {
       !(await verifyTurnstileToken(
         env.TURNSTILE_SECRET_KEY,
         body?.turnstileToken,
-        ip
+        ip,
+        { expectedAction: TURNSTILE_ACTION }
       ))
     )
       return json({ success: false, error: "Verification failed." }, 403);

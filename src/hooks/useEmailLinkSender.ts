@@ -13,6 +13,8 @@ import { EMAIL_LINK_STORAGE_KEY } from "../lib/emailLinkSignIn";
 import { getTurnstileToken } from "../lib/turnstile";
 import strings from "../constants/strings";
 
+const CHECK_EMAIL_ACTION = "check-email";
+const SEND_EMAIL_LINK_ACTION = "send-email-link";
 const EMAIL_LINK_RESEND_COOLDOWN_MS = 30 * 1000;
 const EMAIL_LINK_RETRY_DELAY_MS = 3 * 1000;
 
@@ -52,7 +54,7 @@ export const useEmailLinkSender = ({
   const checkEmailAccountExists = useCallback(
     async (email: string): Promise<"exists" | "not_found" | "error"> => {
       try {
-        const turnstileToken = await getTurnstileToken();
+        const turnstileToken = await getTurnstileToken(CHECK_EMAIL_ACTION);
         const res = await fetch("/api/check-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -98,7 +100,7 @@ export const useEmailLinkSender = ({
           return;
         }
 
-        const turnstileToken = await getTurnstileToken();
+        const turnstileToken = await getTurnstileToken(SEND_EMAIL_LINK_ACTION);
 
         const res = await fetch("/api/send-email-link", {
           method: "POST",

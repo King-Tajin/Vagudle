@@ -299,6 +299,10 @@ export const FEEDBACK_VALIDATION_ERROR_MESSAGE =
   "Wypełnij wszystkie wymagane pola.";
 export const FEEDBACK_SUBMIT_ERROR_MESSAGE =
   "Nie udało się wysłać opinii. Spróbuj ponownie.";
+export const FEEDBACK_VERIFICATION_ERROR_MESSAGE =
+  "Weryfikacja nie powiodła się. Ukończ test i spróbuj ponownie.";
+export const FEEDBACK_RATE_LIMITED_MESSAGE =
+  "Zbyt wiele zgłoszeń. Spróbuj ponownie później.";
 export const FEEDBACK_SUCCESS_TITLE = "OPINIA OTRZYMANA!";
 export const FEEDBACK_SUCCESS_MESSAGE =
   "Dziękujemy za pomoc w ulepszaniu Vagudle.";

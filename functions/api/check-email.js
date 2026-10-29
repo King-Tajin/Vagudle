@@ -4,6 +4,8 @@ import { CORS_HEADERS, json } from "../_shared/api.js";
 import { getGoogleServiceAccountToken } from "../_shared/googleServiceAccount.js";
 import { verifyTurnstileToken } from "../_shared/turnstile.js";
 
+const TURNSTILE_ACTION = "check-email";
+
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
 }
@@ -21,7 +23,11 @@ export async function onRequestPost(context) {
       return json({ success: false, error: "Invalid email." }, 400);
 
     const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
-    if (!(await verifyTurnstileToken(turnstileSecret, turnstileToken, ip)))
+    if (
+      !(await verifyTurnstileToken(turnstileSecret, turnstileToken, ip, {
+        expectedAction: TURNSTILE_ACTION,
+      }))
+    )
       return json({ success: false, error: "Verification failed." }, 403);
 
     const accessToken = await getGoogleServiceAccountToken(

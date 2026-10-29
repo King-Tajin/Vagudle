@@ -1,5 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
+import { verifyTurnstileToken } from "../_shared/turnstile.js";
+
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -9,6 +11,15 @@ const CORS_HEADERS = {
 const EMAIL_MAX = 254;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/;
 const MESSAGE_MAX = 15000;
+
+const TURNSTILE_ACTION = "feedback";
+const TURNSTILE_MAX_AGE_MS = 2 * 60 * 1000;
+const TURNSTILE_HOSTNAMES = [
+  "vagudle.king-tajin.dev",
+  "localhost",
+  "127.0.0.1",
+  ".discordsays.com",
+];
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -22,6 +33,20 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
+    if (!context.env.FEEDBACK_AND_STATS_KV) {
+      return json(
+        {
+          success: false,
+          error:
+            "Storage not configured. Please bind FEEDBACK_AND_STATS_KV in Cloudflare settings.",
+        },
+        500
+      );
+    }
+
+    if (!context.env.TURNSTILE_SECRET_KEY)
+      return json({ success: false, error: "Server misconfiguration." }, 500);
+
     const feedbackData = await context.request.json();
 
     if (
@@ -54,16 +79,20 @@ export async function onRequestPost(context) {
       );
     }
 
-    if (!context.env.FEEDBACK_AND_STATS_KV) {
-      return json(
-        {
-          success: false,
-          error:
-            "Storage not configured. Please bind FEEDBACK_AND_STATS_KV in Cloudflare settings.",
-        },
-        500
-      );
-    }
+    const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
+
+    const verified = await verifyTurnstileToken(
+      context.env.TURNSTILE_SECRET_KEY,
+      feedbackData.turnstileToken,
+      ip,
+      {
+        expectedAction: TURNSTILE_ACTION,
+        allowedHostnames: TURNSTILE_HOSTNAMES,
+        maxAgeMs: TURNSTILE_MAX_AGE_MS,
+      }
+    );
+    if (!verified)
+      return json({ success: false, error: "Verification failed." }, 403);
 
     const feedbackId = `feedback_${Date.now()}_${Math.random()
       .toString(36)
@@ -81,7 +110,7 @@ export async function onRequestPost(context) {
       message: feedbackData.message,
       submittedAt,
       userAgent: context.request.headers.get("User-Agent") || "unknown",
-      ip: context.request.headers.get("CF-Connecting-IP") || "unknown",
+      ip,
       completed: false,
       tags: [],
     };
