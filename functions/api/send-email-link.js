@@ -35,12 +35,6 @@ const resolveContinueUrl = (value, requestUrl) => {
   }
 };
 
-const isRateLimited = async (limiter, keys) => {
-  if (!limiter) return false;
-  const results = await Promise.all(keys.map((key) => limiter.limit({ key })));
-  return results.some(({ success }) => !success);
-};
-
 const generateSignInLink = async (env, email, continueUrl) => {
   const accessToken = await getGoogleServiceAccountToken(
     env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -105,17 +99,6 @@ export async function onRequestPost(context) {
       return json({ success: false, error: "Invalid return URL." }, 400);
 
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-    if (
-      await isRateLimited(env.EMAIL_RATE_LIMITER, [
-        `ip:${ip}`,
-        `email:${email.toLowerCase()}`,
-      ])
-    )
-      return json(
-        { success: false, error: "Too many requests. Please slow down." },
-        429
-      );
-
     if (
       !(await verifyTurnstileToken(
         env.TURNSTILE_SECRET_KEY,

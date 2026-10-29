@@ -1,12 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import {
-  CORS_HEADERS,
-  json,
-  encode,
-  decode,
-  checkRateLimit,
-} from "../_shared/api.js";
+import { CORS_HEADERS, json, encode, decode } from "../_shared/api.js";
 import { getBearerToken } from "../_shared/cloudAuth.js";
 import {
   refreshPlayGamesToken,
@@ -21,9 +15,6 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const clientId = context.env.PLAYGAMES_CLIENT_ID;
     const clientSecret = context.env.PLAYGAMES_CLIENT_SECRET;
     const sessionKey = context.env.PLAYGAMES_SESSION_KEY;

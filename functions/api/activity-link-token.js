@@ -1,11 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import {
-  CORS_HEADERS,
-  json,
-  encode,
-  checkActivityRateLimit,
-} from "../_shared/api.js";
+import { CORS_HEADERS, json, encode } from "../_shared/api.js";
 import { requireDiscordUserFromBody } from "../_shared/discordAuth.js";
 import { findPlayerSaveByDiscordId } from "../_shared/playerAccount.js";
 
@@ -18,9 +13,6 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkActivityRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const db = context.env.DB;
     const linkSecret = context.env.ACCOUNT_LINK_SECRET;
     if (!db || !linkSecret)

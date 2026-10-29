@@ -1,6 +1,6 @@
 // noinspection JSUnresolvedReference
 
-import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
+import { CORS_HEADERS, json } from "../_shared/api.js";
 import { getGoogleServiceAccountToken } from "../_shared/googleServiceAccount.js";
 import { verifyTurnstileToken } from "../_shared/turnstile.js";
 
@@ -9,9 +9,6 @@ export async function onRequestOptions() {
 }
 
 export async function onRequestPost(context) {
-  const rateLimited = await checkRateLimit(context);
-  if (rateLimited) return rateLimited;
-
   try {
     const clientEmail = context.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const privateKey = context.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;

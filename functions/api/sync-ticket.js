@@ -5,7 +5,6 @@ import {
   json,
   decode,
   validateDuelParsed,
-  checkRateLimit,
 } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
 import { requireDiscordUser } from "../_shared/discordAuth.js";
@@ -26,9 +25,6 @@ const resolveDailyTicket = async (context, body) => {
       return {
         error: json({ success: false, error: "Database not configured." }, 500),
       };
-
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return { error: rateLimited };
 
     const discordUser = await requireDiscordUser(
       access_token,
@@ -54,9 +50,6 @@ const resolveDuelTicket = async (context, body) => {
       return {
         error: json({ success: false, error: "Missing duel_id." }, 400),
       };
-
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return { error: rateLimited };
 
     const discordUser = await requireDiscordUser(
       access_token,

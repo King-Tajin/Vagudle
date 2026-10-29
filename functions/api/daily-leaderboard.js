@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
+import { CORS_HEADERS, json } from "../_shared/api.js";
 import { verifyCloudSaveToken, getBearerToken } from "../_shared/cloudAuth.js";
 
 const PAGE_SIZE = 8;
@@ -19,9 +19,6 @@ export async function onRequestOptions() {
 
 export async function onRequestGet(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const db = context.env.DB;
     if (!db)
       return json({ success: false, error: "Database not configured." }, 500);

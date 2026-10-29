@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, checkActivityRateLimit } from "../_shared/api.js";
+import { CORS_HEADERS, json } from "../_shared/api.js";
 import {
   requireDiscordUser,
   fetchChannelGroup,
@@ -34,9 +34,6 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkActivityRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const db = context.env.DB;
     const botToken = context.env.DISCORD_BOT_TOKEN;
     if (!db || !botToken)

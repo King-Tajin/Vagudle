@@ -27,7 +27,6 @@ const CODES = {
   headerMismatch: -32020,
   unsupportedVersion: -32022,
   internalError: -32603,
-  rateLimited: 429,
 };
 
 const isPlainObject = (value) =>
@@ -74,15 +73,6 @@ const decodeHeaderValue = (value) => {
   } catch {
     return null;
   }
-};
-
-const isRateLimited = async ({ request, env }) => {
-  const limiter = env.MCP_RATE_LIMITER;
-  if (!limiter) return false;
-
-  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-  const { success } = await limiter.limit({ key: `${ip}:mcp` });
-  return !success;
 };
 
 const isOriginAllowed = (request) => {
@@ -269,17 +259,6 @@ const processMcpRequest = async (context) => {
 
   if (!isOriginAllowed(request))
     return rpcError(null, CODES.invalidRequest, "Origin not allowed.", 403);
-
-  if (await isRateLimited(context)) {
-    const limited = rpcError(
-      null,
-      CODES.rateLimited,
-      "Too many requests. Please slow down.",
-      429
-    );
-    limited.headers.set("Retry-After", "60");
-    return limited;
-  }
 
   let message;
   try {

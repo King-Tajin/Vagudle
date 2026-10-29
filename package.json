@@ -32,7 +32,7 @@
     "firebase": "^12.19.0",
     "framer-motion": "^12.43.0",
     "lottie-web": "^5.13.0",
-    "lucide-react": "^1.62.0",
+    "lucide-react": "^1.63.0",
     "marked": "^18.1.2",
     "marked-gfm-heading-id": "^4.1.4",
     "postcss": "^8.5.32",
@@ -61,7 +61,7 @@
     ]
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261027.1",
+    "@cloudflare/workers-types": "^5.20261028.1",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
@@ -82,7 +82,7 @@
     "typescript": "^6.0.3",
     "typescript-7": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.72.1",
-    "wrangler": "^4.155.0"
+    "wrangler": "^4.156.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx,css,md}": "prettier --write",

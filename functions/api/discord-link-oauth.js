@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, checkRateLimit } from "../_shared/api.js";
+import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
 import {
   exchangeDiscordCode,
@@ -18,9 +18,6 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const clientId = context.env.DISCORD_CLIENT_ID;
     const clientSecret = context.env.DISCORD_CLIENT_SECRET;
     if (!clientId || !clientSecret)

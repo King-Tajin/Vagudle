@@ -1,7 +1,7 @@
 // noinspection JSUnresolvedReference
 
 import { verifyFirebaseIdToken, getBearerToken } from "./firebaseAuth.js";
-import { decode, json, checkRateLimit } from "./api.js";
+import { decode, json } from "./api.js";
 import { isValidDiscordSession, requireDiscordUser } from "./discordAuth.js";
 import { isValidPlayGamesSession } from "./playGamesAuth.js";
 import {
@@ -69,9 +69,6 @@ export const verifyCloudSaveToken = async (request, env) => {
 };
 
 const prepareCloudAuthContext = async (context) => {
-  const rateLimited = await checkRateLimit(context);
-  if (rateLimited) return { error: rateLimited };
-
   const db = context.env.DB;
   if (!db)
     return {

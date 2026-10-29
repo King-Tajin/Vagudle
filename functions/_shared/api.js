@@ -12,33 +12,6 @@ export const json = (data, status = 200) =>
     headers: { "Content-Type": "application/json", ...CORS_HEADERS },
   });
 
-const runRateLimit = async (context, limiter) => {
-  if (!limiter) return null;
-
-  const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
-  const path = new URL(context.request.url).pathname;
-
-  const { success } = await limiter.limit({ key: `${ip}:${path}` });
-  if (success) return null;
-
-  return json(
-    { success: false, error: "Too many requests. Please slow down." },
-    429
-  );
-};
-
-export const checkRateLimit = async (context) =>
-  runRateLimit(context, context.env.RATE_LIMITER);
-
-export const checkActivityRateLimit = async (context) =>
-  runRateLimit(context, context.env.ACTIVITY_RATE_LIMITER);
-
-export const checkChallengeRateLimit = async (context) =>
-  runRateLimit(context, context.env.CHALLENGE_RATE_LIMITER);
-
-export const checkFeedbackRateLimit = async (context) =>
-  runRateLimit(context, context.env.FEEDBACK_RATE_LIMITER);
-
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 

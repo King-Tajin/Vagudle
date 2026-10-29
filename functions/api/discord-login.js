@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, encode, checkRateLimit } from "../_shared/api.js";
+import { CORS_HEADERS, json, encode } from "../_shared/api.js";
 import {
   exchangeDiscordCode,
   fetchDiscordUser,
@@ -14,9 +14,6 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const clientId = context.env.DISCORD_CLIENT_ID;
     const clientSecret = context.env.DISCORD_CLIENT_SECRET;
     const sessionKey = context.env.DISCORD_SESSION_KEY;

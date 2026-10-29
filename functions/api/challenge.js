@@ -1,11 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import {
-  CORS_HEADERS,
-  json,
-  decodeChallengeToken,
-  checkChallengeRateLimit,
-} from "../_shared/api.js";
+import { CORS_HEADERS, json, decodeChallengeToken } from "../_shared/api.js";
 import { createChallenge, validateConfig } from "../_shared/challenge.js";
 
 export async function onRequestOptions() {
@@ -14,9 +9,6 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkChallengeRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const key = context.env.CHALLENGE_KEY;
     if (!key)
       return json({ success: false, error: "Server misconfiguration." }, 500);
@@ -34,9 +26,6 @@ export async function onRequestPost(context) {
 
 export async function onRequestGet(context) {
   try {
-    const rateLimited = await checkChallengeRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const { parsed, error } = await decodeChallengeToken(context);
     if (error) return error;
 

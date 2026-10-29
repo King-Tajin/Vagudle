@@ -6,7 +6,6 @@ import {
   decodeChallengeToken,
   ONE_DAY_MS,
   validateDuelParsed,
-  checkRateLimit,
 } from "../_shared/api.js";
 
 export async function onRequestOptions() {
@@ -15,9 +14,6 @@ export async function onRequestOptions() {
 
 export async function onRequestGet(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const { parsed, error } = await decodeChallengeToken(context);
     if (error) return error;
 

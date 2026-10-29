@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, checkActivityRateLimit } from "../_shared/api.js";
+import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireDiscordUser } from "../_shared/discordAuth.js";
 import { resolveUidForDiscordId } from "../_shared/playerAccount.js";
 import { getUtcDateString, parseProgressRow } from "../_shared/daily.js";
@@ -11,9 +11,6 @@ export async function onRequestOptions() {
 
 export async function onRequestGet(context) {
   try {
-    const rateLimited = await checkActivityRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const db = context.env.DB;
     if (!db)
       return json({ success: false, error: "Database not configured." }, 500);

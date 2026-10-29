@@ -7,7 +7,6 @@ import {
   decodeChallengeToken,
   ONE_DAY_MS,
   validateDuelParsed,
-  checkRateLimit,
 } from "../_shared/api.js";
 import {
   isValidDailyProgressGuesses,
@@ -21,9 +20,6 @@ export async function onRequestOptions() {
 
 export async function onRequestGet(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const db = context.env.DB;
     if (!db)
       return json({ success: false, error: "Database not configured." }, 500);
@@ -53,9 +49,6 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const key = context.env.CHALLENGE_KEY;
     if (!key)
       return json({ success: false, error: "Server misconfiguration." }, 500);

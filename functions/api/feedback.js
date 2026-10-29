@@ -1,7 +1,5 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { checkFeedbackRateLimit } from "../_shared/api.js";
-
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -24,9 +22,6 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const rateLimited = await checkFeedbackRateLimit(context);
-    if (rateLimited) return rateLimited;
-
     const feedbackData = await context.request.json();
 
     if (
