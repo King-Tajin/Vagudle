@@ -11,9 +11,7 @@ export type CloudAuthUser = {
 };
 
 export type DeleteAccountResult =
-  | { status: "success" }
-  | { status: "needs_reauth"; providerId: string }
-  | { status: "error"; message: string };
+  { status: "success" } | { status: "error"; message: string };
 
 export type AuthFlowMessage = "not_registered" | "already_registered";
 

@@ -439,7 +439,7 @@ export const useCloudAuthState = ({
       setActionError(strings.CLOUD_AUTH_SIGNOUT_ERROR_TEXT);
     }
   }, [applyDiscordSession, applyPlayGamesSession, restoreSignedInMarker]);
-  const { deleteAccount, reauthenticateAndDeleteAccount } = useAccountDeletion({
+  const { deleteAccount } = useAccountDeletion({
     firebaseUser,
     discordSession,
     playGamesSession,
@@ -486,7 +486,6 @@ export const useCloudAuthState = ({
     sendEmailLink,
     signOutUser,
     deleteAccount,
-    reauthenticateAndDeleteAccount,
   };
 };
 

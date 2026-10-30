@@ -2,6 +2,11 @@
 
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
+import {
+  NOT_DELETED_SQL,
+  notDeletedBinds,
+  accountDeletedResponse,
+} from "../_shared/accountGuard.js";
 
 const MAX_FIELD_LENGTH = 100_000;
 
@@ -44,7 +49,7 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const { db, uid, error } = await requireCloudAuth(context);
+    const { db, uid, issuedAt, error } = await requireCloudAuth(context);
     if (error) return error;
 
     const body = await context.request.json();
@@ -80,7 +85,8 @@ export async function onRequestPost(context) {
       .prepare(
         `INSERT INTO player_saves
            (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, daily_stats, settings, background_id, last_played_at, first_seen_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+         WHERE ${NOT_DELETED_SQL}
          ON CONFLICT(uid) DO UPDATE SET
            discord_id = COALESCE(excluded.discord_id, player_saves.discord_id),
            achievements = excluded.achievements,
@@ -119,11 +125,14 @@ export async function onRequestPost(context) {
         backgroundId ?? null,
         lastPlayedAt ?? null,
         firstSeenAt ?? null,
-        updatedAt
+        updatedAt,
+        ...notDeletedBinds(uid, issuedAt)
       )
       .first();
 
-    return json({ success: true, updatedAt: row?.updated_at ?? updatedAt });
+    if (!row) return accountDeletedResponse();
+
+    return json({ success: true, updatedAt: row.updated_at });
   } catch (error) {
     console.error("Save error:", error);
     return json({ success: false, error: "Failed to save." }, 500);

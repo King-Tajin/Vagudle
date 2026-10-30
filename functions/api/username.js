@@ -2,6 +2,12 @@
 
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireUsernameAuth } from "../_shared/cloudAuth.js";
+import {
+  NOT_DELETED_SQL,
+  notDeletedBinds,
+  isAccountDeleted,
+  accountDeletedResponse,
+} from "../_shared/accountGuard.js";
 
 const USERNAME_PATTERN = /^[A-Za-z0-9_ -]{3,20}$/;
 const CHANGE_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -49,7 +55,7 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   try {
-    const { db, uid, error } = await requireUsernameAuth(context);
+    const { db, uid, issuedAt, error } = await requireUsernameAuth(context);
     if (error) return error;
 
     const body = await context.request.json();
@@ -64,9 +70,10 @@ export async function onRequestPost(context) {
       .prepare(
         `INSERT OR IGNORE INTO daily_leaderboard
            (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
-         VALUES (?, NULL, 0, 0, 0, 0, NULL, ?)`
+         SELECT ?, NULL, 0, 0, 0, 0, NULL, ?
+         WHERE ${NOT_DELETED_SQL}`
       )
-      .bind(uid, nowIso)
+      .bind(uid, nowIso, ...notDeletedBinds(uid, issuedAt))
       .run();
 
     try {
@@ -80,6 +87,8 @@ export async function onRequestPost(context) {
         .run();
 
       if (result.meta.changes === 0) {
+        if (await isAccountDeleted(db, uid, issuedAt))
+          return accountDeletedResponse();
         const row = await db
           .prepare(
             `SELECT username_updated_at FROM daily_leaderboard WHERE uid = ?`

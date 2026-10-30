@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, Trash2, ShieldAlert, Info, X } from "lucide-react";
+import { AlertTriangle, Trash2, Info, X } from "lucide-react";
 import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { useCloudAuth } from "../../hooks/useCloudAuth";
-import type { DeleteAccountResult } from "../../hooks/useCloudAuth";
-import { getIdTokenForCurrentUser, deleteCloudSave } from "../../lib/cloudSync";
+import type { DeleteAccountResult } from "../../lib/cloudAuthUser";
 import strings from "../../constants/strings";
 
 type Props = {
@@ -21,7 +20,7 @@ const providerLabel = (providerId: string): string => {
   return strings.PROVIDER_LABEL_DEFAULT;
 };
 
-type Stage = "confirm" | "deleting" | "reauth";
+type Stage = "confirm" | "deleting";
 
 const wipeLocalDataAndReload = () => {
   localStorage.clear();
@@ -31,30 +30,18 @@ const wipeLocalDataAndReload = () => {
   window.location.reload();
 };
 
-const deleteCloudSaveRow = async () => {
-  const idToken = await getIdTokenForCurrentUser();
-  if (idToken) await deleteCloudSave(idToken);
-};
-
 export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
-  const { user, deleteAccount, reauthenticateAndDeleteAccount } =
-    useCloudAuth();
+  const { user, deleteAccount } = useCloudAuth();
   const [secondsLeft, setSecondsLeft] = useState(COUNTDOWN_SECONDS);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const [alsoDeleteAccount, setAlsoDeleteAccount] = useState(false);
   const [stage, setStage] = useState<Stage>("confirm");
-  const [reauthProviderId, setReauthProviderId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const applyDeleteAccountResult = (result: DeleteAccountResult) => {
     if (result.status === "success") {
       wipeLocalDataAndReload();
-      return;
-    }
-    if (result.status === "needs_reauth") {
-      setReauthProviderId(result.providerId);
-      setStage("reauth");
       return;
     }
     setDeleteError(result.message);
@@ -67,7 +54,6 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
       setSecondsLeft(COUNTDOWN_SECONDS);
       setAlsoDeleteAccount(false);
       setStage("confirm");
-      setReauthProviderId(null);
       setDeleteError(null);
     }
   }
@@ -91,85 +77,9 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
     setDeleteError(null);
     setStage("deleting");
 
-    await deleteCloudSaveRow();
     const result = await deleteAccount();
     applyDeleteAccountResult(result);
   };
-
-  const handleAuthorizeReauth = async () => {
-    setDeleteError(null);
-    setStage("deleting");
-    await deleteCloudSaveRow();
-    const result = await reauthenticateAndDeleteAccount();
-    applyDeleteAccountResult(result);
-  };
-
-  const handleCancelReauth = () => {
-    setDeleteError(null);
-    setStage("confirm");
-    setReauthProviderId(null);
-  };
-
-  if (stage === "reauth") {
-    return (
-      <BaseModal
-        title={strings.MODAL_TITLE_RESET_ALL_DATA}
-        isOpen={isOpen}
-        handleClose={handleClose}
-      >
-        <div className="space-y-4">
-          <div
-            className="flex items-start gap-2.5 p-3"
-            style={{
-              background: "rgba(196,30,58,0.1)",
-              border: "1px solid rgba(196,30,58,0.4)",
-            }}
-          >
-            <ShieldAlert className="w-4 h-4 text-spice-red shrink-0 mt-0.5" />
-            <p className="font-code text-xs text-gray-300 leading-snug">
-              {strings.RESET_DATA_REAUTH_TEXT_BEFORE_PROVIDER}{" "}
-              {providerLabel(reauthProviderId ?? "")}
-              {strings.RESET_DATA_REAUTH_TEXT_AFTER_PROVIDER}
-            </p>
-          </div>
-          {deleteError && (
-            <p className="font-code text-xs text-spice-red">{deleteError}</p>
-          )}
-          <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={handleCancelReauth}
-              className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
-              style={{
-                background: "linear-gradient(180deg, #5a9c4a 0%, #2f5a27 100%)",
-                border: "2px solid #5a9c4a",
-                color: "#fff",
-              }}
-            >
-              {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
-              <X className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={handleAuthorizeReauth}
-              className="flex-1 py-3 font-pixel text-xs tracking-widest flex items-center justify-center gap-2 transition-colors"
-              style={{
-                background: "linear-gradient(180deg, #dc3232 0%, #8c1f1f 100%)",
-                border: "2px solid #dc3232",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              <Trash2 className="w-6 h-6 shrink-0" />
-              <span className="w-min text-center leading-tight">
-                {strings.RESET_DATA_AUTHORIZE_BUTTON_TEXT}
-              </span>
-            </button>
-          </div>
-        </div>
-      </BaseModal>
-    );
-  }
 
   const isDeleting = stage === "deleting";
 

@@ -23,7 +23,7 @@ export async function onRequestPost(context) {
     if (!clientId || !clientSecret)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
-    const { db, uid, error } = await requireCloudAuth(context);
+    const { db, uid, issuedAt, error } = await requireCloudAuth(context);
     if (error) return error;
 
     const body = await context.request.json();
@@ -68,7 +68,7 @@ export async function onRequestPost(context) {
         409
       );
 
-    await ensurePlayerSaveExists(db, uid);
+    await ensurePlayerSaveExists(db, uid, issuedAt);
 
     const result = await linkProviderIdToAccount(
       db,

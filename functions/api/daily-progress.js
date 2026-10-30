@@ -3,6 +3,12 @@
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
 import {
+  NOT_DELETED_SQL,
+  notDeletedBinds,
+  isAccountDeleted,
+  accountDeletedResponse,
+} from "../_shared/accountGuard.js";
+import {
   getUtcDateString,
   isValidDailyProgressGuesses,
   isValidDailyProgressCellColors,
@@ -38,7 +44,7 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   try {
-    const { db, uid, error } = await requireCloudAuth(context);
+    const { db, uid, issuedAt, error } = await requireCloudAuth(context);
     if (error) return error;
 
     const body = await context.request.json();
@@ -53,10 +59,11 @@ export async function onRequestPost(context) {
     const date = getUtcDateString();
     const nowIso = new Date().toISOString();
 
-    await db
+    const result = await db
       .prepare(
         `INSERT INTO daily_attempts (uid, date, platform, started_at, guesses, cell_colors)
-         VALUES (?, ?, 'web', ?, ?, ?)
+         SELECT ?, ?, 'web', ?, ?, ?
+         WHERE ${NOT_DELETED_SQL}
          ON CONFLICT(uid, date) DO UPDATE SET
            guesses = excluded.guesses,
            cell_colors = excluded.cell_colors
@@ -67,9 +74,16 @@ export async function onRequestPost(context) {
         date,
         nowIso,
         JSON.stringify(guesses),
-        JSON.stringify(cellColors ?? {})
+        JSON.stringify(cellColors ?? {}),
+        ...notDeletedBinds(uid, issuedAt)
       )
       .run();
+
+    if (
+      result.meta.changes === 0 &&
+      (await isAccountDeleted(db, uid, issuedAt))
+    )
+      return accountDeletedResponse();
 
     return json({ success: true });
   } catch (error) {

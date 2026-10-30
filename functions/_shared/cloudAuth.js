@@ -2,8 +2,16 @@
 
 import { verifyFirebaseIdToken, getBearerToken } from "./firebaseAuth.js";
 import { decode, json } from "./api.js";
-import { isValidDiscordSession, requireDiscordUser } from "./discordAuth.js";
-import { isValidPlayGamesSession } from "./playGamesAuth.js";
+import {
+  isValidDiscordSession,
+  requireDiscordUser,
+  discordSessionIssuedAt,
+} from "./discordAuth.js";
+import {
+  isValidPlayGamesSession,
+  playGamesSessionIssuedAt,
+} from "./playGamesAuth.js";
+import { isAccountDeleted, accountDeletedResponse } from "./accountGuard.js";
 import {
   findPlayerSaveByDiscordId,
   findPlayerSaveByPlayGamesId,
@@ -23,7 +31,8 @@ export const verifyCloudSaveToken = async (request, env) => {
         env.FIREBASE_PROJECT_ID
       );
       const username = typeof payload.name === "string" ? payload.name : null;
-      return { uid, username };
+      const issuedAt = typeof payload.iat === "number" ? payload.iat : 0;
+      return { uid, username, issuedAt, provider: "firebase" };
     } catch {}
   }
 
@@ -41,7 +50,12 @@ export const verifyCloudSaveToken = async (request, env) => {
           );
           if (linkedAccount) uid = linkedAccount.uid;
         }
-        return { uid, username };
+        return {
+          uid,
+          username,
+          issuedAt: discordSessionIssuedAt(payload),
+          provider: "discord",
+        };
       }
     } catch {}
   }
@@ -60,7 +74,12 @@ export const verifyCloudSaveToken = async (request, env) => {
           );
           if (linkedAccount) uid = linkedAccount.uid;
         }
-        return { uid, username };
+        return {
+          uid,
+          username,
+          issuedAt: playGamesSessionIssuedAt(payload),
+          provider: "playgames",
+        };
       }
     } catch {}
   }
@@ -84,7 +103,7 @@ const prepareCloudAuthContext = async (context) => {
   return { db, token };
 };
 
-export const requireCloudAuth = async (context) => {
+export const requireCloudAuth = async (context, options = {}) => {
   const prepared = await prepareCloudAuthContext(context);
   if (prepared.error) return prepared;
   const { db } = prepared;
@@ -95,7 +114,19 @@ export const requireCloudAuth = async (context) => {
       error: json({ success: false, error: "Invalid auth token." }, 401),
     };
 
-  return { db, uid: authResult.uid, username: authResult.username };
+  if (
+    !options.allowDeleted &&
+    (await isAccountDeleted(db, authResult.uid, authResult.issuedAt))
+  )
+    return { error: accountDeletedResponse() };
+
+  return {
+    db,
+    uid: authResult.uid,
+    username: authResult.username,
+    issuedAt: authResult.issuedAt,
+    provider: authResult.provider,
+  };
 };
 
 export const resolveAccountLinkToken = async (
@@ -109,7 +140,7 @@ export const resolveAccountLinkToken = async (
       error: json({ success: false, error: "Server misconfiguration." }, 500),
     };
 
-  const { db, uid, error } = await requireCloudAuth(context);
+  const { db, uid, issuedAt, error } = await requireCloudAuth(context);
   if (error) return { error };
 
   const body = await context.request.json();
@@ -153,7 +184,7 @@ export const resolveAccountLinkToken = async (
       ),
     };
 
-  await ensurePlayerSaveExists(db, uid);
+  await ensurePlayerSaveExists(db, uid, issuedAt);
 
   return { db, uid, payload };
 };
@@ -176,15 +207,27 @@ export const requireUsernameAuth = async (context) => {
   const { db, token } = prepared;
 
   const authResult = await verifyCloudSaveToken(context.request, context.env);
-  if (authResult)
-    return { db, uid: authResult.uid, username: authResult.username };
+  if (authResult) {
+    if (await isAccountDeleted(db, authResult.uid, authResult.issuedAt))
+      return { error: accountDeletedResponse() };
+    return {
+      db,
+      uid: authResult.uid,
+      username: authResult.username,
+      issuedAt: authResult.issuedAt,
+    };
+  }
 
   const discordUid = await resolveUidForDiscordAccessToken(
     token,
     db,
     context.env.DISCORD_CLIENT_ID
   );
-  if (discordUid) return { db, uid: discordUid, username: null };
+  if (discordUid) {
+    if (await isAccountDeleted(db, discordUid, null))
+      return { error: accountDeletedResponse() };
+    return { db, uid: discordUid, username: null, issuedAt: null };
+  }
 
   return {
     error: json({ success: false, error: "Invalid auth token." }, 401),

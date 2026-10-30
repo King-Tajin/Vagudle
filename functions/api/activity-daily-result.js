@@ -8,6 +8,7 @@ import {
   getPreviousUtcDateString,
 } from "../_shared/daily.js";
 import { getGuessStatuses } from "../_shared/wordStatus.js";
+import { NOT_DELETED_SQL, notDeletedBinds } from "../_shared/accountGuard.js";
 
 const MAX_GUESSES = Math.max(...VALID_GUESSES);
 
@@ -142,9 +143,10 @@ export async function onRequestPost(context) {
           .prepare(
             `INSERT OR IGNORE INTO daily_leaderboard
              (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
-             VALUES (?, ?, 0, 0, 0, 0, NULL, ?)`
+             SELECT ?, ?, 0, 0, 0, 0, NULL, ?
+             WHERE ${NOT_DELETED_SQL}`
           )
-          .bind(uid, username, nowIso),
+          .bind(uid, username, nowIso, ...notDeletedBinds(uid, null)),
         db
           .prepare(
             `UPDATE daily_leaderboard

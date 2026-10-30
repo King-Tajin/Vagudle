@@ -7,6 +7,7 @@ import {
   sanitizeDiscordUsername,
 } from "../_shared/discordAuth.js";
 import { getUtcDateString, getRotationForDate } from "../_shared/daily.js";
+import { markAccountRestarted } from "../_shared/accountGuard.js";
 
 const WEBHOOK_URL = "https://vagudle-webhook.king-tajin.dev/webhook/daily";
 
@@ -69,6 +70,8 @@ export async function onRequestPost(context) {
     if (existingAccount) uid = existingAccount.uid;
     else if (standalone === true) uid = `discord:${discordId}`;
     else return json({ success: false, error: "account_not_linked" }, 409);
+
+    await markAccountRestarted(db, uid);
 
     const nowIso = new Date().toISOString();
 

@@ -3,6 +3,12 @@
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
 import {
+  NOT_DELETED_SQL,
+  notDeletedBinds,
+  isAccountDeleted,
+  accountDeletedResponse,
+} from "../_shared/accountGuard.js";
+import {
   getUtcDateString,
   getPreviousUtcDateString,
 } from "../_shared/daily.js";
@@ -13,7 +19,7 @@ export async function onRequestOptions() {
 
 export async function onRequestPost(context) {
   try {
-    const { db, uid, error } = await requireCloudAuth(context);
+    const { db, uid, issuedAt, error } = await requireCloudAuth(context);
     if (error) return error;
 
     const existingRow = await db
@@ -46,9 +52,10 @@ export async function onRequestPost(context) {
         .prepare(
           `INSERT OR IGNORE INTO daily_leaderboard
              (uid, username, wins, losses, current_streak, best_streak, last_result_date, updated_at)
-           VALUES (?, ?, 0, 0, 0, 0, NULL, ?)`
+           SELECT ?, ?, 0, 0, 0, 0, NULL, ?
+           WHERE ${NOT_DELETED_SQL}`
         )
-        .bind(uid, username, nowIso),
+        .bind(uid, username, nowIso, ...notDeletedBinds(uid, issuedAt)),
       db
         .prepare(
           `UPDATE daily_leaderboard
@@ -89,11 +96,14 @@ export async function onRequestPost(context) {
         .bind(uid),
     ]);
 
-    if (updateResult.meta.changes === 0)
+    if (updateResult.meta.changes === 0) {
+      if (await isAccountDeleted(db, uid, issuedAt))
+        return accountDeletedResponse();
       return json(
         { success: false, error: "Already recorded today's result." },
         409
       );
+    }
 
     const row = selectResult.results?.[0];
 

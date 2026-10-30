@@ -1,5 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
 
+import { NOT_DELETED_SQL, notDeletedBinds } from "./accountGuard.js";
+
 export const EMPTY_ACHIEVEMENTS = JSON.stringify({
   unlockedIds: [],
   wonInHardMode5Plus: false,
@@ -38,12 +40,13 @@ export const EMPTY_SETTINGS = JSON.stringify({
   extraEffects: true,
 });
 
-export const ensurePlayerSaveExists = async (db, uid) =>
+export const ensurePlayerSaveExists = async (db, uid, issuedAt = null) =>
   db
     .prepare(
       `INSERT INTO player_saves
          (uid, discord_id, achievements, word_connoisseur, stats_normal, stats_hard, daily_stats, settings, background_id, updated_at)
-       VALUES (?, NULL, ?, ?, ?, ?, ?, ?, NULL, ?)
+       SELECT ?, NULL, ?, ?, ?, ?, ?, ?, NULL, ?
+       WHERE ${NOT_DELETED_SQL}
        ON CONFLICT(uid) DO NOTHING`
     )
     .bind(
@@ -54,7 +57,8 @@ export const ensurePlayerSaveExists = async (db, uid) =>
       EMPTY_STATS,
       EMPTY_DAILY_STATS,
       EMPTY_SETTINGS,
-      new Date().toISOString()
+      new Date().toISOString(),
+      ...notDeletedBinds(uid, issuedAt)
     )
     .run();
 

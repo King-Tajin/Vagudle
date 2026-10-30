@@ -127,6 +127,9 @@ export const sanitizeDiscordUsername = (raw) => {
   return USERNAME_PATTERN.test(cleaned) ? cleaned : null;
 };
 
+export const discordSessionIssuedAt = (payload) =>
+  Math.floor((payload.exp - SESSION_TTL_MS) / 1000);
+
 export const buildDiscordSessionPayload = (discordUser, refreshToken) => ({
   uid: `discord:${discordUser.id}`,
   username: discordUser.global_name || discordUser.username,

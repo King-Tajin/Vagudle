@@ -1,13 +1,14 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-import { CORS_HEADERS, json, encode, decode } from "../_shared/api.js";
-import { getBearerToken } from "../_shared/cloudAuth.js";
+import { CORS_HEADERS, json, encode } from "../_shared/api.js";
 import {
   refreshDiscordToken,
   fetchDiscordUser,
   buildDiscordSessionPayload,
   isRenewableDiscordSession,
+  discordSessionIssuedAt,
 } from "../_shared/discordAuth.js";
+import { readRenewableSession } from "../_shared/sessionRenewal.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -21,19 +22,14 @@ export async function onRequestPost(context) {
     if (!clientId || !clientSecret || !sessionKey)
       return json({ success: false, error: "Server misconfiguration." }, 500);
 
-    const token = getBearerToken(context.request);
-    if (!token)
-      return json({ success: false, error: "Missing session token." }, 401);
-
-    let payload;
-    try {
-      payload = await decode(token, sessionKey);
-    } catch {
-      return json({ success: false, error: "Invalid session token." }, 401);
-    }
-
-    if (!isRenewableDiscordSession(payload))
-      return json({ success: false, error: "Session cannot be renewed." }, 401);
+    const { payload, error } = await readRenewableSession({
+      request: context.request,
+      env: context.env,
+      sessionKey,
+      isRenewable: isRenewableDiscordSession,
+      issuedAtOf: discordSessionIssuedAt,
+    });
+    if (error) return error;
 
     let accessToken, refreshToken;
     try {

@@ -1,6 +1,7 @@
-import { useCallback, type MutableRefObject } from "react";
+import { useCallback, type RefObject } from "react";
 import type { User } from "firebase/auth";
 import { loadFirebaseAuth } from "../lib/firebase";
+import { deleteCloudSave } from "../lib/cloudSync";
 import {
   clearDiscordSession,
   type DiscordSession,
@@ -29,33 +30,34 @@ export const useAccountDeletion = ({
   applyDiscordSession: (session: DiscordSession | null) => void;
   applyPlayGamesSession: (session: PlayGamesSession | null) => void;
   restoreSignedInMarker: () => void;
-  expectedFirebaseLossRef: MutableRefObject<boolean>;
+  expectedFirebaseLossRef: RefObject<boolean>;
 }) => {
   const deleteAccount = useCallback(async (): Promise<DeleteAccountResult> => {
+    const failure: DeleteAccountResult = {
+      status: "error",
+      message: strings.CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
+    };
+
     if (firebaseUser) {
       clearSignedInMarker();
       expectedFirebaseLossRef.current = true;
-      try {
-        const { authModule } = await loadFirebaseAuth();
-        await authModule.deleteUser(firebaseUser);
-        clearLastUsedAccount();
-        return { status: "success" };
-      } catch (error) {
+      const deleted = await firebaseUser
+        .getIdToken(true)
+        .then((idToken) => deleteCloudSave(idToken, true))
+        .catch(() => false);
+      if (!deleted) {
         expectedFirebaseLossRef.current = false;
         restoreSignedInMarker();
-        const code = (error as { code?: string })?.code;
-        if (code === "auth/requires-recent-login") {
-          const providerId =
-            firebaseUser.providerData[0]?.providerId ?? "unknown";
-          return { status: "needs_reauth", providerId };
-        }
-        return {
-          status: "error",
-          message: strings.CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT,
-        };
+        return failure;
       }
+      await loadFirebaseAuth()
+        .then(({ auth, authModule }) => authModule.signOut(auth))
+        .catch(() => undefined);
+      clearLastUsedAccount();
+      return { status: "success" };
     }
     if (discordSession) {
+      if (!(await deleteCloudSave(discordSession.token))) return failure;
       clearSignedInMarker();
       clearDiscordSession();
       applyDiscordSession(null);
@@ -63,6 +65,7 @@ export const useAccountDeletion = ({
       return { status: "success" };
     }
     if (playGamesSession) {
+      if (!(await deleteCloudSave(playGamesSession.token))) return failure;
       clearSignedInMarker();
       clearPlayGamesSession();
       applyPlayGamesSession(null);
@@ -83,47 +86,5 @@ export const useAccountDeletion = ({
     expectedFirebaseLossRef,
   ]);
 
-  const reauthenticateAndDeleteAccount =
-    useCallback(async (): Promise<DeleteAccountResult> => {
-      if (!firebaseUser)
-        return {
-          status: "error",
-          message: strings.CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT,
-        };
-
-      const providerId = firebaseUser.providerData[0]?.providerId;
-
-      try {
-        const { authModule, googleProvider, githubProvider } =
-          await loadFirebaseAuth();
-        const provider =
-          providerId === "google.com"
-            ? googleProvider
-            : providerId === "github.com"
-              ? githubProvider
-              : null;
-
-        if (!provider)
-          return {
-            status: "error",
-            message: strings.CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT,
-          };
-
-        await authModule.reauthenticateWithPopup(firebaseUser, provider);
-        clearSignedInMarker();
-        expectedFirebaseLossRef.current = true;
-        await authModule.deleteUser(firebaseUser);
-        clearLastUsedAccount();
-        return { status: "success" };
-      } catch {
-        expectedFirebaseLossRef.current = false;
-        restoreSignedInMarker();
-        return {
-          status: "error",
-          message: strings.CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT,
-        };
-      }
-    }, [firebaseUser, restoreSignedInMarker, expectedFirebaseLossRef]);
-
-  return { deleteAccount, reauthenticateAndDeleteAccount };
+  return { deleteAccount };
 };

@@ -544,13 +544,24 @@ export const linkPlayGamesOAuthWithCurrentUser = async (
   }
 };
 
-export const deleteCloudSave = async (idToken: string): Promise<boolean> => {
+export const deleteCloudSave = async (
+  idToken: string,
+  deleteAuthAccount = false
+): Promise<boolean> => {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     const res = await fetch("/api/delete-account", {
       method: "POST",
-      headers: { Authorization: `Bearer ${idToken}` },
+      headers: deleteAuthAccount
+        ? {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          }
+        : { Authorization: `Bearer ${idToken}` },
+      body: deleteAuthAccount
+        ? JSON.stringify({ deleteAuthAccount: true })
+        : undefined,
       signal: controller.signal,
     });
     clearTimeout(timeout);

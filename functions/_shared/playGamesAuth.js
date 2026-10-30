@@ -71,6 +71,9 @@ export const fetchPlayGamesPlayer = async (accessToken) => {
   return res.json();
 };
 
+export const playGamesSessionIssuedAt = (payload) =>
+  Math.floor((payload.exp - SESSION_TTL_MS) / 1000);
+
 export const buildPlayGamesSessionPayload = (player, refreshToken) => ({
   uid: `playgames:${player.playerId}`,
   username: player.displayName || "Player",
