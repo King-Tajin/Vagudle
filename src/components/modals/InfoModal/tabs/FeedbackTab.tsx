@@ -16,23 +16,33 @@ import {
   hashRequestFields,
 } from "../../../../lib/playIntegrity";
 import {
+  clearFeedbackDraft,
+  FEEDBACK_EMAIL_MAX,
+  FEEDBACK_MESSAGE_MAX,
+  loadFeedbackDraft,
+  saveFeedbackDraft,
+} from "../../../../lib/localStorage";
+import {
   renderTurnstileWidget,
   type TurnstileWidgetHandle,
 } from "../../../../lib/turnstile";
 
-const EMAIL_MAX = 254;
-const MESSAGE_MAX = 15000;
 const TURNSTILE_ACTION = "feedback";
 const USES_INTEGRITY = isNativeApp();
 
+const EMPTY_FORM_DATA = {
+  sentiment: "",
+  category: "",
+  email: "",
+  message: "",
+  article: "Vagudle",
+};
+
 export const FeedbackTab = () => {
-  const [formData, setFormData] = useState({
-    sentiment: "",
-    category: "",
-    email: "",
-    message: "",
-    article: "Vagudle",
-  });
+  const [formData, setFormData] = useState(() => ({
+    ...EMPTY_FORM_DATA,
+    ...loadFeedbackDraft(),
+  }));
   const [status, setStatus] = useState<
     "idle" | "submitting" | "success" | "error"
   >("idle");
@@ -44,6 +54,10 @@ export const FeedbackTab = () => {
   const [turnstileToken, setTurnstileToken] = useState("");
   const [turnstileFailed, setTurnstileFailed] = useState(false);
   const showForm = status !== "success";
+
+  useEffect(() => {
+    saveFeedbackDraft(formData);
+  }, [formData]);
 
   useEffect(() => {
     const container = widgetContainerRef.current;
@@ -83,7 +97,7 @@ export const FeedbackTab = () => {
     };
   }, [showForm]);
 
-  const messageRemaining = MESSAGE_MAX - formData.message.length;
+  const messageRemaining = FEEDBACK_MESSAGE_MAX - formData.message.length;
   const messageNearLimit = messageRemaining <= 500;
   const messageAtLimit = messageRemaining <= 0;
 
@@ -154,6 +168,7 @@ export const FeedbackTab = () => {
         return;
       }
 
+      clearFeedbackDraft();
       setStatus("success");
     } catch {
       setStatus("error");
@@ -178,13 +193,7 @@ export const FeedbackTab = () => {
           type="button"
           onClick={() => {
             setStatus("idle");
-            setFormData({
-              sentiment: "",
-              category: "",
-              email: "",
-              message: "",
-              article: "Vagudle",
-            });
+            setFormData(EMPTY_FORM_DATA);
           }}
           className="mt-6 font-pixel text-xs text-crown-amber underline tracking-widest"
         >
@@ -320,7 +329,7 @@ export const FeedbackTab = () => {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           onKeyDown={(e) => e.stopPropagation()}
           placeholder="your.email@example.com"
-          maxLength={EMAIL_MAX}
+          maxLength={FEEDBACK_EMAIL_MAX}
           aria-invalid={emailInvalid}
           aria-describedby={emailInvalid ? "feedback-email-error" : undefined}
           className="w-full border-2 font-code text-sm p-2 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors"
@@ -375,7 +384,7 @@ export const FeedbackTab = () => {
             onKeyDown={(e) => e.stopPropagation()}
             placeholder={strings.FEEDBACK_MESSAGE_PLACEHOLDER}
             rows={5}
-            maxLength={MESSAGE_MAX}
+            maxLength={FEEDBACK_MESSAGE_MAX}
             className="w-full border-2 font-code text-sm p-2 pb-7 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber transition-colors resize-none"
             style={{
               background: "#0a0014",
@@ -456,7 +465,7 @@ export const FeedbackTab = () => {
                 onKeyDown={(e) => e.stopPropagation()}
                 placeholder={strings.FEEDBACK_MESSAGE_PLACEHOLDER}
                 aria-labelledby="feedback-message-fullscreen-label"
-                maxLength={MESSAGE_MAX}
+                maxLength={FEEDBACK_MESSAGE_MAX}
                 autoFocus
                 className="flex-1 w-full font-code text-sm p-4 outline-none focus-visible:ring-2 focus-visible:ring-crown-amber resize-none"
                 style={{

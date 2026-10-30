@@ -183,3 +183,73 @@ export const loadStatsFromLocalStorage = (
     return null;
   }
 };
+
+export const feedbackDraftKey = "feedbackDraft:v1";
+export const FEEDBACK_EMAIL_MAX = 254;
+export const FEEDBACK_MESSAGE_MAX = 15000;
+
+const FEEDBACK_SENTIMENTS = ["positive", "negative"];
+const FEEDBACK_CATEGORIES = ["bug-report", "feature-request", "general"];
+
+export type StoredFeedbackDraft = {
+  sentiment: string;
+  category: string;
+  email: string;
+  message: string;
+};
+
+export const saveFeedbackDraft = (draft: StoredFeedbackDraft) => {
+  try {
+    const { sentiment, category, email, message } = draft;
+    if (!sentiment && !category && !email && !message) {
+      localStorage.removeItem(feedbackDraftKey);
+      return;
+    }
+    localStorage.setItem(
+      feedbackDraftKey,
+      JSON.stringify({ sentiment, category, email, message })
+    );
+  } catch {}
+};
+
+export const loadFeedbackDraft = (): StoredFeedbackDraft | null => {
+  try {
+    const stored = localStorage.getItem(feedbackDraftKey);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored) as Partial<StoredFeedbackDraft> | null;
+    if (typeof parsed !== "object" || parsed === null) {
+      localStorage.removeItem(feedbackDraftKey);
+      return null;
+    }
+    const sentiment =
+      typeof parsed.sentiment === "string" &&
+      FEEDBACK_SENTIMENTS.includes(parsed.sentiment)
+        ? parsed.sentiment
+        : "";
+    const category =
+      typeof parsed.category === "string" &&
+      FEEDBACK_CATEGORIES.includes(parsed.category)
+        ? parsed.category
+        : "";
+    const email =
+      typeof parsed.email === "string"
+        ? parsed.email.slice(0, FEEDBACK_EMAIL_MAX)
+        : "";
+    const message =
+      typeof parsed.message === "string"
+        ? parsed.message.slice(0, FEEDBACK_MESSAGE_MAX)
+        : "";
+    return { sentiment, category, email, message };
+  } catch {
+    try {
+      localStorage.removeItem(feedbackDraftKey);
+    } catch {}
+    return null;
+  }
+};
+
+export const clearFeedbackDraft = () => {
+  try {
+    localStorage.removeItem(feedbackDraftKey);
+  } catch {}
+};

@@ -67,13 +67,14 @@ export const getGoogleServiceAccountToken = async (
     return cached.token;
 
   const assertion = await signJwt(clientEmail, privateKeyPem, scope);
+  const params = new URLSearchParams({
+    grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+    assertion,
+  });
   const res = await fetch(TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion,
-    }),
+    body: params.toString(),
   });
   if (!res.ok) throw new Error("Failed to obtain Google access token.");
 
