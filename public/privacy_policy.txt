@@ -1,6 +1,6 @@
 VAGUDLE PRIVACY POLICY
 
-Last updated: September 2026
+Last updated: October 2026
 
 Vagudle (https://vagudle.king-tajin.dev) is operated by Roland Shikoski.
 
@@ -14,7 +14,7 @@ ANDROID APP
 
 Vagudle is also available as an Android app. The app displays the same
 Vagudle experience described in this policy and follows the same data
-practices; it does not collect any additional data of its own.
+practices. The app-specific features and services are described below.
 
 The app requests the following Android permissions:
 
@@ -30,20 +30,43 @@ The app requests the following Android permissions:
 The app does not include any analytics or advertising software. It does
 use Firebase Crashlytics, a crash-reporting service provided by Google, to
 help us detect and fix crashes and errors. Crash reports include the error
-message and, if you are signed in with Google Play Games, your account
-identifier, so we can investigate whether a crash is tied to a specific
-account. Crashlytics does not receive your email address, cloud save
-contents, or gameplay data. The app also integrates with Google Play Games
-Services to offer Play Games sign-in, described in the CLOUD SAVE ACCOUNTS
-section below.
+message and stack trace, technical details collected automatically by
+Crashlytics (such as your device model, operating system version, and an
+installation identifier), and, if you are signed in with Google Play Games,
+your account identifier, so we can investigate whether a crash is tied to a
+specific account. Crashlytics does not receive your email address, cloud
+save contents, or gameplay data.
+
+The app also uses the following Google Play services:
+
+  - Google Play Games Services, to offer Play Games sign-in, described in
+    the CLOUD SAVE ACCOUNTS section below
+  - Play Integrity, which lets our servers confirm that certain requests
+    (such as submitting feedback or requesting a sign-in link) come from
+    a genuine copy of the app. Google provides a signed verdict to us; we
+    do not store it.
+  - Play In-App Review, which may ask if you want to rate the app. Google
+    handles any review you choose to submit.
+  - Play Asset Delivery, which downloads the app's media files.
+
+Home-screen widgets: the app offers optional Daily, Stats, and
+Achievements widgets. They display data already stored on your device. The
+Daily widget may also contact our servers in the background to refresh your
+leaderboard rank, sending your sign-in token if you are signed in. No
+additional data is stored as a result.
+
+Backups: the app allows Android's automatic backup, so Google may back up
+the app's local data (described under LOCAL STORAGE) to your Google account
+according to your device's backup settings.
 
 ---
 
 LOCAL STORAGE
 
 Your game state, settings, and progress are stored locally in your browser
-using localStorage. This data never leaves your device and is not accessible
-to us, unless you choose to sign in for cloud save as described below.
+using localStorage. This data is not accessible to us unless you choose to
+sign in for cloud save as described below. On Android, it may be included in
+your device's automatic backup, as described above.
 
 ---
 
@@ -91,6 +114,10 @@ in with Google, GitHub, Discord, or Play Games, that sign-in is also
 subject to the provider's own privacy policy. We never receive your
 password from these providers.
 
+If you sign in with an email link, your email address is passed to Resend,
+the email delivery service we use to send the link. Resend processes it
+only to deliver that message.
+
 You may link a Discord account to an existing Google/GitHub/email account
 that already has cloud save progress. Once linked, your Discord ID is
 associated with that same account.
@@ -105,11 +132,16 @@ the leaderboard:
   - Your Discord ID
   - Whether you won or lost
   - The number of guesses used
-  - The word used in the duel
-  - The timestamp of completion
+  - Your guesses and the letter colors shown for them
+  - The word used in the duel, its length, the dictionary, and the guess limit
+  - The timestamps of when the duel was generated and completed
 
-This data is retained indefinitely. To request deletion of your data, contact
-us at the email addresses above.
+Completed duel results are retained until you delete your account or ask us
+to delete them. Some in-progress duel data is deleted automatically after a
+maximum of 4 weeks. When a duel finishes, an internal notification
+containing only the duel ID is sent to a service we operate, which powers
+Discord bot features. To request deletion of your data, contact us at the
+email addresses above.
 
 ---
 
@@ -130,17 +162,19 @@ Activity). What we store depends on how you play:
       the username field in your account settings.
     - Which Discord server and channel (or "standalone" if played outside a
       server) you played in, and the platform used
-    - A snapshot of your in-progress guesses and letter colors, so you can
-      resume a game you haven't finished
+    - A snapshot of your guesses and letter colors, so you can resume a
+      game you haven't finished
     - If you play as part of a Discord server or group, that group's
       combined win streak (not tied to your individual identity)
 
   Retention:
     - Leaderboard entries (username, wins, losses, streaks) and group streaks
       are retained indefinitely, similar to duel results
-    - In-progress guess snapshots, and which group/channel you played in for
-      a given day, are retained for a maximum of 4 weeks, after which they
-      are deleted automatically
+    - Some in-progress daily snapshots are deleted automatically after a
+      maximum of 4 weeks
+    - Other daily records, including your completed attempts, guesses, and
+      which group/channel you played in for a given day, are retained until
+      you delete your account or ask us to delete them
 
   Visibility:
     - The daily leaderboard is public and visible to anyone who visits the
@@ -167,8 +201,18 @@ the email addresses above. Either way, we delete:
 
   - Your cloud save data (achievements, stats, settings, background)
   - Your daily leaderboard entry (username, wins, losses, streaks)
-  - Your in-progress daily attempts and guess snapshots
-  - Your duel results and group daily results
+  - Your daily attempts, including guess snapshots
+  - Your duel results, including guesses
+
+If you use the in-app deletion option, you can also choose to delete your
+sign-in account with Firebase Authentication. If you contact us instead, we
+will delete it on request.
+
+To stop a deleted account from being silently restored by an old sign-in
+session, we keep a minimal record containing your account identifier (and
+any linked Discord or Play Games identifier) and the time of deletion. It
+contains no gameplay data. Feedback you submitted is not linked to your
+account and is deleted only on request.
 
 Group-level data that isn't tied to a single identifiable person, such as a
 Discord server's combined streak, is not deleted as part of an individual
@@ -202,6 +246,29 @@ Outside of the feedback form described above, these IP addresses are not
 stored in a database or linked to your account; they are used only in the
 moment to decide whether to allow or block a request.
 
+On the web, the feedback form and email sign-in use Cloudflare Turnstile, a
+bot-detection service. Turnstile runs a check in your browser and shares
+technical signals, including your IP address, with Cloudflare to decide
+whether you are a human. On the Android app, Play Integrity is used for the
+same purpose instead, as described above.
+
+---
+
+SERVICE PROVIDERS
+
+We rely on the following providers to run the Site and app. Each receives
+the data needed to do its job and is subject to its own privacy policy:
+
+  - Cloudflare: hosting, database, storage, bot detection, and traffic
+    statistics
+  - Google: Firebase Authentication, Firebase Crashlytics, and Google Play
+    services
+  - GitHub and Discord: sign-in and Discord Activities, if you use them
+  - Resend: delivery of email sign-in links
+
+Like any website, our hosting provider receives your IP address and browser
+details when you load the Site.
+
 ---
 
 ANALYTICS
@@ -215,7 +282,8 @@ https://www.cloudflare.com/web-analytics/
 
 COOKIES
 
-Vagudle does not use cookies.
+Vagudle does not set cookies of its own. It stores data locally in your
+browser (localStorage and IndexedDB) as described above.
 
 ---
 

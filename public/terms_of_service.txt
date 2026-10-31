@@ -1,6 +1,6 @@
 VAGUDLE TERMS OF SERVICE
 
-Last updated: September 2026
+Last updated: October 2026
 
 These Terms of Service ("Terms") govern your use of Vagudle, a free online
 word game available at vagudle.king-tajin.dev ("the Game", "the Site"). By
@@ -37,8 +37,10 @@ Vagudle is a free word-guessing game. It offers:
   - Daily mode, a once-a-day word with a public leaderboard, streak
     tracking, and integration with Discord Activities
   - Optional cloud save, letting you sync progress across devices
-  - Optional daily reminder notifications on the Android app, scheduled
-    entirely on your device
+  - Optional daily reminder notifications and home-screen widgets on the
+    Android app
+  - A public MCP server that lets AI assistants create custom challenge
+    links on your behalf
 
 The Site is provided free of charge. We reserve the right to modify,
 suspend, or discontinue any part of the Site at any time without notice.
@@ -111,9 +113,13 @@ You agree not to:
     the Site in ways not intended by its normal operation
   - Attempt to access another user's account, cloud save data, or
     authentication credentials without authorization
+  - Use automated tools, bots, or AI assistants to flood the Site, bypass
+    rate limits or bot checks, or access it in ways other than the
+    public MCP server and the Site's normal operation
 
 We reserve the right to disregard feedback, reset or remove a username, or
-block access from sources that violate these rules.
+block access from sources that violate these rules. If we reset your
+username, you may choose a new one that follows these rules.
 
 ---
 
@@ -135,10 +141,12 @@ described in Section 5.
 
 8. MERCHANDISE
 
-The Site may contain a link to a third-party merchandise store. Purchases
-made through that store are subject to the third party's own terms and
-policies. We are not responsible for the products, prices, availability, or
-any disputes arising from purchases made on third-party platforms.
+The Site links to the Yellow Skipper Games merchandise store at
+store.king-tajin.dev. Purchases are completed on Fourthwall, a third-party
+platform, and are subject to the store's terms of service
+(https://store.king-tajin.dev/terms) and Fourthwall's terms. We are not
+responsible for the products, prices, availability, or any disputes arising
+from purchases made on third-party platforms.
 
 ---
 
@@ -157,8 +165,9 @@ Vagudle is also available as an Android app on Google Play. Your use of the
 app is also subject to Google Play's Terms of Service. The app provides the
 same Game described in these Terms; it does not offer any additional
 features beyond what is described here, aside from Google Play Games
-sign-in as described in Section 4. The app uses Firebase Crashlytics to
-help us diagnose crashes, as described in our Privacy Policy.
+sign-in as described in Section 4 and the notifications and widgets
+described in Section 3. The app uses Firebase Crashlytics and Google Play
+Integrity, as described in our Privacy Policy.
 
 We are not affiliated with or endorsed by Google LLC.
 
@@ -171,8 +180,9 @@ view, fork, and build upon it in accordance with that license. The MIT
 License text is included in the source code repository.
 
 Game assets, background media, and the Vagudle name and branding are not
-covered by the MIT License and remain the property of the operator unless
-otherwise stated.
+covered by the MIT License. They remain the property of the operator, except
+for third-party media, which remains the property of its creators and is
+used under the licenses credited in the Site's attribution notices.
 
 ---
 
@@ -195,8 +205,9 @@ DAMAGES ARISING FROM YOUR USE OF, OR INABILITY TO USE, THE SITE — INCLUDING
 BUT NOT LIMITED TO LOSS OF DATA, LOSS OF ENJOYMENT, OR ANY OTHER INTANGIBLE
 LOSS — EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
-Because the Site is free of charge, our aggregate liability to you for any
-claim arising from your use of the Site shall not exceed zero dollars ($0).
+Because the Site is free of charge, and to the extent permitted by
+applicable law, our aggregate liability to you for any claim arising from
+your use of the Site shall not exceed zero dollars ($0).
 
 ---
 
