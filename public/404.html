@@ -216,9 +216,10 @@
           !/\.html$/.test(path) &&
           !/^\/outputs\//.test(path)
         ) {
-          document.querySelector("#path").textContent = path;
-          document.querySelector("#bar").textContent =
-            "vagudle.king-tajin.dev" + path;
+          const pathLabel = document.querySelector("#path");
+          const bar = document.querySelector("#bar");
+          if (pathLabel) pathLabel.textContent = path;
+          if (bar) bar.textContent = "vagudle.king-tajin.dev" + path;
         }
       })();
 
@@ -226,11 +227,17 @@
         const input = /** @type {HTMLInputElement} */ (
           document.querySelector("input.ghost")
         );
-        const log = document.querySelector("#log");
-        const promptRow = document.querySelector("#prompt");
-        const before = document.querySelector("#before");
-        const cur = document.querySelector("#cur");
-        const after = document.querySelector("#after");
+        const log = /** @type {HTMLElement} */ (document.querySelector("#log"));
+        const promptRow = /** @type {HTMLElement} */ (
+          document.querySelector("#prompt")
+        );
+        const before = /** @type {HTMLElement} */ (
+          document.querySelector("#before")
+        );
+        const cur = /** @type {HTMLElement} */ (document.querySelector("#cur"));
+        const after = /** @type {HTMLElement} */ (
+          document.querySelector("#after")
+        );
 
         const RM_DEFAULTS = [
           "/bin",
@@ -268,10 +275,12 @@
         }
 
         function say(text, cls) {
-          const el = document.createElement("p");
+          const el = /** @type {HTMLParagraphElement} */ (
+            document.createElement("p")
+          );
           el.className = cls || "dim";
           el.textContent = text;
-          log.appendChild(el);
+          log.append(el);
           el.scrollIntoView({ block: "nearest" });
           return el;
         }
@@ -308,6 +317,7 @@
         function rmLines(paths) {
           const rest = RM_DEFAULTS.filter((dir) => !paths.includes(dir));
           const targets = [...paths, ...rest, "/your-existence"];
+          /** @type {{ text: string, cls?: string, wait: number }[]} */
           const lines = targets.map((target, i) => ({
             text: `removing ${target} ...`,
             wait: i === targets.length - 1 ? 1100 : 450,
@@ -341,7 +351,7 @@
           next();
         }
 
-        document.querySelector("#term").addEventListener("click", (e) => {
+        document.querySelector("#term")?.addEventListener("click", (e) => {
           if (e.target instanceof Element && e.target.closest("a")) return;
           input.focus();
           later();

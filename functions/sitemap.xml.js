@@ -1,4 +1,4 @@
-// noinspection JSUnusedGlobalSymbols,HttpUrlsUsage
+// noinspection JSUnusedGlobalSymbols,HttpUrlsUsage,JSCheckFunctionSignatures
 
 import { getUtcDateString } from "./_shared/daily.js";
 import { SITE_ORIGIN, escapeXml, parseLastUpdated } from "./_shared/seo.js";
