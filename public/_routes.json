@@ -1,5 +1,14 @@
 {
   "version": 1,
-  "include": ["/", "/api/*", "/daily", "/link-discord", "/mcp"],
+  "include": [
+    "/",
+    "/api/*",
+    "/daily",
+    "/link-discord",
+    "/link-playgames",
+    "/delete-account",
+    "/mcp",
+    "/sitemap.xml"
+  ],
   "exclude": []
 }

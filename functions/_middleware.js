@@ -2,6 +2,13 @@
 
 import { applyDailySeo } from "./_shared/dailySeo.js";
 
+const APP_ROUTES = new Set([
+  "/daily",
+  "/link-discord",
+  "/link-playgames",
+  "/delete-account",
+]);
+
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
@@ -12,7 +19,7 @@ export async function onRequest(context) {
     return Response.redirect(url.toString(), 301);
   }
 
-  if (url.pathname === "/daily" || url.pathname === "/link-discord") {
+  if (APP_ROUTES.has(url.pathname)) {
     const assetUrl = new URL(context.request.url);
     assetUrl.pathname = "/";
     const assetRequest = new Request(assetUrl.toString(), context.request);
