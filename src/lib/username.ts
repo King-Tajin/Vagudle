@@ -59,23 +59,31 @@ export const updateUsername = async (
         body: JSON.stringify({ username }),
         signal,
       });
-      if (!res.ok) return { status: "error" };
-      const data = (await res.json()) as
-        | { success: true; username: string; canChangeAt: string | null }
-        | { success: false; error: string; retryAt?: string };
+      if (!res.ok) {
+        if (res.status === 400) return { status: "invalid" };
+        if (res.status === 409) return { status: "taken" };
+        if (res.status === 429) {
+          const limited = (await res.json().catch(() => null)) as {
+            retryAt?: string;
+          } | null;
+          if (limited?.retryAt)
+            return { status: "rate_limited", retryAt: limited.retryAt };
+        }
+        return { status: "error" };
+      }
 
-      if (data.success)
-        return {
-          status: "updated",
-          username: data.username,
-          canChangeAt: data.canChangeAt,
-        };
-
-      if (data.error === "invalid") return { status: "invalid" };
-      if (data.error === "taken") return { status: "taken" };
-      if (data.error === "rate_limited" && data.retryAt)
-        return { status: "rate_limited", retryAt: data.retryAt };
-      return { status: "error" };
+      const data = (await res.json()) as {
+        success?: boolean;
+        username?: string;
+        canChangeAt?: string | null;
+      };
+      if (!data.success || typeof data.username !== "string")
+        return { status: "error" };
+      return {
+        status: "updated",
+        username: data.username,
+        canChangeAt: data.canChangeAt ?? null,
+      };
     });
   } catch {
     return { status: "error" };

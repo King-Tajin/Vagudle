@@ -11,7 +11,6 @@ import { loadFirebaseAuth, scheduleFirebaseAuthPreload } from "../lib/firebase";
 import {
   signInWithDiscord as redirectToDiscord,
   completeDiscordSignIn as exchangeDiscordSignIn,
-  consumeDiscordAuthOutcome,
   getStoredDiscordSession,
   getStoredDiscordSessionRaw,
   clearDiscordSession,
@@ -42,6 +41,7 @@ import {
   markSignedIn,
 } from "../lib/signInMarker";
 import { saveLastUsedAccount } from "../lib/lastUsedAccount";
+import { getSignInErrorMessage } from "../lib/authErrors";
 import { CloudAuthContext } from "../context/cloud-auth-context";
 import { useAlert } from "../context/alert-context";
 import {
@@ -90,7 +90,8 @@ export const useCloudAuthState = ({
   const [sessionEnded, setSessionEnded] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [authFlowMessage, setAuthFlowMessage] =
-    useState<AuthFlowMessage | null>(() => consumeDiscordAuthOutcome());
+    useState<AuthFlowMessage | null>(null);
+  const [resolvingIntent, setResolvingIntent] = useState(false);
   const { showError } = useAlert();
   const { emailLinkSent, emailLinkSending, emailLinkBusy, sendEmailLink } =
     useEmailLinkSender({ setActionError, setAuthFlowMessage });
@@ -122,6 +123,26 @@ export const useCloudAuthState = ({
     },
     []
   );
+
+  useEffect(() => {
+    void exchangeDiscordSignIn().then((outcome) => {
+      if (outcome.status === "signed_in") {
+        applyDiscordSession(outcome.session);
+        return;
+      }
+      if (
+        outcome.status === "not_registered" ||
+        outcome.status === "already_registered"
+      ) {
+        setAuthFlowMessage(outcome.status);
+        return;
+      }
+      if (outcome.status === "error") {
+        setActionError(strings.CLOUD_AUTH_DISCORD_SIGNIN_ERROR_TEXT);
+        showError(strings.CLOUD_AUTH_DISCORD_SIGNIN_ERROR_TEXT);
+      }
+    });
+  }, [applyDiscordSession, showError]);
 
   useEffect(() => {
     void completeEmailLinkSignIn().then((result) => {
@@ -349,6 +370,8 @@ export const useCloudAuthState = ({
     async (intent: AuthIntent) => {
       setActionError(null);
       setAuthFlowMessage(null);
+      const maskUser = firebaseUserRef.current === null;
+      if (maskUser) setResolvingIntent(true);
       try {
         const { auth, googleProvider, authModule } = await loadFirebaseAuth();
 
@@ -369,8 +392,15 @@ export const useCloudAuthState = ({
 
         const result = await authModule.signInWithPopup(auth, googleProvider);
         await resolveFirebaseIntent(authModule, auth, result, intent);
-      } catch {
-        setActionError(strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT);
+      } catch (error) {
+        setActionError(
+          getSignInErrorMessage(
+            error,
+            strings.CLOUD_AUTH_GOOGLE_SIGNIN_ERROR_TEXT
+          )
+        );
+      } finally {
+        if (maskUser) setResolvingIntent(false);
       }
     },
     [resolveFirebaseIntent]
@@ -380,12 +410,21 @@ export const useCloudAuthState = ({
     async (intent: AuthIntent) => {
       setActionError(null);
       setAuthFlowMessage(null);
+      const maskUser = firebaseUserRef.current === null;
+      if (maskUser) setResolvingIntent(true);
       try {
         const { auth, githubProvider, authModule } = await loadFirebaseAuth();
         const result = await authModule.signInWithPopup(auth, githubProvider);
         await resolveFirebaseIntent(authModule, auth, result, intent);
-      } catch {
-        setActionError(strings.CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT);
+      } catch (error) {
+        setActionError(
+          getSignInErrorMessage(
+            error,
+            strings.CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT
+          )
+        );
+      } finally {
+        if (maskUser) setResolvingIntent(false);
       }
     },
     [resolveFirebaseIntent]
@@ -422,7 +461,7 @@ export const useCloudAuthState = ({
     [applyPlayGamesSession]
   );
 
-  const signOutUser = useCallback(async () => {
+  const signOutUser = useCallback(async (): Promise<boolean> => {
     setActionError(null);
     clearSignedInMarker();
     expectedFirebaseLossRef.current = firebaseUserRef.current !== null;
@@ -433,10 +472,12 @@ export const useCloudAuthState = ({
       applyDiscordSession(null);
       clearPlayGamesSession();
       applyPlayGamesSession(null);
+      return true;
     } catch {
       expectedFirebaseLossRef.current = false;
       restoreSignedInMarker();
       setActionError(strings.CLOUD_AUTH_SIGNOUT_ERROR_TEXT);
+      return false;
     }
   }, [applyDiscordSession, applyPlayGamesSession, restoreSignedInMarker]);
   const { deleteAccount } = useAccountDeletion({
@@ -451,14 +492,14 @@ export const useCloudAuthState = ({
 
   const user = useMemo(
     () =>
-      firebaseUser
+      firebaseUser && !resolvingIntent
         ? toCloudAuthUser(firebaseUser)
         : discordSession
           ? toCloudAuthUserFromDiscord(discordSession)
           : playGamesSession
             ? toCloudAuthUserFromPlayGames(playGamesSession)
             : null,
-    [firebaseUser, discordSession, playGamesSession]
+    [firebaseUser, resolvingIntent, discordSession, playGamesSession]
   );
 
   useEffect(() => {

@@ -6,7 +6,6 @@ import strings from "../constants/strings";
 export const DISCORD_SESSION_STORAGE_KEY = "vagudle-discord-session:v1";
 const STATE_STORAGE_KEY = "vagudle-discord-oauth-state:v1";
 const MODE_STORAGE_KEY = "vagudle-discord-oauth-mode:v1";
-const OUTCOME_STORAGE_KEY = "vagudle-discord-oauth-outcome:v1";
 
 export type DiscordSession = {
   token: string;
@@ -20,6 +19,7 @@ export type DiscordSignInOutcome =
   | { status: "signed_in"; session: DiscordSession }
   | { status: "not_registered" }
   | { status: "already_registered" }
+  | { status: "error" }
   | { status: "none" };
 
 const getRedirectUri = (): string =>
@@ -107,27 +107,6 @@ export const signInWithDiscord = (intent: AuthIntent): void =>
   beginDiscordOAuth(intent);
 
 export const initiateDiscordLink = (): void => beginDiscordOAuth("link");
-
-export const storeDiscordAuthOutcome = (
-  outcome: "not_registered" | "already_registered"
-): void => {
-  try {
-    sessionStorage.setItem(OUTCOME_STORAGE_KEY, outcome);
-  } catch {}
-};
-
-export const consumeDiscordAuthOutcome = ():
-  "not_registered" | "already_registered" | null => {
-  try {
-    const outcome = sessionStorage.getItem(OUTCOME_STORAGE_KEY);
-    sessionStorage.removeItem(OUTCOME_STORAGE_KEY);
-    if (outcome === "not_registered" || outcome === "already_registered")
-      return outcome;
-    return null;
-  } catch {
-    return null;
-  }
-};
 
 export const fetchDiscordLinkUrl = async (
   session: DiscordSession
@@ -244,75 +223,83 @@ export const getPendingDiscordLinkCode = (): {
   return { code, redirectUri: getRedirectUri() };
 };
 
-export const completeDiscordSignIn =
-  async (): Promise<DiscordSignInOutcome> => {
-    const url = new URL(window.location.href);
-    const code = url.searchParams.get("code");
-    const state = url.searchParams.get("state");
-    if (!code || !state) return { status: "none" };
+const runDiscordSignIn = async (): Promise<DiscordSignInOutcome> => {
+  const url = new URL(window.location.href);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  if (!code || !state) return { status: "none" };
 
-    let mode: string | null = null;
-    try {
-      mode = sessionStorage.getItem(MODE_STORAGE_KEY);
-    } catch {}
-    if (mode === "link") return { status: "none" };
-    const intent: AuthIntent = mode === "create" ? "create" : "signin";
+  let mode: string | null = null;
+  try {
+    mode = sessionStorage.getItem(MODE_STORAGE_KEY);
+  } catch {}
+  if (mode === "link") return { status: "none" };
+  const intent: AuthIntent = mode === "create" ? "create" : "signin";
 
-    let expectedState: string | null = null;
-    try {
-      expectedState = sessionStorage.getItem(STATE_STORAGE_KEY);
-    } catch {}
+  let expectedState: string | null = null;
+  try {
+    expectedState = sessionStorage.getItem(STATE_STORAGE_KEY);
+  } catch {}
 
-    url.searchParams.delete("code");
-    url.searchParams.delete("state");
-    window.history.replaceState({}, document.title, url.toString());
+  url.searchParams.delete("code");
+  url.searchParams.delete("state");
+  window.history.replaceState({}, document.title, url.toString());
 
-    if (!expectedState || expectedState !== state) return { status: "none" };
-    try {
-      sessionStorage.removeItem(STATE_STORAGE_KEY);
-      sessionStorage.removeItem(MODE_STORAGE_KEY);
-    } catch {}
+  if (!expectedState || expectedState !== state) return { status: "error" };
+  try {
+    sessionStorage.removeItem(STATE_STORAGE_KEY);
+    sessionStorage.removeItem(MODE_STORAGE_KEY);
+  } catch {}
 
-    try {
-      const res = await fetch("/api/discord-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, redirect_uri: getRedirectUri() }),
-      });
-      if (!res.ok) return { status: "none" };
+  try {
+    const res = await fetch("/api/discord-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, redirect_uri: getRedirectUri() }),
+    });
+    if (!res.ok) return { status: "error" };
 
-      const data = (await res.json()) as {
-        success: boolean;
-        token?: string;
-        isNewAccount?: boolean;
-        user?: {
-          uid: string;
-          displayName: string;
-          avatarUrl: string | null;
-          expiresAt: number;
-        };
+    const data = (await res.json()) as {
+      success: boolean;
+      token?: string;
+      isNewAccount?: boolean;
+      user?: {
+        uid: string;
+        displayName: string;
+        avatarUrl: string | null;
+        expiresAt: number;
       };
-      if (!data.success || !data.token || !data.user) return { status: "none" };
+    };
+    if (!data.success || !data.token || !data.user) return { status: "error" };
 
-      if (intent === "signin" && data.isNewAccount) {
-        storeDiscordAuthOutcome("not_registered");
-        return { status: "not_registered" };
-      }
-      if (intent === "create" && !data.isNewAccount) {
-        storeDiscordAuthOutcome("already_registered");
-        return { status: "already_registered" };
-      }
-
-      const session: DiscordSession = {
-        token: data.token,
-        uid: data.user.uid,
-        displayName: data.user.displayName,
-        avatarUrl: data.user.avatarUrl,
-        expiresAt: data.user.expiresAt,
-      };
-      storeDiscordSession(session);
-      return { status: "signed_in", session };
-    } catch {
-      return { status: "none" };
+    if (intent === "signin" && data.isNewAccount) {
+      return { status: "not_registered" };
     }
-  };
+    if (intent === "create" && !data.isNewAccount) {
+      return { status: "already_registered" };
+    }
+
+    const session: DiscordSession = {
+      token: data.token,
+      uid: data.user.uid,
+      displayName: data.user.displayName,
+      avatarUrl: data.user.avatarUrl,
+      expiresAt: data.user.expiresAt,
+    };
+    storeDiscordSession(session);
+    return { status: "signed_in", session };
+  } catch {
+    return { status: "error" };
+  }
+};
+
+let discordCompletion: Promise<DiscordSignInOutcome> | null = null;
+
+export const completeDiscordSignIn = (): Promise<DiscordSignInOutcome> => {
+  if (discordCompletion) return discordCompletion;
+  const params = new URL(window.location.href).searchParams;
+  if (!params.get("code") || !params.get("state"))
+    return Promise.resolve({ status: "none" });
+  discordCompletion = runDiscordSignIn();
+  return discordCompletion;
+};

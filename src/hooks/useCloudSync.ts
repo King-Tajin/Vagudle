@@ -168,27 +168,27 @@ export const useCloudSync = () => {
   const uid = user?.uid ?? null;
 
   useEffect(() => {
-    if (!uid) {
-      failuresRef.current = 0;
-      return;
-    }
+    if (!uid) failuresRef.current = 0;
+  }, [uid]);
 
-    const initialTimer = window.setTimeout(() => {
+  useEffect(() => {
+    let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const initialTimer = setTimeout(() => {
       void runSync();
     }, 0);
 
-    let debounceTimer: number | null = null;
-    const pollTimer = window.setInterval(() => {
+    const pollTimer = setInterval(() => {
+      if (!uid) return;
       if (getUpdatedAt(cloudSyncKey) === stampRef.current) return;
-      if (debounceTimer !== null) window.clearTimeout(debounceTimer);
-      debounceTimer = window.setTimeout(() => {
-        debounceTimer = null;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
         void runSync();
       }, PUSH_DEBOUNCE_MS);
     }, POLL_INTERVAL_MS);
 
-    const pullTimer = window.setInterval(() => {
-      if (document.visibilityState === "visible") void runSync(true);
+    const pullTimer = setInterval(() => {
+      if (uid && document.visibilityState === "visible") void runSync(true);
     }, PULL_INTERVAL_MS);
 
     const handleVisibility = () => {
@@ -203,10 +203,10 @@ export const useCloudSync = () => {
     window.addEventListener("online", handleOnline);
 
     return () => {
-      window.clearTimeout(initialTimer);
-      window.clearInterval(pollTimer);
-      window.clearInterval(pullTimer);
-      if (debounceTimer !== null) window.clearTimeout(debounceTimer);
+      clearTimeout(initialTimer);
+      clearTimeout(debounceTimer);
+      clearInterval(pollTimer);
+      clearInterval(pullTimer);
       clearRetryTimer();
       document.removeEventListener("visibilitychange", handleVisibility);
       window.removeEventListener("online", handleOnline);

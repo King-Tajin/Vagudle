@@ -417,6 +417,8 @@ export const RESET_DATA_DELETION_KEPT_TEXT =
 export const RESET_DATA_CANCEL_BUTTON_TEXT = "ANULUJ";
 export const RESET_DATA_WARNING_TEXT =
   "To trwale usuwa wszystko, co Vagudle zapisało w tej przeglądarce. Nie można tego cofnąć.";
+export const RESET_DATA_CLOUD_KEPT_TEXT =
+  'Jesteś zalogowany. Twój zapis w chmurze nie zostanie usunięty, a na tym urządzeniu zostaniesz wylogowany. Zaloguj się ponownie, aby go przywrócić, albo włącz "Usuń też moje konto", aby usunąć również go.';
 export const RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL = "Usuń też moje konto";
 export const RESET_DATA_DETAILS_ARIA_LABEL =
   "Co zostanie usunięte, a co zachowane";
@@ -1059,6 +1061,14 @@ export const CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT =
   "Logowanie przez GitHub nie powiodło się. Spróbuj ponownie.";
 export const CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT =
   "Logowanie przez Play Games nie powiodło się. Spróbuj ponownie.";
+export const CLOUD_AUTH_DISCORD_SIGNIN_ERROR_TEXT =
+  "Logowanie przez Discord nie powiodło się. Spróbuj ponownie.";
+export const CLOUD_AUTH_POPUP_BLOCKED_ERROR_TEXT =
+  "Przeglądarka zablokowała okno logowania. Zezwól tej stronie na wyskakujące okna i spróbuj ponownie.";
+export const CLOUD_AUTH_ACCOUNT_EXISTS_ERROR_TEXT =
+  "Konto z tym adresem e-mail już istnieje i korzysta z innej metody logowania. Zaloguj się tą metodą.";
+export const CLOUD_AUTH_NETWORK_ERROR_TEXT =
+  "Nie udało się połączyć z usługą logowania. Sprawdź połączenie i spróbuj ponownie.";
 export const CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT =
   "Nie udało się wysłać linku logowania. Spróbuj ponownie.";
 export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT =

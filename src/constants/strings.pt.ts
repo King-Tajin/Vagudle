@@ -404,6 +404,8 @@ export const RESET_DATA_DELETION_KEPT_TEXT =
 export const RESET_DATA_CANCEL_BUTTON_TEXT = "CANCELAR";
 export const RESET_DATA_WARNING_TEXT =
   "Isso apaga permanentemente tudo o que o Vagudle salvou neste navegador. Não é possível desfazer.";
+export const RESET_DATA_CLOUD_KEPT_TEXT =
+  'Você está conectado. Seu salvamento na nuvem não será excluído, e você será desconectado neste dispositivo. Entre novamente para restaurá-lo ou ative "Excluir também minha conta" para apagá-lo também.';
 export const RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL =
   "Excluir também minha conta";
 export const RESET_DATA_DETAILS_ARIA_LABEL =
@@ -1052,6 +1054,14 @@ export const CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT =
   "Falha no login com o GitHub. Tente novamente.";
 export const CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT =
   "Falha no login com o Play Games. Tente novamente.";
+export const CLOUD_AUTH_DISCORD_SIGNIN_ERROR_TEXT =
+  "Falha no login com o Discord. Tente novamente.";
+export const CLOUD_AUTH_POPUP_BLOCKED_ERROR_TEXT =
+  "O navegador bloqueou a janela de login. Permita pop-ups neste site e tente novamente.";
+export const CLOUD_AUTH_ACCOUNT_EXISTS_ERROR_TEXT =
+  "Já existe uma conta com este e-mail usando outro método de login. Entre com esse método.";
+export const CLOUD_AUTH_NETWORK_ERROR_TEXT =
+  "Não foi possível acessar o serviço de login. Verifique sua conexão e tente novamente.";
 export const CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT =
   "Não foi possível enviar o link de login. Tente novamente.";
 export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT = "Falha ao sair. Tente novamente.";

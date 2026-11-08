@@ -392,6 +392,8 @@ export const RESET_DATA_DELETION_KEPT_TEXT =
 export const RESET_DATA_CANCEL_BUTTON_TEXT = "CANCEL";
 export const RESET_DATA_WARNING_TEXT =
   "This permanently erases everything Vagudle has saved in this browser. It cannot be undone.";
+export const RESET_DATA_CLOUD_KEPT_TEXT =
+  "You're signed in. Your cloud save is not deleted, and you'll be signed out on this device. Sign back in to restore it, or turn on \"Also delete my account\" to erase it too.";
 export const RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL = "Also delete my account";
 export const RESET_DATA_DETAILS_ARIA_LABEL =
   "What gets deleted and what's kept";
@@ -1019,6 +1021,14 @@ export const CLOUD_AUTH_GITHUB_SIGNIN_ERROR_TEXT =
   "GitHub sign-in failed. Please try again.";
 export const CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT =
   "Play Games sign-in failed. Please try again.";
+export const CLOUD_AUTH_DISCORD_SIGNIN_ERROR_TEXT =
+  "Discord sign-in failed. Please try again.";
+export const CLOUD_AUTH_POPUP_BLOCKED_ERROR_TEXT =
+  "Your browser blocked the sign-in popup. Allow popups for this site and try again.";
+export const CLOUD_AUTH_ACCOUNT_EXISTS_ERROR_TEXT =
+  "An account with this email already exists under a different sign-in method. Sign in with that method instead.";
+export const CLOUD_AUTH_NETWORK_ERROR_TEXT =
+  "Couldn't reach the sign-in service. Check your connection and try again.";
 export const CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT =
   "Couldn't send sign-in link. Please try again.";
 export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT =

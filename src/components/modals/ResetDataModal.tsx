@@ -31,7 +31,7 @@ const wipeLocalDataAndReload = () => {
 };
 
 export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
-  const { user, deleteAccount } = useCloudAuth();
+  const { user, deleteAccount, signOutUser } = useCloudAuth();
   const [secondsLeft, setSecondsLeft] = useState(COUNTDOWN_SECONDS);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const [alsoDeleteAccount, setAlsoDeleteAccount] = useState(false);
@@ -70,6 +70,16 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
     if (isLocked) return;
 
     if (!alsoDeleteAccount || !user) {
+      if (user) {
+        setDeleteError(null);
+        setStage("deleting");
+        const signedOut = await signOutUser();
+        if (!signedOut) {
+          setDeleteError(strings.CLOUD_AUTH_SIGNOUT_ERROR_TEXT);
+          setStage("confirm");
+          return;
+        }
+      }
       wipeLocalDataAndReload();
       return;
     }
@@ -115,6 +125,12 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             </div>
           ))}
         </div>
+
+        {user && !alsoDeleteAccount && (
+          <p className="font-code text-xs text-crown-amber leading-snug">
+            {strings.RESET_DATA_CLOUD_KEPT_TEXT}
+          </p>
+        )}
 
         <div
           className="pt-1"
