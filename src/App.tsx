@@ -20,7 +20,7 @@ import { AttributionButton } from "./components/layout/AttributionButton";
 import { GameModals } from "./components/screens/GameModals";
 import { AchievementTrayToggle } from "./components/overlays/AchievementTrayToggle";
 import { BackgroundTrayToggle } from "./components/overlays/BackgroundTrayToggle";
-import { CloudSaveConflictOverlay } from "./components/overlays/CloudSaveConflictOverlay";
+import { CloudSavePromptOverlay } from "./components/overlays/CloudSavePromptOverlay";
 import { WinCelebrationOverlay } from "./components/overlays/WinCelebrationOverlay";
 import { AchievementRevealOverlay } from "./components/overlays/AchievementRevealOverlay";
 import { useAchievements } from "./hooks/useAchievements";
@@ -140,13 +140,14 @@ function App() {
   }, [isMobile]);
 
   const {
-    pendingCloudSave,
+    pendingPrompt,
+    resolvePrompt,
     cloudUpdatedAt,
-    isUpToDate,
-    resolvePendingCloudSave,
+    syncStatus,
+    retrySync,
     showPlayGamesLinkPrompt,
     dismissPlayGamesLinkPrompt,
-  } = useCloudSync(isMobile);
+  } = useCloudSync();
   const { user, sessionEnded, dismissSessionEnded } = useCloudAuth();
 
   useEffect(() => {
@@ -1061,7 +1062,8 @@ function App() {
           setExtraEffects={setExtraEffects}
           cloudSyncStatus={{
             updatedAt: cloudUpdatedAt,
-            isUpToDate,
+            status: syncStatus,
+            retry: retrySync,
             showPlayGamesLinkPrompt,
             dismissPlayGamesLinkPrompt,
           }}
@@ -1201,11 +1203,10 @@ function App() {
           />
         </Suspense>
       </div>
-      {pendingCloudSave && (
-        <CloudSaveConflictOverlay
-          cloudSave={pendingCloudSave}
-          isMobile={isMobile}
-          onResolved={resolvePendingCloudSave}
+      {pendingPrompt && (
+        <CloudSavePromptOverlay
+          prompt={pendingPrompt}
+          onChoose={resolvePrompt}
         />
       )}
       {isCelebrating && (

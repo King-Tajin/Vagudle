@@ -50,7 +50,8 @@ export const CHALLENGE_WIN_MESSAGES = [
 export const MODAL_TITLE_SETTINGS = "Ustawienia";
 export const MODAL_TITLE_ACHIEVEMENTS = "Osiągnięcia";
 export const MODAL_TITLE_VIDEO_ATTRIBUTION = "Źródła wideo";
-export const MODAL_TITLE_CLOUD_SAVE_FOUND = "Znaleziono zapis w chmurze";
+export const MODAL_TITLE_CLOUD_SAVE_OTHER_ACCOUNT = "Postęp z innego konta";
+export const MODAL_TITLE_CLOUD_SAVE_CANNOT_TELL = "Połącz swój postęp";
 export const MODAL_TITLE_DAILY_SCHEDULE = "Harmonogram dzienny";
 export const MODAL_TITLE_DAILY_LEADERBOARD = "Dzienna tablica wyników";
 export const MODAL_TITLE_RESET_ALL_DATA = "Zresetuj wszystkie dane";
@@ -117,8 +118,6 @@ export const SETTINGS_LANGUAGE_LABEL = "Język";
 export const SETTINGS_LANGUAGE_DESCRIPTION =
   "Wybierz język menu i tekstów. Listy słów pozostają w języku angielskim.";
 export const SETTINGS_LANGUAGE_ARIA_LABEL = "Wybierz język";
-export const SETTINGS_LANGUAGE_SAVING_TEXT = "Zapisywanie...";
-
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL =
   "Ostrzeżenie o zerwaniu serii";
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION =
@@ -415,12 +414,7 @@ export const RESET_DATA_DELETION_KEPT_TEXT =
   "oraz zapisy udziału w grupowych dziennych wyzwaniach. Nie zostaje to usunięte powyższymi " +
   "krokami i nie ma dla tego terminu wygaśnięcia.";
 
-export const RESET_DATA_REAUTH_TEXT_BEFORE_PROVIDER =
-  "Ze względów bezpieczeństwa usunięcie konta wymaga niedawnego zalogowania się. Autoryzuj usunięcie, logując się ponownie przez usługę";
-export const RESET_DATA_REAUTH_TEXT_AFTER_PROVIDER =
-  ", a następnie Twoje konto i wszystkie jego dane zostaną trwale usunięte.";
 export const RESET_DATA_CANCEL_BUTTON_TEXT = "ANULUJ";
-export const RESET_DATA_AUTHORIZE_BUTTON_TEXT = "AUTORYZUJ USUNIĘCIE";
 export const RESET_DATA_WARNING_TEXT =
   "To trwale usuwa wszystko, co Vagudle zapisało w tej przeglądarce. Nie można tego cofnąć.";
 export const RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL = "Usuń też moje konto";
@@ -650,6 +644,8 @@ export const NORMAL_STATS_EMPTY_DEFAULT_TEXT =
 export const NORMAL_STATS_TAB_NORMAL_LABEL = "NORMALNY";
 export const NORMAL_STATS_TAB_HARD_LABEL = "TRUDNY";
 export const NORMAL_STATS_TAB_DAILY_LABEL = "DZIENNY";
+export const NORMAL_STATS_DAILY_LEADERBOARD_NOTE_TEXT =
+  "Statystyki dzienne są zapisywane na Twoim urządzeniu, więc mogą różnić się od dziennej tablicy wyników, która jest zapisywana tylko po zalogowaniu.";
 export const NORMAL_STATS_GAMES_WON_TEXT = (games: number) =>
   `${games} ${polishPlural(games, "WYGRANA GRA", "WYGRANE GRY", "WYGRANYCH GIER")}`;
 export const NORMAL_STATS_WORD_LABEL = "Słowo:";
@@ -881,6 +877,12 @@ export const CLOUD_SAVE_ACCOUNT_TYPE_SUFFIX_TEXT = (type: string) =>
   `— konto: ${type}`;
 export const CLOUD_SAVE_UP_TO_DATE_TEXT = "Aktualne";
 export const CLOUD_SAVE_SYNCING_TEXT = "Synchronizowanie...";
+export const CLOUD_SAVE_SYNC_ERROR_TEXT =
+  "Nie udało się zsynchronizować. Ponawiam...";
+export const CLOUD_SAVE_OFFLINE_TEXT =
+  "Offline. Synchronizacja nastąpi po powrocie online.";
+export const CLOUD_SAVE_RETRY_BUTTON_TEXT = "Ponów";
+export const CLOUD_SAVE_NEEDS_CHOICE_TEXT = "Czekam na Twój wybór";
 export const CLOUD_SAVE_LAST_SAVED_TEXT = (time: string) =>
   `Ostatnio zapisano ${time}`;
 export const CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT = "POŁĄCZ DISCORD";
@@ -918,33 +920,24 @@ export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
 export const CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT =
   "KONTYNUUJ Z PLAY GAMES";
 
-export const CLOUD_SAVE_CONFLICT_DATE_FALLBACK_TEXT = "Nieznana";
-export const CLOUD_SAVE_CONFLICT_UPDATED_TEXT = (date: string) =>
-  `Zaktualizowano ${date}`;
-export const CLOUD_SAVE_CONFLICT_ACHIEVEMENTS_UNLOCKED_TEXT = (count: number) =>
-  `${count} ${polishPlural(count, "odblokowane osiągnięcie", "odblokowane osiągnięcia", "odblokowanych osiągnięć")}`;
-export const CLOUD_SAVE_CONFLICT_NORMAL_WON_TEXT = (
-  won: number,
-  total: number
-) => `Normalny: ${won}/${total} wygranych`;
-export const CLOUD_SAVE_CONFLICT_HARD_WON_TEXT = (won: number, total: number) =>
-  `Trudny: ${won}/${total} wygranych`;
-export const CLOUD_SAVE_CONFLICT_DAILY_WON_TEXT = (
-  won: number,
-  total: number,
-  streak: number
-) => `Dzienny: ${won}/${total} wygranych, seria ${streak}`;
-export const CLOUD_SAVE_CONFLICT_INTRO_TEXT =
-  "Masz zapis na tym urządzeniu i zapis w chmurze. Wybierz, który zachować — osiągnięcia i tak zostaną połączone, więc nic nie przepadnie.";
-export const CLOUD_SAVE_CONFLICT_THIS_DEVICE_LABEL = "TO URZĄDZENIE";
-export const CLOUD_SAVE_CONFLICT_CLOUD_SAVE_LABEL = "ZAPIS W CHMURZE";
-export const CLOUD_SAVE_CONFLICT_SYNC_ERROR_TEXT =
-  "Nie udało się zsynchronizować zapisu. Spróbuj ponownie.";
-export const CLOUD_SAVE_CONFLICT_KEEP_DEVICE_BUTTON_TEXT =
-  "ZACHOWAJ TO URZĄDZENIE";
-export const CLOUD_SAVE_CONFLICT_KEEP_CLOUD_BUTTON_TEXT =
-  "ZACHOWAJ ZAPIS Z CHMURY";
-
+export const CLOUD_SAVE_PROMPT_ANOTHER_ACCOUNT_LABEL = "inne konto";
+export const CLOUD_SAVE_PROMPT_OTHER_ACCOUNT_INTRO_TEXT = (label: string) =>
+  `To urządzenie zawiera postęp (${label}). Co z nim zrobić?`;
+export const CLOUD_SAVE_PROMPT_ADD_BUTTON_TEXT = "DODAJ DO TEGO KONTA";
+export const CLOUD_SAVE_PROMPT_ADD_DESCRIPTION_TEXT =
+  "Łączy postęp z tego urządzenia z tym, co jest już zapisane na tym koncie.";
+export const CLOUD_SAVE_PROMPT_FRESH_BUTTON_TEXT =
+  "ZACZNIJ OD NOWA NA TYM KONCIE";
+export const CLOUD_SAVE_PROMPT_FRESH_DESCRIPTION_TEXT = (label: string) =>
+  `Używa zapisanego postępu tego konta. Twój postęp pozostaje zapisany na tym urządzeniu i wróci, gdy ${label} zaloguje się tu ponownie.`;
+export const CLOUD_SAVE_PROMPT_CANNOT_TELL_INTRO_TEXT =
+  "To urządzenie i Twój zapis w chmurze mają postęp, którego nie ma druga strona.";
+export const CLOUD_SAVE_PROMPT_COMBINE_BUTTON_TEXT = "POŁĄCZ OBA";
+export const CLOUD_SAVE_PROMPT_COMBINE_DESCRIPTION_TEXT =
+  "Zachowuje wyższą wartość każdej statystyki oraz wszystkie osiągnięcia z obu źródeł.";
+export const CLOUD_SAVE_PROMPT_USE_CLOUD_BUTTON_TEXT = "UŻYJ ZAPISU Z CHMURY";
+export const CLOUD_SAVE_PROMPT_USE_CLOUD_DESCRIPTION_TEXT =
+  "Używa tego, co jest zapisane w chmurze. Postęp z tego urządzenia trafia do kopii zapasowej.";
 export const GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT = "TRYB DZIENNY AKTYWNY";
 export const GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT =
   "WŁASNE WYZWANIE AKTYWNE";
@@ -1074,20 +1067,8 @@ export const CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT =
   "Nie udało się usunąć konta. Spróbuj ponownie.";
 export const CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT =
   "Nie znaleziono zalogowanego konta.";
-export const CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT =
-  "Tej metody logowania nie można ponownie autoryzować tutaj. Wyloguj się, zaloguj ponownie, a następnie spróbuj usunąć konto jeszcze raz.";
-export const CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT =
-  "Ponowna autoryzacja nie powiodła się. Spróbuj ponownie.";
-
-export const CLOUD_SYNC_VERIFY_ERROR_TEXT =
-  "Nie udało się zweryfikować logowania do synchronizacji w chmurze.";
-export const CLOUD_SYNC_CREATE_ERROR_TEXT =
-  "Nie udało się utworzyć zapisu w chmurze.";
-export const CLOUD_SYNC_UNREACHABLE_ERROR_TEXT =
-  "Nie udało się połączyć z zapisem w chmurze.";
-export const CLOUD_SYNC_PUSH_ERROR_TEXT =
-  "Nie udało się zsynchronizować z chmurą.";
-
+export const CLOUD_SYNC_ACCOUNT_DELETED_TEXT =
+  "To konto zostało usunięte na innym urządzeniu, dlatego nastąpiło wylogowanie.";
 export const PAGE_TITLE_DUEL = "Vagudle - Pojedynek";
 export const PAGE_TITLE_CHALLENGE = "Vagudle - Wyzwanie";
 export const PAGE_TITLE_DAILY = "Vagudle - Dzienne";

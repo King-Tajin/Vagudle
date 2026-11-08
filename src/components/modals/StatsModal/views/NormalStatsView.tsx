@@ -109,7 +109,12 @@ export const NormalStatsView = ({
       {hasGames ? (
         <>
           {isDailyTab ? (
-            <DailyStatBar dailyStats={dailyStats} />
+            <>
+              <DailyStatBar dailyStats={dailyStats} />
+              <p className="font-code text-xs text-gray-500 leading-snug mt-4">
+                {strings.NORMAL_STATS_DAILY_LEADERBOARD_NOTE_TEXT}
+              </p>
+            </>
           ) : (
             <>
               <StatBar gameStats={displayStats} />

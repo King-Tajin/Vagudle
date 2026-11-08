@@ -186,9 +186,9 @@ export const ActivityAlreadyPlayedScreen = lazy(() =>
     default: m.ActivityAlreadyPlayedScreen,
   }))
 );
-export const CloudSaveConflictModal = lazy(() =>
-  import("./components/modals/CloudSaveConflictModal").then((m) => ({
-    default: m.CloudSaveConflictModal,
+export const CloudSavePromptModal = lazy(() =>
+  import("./components/modals/CloudSavePromptModal").then((m) => ({
+    default: m.CloudSavePromptModal,
   }))
 );
 export const OfflineModeModal = lazy(() =>

@@ -20,6 +20,7 @@ import type { Achievement } from "../../lib/achievements";
 import type { GameMode } from "../../lib/gameMode";
 import type { Language } from "../../constants/languages";
 import { getGameOutcome } from "../../lib/gameOutcome";
+import type { SyncStatus } from "../../hooks/useCloudSync";
 import {
   HARD_MODE_MAX_CHALLENGES,
   NORMAL_MODE_MAX_CHALLENGES,
@@ -35,7 +36,8 @@ type Props = {
   setExtraEffects: (value: boolean) => void;
   cloudSyncStatus: {
     updatedAt: string | null;
-    isUpToDate: boolean;
+    status: SyncStatus;
+    retry: () => void;
     showPlayGamesLinkPrompt: boolean;
     dismissPlayGamesLinkPrompt: () => void;
   };

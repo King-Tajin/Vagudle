@@ -1,13 +1,15 @@
 import { SettingsToggle } from "../../SettingsToggle";
 import { CloudSaveSection } from "../CloudSaveSection";
 import type { GameSettingsValues, GameSettingsHandlers } from "../index";
+import type { SyncStatus } from "../../../../hooks/useCloudSync";
 import strings from "../../../../constants/strings";
 
 export const AccountPage = ({
   settings,
   settingsHandlers,
   cloudUpdatedAt,
-  isCloudUpToDate,
+  cloudSyncState,
+  retryCloudSync,
   isActivityMode,
   activityAccessToken,
   showPlayGamesLinkPrompt,
@@ -16,7 +18,8 @@ export const AccountPage = ({
   settings: GameSettingsValues;
   settingsHandlers: GameSettingsHandlers;
   cloudUpdatedAt: string | null;
-  isCloudUpToDate: boolean;
+  cloudSyncState: SyncStatus;
+  retryCloudSync: () => void;
   isActivityMode: boolean;
   activityAccessToken: string | null;
   showPlayGamesLinkPrompt: boolean;
@@ -32,7 +35,8 @@ export const AccountPage = ({
       />
       <CloudSaveSection
         cloudUpdatedAt={cloudUpdatedAt}
-        isCloudUpToDate={isCloudUpToDate}
+        cloudSyncState={cloudSyncState}
+        retryCloudSync={retryCloudSync}
         isActivityMode={isActivityMode}
         activityAccessToken={activityAccessToken}
         showPlayGamesLinkPrompt={showPlayGamesLinkPrompt}

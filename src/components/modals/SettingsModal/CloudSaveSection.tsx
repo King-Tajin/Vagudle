@@ -32,6 +32,7 @@ import {
 } from "./CloudSaveLinkWidgets";
 import { LastUsedBadge, ProviderList } from "./CloudSaveProviderList";
 import strings from "../../../constants/strings";
+import type { SyncStatus } from "../../../hooks/useCloudSync";
 
 const PROVIDER_LABELS: Record<string, string> = {
   "google.com": "Google",
@@ -48,14 +49,16 @@ type EntryMode = "choice" | "signin" | "create-gate" | "create-providers";
 
 export const CloudSaveSection = ({
   cloudUpdatedAt,
-  isCloudUpToDate,
+  cloudSyncState,
+  retryCloudSync,
   isActivityMode,
   activityAccessToken,
   showPlayGamesLinkPrompt,
   dismissPlayGamesLinkPrompt,
 }: {
   cloudUpdatedAt: string | null;
-  isCloudUpToDate: boolean;
+  cloudSyncState: SyncStatus;
+  retryCloudSync: () => void;
   isActivityMode: boolean;
   activityAccessToken: string | null;
   showPlayGamesLinkPrompt: boolean;
@@ -226,13 +229,33 @@ export const CloudSaveSection = ({
             {strings.CLOUD_SAVE_ACCOUNT_TYPE_SUFFIX_TEXT(accountTypeLabel)}
             {linkedAccountsLabel && <> · {linkedAccountsLabel}</>}
           </p>
-          <p className="font-code text-xs text-gray-500">
-            {isCloudUpToDate ? (
+          <p className="font-code text-xs text-gray-500" role="status">
+            {cloudSyncState === "synced" || cloudSyncState === "idle" ? (
               <span className="text-spice-lime">
                 {strings.CLOUD_SAVE_UP_TO_DATE_TEXT}
               </span>
+            ) : cloudSyncState === "error" ? (
+              <span className="text-spice-red">
+                {strings.CLOUD_SAVE_SYNC_ERROR_TEXT}
+              </span>
+            ) : cloudSyncState === "offline" ? (
+              strings.CLOUD_SAVE_OFFLINE_TEXT
+            ) : cloudSyncState === "needs_choice" ? (
+              strings.CLOUD_SAVE_NEEDS_CHOICE_TEXT
             ) : (
               strings.CLOUD_SAVE_SYNCING_TEXT
+            )}
+            {(cloudSyncState === "error" || cloudSyncState === "offline") && (
+              <>
+                {" "}
+                <button
+                  type="button"
+                  onClick={retryCloudSync}
+                  className="underline text-spice-lime"
+                >
+                  {strings.CLOUD_SAVE_RETRY_BUTTON_TEXT}
+                </button>
+              </>
             )}
             {cloudUpdatedAt && (
               <>

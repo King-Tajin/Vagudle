@@ -2,6 +2,7 @@
 
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
+import { rowToSave } from "../_shared/saveRow.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -20,21 +21,14 @@ export async function onRequestGet(context) {
     if (!row)
       return json({ success: false, error: "No cloud save found." }, 404);
 
-    return json({
-      success: true,
-      save: {
-        achievements: row.achievements,
-        wordConnoisseur: row.word_connoisseur,
-        statsNormal: row.stats_normal,
-        statsHard: row.stats_hard,
-        dailyStats: row.daily_stats,
-        settings: row.settings,
-        backgroundId: row.background_id,
-        lastPlayedAt: row.last_played_at,
-        firstSeenAt: row.first_seen_at,
-        updatedAt: row.updated_at,
-      },
-    });
+    const knownRev = Number.parseInt(
+      new URL(context.request.url).searchParams.get("rev") ?? "",
+      10
+    );
+    if (Number.isInteger(knownRev) && knownRev === row.rev)
+      return json({ success: true, unchanged: true, rev: row.rev });
+
+    return json({ success: true, save: rowToSave(row) });
   } catch (error) {
     console.error("Load error:", error);
     return json({ success: false, error: "Failed to load." }, 500);

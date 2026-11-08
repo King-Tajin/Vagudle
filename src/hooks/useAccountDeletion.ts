@@ -12,6 +12,7 @@ import {
 } from "../lib/playGamesCloudAuth";
 import { clearSignedInMarker } from "../lib/signInMarker";
 import { clearLastUsedAccount } from "../lib/lastUsedAccount";
+import { clearBrowserSyncState } from "../lib/cloudSave/records";
 import type { DeleteAccountResult } from "../lib/cloudAuthUser";
 import strings from "../constants/strings";
 
@@ -54,6 +55,7 @@ export const useAccountDeletion = ({
         .then(({ auth, authModule }) => authModule.signOut(auth))
         .catch(() => undefined);
       clearLastUsedAccount();
+      clearBrowserSyncState(firebaseUser.uid);
       return { status: "success" };
     }
     if (discordSession) {
@@ -62,6 +64,7 @@ export const useAccountDeletion = ({
       clearDiscordSession();
       applyDiscordSession(null);
       clearLastUsedAccount();
+      clearBrowserSyncState(discordSession.uid);
       return { status: "success" };
     }
     if (playGamesSession) {
@@ -70,6 +73,7 @@ export const useAccountDeletion = ({
       clearPlayGamesSession();
       applyPlayGamesSession(null);
       clearLastUsedAccount();
+      clearBrowserSyncState(playGamesSession.uid);
       return { status: "success" };
     }
     return {

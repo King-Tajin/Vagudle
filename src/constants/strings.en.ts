@@ -34,7 +34,9 @@ export const CHALLENGE_WIN_MESSAGES = [
 export const MODAL_TITLE_SETTINGS = "Settings";
 export const MODAL_TITLE_ACHIEVEMENTS = "Achievements";
 export const MODAL_TITLE_VIDEO_ATTRIBUTION = "Video Attribution";
-export const MODAL_TITLE_CLOUD_SAVE_FOUND = "Cloud Save Found";
+export const MODAL_TITLE_CLOUD_SAVE_OTHER_ACCOUNT =
+  "Progress From Another Account";
+export const MODAL_TITLE_CLOUD_SAVE_CANNOT_TELL = "Combine Your Progress";
 export const MODAL_TITLE_DAILY_SCHEDULE = "Daily Schedule";
 export const MODAL_TITLE_DAILY_LEADERBOARD = "Daily Leaderboard";
 export const MODAL_TITLE_RESET_ALL_DATA = "Reset All Data";
@@ -101,8 +103,6 @@ export const SETTINGS_LANGUAGE_LABEL = "Language";
 export const SETTINGS_LANGUAGE_DESCRIPTION =
   "Choose the language used for menus and text. Word lists stay in English.";
 export const SETTINGS_LANGUAGE_ARIA_LABEL = "Select language";
-export const SETTINGS_LANGUAGE_SAVING_TEXT = "Saving...";
-
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL = "Streak Reset Warning";
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION =
   "Get warned before your streak resets, if you haven't played today's daily yet.";
@@ -389,12 +389,7 @@ export const RESET_DATA_DELETION_KEPT_TEXT =
   "participation records. This is not deleted by the steps above, and " +
   "there is no expiry period for it.";
 
-export const RESET_DATA_REAUTH_TEXT_BEFORE_PROVIDER =
-  "For your security, deleting your account requires a recent sign-in. Authorize deletion to sign in again with";
-export const RESET_DATA_REAUTH_TEXT_AFTER_PROVIDER =
-  ", then your account and all its data will be permanently deleted.";
 export const RESET_DATA_CANCEL_BUTTON_TEXT = "CANCEL";
-export const RESET_DATA_AUTHORIZE_BUTTON_TEXT = "AUTHORIZE DELETION";
 export const RESET_DATA_WARNING_TEXT =
   "This permanently erases everything Vagudle has saved in this browser. It cannot be undone.";
 export const RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL = "Also delete my account";
@@ -616,6 +611,8 @@ export const NORMAL_STATS_EMPTY_DEFAULT_TEXT = "Play a game to see stats here.";
 export const NORMAL_STATS_TAB_NORMAL_LABEL = "NORMAL";
 export const NORMAL_STATS_TAB_HARD_LABEL = "HARD";
 export const NORMAL_STATS_TAB_DAILY_LABEL = "DAILY";
+export const NORMAL_STATS_DAILY_LEADERBOARD_NOTE_TEXT =
+  "Daily stats are tracked on your device, so they can differ from the daily leaderboard, which is only tracked when signed in.";
 export const NORMAL_STATS_GAMES_WON_TEXT = (games: number) =>
   `${games} GAME${games === 1 ? "" : "S"} WON`;
 export const NORMAL_STATS_WORD_LABEL = "Word:";
@@ -845,6 +842,10 @@ export const CLOUD_SAVE_ACCOUNT_TYPE_SUFFIX_TEXT = (type: string) =>
   `— ${type} account`;
 export const CLOUD_SAVE_UP_TO_DATE_TEXT = "Up to date";
 export const CLOUD_SAVE_SYNCING_TEXT = "Syncing...";
+export const CLOUD_SAVE_SYNC_ERROR_TEXT = "Couldn't sync. Retrying...";
+export const CLOUD_SAVE_OFFLINE_TEXT = "Offline. Will sync when you're back.";
+export const CLOUD_SAVE_RETRY_BUTTON_TEXT = "Retry";
+export const CLOUD_SAVE_NEEDS_CHOICE_TEXT = "Waiting for your choice";
 export const CLOUD_SAVE_LAST_SAVED_TEXT = (time: string) =>
   `Last saved ${time}`;
 export const CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT = "LINK DISCORD";
@@ -882,31 +883,24 @@ export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
 export const CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT =
   "CONTINUE WITH PLAY GAMES";
 
-export const CLOUD_SAVE_CONFLICT_DATE_FALLBACK_TEXT = "Unknown";
-export const CLOUD_SAVE_CONFLICT_UPDATED_TEXT = (date: string) =>
-  `Updated ${date}`;
-export const CLOUD_SAVE_CONFLICT_ACHIEVEMENTS_UNLOCKED_TEXT = (count: number) =>
-  `${count} achievements unlocked`;
-export const CLOUD_SAVE_CONFLICT_NORMAL_WON_TEXT = (
-  won: number,
-  total: number
-) => `Normal: ${won}/${total} won`;
-export const CLOUD_SAVE_CONFLICT_HARD_WON_TEXT = (won: number, total: number) =>
-  `Hard: ${won}/${total} won`;
-export const CLOUD_SAVE_CONFLICT_DAILY_WON_TEXT = (
-  won: number,
-  total: number,
-  streak: number
-) => `Daily: ${won}/${total} won, streak ${streak}`;
-export const CLOUD_SAVE_CONFLICT_INTRO_TEXT =
-  "You have a save on this device and a save in the cloud. Pick which one to keep but achievements will merge either way, so you won't lose progress there.";
-export const CLOUD_SAVE_CONFLICT_THIS_DEVICE_LABEL = "THIS DEVICE";
-export const CLOUD_SAVE_CONFLICT_CLOUD_SAVE_LABEL = "CLOUD SAVE";
-export const CLOUD_SAVE_CONFLICT_SYNC_ERROR_TEXT =
-  "Couldn't sync your save. Please try again.";
-export const CLOUD_SAVE_CONFLICT_KEEP_DEVICE_BUTTON_TEXT = "KEEP THIS DEVICE";
-export const CLOUD_SAVE_CONFLICT_KEEP_CLOUD_BUTTON_TEXT = "KEEP CLOUD SAVE";
-
+export const CLOUD_SAVE_PROMPT_ANOTHER_ACCOUNT_LABEL = "another account";
+export const CLOUD_SAVE_PROMPT_OTHER_ACCOUNT_INTRO_TEXT = (label: string) =>
+  `This device has progress from ${label}. What should happen with it?`;
+export const CLOUD_SAVE_PROMPT_ADD_BUTTON_TEXT = "ADD IT TO THIS ACCOUNT";
+export const CLOUD_SAVE_PROMPT_ADD_DESCRIPTION_TEXT =
+  "Combines this device's progress with what is already saved on this account.";
+export const CLOUD_SAVE_PROMPT_FRESH_BUTTON_TEXT =
+  "START FRESH ON THIS ACCOUNT";
+export const CLOUD_SAVE_PROMPT_FRESH_DESCRIPTION_TEXT = (label: string) =>
+  `Uses this account's saved progress. Your progress stays saved on this device and comes back if ${label} signs in here again.`;
+export const CLOUD_SAVE_PROMPT_CANNOT_TELL_INTRO_TEXT =
+  "This device and your cloud save each have progress the other doesn't.";
+export const CLOUD_SAVE_PROMPT_COMBINE_BUTTON_TEXT = "COMBINE THEM";
+export const CLOUD_SAVE_PROMPT_COMBINE_DESCRIPTION_TEXT =
+  "Keeps the higher number for every stat and every achievement from both.";
+export const CLOUD_SAVE_PROMPT_USE_CLOUD_BUTTON_TEXT = "USE CLOUD SAVE";
+export const CLOUD_SAVE_PROMPT_USE_CLOUD_DESCRIPTION_TEXT =
+  "Uses what is saved in the cloud. This device's progress is kept in a recovery backup.";
 export const GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT = "DAILY MODE ACTIVE";
 export const GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT =
   "CUSTOM CHALLENGE ACTIVE";
@@ -1032,17 +1026,8 @@ export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT =
 export const CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT =
   "Couldn't delete your account. Please try again.";
 export const CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT = "No signed-in account found.";
-export const CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT =
-  "This sign-in method can't be re-authorized here. Please sign out, sign back in, then try deleting your account again.";
-export const CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT =
-  "Re-authorization failed. Please try again.";
-
-export const CLOUD_SYNC_VERIFY_ERROR_TEXT =
-  "Couldn't verify sign-in for cloud sync.";
-export const CLOUD_SYNC_CREATE_ERROR_TEXT = "Couldn't create your cloud save.";
-export const CLOUD_SYNC_UNREACHABLE_ERROR_TEXT = "Couldn't reach cloud save.";
-export const CLOUD_SYNC_PUSH_ERROR_TEXT = "Couldn't sync to cloud.";
-
+export const CLOUD_SYNC_ACCOUNT_DELETED_TEXT =
+  "This account was deleted on another device, so you've been signed out.";
 export const PAGE_TITLE_DUEL = "Vagudle - Duel";
 export const PAGE_TITLE_CHALLENGE = "Vagudle - Challenge";
 export const PAGE_TITLE_DAILY = "Vagudle - Daily";

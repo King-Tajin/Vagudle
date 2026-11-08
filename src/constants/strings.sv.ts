@@ -36,7 +36,9 @@ export const CHALLENGE_WIN_MESSAGES = [
 export const MODAL_TITLE_SETTINGS = "Inställningar";
 export const MODAL_TITLE_ACHIEVEMENTS = "Prestationer";
 export const MODAL_TITLE_VIDEO_ATTRIBUTION = "Videokreditering";
-export const MODAL_TITLE_CLOUD_SAVE_FOUND = "Molnsparfil hittad";
+export const MODAL_TITLE_CLOUD_SAVE_OTHER_ACCOUNT =
+  "Framsteg från ett annat konto";
+export const MODAL_TITLE_CLOUD_SAVE_CANNOT_TELL = "Kombinera dina framsteg";
 export const MODAL_TITLE_DAILY_SCHEDULE = "Dagligt schema";
 export const MODAL_TITLE_DAILY_LEADERBOARD = "Daglig topplista";
 export const MODAL_TITLE_RESET_ALL_DATA = "Återställ all data";
@@ -103,8 +105,6 @@ export const SETTINGS_LANGUAGE_LABEL = "Språk";
 export const SETTINGS_LANGUAGE_DESCRIPTION =
   "Välj vilket språk som används för menyer och text. Ordlistorna förblir på engelska.";
 export const SETTINGS_LANGUAGE_ARIA_LABEL = "Välj språk";
-export const SETTINGS_LANGUAGE_SAVING_TEXT = "Sparar...";
-
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_LABEL =
   "Varning för svitåterställning";
 export const SETTINGS_NOTIFICATIONS_DAILY_STREAK_DESCRIPTION =
@@ -395,12 +395,7 @@ export const RESET_DATA_DELETION_KEPT_TEXT =
   "för dagliga utmaningar. Detta raderas inte av stegen ovan, och det " +
   "finns ingen utgångstid för det.";
 
-export const RESET_DATA_REAUTH_TEXT_BEFORE_PROVIDER =
-  "Av säkerhetsskäl krävs en nyligen genomförd inloggning för att radera ditt konto. Godkänn raderingen genom att logga in igen med";
-export const RESET_DATA_REAUTH_TEXT_AFTER_PROVIDER =
-  ", varefter ditt konto och all dess data raderas permanent.";
 export const RESET_DATA_CANCEL_BUTTON_TEXT = "AVBRYT";
-export const RESET_DATA_AUTHORIZE_BUTTON_TEXT = "GODKÄNN RADERING";
 export const RESET_DATA_WARNING_TEXT =
   "Det här raderar permanent allt som Vagudle har sparat i den här webbläsaren. Det kan inte ångras.";
 export const RESET_DATA_ALSO_DELETE_ACCOUNT_LABEL = "Radera även mitt konto";
@@ -624,6 +619,8 @@ export const NORMAL_STATS_EMPTY_DEFAULT_TEXT =
 export const NORMAL_STATS_TAB_NORMAL_LABEL = "NORMAL";
 export const NORMAL_STATS_TAB_HARD_LABEL = "SVÅRT";
 export const NORMAL_STATS_TAB_DAILY_LABEL = "DAGLIGT";
+export const NORMAL_STATS_DAILY_LEADERBOARD_NOTE_TEXT =
+  "Daglig statistik sparas på din enhet, så den kan skilja sig från den dagliga topplistan, som bara sparas när du är inloggad.";
 export const NORMAL_STATS_GAMES_WON_TEXT = (games: number) =>
   `${games} SPEL ${games === 1 ? "VUNNET" : "VUNNA"}`;
 export const NORMAL_STATS_WORD_LABEL = "Ord:";
@@ -858,6 +855,12 @@ export const CLOUD_SAVE_ACCOUNT_TYPE_SUFFIX_TEXT = (type: string) =>
   `— ${type}-konto`;
 export const CLOUD_SAVE_UP_TO_DATE_TEXT = "Uppdaterad";
 export const CLOUD_SAVE_SYNCING_TEXT = "Synkroniserar...";
+export const CLOUD_SAVE_SYNC_ERROR_TEXT =
+  "Kunde inte synkronisera. Försöker igen...";
+export const CLOUD_SAVE_OFFLINE_TEXT =
+  "Offline. Synkroniserar när du är online igen.";
+export const CLOUD_SAVE_RETRY_BUTTON_TEXT = "Försök igen";
+export const CLOUD_SAVE_NEEDS_CHOICE_TEXT = "Väntar på ditt val";
 export const CLOUD_SAVE_LAST_SAVED_TEXT = (time: string) =>
   `Senast sparad ${time}`;
 export const CLOUD_SAVE_LINK_DISCORD_BUTTON_TEXT = "LÄNKA DISCORD";
@@ -895,32 +898,23 @@ export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
 export const CLOUD_SAVE_CONTINUE_PLAYGAMES_BUTTON_TEXT =
   "FORTSÄTT MED PLAY GAMES";
 
-export const CLOUD_SAVE_CONFLICT_DATE_FALLBACK_TEXT = "Okänt";
-export const CLOUD_SAVE_CONFLICT_UPDATED_TEXT = (date: string) =>
-  `Uppdaterad ${date}`;
-export const CLOUD_SAVE_CONFLICT_ACHIEVEMENTS_UNLOCKED_TEXT = (count: number) =>
-  `${count} prestationer upplåsta`;
-export const CLOUD_SAVE_CONFLICT_NORMAL_WON_TEXT = (
-  won: number,
-  total: number
-) => `Normal: ${won}/${total} vunna`;
-export const CLOUD_SAVE_CONFLICT_HARD_WON_TEXT = (won: number, total: number) =>
-  `Svårt: ${won}/${total} vunna`;
-export const CLOUD_SAVE_CONFLICT_DAILY_WON_TEXT = (
-  won: number,
-  total: number,
-  streak: number
-) => `Dagligt: ${won}/${total} vunna, svit ${streak}`;
-export const CLOUD_SAVE_CONFLICT_INTRO_TEXT =
-  "Du har en sparfil på den här enheten och en i molnet. Välj vilken du vill behålla, men prestationer slås ihop ändå, så du förlorar inget framsteg där.";
-export const CLOUD_SAVE_CONFLICT_THIS_DEVICE_LABEL = "DEN HÄR ENHETEN";
-export const CLOUD_SAVE_CONFLICT_CLOUD_SAVE_LABEL = "MOLNSPARNING";
-export const CLOUD_SAVE_CONFLICT_SYNC_ERROR_TEXT =
-  "Det gick inte att synka din sparfil. Försök igen.";
-export const CLOUD_SAVE_CONFLICT_KEEP_DEVICE_BUTTON_TEXT =
-  "BEHÅLL DEN HÄR ENHETEN";
-export const CLOUD_SAVE_CONFLICT_KEEP_CLOUD_BUTTON_TEXT = "BEHÅLL MOLNSPARNING";
-
+export const CLOUD_SAVE_PROMPT_ANOTHER_ACCOUNT_LABEL = "ett annat konto";
+export const CLOUD_SAVE_PROMPT_OTHER_ACCOUNT_INTRO_TEXT = (label: string) =>
+  `Den här enheten har framsteg från ${label}. Vad ska hända med dem?`;
+export const CLOUD_SAVE_PROMPT_ADD_BUTTON_TEXT = "LÄGG TILL I DET HÄR KONTOT";
+export const CLOUD_SAVE_PROMPT_ADD_DESCRIPTION_TEXT =
+  "Kombinerar den här enhetens framsteg med det som redan är sparat på det här kontot.";
+export const CLOUD_SAVE_PROMPT_FRESH_BUTTON_TEXT = "BÖRJA OM PÅ DET HÄR KONTOT";
+export const CLOUD_SAVE_PROMPT_FRESH_DESCRIPTION_TEXT = (label: string) =>
+  `Använder det här kontots sparade framsteg. Dina framsteg finns kvar på den här enheten och kommer tillbaka om ${label} loggar in här igen.`;
+export const CLOUD_SAVE_PROMPT_CANNOT_TELL_INTRO_TEXT =
+  "Den här enheten och din molnsparfil har var sina framsteg som den andra saknar.";
+export const CLOUD_SAVE_PROMPT_COMBINE_BUTTON_TEXT = "KOMBINERA DEM";
+export const CLOUD_SAVE_PROMPT_COMBINE_DESCRIPTION_TEXT =
+  "Behåller det högre värdet för varje statistik och alla prestationer från båda.";
+export const CLOUD_SAVE_PROMPT_USE_CLOUD_BUTTON_TEXT = "ANVÄND MOLNSPARFILEN";
+export const CLOUD_SAVE_PROMPT_USE_CLOUD_DESCRIPTION_TEXT =
+  "Använder det som är sparat i molnet. Den här enhetens framsteg sparas i en återställningskopia.";
 export const GENERAL_SETTINGS_DAILY_MODE_ACTIVE_TEXT = "DAGLIGT LÄGE AKTIVT";
 export const GENERAL_SETTINGS_CUSTOM_CHALLENGE_ACTIVE_TEXT =
   "ANPASSAD UTMANING AKTIV";
@@ -1048,20 +1042,8 @@ export const CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT =
   "Det gick inte att radera ditt konto. Försök igen.";
 export const CLOUD_AUTH_NO_ACCOUNT_ERROR_TEXT =
   "Inget inloggat konto hittades.";
-export const CLOUD_AUTH_REAUTH_UNSUPPORTED_ERROR_TEXT =
-  "Den här inloggningsmetoden kan inte återauktoriseras här. Logga ut, logga in igen och försök sedan radera ditt konto igen.";
-export const CLOUD_AUTH_REAUTH_FAILED_ERROR_TEXT =
-  "Återauktoriseringen misslyckades. Försök igen.";
-
-export const CLOUD_SYNC_VERIFY_ERROR_TEXT =
-  "Det gick inte att verifiera inloggningen för molnsynkronisering.";
-export const CLOUD_SYNC_CREATE_ERROR_TEXT =
-  "Det gick inte att skapa din molnsparfil.";
-export const CLOUD_SYNC_UNREACHABLE_ERROR_TEXT =
-  "Det gick inte att nå molnsparningen.";
-export const CLOUD_SYNC_PUSH_ERROR_TEXT =
-  "Det gick inte att synka till molnet.";
-
+export const CLOUD_SYNC_ACCOUNT_DELETED_TEXT =
+  "Det här kontot raderades på en annan enhet, så du har loggats ut.";
 export const PAGE_TITLE_DUEL = "Vagudle - Duell";
 export const PAGE_TITLE_CHALLENGE = "Vagudle - Utmaning";
 export const PAGE_TITLE_DAILY = "Vagudle - Dagligt";
