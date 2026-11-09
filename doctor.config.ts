@@ -55,6 +55,7 @@ export default {
         files: [
           "**/src/hooks/useSyncSocket.ts",
           "**/src/hooks/useOfflineModeCheck.ts",
+          "**/src/hooks/useCloudSync.ts",
         ],
         rules: ["react-doctor/effect-needs-cleanup"],
       },
