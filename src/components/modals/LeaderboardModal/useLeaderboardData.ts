@@ -24,6 +24,7 @@ type LeaderboardState = {
   isEditing: boolean;
   inputValue: string;
   isSubmitting: boolean;
+  isConfirming: boolean;
   submitError: string | null;
   isPageLoading: boolean;
   hideZeroWins: boolean;
@@ -36,6 +37,7 @@ const initialLeaderboardState: LeaderboardState = {
   isEditing: false,
   inputValue: "",
   isSubmitting: false,
+  isConfirming: false,
   submitError: null,
   isPageLoading: false,
   hideZeroWins: true,
@@ -51,6 +53,8 @@ type LeaderboardAction =
       inputValue: string;
     }
   | { type: "loadError" }
+  | { type: "requestConfirm" }
+  | { type: "cancelConfirm" }
   | { type: "submitStart" }
   | {
       type: "submitSuccess";
@@ -85,8 +89,17 @@ function leaderboardReducer(
       };
     case "loadError":
       return { ...state, status: "error" };
+    case "requestConfirm":
+      return { ...state, isConfirming: true, submitError: null };
+    case "cancelConfirm":
+      return { ...state, isConfirming: false };
     case "submitStart":
-      return { ...state, isSubmitting: true, submitError: null };
+      return {
+        ...state,
+        isSubmitting: true,
+        isConfirming: false,
+        submitError: null,
+      };
     case "submitSuccess":
       return {
         ...state,
@@ -107,6 +120,7 @@ function leaderboardReducer(
       return {
         ...state,
         isEditing: false,
+        isConfirming: false,
         inputValue: action.inputValue,
         submitError: null,
       };
@@ -138,6 +152,7 @@ export const useLeaderboardData = ({
       isEditing,
       inputValue,
       isSubmitting,
+      isConfirming,
       submitError,
       isPageLoading,
       hideZeroWins,
@@ -209,7 +224,20 @@ export const useLeaderboardData = ({
       ? Math.ceil(data.self.rank / data.pageSize)
       : null;
 
-  const handleSubmitUsername = async () => {
+  const handleSubmitUsername = () => {
+    if (!idToken || isSubmitting) return;
+    const trimmed = inputValue.trim().replace(/\s+/g, " ");
+    if (!USERNAME_PATTERN.test(trimmed)) {
+      dispatch({
+        type: "submitError",
+        message: strings.USERNAME_VALIDATION_ERROR_TEXT,
+      });
+      return;
+    }
+    dispatch({ type: "requestConfirm" });
+  };
+
+  const handleConfirmUsername = async () => {
     if (!idToken || isSubmitting) return;
     const trimmed = inputValue.trim().replace(/\s+/g, " ");
     if (!USERNAME_PATTERN.test(trimmed)) {
@@ -273,6 +301,7 @@ export const useLeaderboardData = ({
     isEditing,
     inputValue,
     isSubmitting,
+    isConfirming,
     submitError,
     isPageLoading,
     hideZeroWins,
@@ -281,5 +310,6 @@ export const useLeaderboardData = ({
     goToPage,
     toggleHideZeroWins,
     handleSubmitUsername,
+    handleConfirmUsername,
   };
 };

@@ -76,7 +76,7 @@ export const ProviderList = ({
 
   const flowMessageBlock = authFlowMessage ? (
     <div className="space-y-1 mb-1">
-      <p className="font-code text-xs text-spice-red leading-snug">
+      <p role="alert" className="font-code text-xs text-spice-red leading-snug">
         {authFlowMessage === "not_registered"
           ? strings.CLOUD_SAVE_NOT_REGISTERED_ERROR_TEXT
           : strings.CLOUD_SAVE_ALREADY_REGISTERED_ERROR_TEXT}
@@ -171,13 +171,15 @@ export const ProviderList = ({
         </p>
       )}
       {emailLinkSent && (
-        <p className="font-code text-xs text-spice-lime">
+        <p role="status" className="font-code text-xs text-spice-lime">
           {strings.CLOUD_SAVE_EMAIL_SENT_TEXT}
         </p>
       )}
       {lastMethod === "email" && flowMessageBlock}
       {isEmailError && (
-        <p className="font-code text-xs text-spice-red">{actionError}</p>
+        <p role="alert" className="font-code text-xs text-spice-red">
+          {actionError}
+        </p>
       )}
 
       {(!isActivityMode || playGamesAvailable) && (
@@ -221,7 +223,9 @@ export const ProviderList = ({
       )}
 
       {actionError && !isEmailError && (
-        <p className="font-code text-xs text-spice-red">{actionError}</p>
+        <p role="alert" className="font-code text-xs text-spice-red">
+          {actionError}
+        </p>
       )}
     </div>
   );

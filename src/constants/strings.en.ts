@@ -368,10 +368,12 @@ export const RESET_DATA_CATEGORIES: { title: string; description: string }[] = [
 ];
 
 export const RESET_DATA_DELETION_STEPS = [
-  "Sign in with the account linked to your Vagudle data (Google, GitHub, email, or Discord).",
-  'Press "Delete My Data" (or turn on "Also delete my account" here, then confirm).',
-  "Confirm then your data is deleted immediately.",
+  "Sign in with the account linked to your Vagudle data (Google, GitHub, email, Discord, or Play Games).",
+  'Open Information, go to the About tab, press "RESET ALL DATA", then turn on "Also delete my account".',
+  "Wait for the countdown, then confirm. Your data is deleted immediately.",
 ];
+export const CLOUD_AUTH_SIGNED_IN_SUCCESS_TEXT = "Signed in successfully.";
+export const RESET_DATA_SIGN_IN_BUTTON_TEXT = "SIGN IN";
 
 export const RESET_DATA_DELETION_DELETED_ITEMS = [
   "Your sign-in (Google, GitHub, email link, Discord, or Play Games).",
@@ -559,6 +561,8 @@ export const LEADERBOARD_USERNAME_PLACEHOLDER = "Your leaderboard name";
 export const LEADERBOARD_USERNAME_ARIA_LABEL = "Leaderboard username";
 export const LEADERBOARD_SAVING_INDICATOR = "...";
 export const LEADERBOARD_SAVE_BUTTON_TEXT = "SAVE";
+export const LEADERBOARD_USERNAME_CONFIRM_TEXT =
+  "Heads up: there may be a cooldown before you can change your username again.";
 export const LEADERBOARD_PLAYING_AS_TEXT = "Playing as";
 export const LEADERBOARD_CHANGE_BUTTON_TEXT = "CHANGE";
 export const LEADERBOARD_COOLDOWN_TEXT_BEFORE = "Please wait";

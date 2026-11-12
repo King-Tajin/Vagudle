@@ -6,6 +6,7 @@ import App from "./App";
 import { AlertProvider } from "./context/AlertContext";
 import { CloudAuthProvider } from "./context/CloudAuthContext";
 import { initDiscordSDK, isDiscordActivity } from "./lib/discord";
+import { restoreDiscordReturnPath } from "./lib/discordCloudAuth";
 import { LinkDiscordPage } from "./components/screens/LinkDiscordPage";
 import { LinkPlayGamesPage } from "./components/screens/LinkPlayGamesPage";
 import { initCrashReporting, logBreadcrumb } from "./lib/crashReporting";
@@ -25,6 +26,7 @@ function openDailyFromNotification(): void {
 }
 
 async function bootstrap() {
+  if (restoreDiscordReturnPath()) return;
   initCrashReporting();
   listenForReminderNotificationTaps(openDailyFromNotification);
   await initDiscordSDK();

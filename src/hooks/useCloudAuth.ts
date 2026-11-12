@@ -60,6 +60,7 @@ import { useEmailLinkSender } from "./useEmailLinkSender";
 import { useAccountDeletion } from "./useAccountDeletion";
 
 const SESSION_CHECK_INTERVAL_MS = 60 * 1000;
+const SIGN_IN_NOTICE_DURATION_MS = 8000;
 
 export type {
   CloudAuthUser,
@@ -92,7 +93,30 @@ export const useCloudAuthState = ({
   const [authFlowMessage, setAuthFlowMessage] =
     useState<AuthFlowMessage | null>(null);
   const [resolvingIntent, setResolvingIntent] = useState(false);
-  const { showError } = useAlert();
+  const { showError, showSuccess } = useAlert();
+  const [signInNotice, setSignInNotice] = useState(false);
+  const signInNoticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+
+  const announceSignIn = useCallback(() => {
+    setSignInNotice(true);
+    showSuccess(strings.CLOUD_AUTH_SIGNED_IN_SUCCESS_TEXT);
+    if (signInNoticeTimerRef.current)
+      clearTimeout(signInNoticeTimerRef.current);
+    signInNoticeTimerRef.current = setTimeout(() => {
+      signInNoticeTimerRef.current = null;
+      setSignInNotice(false);
+    }, SIGN_IN_NOTICE_DURATION_MS);
+  }, [showSuccess]);
+
+  useEffect(
+    () => () => {
+      if (signInNoticeTimerRef.current)
+        clearTimeout(signInNoticeTimerRef.current);
+    },
+    []
+  );
   const { emailLinkSent, emailLinkSending, emailLinkBusy, sendEmailLink } =
     useEmailLinkSender({ setActionError, setAuthFlowMessage });
 
@@ -128,6 +152,7 @@ export const useCloudAuthState = ({
     void exchangeDiscordSignIn().then((outcome) => {
       if (outcome.status === "signed_in") {
         applyDiscordSession(outcome.session);
+        announceSignIn();
         return;
       }
       if (
@@ -142,13 +167,14 @@ export const useCloudAuthState = ({
         showError(strings.CLOUD_AUTH_DISCORD_SIGNIN_ERROR_TEXT);
       }
     });
-  }, [applyDiscordSession, showError]);
+  }, [applyDiscordSession, announceSignIn, showError]);
 
   useEffect(() => {
     void completeEmailLinkSignIn().then((result) => {
+      if (result === "signed_in") announceSignIn();
       if (result === "failed") showError(strings.GENERIC_ERROR_TEXT);
     });
-  }, [showError]);
+  }, [announceSignIn, showError]);
 
   const reportUnexpectedSignOut = useCallback(() => {
     if (!warnOnSessionEnd || !hasSignedInMarker()) return;
@@ -361,9 +387,10 @@ export const useCloudAuthState = ({
         return false;
       }
 
+      announceSignIn();
       return true;
     },
-    []
+    [announceSignIn]
   );
 
   const signInWithGoogle = useCallback(
@@ -444,6 +471,7 @@ export const useCloudAuthState = ({
         const outcome = await triggerPlayGamesSignIn(intent);
         if (outcome.status === "signed_in") {
           applyPlayGamesSession(outcome.session);
+          announceSignIn();
           return;
         }
         if (
@@ -458,7 +486,7 @@ export const useCloudAuthState = ({
         setActionError(strings.CLOUD_AUTH_PLAYGAMES_SIGNIN_ERROR_TEXT);
       }
     },
-    [applyPlayGamesSession]
+    [applyPlayGamesSession, announceSignIn]
   );
 
   const signOutUser = useCallback(async (): Promise<boolean> => {
@@ -517,6 +545,7 @@ export const useCloudAuthState = ({
     actionError,
     authFlowMessage,
     clearAuthFlowMessage,
+    signInNotice: user ? signInNotice : false,
     emailLinkSent,
     emailLinkSending,
     emailLinkBusy,

@@ -6,6 +6,7 @@ import strings from "../constants/strings";
 export const DISCORD_SESSION_STORAGE_KEY = "vagudle-discord-session:v1";
 const STATE_STORAGE_KEY = "vagudle-discord-oauth-state:v1";
 const MODE_STORAGE_KEY = "vagudle-discord-oauth-mode:v1";
+const RETURN_STORAGE_KEY = "vagudle-discord-oauth-return:v1";
 
 export type DiscordSession = {
   token: string;
@@ -22,8 +23,7 @@ export type DiscordSignInOutcome =
   | { status: "error" }
   | { status: "none" };
 
-const getRedirectUri = (): string =>
-  `${getPublicOrigin()}${window.location.pathname}`;
+const getRedirectUri = (): string => `${getPublicOrigin()}/`;
 
 const randomState = (): string => {
   const bytes = crypto.getRandomValues(new Uint8Array(16));
@@ -91,6 +91,10 @@ const beginDiscordOAuth = (mode: AuthIntent | "link"): void => {
   try {
     sessionStorage.setItem(STATE_STORAGE_KEY, state);
     sessionStorage.setItem(MODE_STORAGE_KEY, mode);
+    sessionStorage.setItem(
+      RETURN_STORAGE_KEY,
+      `${window.location.pathname}${window.location.search}${window.location.hash}`
+    );
   } catch {}
 
   const params = new URLSearchParams({
@@ -101,6 +105,28 @@ const beginDiscordOAuth = (mode: AuthIntent | "link"): void => {
     state,
   });
   window.location.href = `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+};
+
+export const restoreDiscordReturnPath = (): boolean => {
+  const current = new URL(window.location.href);
+  const code = current.searchParams.get("code");
+  const state = current.searchParams.get("state");
+  if (!code || !state || current.pathname !== "/") return false;
+
+  let returnPath: string | null = null;
+  try {
+    returnPath = sessionStorage.getItem(RETURN_STORAGE_KEY);
+    sessionStorage.removeItem(RETURN_STORAGE_KEY);
+  } catch {}
+  if (!returnPath || !returnPath.startsWith("/") || returnPath.startsWith("//"))
+    return false;
+
+  const target = new URL(returnPath, window.location.origin);
+  if (target.pathname === "/" && !target.search && !target.hash) return false;
+  target.searchParams.set("code", code);
+  target.searchParams.set("state", state);
+  window.location.replace(target.toString());
+  return true;
 };
 
 export const signInWithDiscord = (intent: AuthIntent): void =>

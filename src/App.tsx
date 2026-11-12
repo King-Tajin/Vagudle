@@ -1153,6 +1153,11 @@ function App() {
           isInfoModalOpen={isInfoModalOpen}
           handleCloseInfo={() => setIsInfoModalOpen(false)}
           infoModalAutoOpenReset={isDeleteAccountRoute}
+          onOpenAccountSettings={() => {
+            setIsInfoModalOpen(false);
+            setSettingsAccountJumpKey((prev) => prev + 1);
+            setIsSettingsModalOpen(true);
+          }}
           isStatsModalOpen={isStatsModalOpen}
           handleCloseStats={() => setIsStatsModalOpen(false)}
           isSettingsModalOpen={isSettingsModalOpen}

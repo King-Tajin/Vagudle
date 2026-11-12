@@ -76,7 +76,10 @@ export const ActivityLinkSection = ({
         </button>
       )}
       {mode === "error" && (
-        <p className="font-code text-xs text-spice-red leading-snug">
+        <p
+          role="alert"
+          className="font-code text-xs text-spice-red leading-snug"
+        >
           {strings.CLOUD_SAVE_LINK_START_ERROR_TEXT}
         </p>
       )}
@@ -133,7 +136,10 @@ export const PlayGamesLinkPrompt = ({
         </button>
       </div>
       {mode === "error" && (
-        <p className="font-code text-xs text-spice-red leading-snug">
+        <p
+          role="alert"
+          className="font-code text-xs text-spice-red leading-snug"
+        >
           {strings.CLOUD_SAVE_LINK_START_ERROR_TEXT}
         </p>
       )}
@@ -174,7 +180,10 @@ export const LinkAccountButton = ({
           : label}
       </button>
       {mode === "error" && (
-        <p className="font-code text-xs text-spice-red leading-snug">
+        <p
+          role="alert"
+          className="font-code text-xs text-spice-red leading-snug"
+        >
           {strings.CLOUD_SAVE_LINK_START_ERROR_TEXT}
         </p>
       )}
@@ -220,7 +229,10 @@ export const LinkPlayGamesToAccountButton = ({
           : strings.CLOUD_SAVE_LINK_PLAYGAMES_BUTTON_TEXT}
       </button>
       {mode === "error" && (
-        <p className="font-code text-xs text-spice-red leading-snug">
+        <p
+          role="alert"
+          className="font-code text-xs text-spice-red leading-snug"
+        >
           {strings.CLOUD_SAVE_PLAYGAMES_LINK_ERROR_TEXT}
         </p>
       )}

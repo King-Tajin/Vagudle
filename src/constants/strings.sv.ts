@@ -374,10 +374,12 @@ export const RESET_DATA_CATEGORIES: { title: string; description: string }[] = [
 ];
 
 export const RESET_DATA_DELETION_STEPS = [
-  "Logga in med kontot länkat till din Vagudle-data (Google, GitHub, e-post eller Discord).",
-  'Tryck på "Radera min data" (eller aktivera "Radera även mitt konto" här och bekräfta sedan).',
-  "Bekräfta, så raderas din data omedelbart.",
+  "Logga in med kontot länkat till din Vagudle-data (Google, GitHub, e-post, Discord eller Play Games).",
+  'Öppna Information, gå till fliken Om, tryck på "ÅTERSTÄLL ALL DATA" och aktivera "Radera även mitt konto".',
+  "Vänta tills nedräkningen är klar och bekräfta. Din data raderas omedelbart.",
 ];
+export const CLOUD_AUTH_SIGNED_IN_SUCCESS_TEXT = "Inloggningen lyckades.";
+export const RESET_DATA_SIGN_IN_BUTTON_TEXT = "LOGGA IN";
 
 export const RESET_DATA_DELETION_DELETED_ITEMS = [
   "Din inloggning (Google, GitHub, e-postlänk, Discord eller Play Games).",
@@ -565,6 +567,8 @@ export const LEADERBOARD_USERNAME_PLACEHOLDER = "Ditt topplistenamn";
 export const LEADERBOARD_USERNAME_ARIA_LABEL = "Användarnamn för topplista";
 export const LEADERBOARD_SAVING_INDICATOR = "...";
 export const LEADERBOARD_SAVE_BUTTON_TEXT = "SPARA";
+export const LEADERBOARD_USERNAME_CONFIRM_TEXT =
+  "Obs: det kan finnas en väntetid innan du kan ändra ditt användarnamn igen.";
 export const LEADERBOARD_PLAYING_AS_TEXT = "Spelar som";
 export const LEADERBOARD_CHANGE_BUTTON_TEXT = "ÄNDRA";
 export const LEADERBOARD_COOLDOWN_TEXT_BEFORE = "Vänta";

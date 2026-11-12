@@ -34,6 +34,7 @@ export const LeaderboardModal = ({
     isEditing,
     inputValue,
     isSubmitting,
+    isConfirming,
     submitError,
     isPageLoading,
     hideZeroWins,
@@ -42,6 +43,7 @@ export const LeaderboardModal = ({
     goToPage,
     toggleHideZeroWins,
     handleSubmitUsername,
+    handleConfirmUsername,
   } = useLeaderboardData({ isOpen, idToken, onUsernameSaved });
 
   return (
@@ -115,46 +117,70 @@ export const LeaderboardModal = ({
                       ? strings.LEADERBOARD_CHANGE_USERNAME_HEADING
                       : strings.LEADERBOARD_SET_USERNAME_HEADING}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) =>
-                        dispatch({
-                          type: "setInputValue",
-                          value: e.target.value,
-                        })
-                      }
-                      maxLength={20}
-                      placeholder={strings.LEADERBOARD_USERNAME_PLACEHOLDER}
-                      aria-label={strings.LEADERBOARD_USERNAME_ARIA_LABEL}
-                      className="flex-1 min-w-0 px-2.5 py-1.5 font-code text-sm bg-obsidian-800 text-white border border-obsidian-600 focus:outline-none focus:border-crown-amber"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => void handleSubmitUsername()}
-                      disabled={isSubmitting}
-                      className="px-3 py-1.5 font-pixel text-[10px] tracking-wider bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-50 text-crown-amber transition-colors pixel-border-sm"
-                    >
-                      {isSubmitting
-                        ? strings.LEADERBOARD_SAVING_INDICATOR
-                        : strings.LEADERBOARD_SAVE_BUTTON_TEXT}
-                    </button>
-                    {usernameStatus.username && (
-                      <button
-                        type="button"
-                        onClick={() =>
+                  {isConfirming ? (
+                    <div>
+                      <p className="font-code text-xs text-crown-amber leading-snug mb-2">
+                        {strings.LEADERBOARD_USERNAME_CONFIRM_TEXT}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => void handleConfirmUsername()}
+                          className="px-3 py-1.5 font-pixel text-[10px] tracking-wider bg-obsidian-700 hover:bg-obsidian-600 text-crown-amber transition-colors pixel-border-sm"
+                        >
+                          {strings.LEADERBOARD_SAVE_BUTTON_TEXT}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => dispatch({ type: "cancelConfirm" })}
+                          className="px-3 py-1.5 font-pixel text-[10px] tracking-wider text-gray-400 hover:text-gray-200 transition-colors"
+                        >
+                          {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) =>
                           dispatch({
-                            type: "cancelEditing",
-                            inputValue: usernameStatus.username ?? "",
+                            type: "setInputValue",
+                            value: e.target.value,
                           })
                         }
-                        className="px-3 py-1.5 font-pixel text-[10px] tracking-wider text-gray-400 hover:text-gray-200 transition-colors"
+                        maxLength={20}
+                        placeholder={strings.LEADERBOARD_USERNAME_PLACEHOLDER}
+                        aria-label={strings.LEADERBOARD_USERNAME_ARIA_LABEL}
+                        className="flex-1 min-w-0 px-2.5 py-1.5 font-code text-sm bg-obsidian-800 text-white border border-obsidian-600 focus:outline-none focus:border-crown-amber"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSubmitUsername}
+                        disabled={isSubmitting || isConfirming}
+                        className="px-3 py-1.5 font-pixel text-[10px] tracking-wider bg-obsidian-700 hover:bg-obsidian-600 disabled:opacity-50 text-crown-amber transition-colors pixel-border-sm"
                       >
-                        {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
+                        {isSubmitting
+                          ? strings.LEADERBOARD_SAVING_INDICATOR
+                          : strings.LEADERBOARD_SAVE_BUTTON_TEXT}
                       </button>
-                    )}
-                  </div>
+                      {usernameStatus.username && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            dispatch({
+                              type: "cancelEditing",
+                              inputValue: usernameStatus.username ?? "",
+                            })
+                          }
+                          className="px-3 py-1.5 font-pixel text-[10px] tracking-wider text-gray-400 hover:text-gray-200 transition-colors"
+                        >
+                          {strings.RESET_DATA_CANCEL_BUTTON_TEXT}
+                        </button>
+                      )}
+                    </div>
+                  )}
                   {submitError && (
                     <p className="mt-2 font-code text-xs text-red-400">
                       {submitError}

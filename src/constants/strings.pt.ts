@@ -380,10 +380,12 @@ export const RESET_DATA_CATEGORIES: { title: string; description: string }[] = [
 ];
 
 export const RESET_DATA_DELETION_STEPS = [
-  "Faça login com a conta vinculada aos seus dados do Vagudle (Google, GitHub, e-mail ou Discord).",
-  'Pressione "Excluir meus dados" (ou ative "Excluir também minha conta" aqui e confirme).',
-  "Confirme e seus dados serão excluídos imediatamente.",
+  "Faça login com a conta vinculada aos seus dados do Vagudle (Google, GitHub, e-mail, Discord ou Play Games).",
+  'Abra Informações, vá para a aba Sobre, pressione "REDEFINIR TODOS OS DADOS" e ative "Excluir também minha conta".',
+  "Aguarde a contagem regressiva e confirme. Seus dados serão excluídos imediatamente.",
 ];
+export const CLOUD_AUTH_SIGNED_IN_SUCCESS_TEXT = "Login realizado com sucesso.";
+export const RESET_DATA_SIGN_IN_BUTTON_TEXT = "ENTRAR";
 
 export const RESET_DATA_DELETION_DELETED_ITEMS = [
   "O seu login (Google, GitHub, link por e-mail, Discord ou Play Games).",
@@ -578,6 +580,8 @@ export const LEADERBOARD_USERNAME_PLACEHOLDER = "Seu nome no ranking";
 export const LEADERBOARD_USERNAME_ARIA_LABEL = "Nome de usuário do ranking";
 export const LEADERBOARD_SAVING_INDICATOR = "...";
 export const LEADERBOARD_SAVE_BUTTON_TEXT = "SALVAR";
+export const LEADERBOARD_USERNAME_CONFIRM_TEXT =
+  "Atenção: pode haver um período de espera antes de você poder alterar seu nome de usuário novamente.";
 export const LEADERBOARD_PLAYING_AS_TEXT = "Jogando como";
 export const LEADERBOARD_CHANGE_BUTTON_TEXT = "ALTERAR";
 export const LEADERBOARD_COOLDOWN_TEXT_BEFORE = "Aguarde";

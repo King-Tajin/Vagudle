@@ -88,7 +88,10 @@ export const LinkDiscordPage = () => {
     if (linkStatus === "error")
       return (
         <>
-          <p className="font-code text-sm text-spice-red leading-relaxed mb-4">
+          <p
+            role="alert"
+            className="font-code text-sm text-spice-red leading-relaxed mb-4"
+          >
             {linkError}
           </p>
           <button
@@ -196,18 +199,27 @@ export const LinkDiscordPage = () => {
               : strings.LINK_DISCORD_SEND_LINK_BUTTON_TEXT}
           </button>
           {emailLinkSent && (
-            <p className="font-code text-xs text-gray-500 leading-relaxed">
+            <p
+              role="status"
+              className="font-code text-xs text-gray-500 leading-relaxed"
+            >
               {strings.LINK_DISCORD_EMAIL_SENT_TEXT}
             </p>
           )}
         </div>
         {actionError && (
-          <p className="font-code text-xs text-spice-red leading-relaxed">
+          <p
+            role="alert"
+            className="font-code text-xs text-spice-red leading-relaxed"
+          >
             {actionError}
           </p>
         )}
         {authFlowMessage === "not_registered" && (
-          <p className="font-code text-xs text-spice-red leading-relaxed">
+          <p
+            role="alert"
+            className="font-code text-xs text-spice-red leading-relaxed"
+          >
             {strings.LINK_DISCORD_NO_ACCOUNT_ERROR_TEXT}
           </p>
         )}

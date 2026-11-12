@@ -23,6 +23,7 @@ import {
   type LinkStatus,
 } from "../../../lib/cloudSync";
 import { getLastUsedAccount } from "../../../lib/lastUsedAccount";
+import { getProviderLabel } from "../../../lib/providerLabels";
 import { providerButtonStyle } from "./styles";
 import {
   ActivityLinkSection,
@@ -34,16 +35,8 @@ import { LastUsedBadge, ProviderList } from "./CloudSaveProviderList";
 import strings from "../../../constants/strings";
 import type { SyncStatus } from "../../../hooks/useCloudSync";
 
-const PROVIDER_LABELS: Record<string, string> = {
-  "google.com": "Google",
-  "github.com": "GitHub",
-  password: strings.CLOUD_SAVE_PROVIDER_LABEL_EMAIL,
-  "discord.com": "Discord",
-  "playgames.google.com": strings.CLOUD_SAVE_PROVIDER_LABEL_PLAYGAMES,
-};
-
-const getProviderLabel = (providerId: string): string =>
-  PROVIDER_LABELS[providerId] ?? strings.CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN;
+const getLabel = (providerId: string): string =>
+  getProviderLabel(providerId, strings.CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN);
 
 type EntryMode = "choice" | "signin" | "create-gate" | "create-providers";
 
@@ -70,6 +63,7 @@ export const CloudSaveSection = ({
     actionError,
     authFlowMessage,
     clearAuthFlowMessage,
+    signInNotice,
     emailLinkSent,
     emailLinkSending,
     emailLinkBusy,
@@ -156,16 +150,16 @@ export const CloudSaveSection = ({
     user.providerId !== "discord.com" &&
     user.providerId !== "playgames.google.com";
 
-  const accountTypeLabel = user ? getProviderLabel(user.providerId) : "";
+  const accountTypeLabel = user ? getLabel(user.providerId) : "";
 
   const linkedAccountsLabel = useMemo(() => {
     if (!user) return null;
 
-    const primaryLabel = getProviderLabel(user.providerId);
+    const primaryLabel = getLabel(user.providerId);
     const linked = new Set<string>();
 
     for (const providerId of user.providerIds) {
-      const label = getProviderLabel(providerId);
+      const label = getLabel(providerId);
       if (
         label !== strings.CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN &&
         label !== primaryLabel
@@ -217,6 +211,11 @@ export const CloudSaveSection = ({
         </p>
       ) : user ? (
         <div className="space-y-2">
+          {signInNotice && (
+            <p role="status" className="font-code text-xs text-spice-lime">
+              {strings.CLOUD_AUTH_SIGNED_IN_SUCCESS_TEXT}
+            </p>
+          )}
           {user.providerId === "playgames.google.com" &&
             showPlayGamesLinkPrompt && (
               <PlayGamesLinkPrompt onDismiss={dismissPlayGamesLinkPrompt} />
@@ -319,7 +318,9 @@ export const CloudSaveSection = ({
             {strings.CLOUD_SAVE_SIGN_OUT_BUTTON_TEXT}
           </button>
           {actionError && (
-            <p className="font-code text-xs text-spice-red">{actionError}</p>
+            <p role="alert" className="font-code text-xs text-spice-red">
+              {actionError}
+            </p>
           )}
         </div>
       ) : (

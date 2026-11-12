@@ -119,6 +119,7 @@ type Props = {
   isInfoModalOpen: boolean;
   handleCloseInfo: () => void;
   infoModalAutoOpenReset?: boolean;
+  onOpenAccountSettings?: () => void;
   isStatsModalOpen: boolean;
   handleCloseStats: () => void;
   isSettingsModalOpen: boolean;
@@ -222,6 +223,7 @@ export const GameModals = ({
   isInfoModalOpen,
   handleCloseInfo,
   infoModalAutoOpenReset,
+  onOpenAccountSettings,
   isStatsModalOpen,
   handleCloseStats,
   isSettingsModalOpen,
@@ -247,6 +249,7 @@ export const GameModals = ({
           hasHiddenAttributions={hiddenAttributionIds.length > 0}
           onRestoreHiddenAttributions={handleRestoreHiddenAttributions}
           autoOpenReset={infoModalAutoOpenReset}
+          onOpenAccountSettings={onOpenAccountSettings}
         />
       </Suspense>
 

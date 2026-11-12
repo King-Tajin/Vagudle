@@ -24,6 +24,7 @@ type Props = {
   hasHiddenAttributions: boolean;
   onRestoreHiddenAttributions: () => void;
   autoOpenReset?: boolean;
+  onOpenAccountSettings?: () => void;
 };
 
 type Tab =
@@ -68,6 +69,7 @@ export const InfoModal = ({
   hasHiddenAttributions,
   onRestoreHiddenAttributions,
   autoOpenReset = false,
+  onOpenAccountSettings,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>(
     autoOpenReset ? "about" : "howto"
@@ -267,6 +269,7 @@ export const InfoModal = ({
       <ResetDataModal
         isOpen={isResetModalOpen}
         handleClose={() => setIsResetModalOpen(false)}
+        onOpenAccountSettings={onOpenAccountSettings}
       />
     </>
   );

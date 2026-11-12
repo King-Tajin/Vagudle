@@ -4,21 +4,17 @@ import { BaseModal } from "./BaseModal";
 import { SettingsToggle } from "./SettingsToggle";
 import { useCloudAuth } from "../../hooks/useCloudAuth";
 import type { DeleteAccountResult } from "../../lib/cloudAuthUser";
+import { getProviderLabel } from "../../lib/providerLabels";
+import { providerButtonStyle } from "./SettingsModal/styles";
 import strings from "../../constants/strings";
 
 type Props = {
   isOpen: boolean;
   handleClose: () => void;
+  onOpenAccountSettings?: () => void;
 };
 
 const COUNTDOWN_SECONDS = 20;
-
-const providerLabel = (providerId: string): string => {
-  if (providerId === "google.com") return "Google";
-  if (providerId === "github.com") return "GitHub";
-  if (providerId === "discord.com") return "Discord";
-  return strings.PROVIDER_LABEL_DEFAULT;
-};
 
 type Stage = "confirm" | "deleting";
 
@@ -30,7 +26,11 @@ const wipeLocalDataAndReload = () => {
   window.location.reload();
 };
 
-export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
+export const ResetDataModal = ({
+  isOpen,
+  handleClose,
+  onOpenAccountSettings,
+}: Props) => {
   const { user, deleteAccount, signOutUser } = useCloudAuth();
   const [secondsLeft, setSecondsLeft] = useState(COUNTDOWN_SECONDS);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
@@ -154,16 +154,32 @@ export const ResetDataModal = ({ isOpen, handleClose }: Props) => {
             }
             description={
               user
-                ? `${strings.RESET_DATA_ACCOUNT_DESC_BEFORE_PROVIDER} ${providerLabel(
-                    user.providerId
+                ? `${strings.RESET_DATA_ACCOUNT_DESC_BEFORE_PROVIDER} ${getProviderLabel(
+                    user.providerId,
+                    strings.PROVIDER_LABEL_DEFAULT
                   )} ${strings.RESET_DATA_ACCOUNT_DESC_AFTER_PROVIDER}`
                 : strings.RESET_DATA_NOT_SIGNED_IN_TEXT
             }
           />
+          {!user && onOpenAccountSettings && (
+            <button
+              type="button"
+              onClick={() => {
+                handleClose();
+                onOpenAccountSettings();
+              }}
+              className="w-full mt-2 font-pixel text-xs tracking-widest px-3 py-2"
+              style={providerButtonStyle}
+            >
+              {strings.RESET_DATA_SIGN_IN_BUTTON_TEXT}
+            </button>
+          )}
         </div>
 
         {deleteError && (
-          <p className="font-code text-xs text-spice-red">{deleteError}</p>
+          <p role="alert" className="font-code text-xs text-spice-red">
+            {deleteError}
+          </p>
         )}
 
         <div className="flex gap-3 pt-2">
