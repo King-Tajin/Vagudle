@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Loader2, Mail } from "lucide-react";
 import GoogleIcon from "../../../assets/icons/google.svg?react";
 import GithubIcon from "../../../assets/icons/github.svg?react";
@@ -7,6 +7,7 @@ import PlayGamesIcon from "../../../assets/icons/playgames.svg?react";
 import type { AuthIntent } from "../../../lib/authIntent";
 import { isValidEmail } from "../../../lib/email";
 import type { LastUsedAccount } from "../../../lib/lastUsedAccount";
+import { EmailLinkSentNotice } from "../../EmailLinkSentNotice";
 import { providerButtonStyle } from "./styles";
 import strings from "../../../constants/strings";
 
@@ -29,8 +30,11 @@ export const ProviderList = ({
   email,
   setEmail,
   emailLinkSent,
+  emailLinkSentTo,
   emailLinkSending,
+  emailLinkCooldownSeconds,
   emailLinkBusy,
+  resetEmailLinkState,
   authFlowMessage,
   actionError,
   onGoToOtherIntent,
@@ -47,8 +51,11 @@ export const ProviderList = ({
   email: string;
   setEmail: (email: string) => void;
   emailLinkSent: boolean;
+  emailLinkSentTo: string | null;
   emailLinkSending: boolean;
+  emailLinkCooldownSeconds: number;
   emailLinkBusy: boolean;
+  resetEmailLinkState: () => void;
   authFlowMessage: "not_registered" | "already_registered" | null;
   actionError: string | null;
   onGoToOtherIntent: () => void;
@@ -68,6 +75,17 @@ export const ProviderList = ({
   const emailValid = isValidEmail(trimmedEmail);
   const showEmailInvalid = trimmedEmail.length > 0 && !emailValid;
   const isEmailError = actionError === strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT;
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const showSentNotice =
+    emailLinkSent &&
+    emailLinkSentTo !== null &&
+    emailLinkSentTo === trimmedEmail;
+
+  const handleWrongEmail = () => {
+    resetEmailLinkState();
+    emailInputRef.current?.focus();
+    emailInputRef.current?.select();
+  };
 
   const withProvider = (action: (intent: AuthIntent) => void) => () => {
     setLastMethod("provider");
@@ -122,6 +140,7 @@ export const ProviderList = ({
       </button>
       <div className="flex gap-2 pt-1">
         <input
+          ref={emailInputRef}
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -157,7 +176,11 @@ export const ProviderList = ({
           )}
           {emailLinkSending
             ? strings.CLOUD_SAVE_SENDING_BUTTON_TEXT
-            : strings.CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
+            : emailLinkCooldownSeconds > 0 && !showSentNotice
+              ? strings.EMAIL_LINK_SEND_COOLDOWN_BUTTON_TEXT(
+                  emailLinkCooldownSeconds
+                )
+              : strings.CLOUD_SAVE_SEND_LINK_BUTTON_TEXT}
           {isLastUsed("password") && <LastUsedBadge />}
         </button>
       </div>
@@ -170,10 +193,16 @@ export const ProviderList = ({
           {strings.EMAIL_INVALID_ERROR_TEXT}
         </p>
       )}
-      {emailLinkSent && (
-        <p role="status" className="font-code text-xs text-spice-lime">
-          {strings.CLOUD_SAVE_EMAIL_SENT_TEXT}
-        </p>
+      {showSentNotice && (
+        <EmailLinkSentNotice
+          email={emailLinkSentTo}
+          sending={emailLinkSending}
+          cooldownSeconds={emailLinkCooldownSeconds}
+          onResend={() => sendEmailLink(emailLinkSentTo, intent)}
+          onWrongEmail={handleWrongEmail}
+          buttonStyle={providerButtonStyle}
+          messageClassName="text-spice-lime"
+        />
       )}
       {lastMethod === "email" && flowMessageBlock}
       {isEmailError && (

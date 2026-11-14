@@ -3,6 +3,7 @@
 import { CORS_HEADERS, json, encode } from "../_shared/api.js";
 import { requireDiscordSession } from "../_shared/discordAuth.js";
 import { findPlayerSaveByDiscordId } from "../_shared/playerAccount.js";
+import { isDiscordPrimaryUid } from "../_shared/discordLinkMerge.js";
 
 const LINK_TOKEN_TTL_MS = 15 * 60 * 1000;
 const LINK_URL_BASE = "https://vagudle.king-tajin.dev/link-discord";
@@ -23,7 +24,7 @@ export async function onRequestPost(context) {
     const discordId = session.discordId;
 
     const existing = await findPlayerSaveByDiscordId(db, discordId);
-    if (existing)
+    if (existing && !isDiscordPrimaryUid(existing.uid))
       return json(
         { success: false, error: "This Discord account is already linked." },
         409

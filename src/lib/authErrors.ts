@@ -6,7 +6,7 @@ const SILENT_CODES = new Set([
   "auth/user-cancelled",
 ]);
 
-const getErrorCode = (error: unknown): string => {
+export const getErrorCode = (error: unknown): string => {
   if (typeof error !== "object" || error === null || !("code" in error))
     return "";
   const { code } = error;

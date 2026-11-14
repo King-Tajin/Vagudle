@@ -2,6 +2,10 @@
 
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { resolveAccountLinkToken } from "../_shared/cloudAuth.js";
+import {
+  detectDiscordLinkConflict,
+  saveConflictResponse,
+} from "../_shared/discordLinkMerge.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -27,6 +31,23 @@ export async function onRequestPost(context) {
           success: false,
           error:
             "This account is already linked to a different Discord account.",
+        },
+        409
+      );
+
+    const conflict = await detectDiscordLinkConflict(
+      db,
+      uid,
+      payload.discordId
+    );
+    if (conflict === "mergeable")
+      return saveConflictResponse(context.env, db, uid, payload.discordId);
+    if (conflict === "linked_elsewhere")
+      return json(
+        {
+          success: false,
+          error:
+            "This Discord account is already linked to a different account.",
         },
         409
       );

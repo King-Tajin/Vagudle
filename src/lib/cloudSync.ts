@@ -22,8 +22,58 @@ export const getIdTokenForCurrentUser = async (): Promise<string | null> => {
   return playGamesSession ? playGamesSession.token : null;
 };
 
-export type LinkDiscordResult =
+export type SaveSummary = {
+  gamesPlayed: number;
+  bestStreak: number;
+  achievements: number;
+  lastPlayedAt: string | null;
+};
+
+export type DiscordSaveConflict = {
+  ticket: string;
+  account: SaveSummary | null;
+  discord: SaveSummary;
+};
+
+export type DiscordSaveChoice = "account" | "discord";
+
+export type ResolveDiscordSaveResult =
   { status: "linked" } | { status: "error"; message: string };
+
+export type LinkDiscordResult =
+  | ResolveDiscordSaveResult
+  | { status: "conflict"; conflict: DiscordSaveConflict };
+
+type DiscordLinkResponse = {
+  success: boolean;
+  error?: string;
+  code?: string;
+  conflict?: DiscordSaveConflict;
+};
+
+const parseDiscordLinkResponse = async (
+  res: Response
+): Promise<DiscordLinkResponse | null> => {
+  try {
+    return (await res.json()) as DiscordLinkResponse;
+  } catch {
+    return null;
+  }
+};
+
+const readDiscordLinkResponse = async (
+  res: Response,
+  fallbackMessage: string
+): Promise<LinkDiscordResult> => {
+  const data = await parseDiscordLinkResponse(res);
+  if (data?.code === "save_conflict" && data.conflict)
+    return { status: "conflict", conflict: data.conflict };
+  if (res.ok && data?.success) return { status: "linked" };
+  return {
+    status: "error",
+    message: res.ok ? (data?.error ?? fallbackMessage) : fallbackMessage,
+  };
+};
 
 const requestDiscordLink = async (
   idToken: string,
@@ -45,18 +95,10 @@ const requestDiscordLink = async (
       body: JSON.stringify({ link_token: linkToken, confirmation }),
       signal: controller.signal,
     });
-    if (!res.ok) {
-      return {
-        status: "error",
-        message: strings.CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
-      };
-    }
-    const data = (await res.json()) as { success: boolean; error?: string };
-    if (data.success) return { status: "linked" };
-    return {
-      status: "error",
-      message: data.error ?? strings.CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT,
-    };
+    return await readDiscordLinkResponse(
+      res,
+      strings.CLOUD_SYNC_LINK_ACCOUNT_ERROR_TEXT
+    );
   } catch {
     return {
       status: "error",
@@ -173,8 +215,7 @@ export const fetchLinkStatus = async (
   }
 };
 
-export type LinkDiscordOAuthResult =
-  { status: "linked" } | { status: "error"; message: string };
+export type LinkDiscordOAuthResult = LinkDiscordResult;
 
 export const linkDiscordOAuthWithCurrentUser = async (
   code: string,
@@ -199,23 +240,61 @@ export const linkDiscordOAuthWithCurrentUser = async (
       signal: controller.signal,
     });
     clearTimeout(timeout);
-    if (!res.ok) {
-      return {
-        status: "error",
-        message: strings.CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
-      };
-    }
-    const data = (await res.json()) as { success: boolean; error?: string };
-    if (data.success) return { status: "linked" };
-    return {
-      status: "error",
-      message: data.error ?? strings.CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
-    };
+    return await readDiscordLinkResponse(
+      res,
+      strings.CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT
+    );
   } catch {
     return {
       status: "error",
       message: strings.CLOUD_SYNC_LINK_DISCORD_RETRY_ERROR_TEXT,
     };
+  }
+};
+
+export const resolveDiscordSaveConflict = async (
+  ticket: string,
+  keep: DiscordSaveChoice,
+  signal?: AbortSignal
+): Promise<ResolveDiscordSaveResult> => {
+  const idToken = await getIdTokenForCurrentUser();
+  if (!idToken)
+    return {
+      status: "error",
+      message: strings.CLOUD_SYNC_VERIFY_SIGNIN_ERROR_TEXT,
+    };
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const onExternalAbort = () => controller.abort();
+  signal?.addEventListener("abort", onExternalAbort);
+  try {
+    const res = await fetch("/api/discord-link-resolve", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ ticket, keep }),
+      signal: controller.signal,
+    });
+    const result = await readDiscordLinkResponse(
+      res,
+      strings.CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT
+    );
+    if (result.status === "conflict")
+      return {
+        status: "error",
+        message: strings.CLOUD_SYNC_LINK_DISCORD_ERROR_TEXT,
+      };
+    return result;
+  } catch {
+    return {
+      status: "error",
+      message: strings.CLOUD_SYNC_LINK_DISCORD_RETRY_ERROR_TEXT,
+    };
+  } finally {
+    clearTimeout(timeout);
+    signal?.removeEventListener("abort", onExternalAbort);
   }
 };
 

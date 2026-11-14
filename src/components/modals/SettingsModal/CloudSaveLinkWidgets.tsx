@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import PlayGamesIcon from "../../../assets/icons/playgames.svg?react";
 import {
   getStoredPlayGamesSession,
@@ -6,11 +6,7 @@ import {
   startPlayGamesLinkAuthCode,
 } from "../../../lib/playGamesCloudAuth";
 import { linkPlayGamesOAuthWithCurrentUser } from "../../../lib/cloudSync";
-import {
-  fetchActivityLinkUrl,
-  checkActivityAccountStatus,
-  openExternalLink,
-} from "../../../lib/discord";
+import { useActivityLinkPolling } from "../../../hooks/useActivityLinkPolling";
 import { providerButtonStyle } from "./styles";
 import strings from "../../../constants/strings";
 
@@ -19,63 +15,53 @@ export const ActivityLinkSection = ({
 }: {
   accessToken: string | null;
 }) => {
-  const [mode, setMode] = useState<"idle" | "linking" | "waiting" | "error">(
-    "idle"
-  );
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(
-    () => () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-    },
-    []
-  );
-
-  const handleLink = async () => {
-    if (!accessToken) return;
-    setMode("linking");
-    const url = await fetchActivityLinkUrl(accessToken);
-    if (!url) {
-      setMode("error");
-      return;
-    }
-    openExternalLink(url);
-    setMode("waiting");
-
-    pollRef.current = setInterval(() => {
-      void (async () => {
-        const resolved = await checkActivityAccountStatus(accessToken);
-        if (resolved) {
-          if (pollRef.current) clearInterval(pollRef.current);
-          window.location.reload();
-        }
-      })();
-    }, 2500);
-  };
+  const { status, start, cancel } = useActivityLinkPolling(accessToken);
+  const isWaiting = status === "waiting";
 
   return (
     <div className="space-y-2">
       <p className="font-code text-xs text-gray-300">
         {strings.CLOUD_SAVE_AUTO_SIGNED_IN_TEXT}
       </p>
-      {mode === "waiting" ? (
-        <p className="font-code text-xs text-gray-500 leading-snug">
-          {strings.CLOUD_SAVE_WAITING_LINK_TEXT}
-        </p>
+      {isWaiting ? (
+        <>
+          <p
+            role="status"
+            className="font-code text-xs text-gray-500 leading-snug"
+          >
+            {strings.CLOUD_SAVE_WAITING_LINK_TEXT}
+          </p>
+          <button
+            type="button"
+            onClick={cancel}
+            className="w-full font-pixel text-xs tracking-widest px-3 py-2"
+            style={providerButtonStyle}
+          >
+            {strings.ACTIVITY_LINK_CANCEL_BUTTON_TEXT}
+          </button>
+        </>
       ) : (
         <button
           type="button"
-          onClick={() => void handleLink()}
-          disabled={mode === "linking" || !accessToken}
+          onClick={() => void start(() => window.location.reload())}
+          disabled={status === "opening" || !accessToken}
           className="w-full font-pixel text-xs tracking-widest px-3 py-2 disabled:opacity-40"
           style={providerButtonStyle}
         >
-          {mode === "linking"
+          {status === "opening"
             ? strings.CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT
             : strings.CLOUD_SAVE_LINK_EXISTING_ACCOUNT_BUTTON_TEXT}
         </button>
       )}
-      {mode === "error" && (
+      {status === "timed_out" && (
+        <p
+          role="status"
+          className="font-code text-xs text-gray-500 leading-snug"
+        >
+          {strings.ACTIVITY_LINK_TIMED_OUT_TEXT}
+        </p>
+      )}
+      {status === "error" && (
         <p
           role="alert"
           className="font-code text-xs text-spice-red leading-snug"

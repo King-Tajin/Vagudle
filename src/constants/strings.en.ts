@@ -44,6 +44,7 @@ export const MODAL_TITLE_CREATE_CHALLENGE = "Create Challenge";
 export const MODAL_TITLE_OFFLINE_MODE = "You're Offline";
 export const MODAL_TITLE_WEBGL_UNAVAILABLE = "Graphics Not Supported";
 export const MODAL_TITLE_SESSION_ENDED = "Signed Out";
+export const MODAL_TITLE_EMAIL_LINK_CONFIRM = "Confirm email";
 
 export const OFFLINE_MODE_INTRO_TEXT =
   "We couldn't reach the Vagudle servers. You can still play the base game offline.";
@@ -656,8 +657,6 @@ export const LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT = "CONTINUE WITH GOOGLE";
 export const LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT = "CONTINUE WITH GITHUB";
 export const LINK_DISCORD_EMAIL_LABEL = "EMAIL";
 export const LINK_DISCORD_SEND_LINK_BUTTON_TEXT = "SEND SIGN-IN LINK";
-export const LINK_DISCORD_EMAIL_SENT_TEXT =
-  "Check your email for a sign-in link, then open it in this same browser.";
 export const LINK_DISCORD_HEADING = "LINK YOUR ACCOUNT";
 
 export const COMPLETED_ROW_RESET_ARIA_LABEL = "Reset row colors";
@@ -821,6 +820,27 @@ export const CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN = "Unknown";
 export const CLOUD_SAVE_AUTO_SIGNED_IN_TEXT = "Auto signed in via Discord.";
 export const CLOUD_SAVE_WAITING_LINK_TEXT =
   "Waiting for you to finish linking in your browser...";
+export const ACTIVITY_LINK_CANCEL_BUTTON_TEXT = "CANCEL";
+export const ACTIVITY_LINK_TIMED_OUT_TEXT =
+  "Linking didn't finish. Try again when you're ready.";
+export const MODAL_TITLE_DISCORD_SAVE_CONFLICT = "Two saves found";
+export const DISCORD_CONFLICT_INTRO_TEXT =
+  "This Discord account already has its own saved progress. Pick the save to keep. The other one will be permanently deleted.";
+export const DISCORD_CONFLICT_GROUP_ARIA_LABEL = "Save to keep";
+export const DISCORD_CONFLICT_ACCOUNT_HEADING = "THIS ACCOUNT";
+export const DISCORD_CONFLICT_DISCORD_HEADING = "DISCORD";
+export const DISCORD_CONFLICT_EMPTY_SAVE_TEXT = "No saved progress yet";
+export const DISCORD_CONFLICT_GAMES_TEXT = (count: number): string =>
+  `Games played: ${count}`;
+export const DISCORD_CONFLICT_STREAK_TEXT = (count: number): string =>
+  `Best streak: ${count}`;
+export const DISCORD_CONFLICT_ACHIEVEMENTS_TEXT = (count: number): string =>
+  `Achievements: ${count}`;
+export const DISCORD_CONFLICT_LAST_PLAYED_TEXT = (when: string): string =>
+  `Last played: ${when}`;
+export const DISCORD_CONFLICT_CONFIRM_BUTTON_TEXT = "KEEP SELECTED SAVE";
+export const DISCORD_CONFLICT_CONFIRMING_BUTTON_TEXT = "LINKING...";
+export const DISCORD_CONFLICT_CANCEL_BUTTON_TEXT = "NOT NOW";
 export const CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT = "OPENING LINK...";
 export const CLOUD_SAVE_LINK_EXISTING_ACCOUNT_BUTTON_TEXT =
   "LINK EXISTING ACCOUNT";
@@ -881,8 +901,6 @@ export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Email address";
 export const EMAIL_INVALID_ERROR_TEXT = "Enter a valid email address.";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "SEND LINK";
 export const CLOUD_SAVE_SENDING_BUTTON_TEXT = "SENDING...";
-export const CLOUD_SAVE_EMAIL_SENT_TEXT =
-  "Check your email for a sign-in link.";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING = "FLEXIBLE SIGN-IN";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
   "Works on its own, or link it to another account anytime from here.";
@@ -1035,6 +1053,26 @@ export const CLOUD_AUTH_NETWORK_ERROR_TEXT =
   "Couldn't reach the sign-in service. Check your connection and try again.";
 export const CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT =
   "Couldn't send sign-in link. Please try again.";
+export const CLOUD_AUTH_EMAIL_LINK_EXPIRED_TEXT =
+  "That sign-in link has expired or was already used. Request a new one to continue.";
+export const EMAIL_LINK_CONFIRM_HINT_TEXT =
+  "You opened this link on a different device or browser than the one you requested it from.";
+export const EMAIL_LINK_CONFIRM_BUTTON_TEXT = "SIGN IN";
+export const EMAIL_LINK_CONFIRM_SUBMITTING_BUTTON_TEXT = "SIGNING IN...";
+export const EMAIL_LINK_CONFIRM_CANCEL_BUTTON_TEXT = "CANCEL";
+export const EMAIL_LINK_MISMATCH_ERROR_TEXT =
+  "That email doesn't match this link. Check the address and try again.";
+export const EMAIL_LINK_SENT_TO_TEXT = (email: string): string =>
+  `We sent a sign-in link to ${email}.`;
+export const EMAIL_LINK_SPAM_HINT_TEXT =
+  "Can't find it? Check your spam or junk folder.";
+export const EMAIL_LINK_RESEND_BUTTON_TEXT = "RESEND LINK";
+export const EMAIL_LINK_RESEND_COOLDOWN_BUTTON_TEXT = (
+  seconds: number
+): string => `RESEND IN ${seconds}s`;
+export const EMAIL_LINK_WRONG_EMAIL_BUTTON_TEXT = "WRONG EMAIL?";
+export const EMAIL_LINK_SEND_COOLDOWN_BUTTON_TEXT = (seconds: number): string =>
+  `SEND LINK (${seconds}s)`;
 export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT =
   "Sign-out failed. Please try again.";
 export const CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT =

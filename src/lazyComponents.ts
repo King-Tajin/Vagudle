@@ -191,6 +191,11 @@ export const CloudSavePromptModal = lazy(() =>
     default: m.CloudSavePromptModal,
   }))
 );
+export const DiscordSaveConflictModal = lazy(() =>
+  import("./components/modals/DiscordSaveConflictModal").then((m) => ({
+    default: m.DiscordSaveConflictModal,
+  }))
+);
 export const OfflineModeModal = lazy(() =>
   import("./components/modals/OfflineModeModal").then((m) => ({
     default: m.OfflineModeModal,

@@ -37,6 +37,7 @@ import {
   ActivityServerErrorScreen,
   ActivityAccountChoiceScreen,
   ActivityAlreadyPlayedScreen,
+  DiscordSaveConflictModal,
   OfflineModeModal,
   WebglUnavailableModal,
   SessionEndedModal,
@@ -92,7 +93,12 @@ import { isDiscordActivity } from "./lib/discord";
 import { useDiscordRichPresence } from "./hooks/useDiscordRichPresence";
 import { pruneOldDailyEntries, DAILY_PATH } from "./lib/daily";
 import { getPendingDiscordLinkCode } from "./lib/discordCloudAuth";
-import { linkDiscordOAuthWithCurrentUser } from "./lib/cloudSync";
+import {
+  linkDiscordOAuthWithCurrentUser,
+  resolveDiscordSaveConflict,
+  type DiscordSaveChoice,
+  type DiscordSaveConflict,
+} from "./lib/cloudSync";
 import {
   runNotificationPrimerFlow,
   syncNotificationSchedule,
@@ -262,6 +268,13 @@ function App() {
   const { shouldOpenStats } = useStatsDeepLink();
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(shouldOpenStats);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [discordConflict, setDiscordConflict] =
+    useState<DiscordSaveConflict | null>(null);
+  const [isResolvingDiscordConflict, setIsResolvingDiscordConflict] =
+    useState(false);
+  const [discordConflictError, setDiscordConflictError] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     const pendingLink = getPendingDiscordLinkCode();
@@ -276,6 +289,8 @@ function App() {
       if (result.status === "linked") {
         showSuccessAlert(strings.DISCORD_ACCOUNT_LINKED_MESSAGE);
         setIsSettingsModalOpen(true);
+      } else if (result.status === "conflict") {
+        setDiscordConflict(result.conflict);
       } else {
         showErrorAlert(result.message);
       }
@@ -284,6 +299,30 @@ function App() {
       isCancelled = true;
     };
   }, [showSuccessAlert, showErrorAlert]);
+
+  const handleResolveDiscordConflict = async (keep: DiscordSaveChoice) => {
+    if (!discordConflict || isResolvingDiscordConflict) return;
+    setIsResolvingDiscordConflict(true);
+    setDiscordConflictError(null);
+    const result = await resolveDiscordSaveConflict(
+      discordConflict.ticket,
+      keep
+    );
+    setIsResolvingDiscordConflict(false);
+    if (result.status === "linked") {
+      setDiscordConflict(null);
+      showSuccessAlert(strings.DISCORD_ACCOUNT_LINKED_MESSAGE);
+      setIsSettingsModalOpen(true);
+      retrySync();
+    } else {
+      setDiscordConflictError(result.message);
+    }
+  };
+
+  const handleCancelDiscordConflict = () => {
+    setDiscordConflict(null);
+    setDiscordConflictError(null);
+  };
 
   const [settingsAccountJumpKey, setSettingsAccountJumpKey] = useState(0);
   const [settingsBackgroundJumpKey, setSettingsBackgroundJumpKey] = useState(0);
@@ -1208,6 +1247,17 @@ function App() {
           />
         </Suspense>
       </div>
+      {discordConflict && (
+        <Suspense fallback={null}>
+          <DiscordSaveConflictModal
+            conflict={discordConflict}
+            busy={isResolvingDiscordConflict}
+            error={discordConflictError}
+            onConfirm={(keep) => void handleResolveDiscordConflict(keep)}
+            onCancel={handleCancelDiscordConflict}
+          />
+        </Suspense>
+      )}
       {pendingPrompt && (
         <CloudSavePromptOverlay
           prompt={pendingPrompt}

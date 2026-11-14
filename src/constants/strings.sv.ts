@@ -46,6 +46,7 @@ export const MODAL_TITLE_CREATE_CHALLENGE = "Skapa utmaning";
 export const MODAL_TITLE_OFFLINE_MODE = "Du är offline";
 export const MODAL_TITLE_WEBGL_UNAVAILABLE = "Grafik stöds inte";
 export const MODAL_TITLE_SESSION_ENDED = "Utloggad";
+export const MODAL_TITLE_EMAIL_LINK_CONFIRM = "Bekräfta e-post";
 
 export const OFFLINE_MODE_INTRO_TEXT =
   "Vi kunde inte nå Vagudles servrar. Du kan fortfarande spela grundspelet offline.";
@@ -664,8 +665,6 @@ export const LINK_DISCORD_CONTINUE_GOOGLE_BUTTON_TEXT = "FORTSÄTT MED GOOGLE";
 export const LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT = "FORTSÄTT MED GITHUB";
 export const LINK_DISCORD_EMAIL_LABEL = "E-POST";
 export const LINK_DISCORD_SEND_LINK_BUTTON_TEXT = "SKICKA INLOGGNINGSLÄNK";
-export const LINK_DISCORD_EMAIL_SENT_TEXT =
-  "Kolla din e-post efter en inloggningslänk och öppna den sedan i samma webbläsare.";
 export const LINK_DISCORD_HEADING = "LÄNKA DITT KONTO";
 
 export const COMPLETED_ROW_RESET_ARIA_LABEL = "Återställ radfärger";
@@ -833,6 +832,27 @@ export const CLOUD_SAVE_AUTO_SIGNED_IN_TEXT =
   "Automatiskt inloggad via Discord.";
 export const CLOUD_SAVE_WAITING_LINK_TEXT =
   "Väntar på att du ska slutföra länkningen i din webbläsare...";
+export const ACTIVITY_LINK_CANCEL_BUTTON_TEXT = "AVBRYT";
+export const ACTIVITY_LINK_TIMED_OUT_TEXT =
+  "Länkningen slutfördes inte. Försök igen när du är redo.";
+export const MODAL_TITLE_DISCORD_SAVE_CONFLICT = "Två sparningar hittades";
+export const DISCORD_CONFLICT_INTRO_TEXT =
+  "Det här Discord-kontot har redan egen sparad framgång. Välj vilken sparning du vill behålla. Den andra raderas permanent.";
+export const DISCORD_CONFLICT_GROUP_ARIA_LABEL = "Sparning att behålla";
+export const DISCORD_CONFLICT_ACCOUNT_HEADING = "DET HÄR KONTOT";
+export const DISCORD_CONFLICT_DISCORD_HEADING = "DISCORD";
+export const DISCORD_CONFLICT_EMPTY_SAVE_TEXT = "Ingen sparad framgång ännu";
+export const DISCORD_CONFLICT_GAMES_TEXT = (count: number): string =>
+  `Spelade spel: ${count}`;
+export const DISCORD_CONFLICT_STREAK_TEXT = (count: number): string =>
+  `Bästa svit: ${count}`;
+export const DISCORD_CONFLICT_ACHIEVEMENTS_TEXT = (count: number): string =>
+  `Prestationer: ${count}`;
+export const DISCORD_CONFLICT_LAST_PLAYED_TEXT = (when: string): string =>
+  `Senast spelat: ${when}`;
+export const DISCORD_CONFLICT_CONFIRM_BUTTON_TEXT = "BEHÅLL VALD SPARNING";
+export const DISCORD_CONFLICT_CONFIRMING_BUTTON_TEXT = "LÄNKAR...";
+export const DISCORD_CONFLICT_CANCEL_BUTTON_TEXT = "INTE NU";
 export const CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT = "ÖPPNAR LÄNK...";
 export const CLOUD_SAVE_LINK_EXISTING_ACCOUNT_BUTTON_TEXT =
   "LÄNKA BEFINTLIGT KONTO";
@@ -896,8 +916,6 @@ export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "E-postadress";
 export const EMAIL_INVALID_ERROR_TEXT = "Ange en giltig e-postadress.";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "SKICKA LÄNK";
 export const CLOUD_SAVE_SENDING_BUTTON_TEXT = "SKICKAR...";
-export const CLOUD_SAVE_EMAIL_SENT_TEXT =
-  "Kolla din e-post efter en inloggningslänk.";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING = "FLEXIBEL INLOGGNING";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
   "Fungerar på egen hand, eller länka det till ett annat konto när som helst härifrån.";
@@ -1050,6 +1068,26 @@ export const CLOUD_AUTH_NETWORK_ERROR_TEXT =
   "Det gick inte att nå inloggningstjänsten. Kontrollera anslutningen och försök igen.";
 export const CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT =
   "Det gick inte att skicka inloggningslänken. Försök igen.";
+export const CLOUD_AUTH_EMAIL_LINK_EXPIRED_TEXT =
+  "Inloggningslänken har gått ut eller har redan använts. Begär en ny för att fortsätta.";
+export const EMAIL_LINK_CONFIRM_HINT_TEXT =
+  "Du öppnade länken på en annan enhet eller i en annan webbläsare än där du begärde den.";
+export const EMAIL_LINK_CONFIRM_BUTTON_TEXT = "LOGGA IN";
+export const EMAIL_LINK_CONFIRM_SUBMITTING_BUTTON_TEXT = "LOGGAR IN...";
+export const EMAIL_LINK_CONFIRM_CANCEL_BUTTON_TEXT = "AVBRYT";
+export const EMAIL_LINK_MISMATCH_ERROR_TEXT =
+  "E-postadressen stämmer inte med länken. Kontrollera adressen och försök igen.";
+export const EMAIL_LINK_SENT_TO_TEXT = (email: string): string =>
+  `Vi har skickat en inloggningslänk till ${email}.`;
+export const EMAIL_LINK_SPAM_HINT_TEXT =
+  "Hittar du den inte? Kolla skräppostmappen.";
+export const EMAIL_LINK_RESEND_BUTTON_TEXT = "SKICKA IGEN";
+export const EMAIL_LINK_RESEND_COOLDOWN_BUTTON_TEXT = (
+  seconds: number
+): string => `SKICKA IGEN (${seconds}s)`;
+export const EMAIL_LINK_WRONG_EMAIL_BUTTON_TEXT = "FEL E-POST?";
+export const EMAIL_LINK_SEND_COOLDOWN_BUTTON_TEXT = (seconds: number): string =>
+  `SKICKA LÄNK (${seconds}s)`;
 export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT =
   "Utloggningen misslyckades. Försök igen.";
 export const CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT =

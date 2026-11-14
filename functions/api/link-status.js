@@ -3,6 +3,8 @@
 import { CORS_HEADERS, json } from "../_shared/api.js";
 import { requireCloudAuth } from "../_shared/cloudAuth.js";
 
+const DISCORD_UID_PREFIX = "discord:";
+
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
 }
@@ -21,7 +23,7 @@ export async function onRequestGet(context) {
 
     return json({
       success: true,
-      discordLinked: !!row?.discord_id,
+      discordLinked: !!row?.discord_id && !uid.startsWith(DISCORD_UID_PREFIX),
       playGamesLinked: !!row?.play_games_id,
     });
   } catch (error) {

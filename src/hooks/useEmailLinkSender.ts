@@ -27,28 +27,47 @@ export const useEmailLinkSender = ({
 }) => {
   const [emailLinkSent, setEmailLinkSent] = useState(false);
   const [emailLinkSending, setEmailLinkSending] = useState(false);
-  const [emailLinkCoolingDown, setEmailLinkCoolingDown] = useState(false);
+  const [emailLinkSentTo, setEmailLinkSentTo] = useState<string | null>(null);
+  const [cooldownSecondsLeft, setCooldownSecondsLeft] = useState(0);
   const emailLinkLockRef = useRef(false);
-  const emailLinkCooldownTimerRef = useRef<ReturnType<
-    typeof setTimeout
-  > | null>(null);
-
-  useEffect(
-    () => () => {
-      if (emailLinkCooldownTimerRef.current)
-        clearTimeout(emailLinkCooldownTimerRef.current);
-    },
-    []
+  const cooldownEndsAtRef = useRef(0);
+  const cooldownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null
   );
 
-  const startEmailLinkCooldown = useCallback((durationMs: number) => {
-    if (emailLinkCooldownTimerRef.current)
-      clearTimeout(emailLinkCooldownTimerRef.current);
-    setEmailLinkCoolingDown(true);
-    emailLinkCooldownTimerRef.current = setTimeout(() => {
-      emailLinkCooldownTimerRef.current = null;
-      setEmailLinkCoolingDown(false);
-    }, durationMs);
+  const stopCooldownTimer = useCallback(() => {
+    if (cooldownIntervalRef.current) {
+      clearInterval(cooldownIntervalRef.current);
+      cooldownIntervalRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => stopCooldownTimer, [stopCooldownTimer]);
+
+  const startEmailLinkCooldown = useCallback(
+    (durationMs: number) => {
+      stopCooldownTimer();
+      cooldownEndsAtRef.current = Date.now() + durationMs;
+      const tick = () => {
+        const remaining = Math.ceil(
+          (cooldownEndsAtRef.current - Date.now()) / 1000
+        );
+        if (remaining <= 0) {
+          stopCooldownTimer();
+          setCooldownSecondsLeft(0);
+          return;
+        }
+        setCooldownSecondsLeft(remaining);
+      };
+      tick();
+      cooldownIntervalRef.current = setInterval(tick, 500);
+    },
+    [stopCooldownTimer]
+  );
+
+  const resetEmailLinkSent = useCallback(() => {
+    setEmailLinkSent(false);
+    setEmailLinkSentTo(null);
   }, []);
 
   const checkEmailAccountExists = useCallback(
@@ -78,13 +97,13 @@ export const useEmailLinkSender = ({
   );
 
   const sendEmailLink = useCallback(
-    async (email: string, intent: AuthIntent) => {
-      if (emailLinkLockRef.current) return;
+    async (rawEmail: string, intent: AuthIntent) => {
+      const email = rawEmail.trim();
+      if (!email || emailLinkLockRef.current) return;
       emailLinkLockRef.current = true;
       setEmailLinkSending(true);
       setActionError(null);
       setAuthFlowMessage(null);
-      setEmailLinkSent(false);
 
       let cooldownMs = EMAIL_LINK_RETRY_DELAY_MS;
       try {
@@ -126,6 +145,7 @@ export const useEmailLinkSender = ({
           localStorage.setItem(EMAIL_LINK_STORAGE_KEY, email);
         } catch {}
         setEmailLinkSent(true);
+        setEmailLinkSentTo(email);
         cooldownMs = EMAIL_LINK_RESEND_COOLDOWN_MS;
       } catch {
         setActionError(strings.CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT);
@@ -145,8 +165,11 @@ export const useEmailLinkSender = ({
 
   return {
     emailLinkSent,
+    emailLinkSentTo,
     emailLinkSending,
-    emailLinkBusy: emailLinkSending || emailLinkCoolingDown,
+    emailLinkCooldownSeconds: cooldownSecondsLeft,
+    emailLinkBusy: emailLinkSending || cooldownSecondsLeft > 0,
     sendEmailLink,
+    resetEmailLinkSent,
   };
 };

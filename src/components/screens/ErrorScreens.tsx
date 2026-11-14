@@ -1,14 +1,11 @@
-import { useState, useEffect, useRef } from "react";
 import { m } from "framer-motion";
 import { BackgroundGrid } from "../backgrounds/BackgroundGrid";
 import {
   isDiscordActivity,
-  openExternalLink,
   startDailyActivity,
-  checkActivityAccountStatus,
-  fetchActivityLinkUrl,
   type DailyActivityStartResult,
 } from "../../lib/discord";
+import { useActivityLinkPolling } from "../../hooks/useActivityLinkPolling";
 import { emptyNavbar, title, returnButton, retryButton } from "./screenHelpers";
 import strings from "../../constants/strings";
 
@@ -167,37 +164,11 @@ export const ActivityAccountChoiceScreen = ({
   accessToken,
   onResolved,
 }: ActivityAccountChoiceProps) => {
-  const [mode, setMode] = useState<"choice" | "linking" | "error">("choice");
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { status, start, cancel } = useActivityLinkPolling(accessToken);
+  const isLinking = status === "opening" || status === "waiting";
 
-  const stopPolling = () => {
-    if (pollRef.current) {
-      clearInterval(pollRef.current);
-      pollRef.current = null;
-    }
-  };
-
-  useEffect(() => stopPolling, []);
-
-  const handleLinkExisting = async () => {
-    setMode("linking");
-    const url = await fetchActivityLinkUrl(accessToken);
-    if (!url) {
-      setMode("error");
-      return;
-    }
-    openExternalLink(url);
-
-    pollRef.current = setInterval(() => {
-      void (async () => {
-        const resolved = await checkActivityAccountStatus(accessToken);
-        if (resolved) {
-          stopPolling();
-          onResolved(await startDailyActivity(false));
-        }
-      })();
-    }, 2500);
-  };
+  const handleLinkExisting = () =>
+    start(async () => onResolved(await startDailyActivity(false)));
 
   const handleCreateStandalone = async () => {
     onResolved(await startDailyActivity(true));
@@ -222,8 +193,24 @@ export const ActivityAccountChoiceScreen = ({
           <p className="font-pixel text-xs text-crown-gold tracking-widest mb-2">
             {strings.ERROR_HAVE_YOU_PLAYED_TITLE}
           </p>
-          {mode === "choice" && (
+          {!isLinking && (
             <>
+              {status === "timed_out" && (
+                <p
+                  role="status"
+                  className="font-code text-sm text-gray-400 leading-relaxed mb-4"
+                >
+                  {strings.ACTIVITY_LINK_TIMED_OUT_TEXT}
+                </p>
+              )}
+              {status === "error" && (
+                <p
+                  role="alert"
+                  className="font-code text-sm text-gray-400 leading-relaxed mb-4"
+                >
+                  {strings.ERROR_LINKING_FAILED_DESCRIPTION}
+                </p>
+              )}
               <p className="font-code text-sm text-gray-400 leading-relaxed mb-4">
                 {strings.ERROR_LINK_ACCOUNT_DESCRIPTION}
               </p>
@@ -255,15 +242,27 @@ export const ActivityAccountChoiceScreen = ({
               </div>
             </>
           )}
-          {mode === "linking" && (
-            <p className="font-code text-sm text-gray-400 leading-relaxed">
-              {strings.ERROR_LINKING_IN_PROGRESS_DESCRIPTION}
-            </p>
-          )}
-          {mode === "error" && (
-            <p className="font-code text-sm text-gray-400 leading-relaxed">
-              {strings.ERROR_LINKING_FAILED_DESCRIPTION}
-            </p>
+          {isLinking && (
+            <>
+              <p
+                role="status"
+                className="font-code text-sm text-gray-400 leading-relaxed mb-4"
+              >
+                {strings.ERROR_LINKING_IN_PROGRESS_DESCRIPTION}
+              </p>
+              <button
+                type="button"
+                onClick={cancel}
+                className="font-pixel text-xs tracking-widest px-4 py-2 transition-colors"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#aaa",
+                }}
+              >
+                {strings.ACTIVITY_LINK_CANCEL_BUTTON_TEXT}
+              </button>
+            </>
           )}
         </m.div>
       </div>

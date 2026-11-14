@@ -7,10 +7,13 @@ import {
   fetchDiscordUser,
 } from "../_shared/discordAuth.js";
 import {
-  findPlayerSaveByDiscordId,
   linkProviderIdToAccount,
   ensurePlayerSaveExists,
 } from "../_shared/playerAccount.js";
+import {
+  detectDiscordLinkConflict,
+  saveConflictResponse,
+} from "../_shared/discordLinkMerge.js";
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -57,8 +60,8 @@ export async function onRequestPost(context) {
       return json({ success: false, error: "Discord linking failed." }, 400);
     }
 
-    const existing = await findPlayerSaveByDiscordId(db, discordUser.id);
-    if (existing && existing.uid !== uid)
+    const conflict = await detectDiscordLinkConflict(db, uid, discordUser.id);
+    if (conflict === "linked_elsewhere")
       return json(
         {
           success: false,
@@ -69,6 +72,9 @@ export async function onRequestPost(context) {
       );
 
     await ensurePlayerSaveExists(db, uid, issuedAt);
+
+    if (conflict === "mergeable")
+      return saveConflictResponse(context.env, db, uid, discordUser.id);
 
     const result = await linkProviderIdToAccount(
       db,

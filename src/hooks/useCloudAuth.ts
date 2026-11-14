@@ -55,7 +55,12 @@ import {
   toCloudAuthUserFromPlayGames,
   type AuthFlowMessage,
 } from "../lib/cloudAuthUser";
-import { completeEmailLinkSignIn } from "../lib/emailLinkSignIn";
+import { isValidEmail } from "../lib/email";
+import {
+  cancelEmailLinkSignIn,
+  completeEmailLinkSignIn,
+  type EmailLinkSignInResult,
+} from "../lib/emailLinkSignIn";
 import { useEmailLinkSender } from "./useEmailLinkSender";
 import { useAccountDeletion } from "./useAccountDeletion";
 
@@ -72,6 +77,11 @@ export {
   type EmailLinkSignInResult,
 } from "../lib/emailLinkSignIn";
 export { isPlayGamesAvailable };
+
+export type EmailLinkPromptState = {
+  error: "mismatch" | null;
+  submitting: boolean;
+};
 
 export const completeDiscordSignIn = async (): Promise<void> => {
   await exchangeDiscordSignIn();
@@ -117,8 +127,22 @@ export const useCloudAuthState = ({
     },
     []
   );
-  const { emailLinkSent, emailLinkSending, emailLinkBusy, sendEmailLink } =
-    useEmailLinkSender({ setActionError, setAuthFlowMessage });
+  const {
+    emailLinkSent,
+    emailLinkSentTo,
+    emailLinkSending,
+    emailLinkCooldownSeconds,
+    emailLinkBusy,
+    sendEmailLink,
+    resetEmailLinkSent,
+  } = useEmailLinkSender({ setActionError, setAuthFlowMessage });
+  const [emailLinkPrompt, setEmailLinkPrompt] =
+    useState<EmailLinkPromptState | null>(null);
+
+  const resetEmailLinkState = useCallback(() => {
+    resetEmailLinkSent();
+    setActionError(null);
+  }, [resetEmailLinkSent]);
 
   const firebaseUserRef = useRef<User | null>(null);
   const discordSessionRef = useRef<DiscordSession | null>(discordSession);
@@ -169,12 +193,45 @@ export const useCloudAuthState = ({
     });
   }, [applyDiscordSession, announceSignIn, showError]);
 
-  useEffect(() => {
-    void completeEmailLinkSignIn().then((result) => {
+  const handleEmailLinkResult = useCallback(
+    (result: EmailLinkSignInResult) => {
+      if (result === "needs_email") {
+        setEmailLinkPrompt(
+          (prev) => prev ?? { error: null, submitting: false }
+        );
+        return;
+      }
+      if (result === "email_mismatch") {
+        setEmailLinkPrompt({ error: "mismatch", submitting: false });
+        return;
+      }
+      setEmailLinkPrompt(null);
       if (result === "signed_in") announceSignIn();
+      if (result === "expired")
+        showError(strings.CLOUD_AUTH_EMAIL_LINK_EXPIRED_TEXT);
       if (result === "failed") showError(strings.GENERIC_ERROR_TEXT);
-    });
-  }, [announceSignIn, showError]);
+    },
+    [announceSignIn, showError]
+  );
+
+  useEffect(() => {
+    void completeEmailLinkSignIn().then(handleEmailLinkResult);
+  }, [handleEmailLinkResult]);
+
+  const confirmEmailLinkEmail = useCallback(
+    async (email: string) => {
+      const address = email.trim();
+      if (!isValidEmail(address)) return;
+      setEmailLinkPrompt({ error: null, submitting: true });
+      handleEmailLinkResult(await completeEmailLinkSignIn(address));
+    },
+    [handleEmailLinkResult]
+  );
+
+  const dismissEmailLinkPrompt = useCallback(() => {
+    cancelEmailLinkSignIn();
+    setEmailLinkPrompt(null);
+  }, []);
 
   const reportUnexpectedSignOut = useCallback(() => {
     if (!warnOnSessionEnd || !hasSignedInMarker()) return;
@@ -547,8 +604,14 @@ export const useCloudAuthState = ({
     clearAuthFlowMessage,
     signInNotice: user ? signInNotice : false,
     emailLinkSent,
+    emailLinkSentTo,
     emailLinkSending,
+    emailLinkCooldownSeconds,
     emailLinkBusy,
+    emailLinkPrompt,
+    resetEmailLinkState,
+    confirmEmailLinkEmail,
+    dismissEmailLinkPrompt,
     signInWithGoogle,
     signInWithGithub,
     signInWithDiscord,

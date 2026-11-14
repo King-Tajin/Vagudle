@@ -45,6 +45,7 @@ export const MODAL_TITLE_CREATE_CHALLENGE = "Criar desafio";
 export const MODAL_TITLE_OFFLINE_MODE = "Você está offline";
 export const MODAL_TITLE_WEBGL_UNAVAILABLE = "Gráficos não suportados";
 export const MODAL_TITLE_SESSION_ENDED = "Sessão encerrada";
+export const MODAL_TITLE_EMAIL_LINK_CONFIRM = "Confirmar e-mail";
 
 export const OFFLINE_MODE_INTRO_TEXT =
   "Não conseguimos acessar os servidores do Vagudle. Você ainda pode jogar o jogo básico offline.";
@@ -681,8 +682,6 @@ export const LINK_DISCORD_CONTINUE_GITHUB_BUTTON_TEXT =
   "CONTINUAR COM O GITHUB";
 export const LINK_DISCORD_EMAIL_LABEL = "E-MAIL";
 export const LINK_DISCORD_SEND_LINK_BUTTON_TEXT = "ENVIAR LINK DE LOGIN";
-export const LINK_DISCORD_EMAIL_SENT_TEXT =
-  "Verifique o seu e-mail para encontrar um link de login e abra-o neste mesmo navegador.";
 export const LINK_DISCORD_HEADING = "VINCULAR A SUA CONTA";
 
 export const COMPLETED_ROW_RESET_ARIA_LABEL = "Redefinir as cores da linha";
@@ -850,6 +849,28 @@ export const CLOUD_SAVE_PROVIDER_LABEL_UNKNOWN = "Desconhecido";
 export const CLOUD_SAVE_AUTO_SIGNED_IN_TEXT = "Login automático pelo Discord.";
 export const CLOUD_SAVE_WAITING_LINK_TEXT =
   "Aguardando você concluir a vinculação no navegador...";
+export const ACTIVITY_LINK_CANCEL_BUTTON_TEXT = "CANCELAR";
+export const ACTIVITY_LINK_TIMED_OUT_TEXT =
+  "A vinculação não foi concluída. Tente novamente quando estiver pronto.";
+export const MODAL_TITLE_DISCORD_SAVE_CONFLICT = "Dois salvamentos encontrados";
+export const DISCORD_CONFLICT_INTRO_TEXT =
+  "Esta conta do Discord já tem progresso salvo próprio. Escolha qual salvamento manter. O outro será excluído permanentemente.";
+export const DISCORD_CONFLICT_GROUP_ARIA_LABEL = "Salvamento a manter";
+export const DISCORD_CONFLICT_ACCOUNT_HEADING = "ESTA CONTA";
+export const DISCORD_CONFLICT_DISCORD_HEADING = "DISCORD";
+export const DISCORD_CONFLICT_EMPTY_SAVE_TEXT = "Nenhum progresso salvo ainda";
+export const DISCORD_CONFLICT_GAMES_TEXT = (count: number): string =>
+  `Jogos disputados: ${count}`;
+export const DISCORD_CONFLICT_STREAK_TEXT = (count: number): string =>
+  `Melhor sequência: ${count}`;
+export const DISCORD_CONFLICT_ACHIEVEMENTS_TEXT = (count: number): string =>
+  `Conquistas: ${count}`;
+export const DISCORD_CONFLICT_LAST_PLAYED_TEXT = (when: string): string =>
+  `Última partida: ${when}`;
+export const DISCORD_CONFLICT_CONFIRM_BUTTON_TEXT =
+  "MANTER SALVAMENTO ESCOLHIDO";
+export const DISCORD_CONFLICT_CONFIRMING_BUTTON_TEXT = "VINCULANDO...";
+export const DISCORD_CONFLICT_CANCEL_BUTTON_TEXT = "AGORA NÃO";
 export const CLOUD_SAVE_OPENING_LINK_BUTTON_TEXT = "ABRINDO LINK...";
 export const CLOUD_SAVE_LINK_EXISTING_ACCOUNT_BUTTON_TEXT =
   "VINCULAR CONTA EXISTENTE";
@@ -913,8 +934,6 @@ export const CLOUD_SAVE_EMAIL_ARIA_LABEL = "Endereço de e-mail";
 export const EMAIL_INVALID_ERROR_TEXT = "Insira um endereço de e-mail válido.";
 export const CLOUD_SAVE_SEND_LINK_BUTTON_TEXT = "ENVIAR LINK";
 export const CLOUD_SAVE_SENDING_BUTTON_TEXT = "ENVIANDO...";
-export const CLOUD_SAVE_EMAIL_SENT_TEXT =
-  "Verifique o seu e-mail para encontrar um link de login.";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_HEADING = "LOGIN FLEXÍVEL";
 export const CLOUD_SAVE_FLEXIBLE_SIGNIN_DESCRIPTION =
   "Funciona sozinho ou pode ser vinculado a outra conta a qualquer momento por aqui.";
@@ -1068,6 +1087,26 @@ export const CLOUD_AUTH_NETWORK_ERROR_TEXT =
   "Não foi possível acessar o serviço de login. Verifique sua conexão e tente novamente.";
 export const CLOUD_AUTH_EMAIL_LINK_ERROR_TEXT =
   "Não foi possível enviar o link de login. Tente novamente.";
+export const CLOUD_AUTH_EMAIL_LINK_EXPIRED_TEXT =
+  "Este link de login expirou ou já foi usado. Peça um novo para continuar.";
+export const EMAIL_LINK_CONFIRM_HINT_TEXT =
+  "Você abriu este link em um dispositivo ou navegador diferente daquele em que o solicitou.";
+export const EMAIL_LINK_CONFIRM_BUTTON_TEXT = "ENTRAR";
+export const EMAIL_LINK_CONFIRM_SUBMITTING_BUTTON_TEXT = "ENTRANDO...";
+export const EMAIL_LINK_CONFIRM_CANCEL_BUTTON_TEXT = "CANCELAR";
+export const EMAIL_LINK_MISMATCH_ERROR_TEXT =
+  "Este e-mail não corresponde ao link. Verifique o endereço e tente novamente.";
+export const EMAIL_LINK_SENT_TO_TEXT = (email: string): string =>
+  `Enviamos um link de login para ${email}.`;
+export const EMAIL_LINK_SPAM_HINT_TEXT =
+  "Não encontrou? Verifique a pasta de spam.";
+export const EMAIL_LINK_RESEND_BUTTON_TEXT = "REENVIAR LINK";
+export const EMAIL_LINK_RESEND_COOLDOWN_BUTTON_TEXT = (
+  seconds: number
+): string => `REENVIAR EM ${seconds}s`;
+export const EMAIL_LINK_WRONG_EMAIL_BUTTON_TEXT = "E-MAIL ERRADO?";
+export const EMAIL_LINK_SEND_COOLDOWN_BUTTON_TEXT = (seconds: number): string =>
+  `ENVIAR LINK (${seconds}s)`;
 export const CLOUD_AUTH_SIGNOUT_ERROR_TEXT = "Falha ao sair. Tente novamente.";
 export const CLOUD_AUTH_DELETE_ACCOUNT_ERROR_TEXT =
   "Não foi possível excluir a sua conta. Tente novamente.";

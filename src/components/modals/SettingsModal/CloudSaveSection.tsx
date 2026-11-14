@@ -65,8 +65,11 @@ export const CloudSaveSection = ({
     clearAuthFlowMessage,
     signInNotice,
     emailLinkSent,
+    emailLinkSentTo,
     emailLinkSending,
+    emailLinkCooldownSeconds,
     emailLinkBusy,
+    resetEmailLinkState,
     signInWithGoogle,
     signInWithGithub,
     signInWithDiscord,
@@ -100,11 +103,13 @@ export const CloudSaveSection = ({
     setAgeGateChecked(false);
     setAgeGateBlockedError(false);
     clearAuthFlowMessage();
+    resetEmailLinkState();
   };
 
   const goToSignIn = () => {
     setEntryMode("signin");
     clearAuthFlowMessage();
+    resetEmailLinkState();
   };
 
   const goToCreateGate = () => {
@@ -112,6 +117,7 @@ export const CloudSaveSection = ({
     setAgeGateChecked(false);
     setAgeGateBlockedError(false);
     clearAuthFlowMessage();
+    resetEmailLinkState();
   };
 
   const handleAgeGateContinue = () => {
@@ -368,8 +374,11 @@ export const CloudSaveSection = ({
                 email={email}
                 setEmail={setEmail}
                 emailLinkSent={emailLinkSent}
+                emailLinkSentTo={emailLinkSentTo}
                 emailLinkSending={emailLinkSending}
+                emailLinkCooldownSeconds={emailLinkCooldownSeconds}
                 emailLinkBusy={emailLinkBusy}
+                resetEmailLinkState={resetEmailLinkState}
                 authFlowMessage={authFlowMessage}
                 actionError={actionError}
                 onGoToOtherIntent={goToCreateGate}
@@ -458,8 +467,11 @@ export const CloudSaveSection = ({
                 email={email}
                 setEmail={setEmail}
                 emailLinkSent={emailLinkSent}
+                emailLinkSentTo={emailLinkSentTo}
                 emailLinkSending={emailLinkSending}
+                emailLinkCooldownSeconds={emailLinkCooldownSeconds}
                 emailLinkBusy={emailLinkBusy}
+                resetEmailLinkState={resetEmailLinkState}
                 authFlowMessage={authFlowMessage}
                 actionError={actionError}
                 onGoToOtherIntent={goToSignIn}
