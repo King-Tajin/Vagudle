@@ -48,7 +48,7 @@ const withTabLock = async <T>(task: () => Promise<T>): Promise<T | null> => {
 };
 
 export const useCloudSync = () => {
-  const { user, signOutUser } = useCloudAuth();
+  const { user, signOutUser, recoverSession } = useCloudAuth();
   const { showError } = useAlert();
   const [status, setStatus] = useState<SyncStatus>("idle");
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
@@ -64,6 +64,7 @@ export const useCloudSync = () => {
   const pendingPromptRef = useRef<PendingPrompt | null>(null);
   const runningRef = useRef(false);
   const failuresRef = useRef(0);
+  const authRecoveryAttemptedRef = useRef(false);
   const retryTimerRef = useRef<number | null>(null);
   const stampRef = useRef<string | null>(null);
 
@@ -127,6 +128,7 @@ export const useCloudSync = () => {
 
       if (outcome.kind === "synced" || outcome.kind === "unchanged") {
         failuresRef.current = 0;
+        authRecoveryAttemptedRef.current = false;
         clearRetryTimer();
         setLastSyncedAt(outcome.updatedAt);
         setStatus("synced");
@@ -146,6 +148,14 @@ export const useCloudSync = () => {
         return;
       }
 
+      if (outcome.kind === "auth" && !authRecoveryAttemptedRef.current) {
+        authRecoveryAttemptedRef.current = true;
+        if (await recoverSession()) {
+          void runSyncRef.current();
+          return;
+        }
+      }
+
       setStatus(!navigator.onLine ? "offline" : "error");
       const delay =
         RETRY_DELAYS_MS[
@@ -158,7 +168,7 @@ export const useCloudSync = () => {
         void runSyncRef.current();
       }, delay);
     },
-    [clearRetryTimer]
+    [clearRetryTimer, recoverSession]
   );
 
   useEffect(() => {

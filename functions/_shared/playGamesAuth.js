@@ -8,6 +8,34 @@ const PLAY_GAMES_PLAYER_URL =
   "https://games.googleapis.com/games/v1/players/me";
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
+export class PlayGamesAuthError extends Error {
+  constructor(message, permanent) {
+    super(message);
+    this.name = "PlayGamesAuthError";
+    this.permanent = permanent;
+  }
+}
+
+export const isPermanentPlayGamesAuthError = (error) =>
+  error instanceof PlayGamesAuthError && error.permanent;
+
+const readGoogleErrorCode = async (res) => {
+  try {
+    const data = await res.json();
+    return typeof data?.error === "string" ? data.error : "";
+  } catch {
+    return "";
+  }
+};
+
+const throwTokenError = async (res, label) => {
+  const code = await readGoogleErrorCode(res);
+  throw new PlayGamesAuthError(
+    `${label} (${res.status}${code ? ` ${code}` : ""})`,
+    code === "invalid_grant"
+  );
+};
+
 export const exchangePlayGamesAuthCode = async (
   serverAuthCode,
   clientId,
@@ -27,10 +55,7 @@ export const exchangePlayGamesAuthCode = async (
     body: params.toString(),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Play Games token exchange failed: ${err}`);
-  }
+  if (!res.ok) await throwTokenError(res, "Play Games token exchange failed");
 
   const data = await res.json();
   return { accessToken: data.access_token, refreshToken: data.refresh_token };
@@ -54,10 +79,7 @@ export const refreshPlayGamesToken = async (
     body: params.toString(),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Play Games token refresh failed: ${err}`);
-  }
+  if (!res.ok) await throwTokenError(res, "Play Games token refresh failed");
 
   const data = await res.json();
   return { accessToken: data.access_token };
@@ -67,7 +89,11 @@ export const fetchPlayGamesPlayer = async (accessToken) => {
   const res = await fetch(PLAY_GAMES_PLAYER_URL, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  if (!res.ok) throw new Error("Failed to fetch Play Games player.");
+  if (!res.ok)
+    throw new PlayGamesAuthError(
+      `Failed to fetch Play Games player (${res.status}).`,
+      res.status === 401
+    );
   return res.json();
 };
 

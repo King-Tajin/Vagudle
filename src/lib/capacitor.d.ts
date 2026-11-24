@@ -190,6 +190,7 @@ type CapacitorNotificationPrimerPlugin = {
 
 type CapacitorPlayGamesPlugin = {
   signIn: () => Promise<{ serverAuthCode: string }>;
+  getServerAuthCode: () => Promise<{ serverAuthCode: string }>;
   unlockAchievement: (options: { achievementId: string }) => Promise<void>;
   setAchievementSteps: (options: {
     achievementId: string;

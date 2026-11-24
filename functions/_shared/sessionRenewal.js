@@ -12,7 +12,14 @@ export const readRenewableSession = async ({
   const token = getBearerToken(request);
   if (!token)
     return {
-      error: json({ success: false, error: "Missing session token." }, 401),
+      error: json(
+        {
+          success: false,
+          error: "Missing session token.",
+          code: "missing_token",
+        },
+        401
+      ),
     };
 
   let payload;
@@ -20,13 +27,27 @@ export const readRenewableSession = async ({
     payload = await decode(token, sessionKey);
   } catch {
     return {
-      error: json({ success: false, error: "Invalid session token." }, 401),
+      error: json(
+        {
+          success: false,
+          error: "Invalid session token.",
+          code: "invalid_token",
+        },
+        401
+      ),
     };
   }
 
   if (!isRenewable(payload))
     return {
-      error: json({ success: false, error: "Session cannot be renewed." }, 401),
+      error: json(
+        {
+          success: false,
+          error: "Session cannot be renewed.",
+          code: "not_renewable",
+        },
+        401
+      ),
     };
 
   if (
@@ -35,7 +56,11 @@ export const readRenewableSession = async ({
   )
     return {
       error: json(
-        { success: false, error: "Session expired. Please sign in again." },
+        {
+          success: false,
+          error: "Session expired. Please sign in again.",
+          code: "account_deleted",
+        },
         401
       ),
     };

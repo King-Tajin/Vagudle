@@ -36,6 +36,9 @@ export type PlayGamesProgressSnapshot = {
 };
 
 const RENEW_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000;
+const RENEW_RETRY_MS = 15 * 60 * 1000;
+
+let nextRenewAttemptAt = 0;
 
 const dispatchPlayGamesSessionSync = (): void => {
   try {
@@ -64,11 +67,7 @@ export const getStoredPlayGamesSessionRaw = (): PlayGamesSession | null => {
 export const getStoredPlayGamesSession = (): PlayGamesSession | null => {
   const session = getStoredPlayGamesSessionRaw();
   if (!session) return null;
-  if (session.expiresAt <= Date.now()) {
-    localStorage.removeItem(PLAYGAMES_SESSION_STORAGE_KEY);
-    return null;
-  }
-  return session;
+  return session.expiresAt > Date.now() ? session : null;
 };
 
 const storePlayGamesSession = (session: PlayGamesSession): void => {
@@ -122,6 +121,30 @@ const sessionFromResponse = (
   };
 };
 
+type CodeExchangeOutcome =
+  | { status: "ok"; session: PlayGamesSession; isNewAccount: boolean }
+  | { status: "failed" };
+
+const exchangeServerAuthCode = async (
+  serverAuthCode: string
+): Promise<CodeExchangeOutcome> => {
+  try {
+    const res = await fetch("/api/playgames-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ serverAuthCode }),
+    });
+    if (!res.ok) return { status: "failed" };
+
+    const data = (await res.json()) as PlayGamesLoginResponse;
+    const session = sessionFromResponse(data);
+    if (!session) return { status: "failed" };
+    return { status: "ok", session, isNewAccount: data.isNewAccount === true };
+  } catch {
+    return { status: "failed" };
+  }
+};
+
 export const signInWithPlayGames = async (
   intent: AuthIntent
 ): Promise<PlayGamesSignInOutcome> => {
@@ -131,25 +154,17 @@ export const signInWithPlayGames = async (
   const { serverAuthCode } = await plugin.signIn();
   if (!serverAuthCode) return { status: "error" };
 
-  const res = await fetch("/api/playgames-login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ serverAuthCode }),
-  });
-  if (!res.ok) return { status: "error" };
+  const exchange = await exchangeServerAuthCode(serverAuthCode);
+  if (exchange.status !== "ok") return { status: "error" };
 
-  const data = (await res.json()) as PlayGamesLoginResponse;
-  const session = sessionFromResponse(data);
-  if (!session) return { status: "error" };
-
-  if (intent === "signin" && data.isNewAccount)
+  if (intent === "signin" && exchange.isNewAccount)
     return { status: "not_registered" };
-  if (intent === "create" && !data.isNewAccount)
+  if (intent === "create" && !exchange.isNewAccount)
     return { status: "already_registered" };
 
-  storePlayGamesSession(session);
+  storePlayGamesSession(exchange.session);
   backfillPlayGamesAchievements();
-  return { status: "signed_in", session };
+  return { status: "signed_in", session: exchange.session };
 };
 
 export const startPlayGamesLinkAuthCode = async (): Promise<
@@ -203,35 +218,93 @@ export const openPlayGamesLinkFlow = async (
   return { opened: true };
 };
 
+type ReauthOutcome =
+  | { status: "renewed"; session: PlayGamesSession }
+  | { status: "rejected" }
+  | { status: "unavailable" };
+
+const reauthenticatePlayGamesSession = async (
+  current: PlayGamesSession
+): Promise<ReauthOutcome> => {
+  const plugin = window.Capacitor?.Plugins?.PlayGamesAuth;
+  if (!isPlayGamesAvailable() || !plugin) return { status: "unavailable" };
+
+  let serverAuthCode: string | undefined;
+  try {
+    ({ serverAuthCode } = await plugin.getServerAuthCode());
+  } catch {
+    return { status: "unavailable" };
+  }
+  if (!serverAuthCode) return { status: "unavailable" };
+
+  const exchange = await exchangeServerAuthCode(serverAuthCode);
+  if (exchange.status !== "ok") return { status: "unavailable" };
+  if (exchange.session.uid !== current.uid || exchange.isNewAccount)
+    return { status: "rejected" };
+  return { status: "renewed", session: exchange.session };
+};
+
+const readErrorCode = async (res: Response): Promise<string | null> => {
+  try {
+    const data = (await res.json()) as { code?: unknown };
+    return typeof data.code === "string" ? data.code : null;
+  } catch {
+    return null;
+  }
+};
+
+const adoptRenewedSession = (session: PlayGamesSession): PlayGamesSession => {
+  nextRenewAttemptAt = 0;
+  storePlayGamesSession(session);
+  flushPendingPlayGamesAchievements();
+  syncPlayGamesLeaderboard();
+  return session;
+};
+
+const deferRenewal = (session: PlayGamesSession): PlayGamesSession => {
+  nextRenewAttemptAt = Date.now() + RENEW_RETRY_MS;
+  return session;
+};
+
 export const renewPlayGamesSession = async (
   session: PlayGamesSession
 ): Promise<PlayGamesSession | null> => {
+  let res: Response;
   try {
-    const res = await fetch("/api/playgames-refresh", {
+    res = await fetch("/api/playgames-refresh", {
       method: "POST",
       headers: { Authorization: `Bearer ${session.token}` },
     });
-    if (!res.ok) {
-      clearPlayGamesSession();
-      return null;
-    }
-
-    const data = (await res.json()) as Parameters<
-      typeof sessionFromResponse
-    >[0];
-    const renewed = sessionFromResponse(data);
-    if (!renewed) {
-      clearPlayGamesSession();
-      return null;
-    }
-
-    storePlayGamesSession(renewed);
-    flushPendingPlayGamesAchievements();
-    syncPlayGamesLeaderboard();
-    return renewed;
   } catch {
-    return session;
+    return deferRenewal(session);
   }
+
+  if (res.ok) {
+    try {
+      const renewed = sessionFromResponse(
+        (await res.json()) as PlayGamesLoginResponse
+      );
+      if (renewed) return adoptRenewedSession(renewed);
+    } catch {
+      return deferRenewal(session);
+    }
+    return deferRenewal(session);
+  }
+
+  if (res.status !== 401) return deferRenewal(session);
+
+  if ((await readErrorCode(res)) === "account_deleted") {
+    clearPlayGamesSession();
+    return null;
+  }
+
+  const reauth = await reauthenticatePlayGamesSession(session);
+  if (reauth.status === "renewed") return adoptRenewedSession(reauth.session);
+  if (reauth.status === "rejected") {
+    clearPlayGamesSession();
+    return null;
+  }
+  return deferRenewal(session);
 };
 
 export const maybeRenewPlayGamesSession =
@@ -239,6 +312,14 @@ export const maybeRenewPlayGamesSession =
     const session = getStoredPlayGamesSessionRaw();
     if (!session) return null;
     if (session.expiresAt - Date.now() > RENEW_THRESHOLD_MS) return session;
+    if (Date.now() < nextRenewAttemptAt) return session;
+    return renewPlayGamesSession(session);
+  };
+
+export const recoverPlayGamesSession =
+  async (): Promise<PlayGamesSession | null> => {
+    const session = getStoredPlayGamesSessionRaw();
+    if (!session) return null;
     return renewPlayGamesSession(session);
   };
 

@@ -5,8 +5,21 @@ import {
   exchangePlayGamesAuthCode,
   fetchPlayGamesPlayer,
   buildPlayGamesSessionPayload,
+  isPermanentPlayGamesAuthError,
 } from "../_shared/playGamesAuth.js";
 import { findPlayerSaveByPlayGamesId } from "../_shared/playerAccount.js";
+
+const loginFailure = (error) =>
+  isPermanentPlayGamesAuthError(error)
+    ? json({ success: false, error: "Play Games sign-in failed." }, 400)
+    : json(
+        {
+          success: false,
+          error: "Sign-in service is temporarily unavailable.",
+          code: "temporarily_unavailable",
+        },
+        503
+      );
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -35,7 +48,7 @@ export async function onRequestPost(context) {
       ));
     } catch (error) {
       console.error("Play Games login exchange error:", error);
-      return json({ success: false, error: "Play Games sign-in failed." }, 400);
+      return loginFailure(error);
     }
 
     let player;
@@ -43,7 +56,7 @@ export async function onRequestPost(context) {
       player = await fetchPlayGamesPlayer(accessToken);
     } catch (error) {
       console.error("Play Games login player fetch error:", error);
-      return json({ success: false, error: "Play Games sign-in failed." }, 400);
+      return loginFailure(error);
     }
 
     const session = buildPlayGamesSessionPayload(player, refreshToken);

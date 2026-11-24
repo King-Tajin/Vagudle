@@ -24,6 +24,7 @@ import {
   getStoredPlayGamesSessionRaw,
   clearPlayGamesSession,
   maybeRenewPlayGamesSession,
+  recoverPlayGamesSession,
   isPlayGamesAvailable,
   syncPlayGamesLeaderboard,
   PLAYGAMES_SESSION_STORAGE_KEY,
@@ -348,8 +349,11 @@ export const useCloudAuthState = ({
     let cancelled = false;
     void runExclusive(() => maybeRenewPlayGamesSession())
       .then((renewed) => {
-        if (!cancelled) applyPlayGamesSession(renewed);
-        if (renewed) syncPlayGamesLeaderboard();
+        if (cancelled) return;
+        const valid =
+          renewed !== null && renewed.expiresAt > Date.now() ? renewed : null;
+        applyPlayGamesSession(valid);
+        if (valid) syncPlayGamesLeaderboard();
       })
       .finally(() => {
         if (!cancelled) settleStartupPart("playGames");
@@ -377,13 +381,12 @@ export const useCloudAuthState = ({
     }
 
     const playGamesBefore = playGamesSessionRef.current;
-    if (playGamesBefore) {
+    if (playGamesBefore || getStoredPlayGamesSessionRaw() !== null) {
       const renewed = await runExclusive(() => maybeRenewPlayGamesSession());
       if (playGamesSessionRef.current === playGamesBefore) {
         if (renewed === null || renewed.expiresAt <= Date.now()) {
-          clearPlayGamesSession();
           applyPlayGamesSession(null);
-          reportUnexpectedSignOut();
+          if (playGamesBefore) reportUnexpectedSignOut();
         } else {
           applyPlayGamesSession(renewed);
         }
@@ -405,6 +408,30 @@ export const useCloudAuthState = ({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [checkProviderSessions]);
+
+  const recoverSession = useCallback(async (): Promise<boolean> => {
+    const before = playGamesSessionRef.current;
+    if (!before) return false;
+
+    const renewed = await runExclusive(() => recoverPlayGamesSession());
+    if (
+      renewed !== null &&
+      renewed.expiresAt > Date.now() &&
+      renewed.token !== before.token
+    ) {
+      applyPlayGamesSession(renewed);
+      return true;
+    }
+
+    if (
+      playGamesSessionRef.current === before &&
+      (renewed === null || renewed.expiresAt <= Date.now())
+    ) {
+      applyPlayGamesSession(null);
+      reportUnexpectedSignOut();
+    }
+    return false;
+  }, [applyPlayGamesSession, reportUnexpectedSignOut]);
 
   const clearAuthFlowMessage = useCallback(() => {
     setAuthFlowMessage(null);
@@ -618,6 +645,7 @@ export const useCloudAuthState = ({
     signInWithPlayGames,
     sendEmailLink,
     signOutUser,
+    recoverSession,
     deleteAccount,
   };
 };

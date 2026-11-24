@@ -6,9 +6,29 @@ import {
   fetchPlayGamesPlayer,
   buildPlayGamesSessionPayload,
   isRenewablePlayGamesSession,
+  isPermanentPlayGamesAuthError,
   playGamesSessionIssuedAt,
 } from "../_shared/playGamesAuth.js";
 import { readRenewableSession } from "../_shared/sessionRenewal.js";
+
+const renewalFailure = (error) =>
+  isPermanentPlayGamesAuthError(error)
+    ? json(
+        {
+          success: false,
+          error: "Session expired. Please sign in again.",
+          code: "reauth_required",
+        },
+        401
+      )
+    : json(
+        {
+          success: false,
+          error: "Sign-in service is temporarily unavailable.",
+          code: "temporarily_unavailable",
+        },
+        503
+      );
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -40,10 +60,7 @@ export async function onRequestPost(context) {
       ));
     } catch (error) {
       console.error("Play Games refresh exchange error:", error);
-      return json(
-        { success: false, error: "Session expired. Please sign in again." },
-        401
-      );
+      return renewalFailure(error);
     }
 
     let player;
@@ -51,10 +68,7 @@ export async function onRequestPost(context) {
       player = await fetchPlayGamesPlayer(accessToken);
     } catch (error) {
       console.error("Play Games refresh player fetch error:", error);
-      return json(
-        { success: false, error: "Session expired. Please sign in again." },
-        401
-      );
+      return renewalFailure(error);
     }
 
     const session = buildPlayGamesSessionPayload(player, payload.refreshToken);
