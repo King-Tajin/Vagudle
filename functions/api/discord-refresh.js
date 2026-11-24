@@ -6,9 +6,29 @@ import {
   fetchDiscordUser,
   buildDiscordSessionPayload,
   isRenewableDiscordSession,
+  isPermanentDiscordAuthError,
   discordSessionIssuedAt,
 } from "../_shared/discordAuth.js";
 import { readRenewableSession } from "../_shared/sessionRenewal.js";
+
+const renewalFailure = (error) =>
+  isPermanentDiscordAuthError(error)
+    ? json(
+        {
+          success: false,
+          error: "Session expired. Please sign in again.",
+          code: "reauth_required",
+        },
+        401
+      )
+    : json(
+        {
+          success: false,
+          error: "Sign-in service is temporarily unavailable.",
+          code: "temporarily_unavailable",
+        },
+        503
+      );
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -40,10 +60,7 @@ export async function onRequestPost(context) {
       ));
     } catch (error) {
       console.error("Discord refresh exchange error:", error);
-      return json(
-        { success: false, error: "Session expired. Please sign in again." },
-        401
-      );
+      return renewalFailure(error);
     }
 
     let discordUser;
@@ -51,13 +68,18 @@ export async function onRequestPost(context) {
       discordUser = await fetchDiscordUser(accessToken);
     } catch (error) {
       console.error("Discord refresh user fetch error:", error);
-      return json(
-        { success: false, error: "Session expired. Please sign in again." },
-        401
-      );
+      discordUser = {
+        id: payload.discordId,
+        username: payload.username,
+        global_name: null,
+        avatar: payload.avatar ?? null,
+      };
     }
 
-    const session = buildDiscordSessionPayload(discordUser, refreshToken);
+    const session = buildDiscordSessionPayload(
+      discordUser,
+      refreshToken || payload.refreshToken
+    );
     const newToken = await encode(session, sessionKey);
 
     return json({

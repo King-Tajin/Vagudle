@@ -6,6 +6,34 @@ import { getBearerToken } from "./firebaseAuth.js";
 const DISCORD_API = "https://discord.com/api/v10";
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
+export class DiscordAuthError extends Error {
+  constructor(message, permanent) {
+    super(message);
+    this.name = "DiscordAuthError";
+    this.permanent = permanent;
+  }
+}
+
+export const isPermanentDiscordAuthError = (error) =>
+  error instanceof DiscordAuthError && error.permanent;
+
+const readDiscordErrorCode = async (res) => {
+  try {
+    const data = await res.json();
+    return typeof data?.error === "string" ? data.error : "";
+  } catch {
+    return "";
+  }
+};
+
+const throwTokenError = async (res, label) => {
+  const code = await readDiscordErrorCode(res);
+  throw new DiscordAuthError(
+    `${label} (${res.status}${code ? ` ${code}` : ""})`,
+    code === "invalid_grant"
+  );
+};
+
 export const exchangeDiscordCode = async (
   code,
   clientId,
@@ -26,10 +54,7 @@ export const exchangeDiscordCode = async (
     body: params.toString(),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Discord token exchange failed: ${err}`);
-  }
+  if (!res.ok) await throwTokenError(res, "Discord token exchange failed");
 
   const data = await res.json();
   return { accessToken: data.access_token, refreshToken: data.refresh_token };
@@ -53,10 +78,7 @@ export const refreshDiscordToken = async (
     body: params.toString(),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Discord token refresh failed: ${err}`);
-  }
+  if (!res.ok) await throwTokenError(res, "Discord token refresh failed");
 
   const data = await res.json();
   return { accessToken: data.access_token, refreshToken: data.refresh_token };
@@ -66,7 +88,11 @@ export const fetchDiscordUser = async (accessToken) => {
   const res = await fetch(`${DISCORD_API}/users/@me`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  if (!res.ok) throw new Error("Failed to fetch Discord user.");
+  if (!res.ok)
+    throw new DiscordAuthError(
+      `Failed to fetch Discord user (${res.status}).`,
+      res.status === 401
+    );
   return res.json();
 };
 

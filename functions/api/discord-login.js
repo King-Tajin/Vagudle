@@ -5,8 +5,21 @@ import {
   exchangeDiscordCode,
   fetchDiscordUser,
   buildDiscordSessionPayload,
+  isPermanentDiscordAuthError,
 } from "../_shared/discordAuth.js";
 import { findPlayerSaveByDiscordId } from "../_shared/playerAccount.js";
+
+const loginFailure = (error) =>
+  isPermanentDiscordAuthError(error)
+    ? json({ success: false, error: "Discord sign-in failed." }, 400)
+    : json(
+        {
+          success: false,
+          error: "Sign-in service is temporarily unavailable.",
+          code: "temporarily_unavailable",
+        },
+        503
+      );
 
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
@@ -41,7 +54,7 @@ export async function onRequestPost(context) {
       ));
     } catch (error) {
       console.error("Discord login exchange error:", error);
-      return json({ success: false, error: "Discord sign-in failed." }, 400);
+      return loginFailure(error);
     }
 
     let discordUser;
@@ -49,7 +62,7 @@ export async function onRequestPost(context) {
       discordUser = await fetchDiscordUser(accessToken);
     } catch (error) {
       console.error("Discord login user fetch error:", error);
-      return json({ success: false, error: "Discord sign-in failed." }, 400);
+      return loginFailure(error);
     }
 
     const session = buildDiscordSessionPayload(discordUser, refreshToken);

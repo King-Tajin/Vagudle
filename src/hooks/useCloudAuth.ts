@@ -15,6 +15,7 @@ import {
   getStoredDiscordSessionRaw,
   clearDiscordSession,
   maybeRenewDiscordSession,
+  recoverDiscordSession,
   DISCORD_SESSION_STORAGE_KEY,
   type DiscordSession,
 } from "../lib/discordCloudAuth";
@@ -264,8 +265,8 @@ export const useCloudAuthState = ({
         playGamesSessionRef.current !== null;
       if (isSignedIn || startedFromAuthRedirect) return;
       if (
-        getStoredDiscordSessionRaw() !== null ||
-        getStoredPlayGamesSessionRaw() !== null
+        getStoredDiscordSession() !== null ||
+        getStoredPlayGamesSession() !== null
       )
         return;
       reportUnexpectedSignOut();
@@ -335,7 +336,10 @@ export const useCloudAuthState = ({
     let cancelled = false;
     void runExclusive(() => maybeRenewDiscordSession())
       .then((renewed) => {
-        if (!cancelled) applyDiscordSession(renewed);
+        if (cancelled) return;
+        applyDiscordSession(
+          renewed !== null && renewed.expiresAt > Date.now() ? renewed : null
+        );
       })
       .finally(() => {
         if (!cancelled) settleStartupPart("discord");
@@ -367,13 +371,12 @@ export const useCloudAuthState = ({
     if (!startupEvaluatedRef.current) return;
 
     const discordBefore = discordSessionRef.current;
-    if (discordBefore) {
+    if (discordBefore || getStoredDiscordSessionRaw() !== null) {
       const renewed = await runExclusive(() => maybeRenewDiscordSession());
       if (discordSessionRef.current === discordBefore) {
         if (renewed === null || renewed.expiresAt <= Date.now()) {
-          clearDiscordSession();
           applyDiscordSession(null);
-          reportUnexpectedSignOut();
+          if (discordBefore) reportUnexpectedSignOut();
         } else {
           applyDiscordSession(renewed);
         }
@@ -410,28 +413,52 @@ export const useCloudAuthState = ({
   }, [checkProviderSessions]);
 
   const recoverSession = useCallback(async (): Promise<boolean> => {
-    const before = playGamesSessionRef.current;
-    if (!before) return false;
+    if (firebaseUserRef.current !== null) return false;
+
+    const discordBefore = discordSessionRef.current;
+    if (discordBefore) {
+      const renewed = await runExclusive(() => recoverDiscordSession());
+      if (
+        renewed !== null &&
+        renewed.expiresAt > Date.now() &&
+        renewed.token !== discordBefore.token
+      ) {
+        applyDiscordSession(renewed);
+        return true;
+      }
+
+      if (
+        discordSessionRef.current === discordBefore &&
+        (renewed === null || renewed.expiresAt <= Date.now())
+      ) {
+        applyDiscordSession(null);
+        reportUnexpectedSignOut();
+      }
+      return false;
+    }
+
+    const playGamesBefore = playGamesSessionRef.current;
+    if (!playGamesBefore) return false;
 
     const renewed = await runExclusive(() => recoverPlayGamesSession());
     if (
       renewed !== null &&
       renewed.expiresAt > Date.now() &&
-      renewed.token !== before.token
+      renewed.token !== playGamesBefore.token
     ) {
       applyPlayGamesSession(renewed);
       return true;
     }
 
     if (
-      playGamesSessionRef.current === before &&
+      playGamesSessionRef.current === playGamesBefore &&
       (renewed === null || renewed.expiresAt <= Date.now())
     ) {
       applyPlayGamesSession(null);
       reportUnexpectedSignOut();
     }
     return false;
-  }, [applyPlayGamesSession, reportUnexpectedSignOut]);
+  }, [applyDiscordSession, applyPlayGamesSession, reportUnexpectedSignOut]);
 
   const clearAuthFlowMessage = useCallback(() => {
     setAuthFlowMessage(null);

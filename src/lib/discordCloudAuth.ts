@@ -43,6 +43,10 @@ const dispatchDiscordSessionSync = (): void => {
 };
 
 const RENEW_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000;
+const RENEW_RETRY_MS = 15 * 60 * 1000;
+const RENEW_DEAD_RETRY_MS = 6 * 60 * 60 * 1000;
+
+let nextRenewAttemptAt = 0;
 
 export const getStoredDiscordSessionRaw = (): DiscordSession | null => {
   try {
@@ -59,11 +63,7 @@ export const getStoredDiscordSessionRaw = (): DiscordSession | null => {
 export const getStoredDiscordSession = (): DiscordSession | null => {
   const session = getStoredDiscordSessionRaw();
   if (!session) return null;
-  if (session.expiresAt <= Date.now()) {
-    localStorage.removeItem(DISCORD_SESSION_STORAGE_KEY);
-    return null;
-  }
-  return session;
+  return session.expiresAt > Date.now() ? session : null;
 };
 
 const storeDiscordSession = (session: DiscordSession): void => {
@@ -166,46 +166,83 @@ export const openDiscordLinkFlow = async (
   return { opened: true };
 };
 
+type DiscordRenewResponse = {
+  success: boolean;
+  token?: string;
+  user?: {
+    uid: string;
+    displayName: string;
+    avatarUrl: string | null;
+    expiresAt: number;
+  };
+};
+
+const readErrorCode = async (res: Response): Promise<string | null> => {
+  try {
+    const data = (await res.json()) as { code?: unknown };
+    return typeof data.code === "string" ? data.code : null;
+  } catch {
+    return null;
+  }
+};
+
+const adoptRenewedSession = (session: DiscordSession): DiscordSession => {
+  nextRenewAttemptAt = 0;
+  storeDiscordSession(session);
+  return session;
+};
+
+const deferRenewal = (
+  session: DiscordSession,
+  delayMs: number = RENEW_RETRY_MS
+): DiscordSession => {
+  nextRenewAttemptAt = Date.now() + delayMs;
+  return session;
+};
+
 export const renewDiscordSession = async (
   session: DiscordSession
 ): Promise<DiscordSession | null> => {
+  let res: Response;
   try {
-    const res = await fetch("/api/discord-refresh", {
+    res = await fetch("/api/discord-refresh", {
       method: "POST",
       headers: { Authorization: `Bearer ${session.token}` },
     });
-    if (!res.ok) {
-      clearDiscordSession();
-      return null;
-    }
-
-    const data = (await res.json()) as {
-      success: boolean;
-      token?: string;
-      user?: {
-        uid: string;
-        displayName: string;
-        avatarUrl: string | null;
-        expiresAt: number;
-      };
-    };
-    if (!data.success || !data.token || !data.user) {
-      clearDiscordSession();
-      return null;
-    }
-
-    const renewed: DiscordSession = {
-      token: data.token,
-      uid: data.user.uid,
-      displayName: data.user.displayName,
-      avatarUrl: data.user.avatarUrl,
-      expiresAt: data.user.expiresAt,
-    };
-    storeDiscordSession(renewed);
-    return renewed;
   } catch {
-    return session;
+    return deferRenewal(session);
   }
+
+  if (res.ok) {
+    try {
+      const data = (await res.json()) as DiscordRenewResponse;
+      if (data.success && data.token && data.user) {
+        return adoptRenewedSession({
+          token: data.token,
+          uid: data.user.uid,
+          displayName: data.user.displayName,
+          avatarUrl: data.user.avatarUrl,
+          expiresAt: data.user.expiresAt,
+        });
+      }
+    } catch {
+      return deferRenewal(session);
+    }
+    return deferRenewal(session);
+  }
+
+  if (res.status !== 401) return deferRenewal(session);
+
+  if ((await readErrorCode(res)) === "account_deleted") {
+    clearDiscordSession();
+    return null;
+  }
+
+  if (session.expiresAt <= Date.now()) {
+    clearDiscordSession();
+    return null;
+  }
+  return deferRenewal(session, RENEW_DEAD_RETRY_MS);
 };
 
 export const maybeRenewDiscordSession =
@@ -213,6 +250,14 @@ export const maybeRenewDiscordSession =
     const session = getStoredDiscordSessionRaw();
     if (!session) return null;
     if (session.expiresAt - Date.now() > RENEW_THRESHOLD_MS) return session;
+    if (Date.now() < nextRenewAttemptAt) return session;
+    return renewDiscordSession(session);
+  };
+
+export const recoverDiscordSession =
+  async (): Promise<DiscordSession | null> => {
+    const session = getStoredDiscordSessionRaw();
+    if (!session) return null;
     return renewDiscordSession(session);
   };
 
