@@ -235,6 +235,7 @@ export const useGameInitialization = ({
   useEffect(() => {
     let cancelled = false;
     let modalTimeoutId: ReturnType<typeof setTimeout> | undefined;
+    let loadingTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
     const run = async () => {
       runStorageOptimization();
@@ -528,7 +529,10 @@ export const useGameInitialization = ({
 
       const elapsed = Date.now() - loadStart;
       const remaining = Math.max(0, MIN_LOADING_WORDS_TIME_MS - elapsed);
-      await new Promise((r) => setTimeout(r, remaining));
+      await new Promise<void>((resolve) => {
+        loadingTimeoutId = setTimeout(resolve, remaining);
+      });
+      if (cancelled) return;
 
       if (savedState) {
         const gameWasWon = savedState.guesses.some(
@@ -567,6 +571,7 @@ export const useGameInitialization = ({
     void run();
     return () => {
       cancelled = true;
+      clearTimeout(loadingTimeoutId);
       clearTimeout(modalTimeoutId);
     };
     // Game initialization should only run once on mount, not re-run on prop changes.

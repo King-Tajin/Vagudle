@@ -56,6 +56,7 @@ export default {
           "**/src/hooks/useSyncSocket.ts",
           "**/src/hooks/useOfflineModeCheck.ts",
           "**/src/hooks/useCloudSync.ts",
+          "**/src/hooks/useGameInitialization.ts",
         ],
         rules: ["react-doctor/effect-needs-cleanup"],
       },

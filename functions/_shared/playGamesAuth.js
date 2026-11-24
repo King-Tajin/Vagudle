@@ -28,9 +28,9 @@ const readGoogleErrorCode = async (res) => {
   }
 };
 
-const throwTokenError = async (res, label) => {
+const buildTokenError = async (res, label) => {
   const code = await readGoogleErrorCode(res);
-  throw new PlayGamesAuthError(
+  return new PlayGamesAuthError(
     `${label} (${res.status}${code ? ` ${code}` : ""})`,
     code === "invalid_grant"
   );
@@ -55,7 +55,8 @@ export const exchangePlayGamesAuthCode = async (
     body: params.toString(),
   });
 
-  if (!res.ok) await throwTokenError(res, "Play Games token exchange failed");
+  if (!res.ok)
+    throw await buildTokenError(res, "Play Games token exchange failed");
 
   const data = await res.json();
   return { accessToken: data.access_token, refreshToken: data.refresh_token };
@@ -79,7 +80,8 @@ export const refreshPlayGamesToken = async (
     body: params.toString(),
   });
 
-  if (!res.ok) await throwTokenError(res, "Play Games token refresh failed");
+  if (!res.ok)
+    throw await buildTokenError(res, "Play Games token refresh failed");
 
   const data = await res.json();
   return { accessToken: data.access_token };

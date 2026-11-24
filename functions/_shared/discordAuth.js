@@ -26,9 +26,9 @@ const readDiscordErrorCode = async (res) => {
   }
 };
 
-const throwTokenError = async (res, label) => {
+const buildTokenError = async (res, label) => {
   const code = await readDiscordErrorCode(res);
-  throw new DiscordAuthError(
+  return new DiscordAuthError(
     `${label} (${res.status}${code ? ` ${code}` : ""})`,
     code === "invalid_grant"
   );
@@ -54,7 +54,8 @@ export const exchangeDiscordCode = async (
     body: params.toString(),
   });
 
-  if (!res.ok) await throwTokenError(res, "Discord token exchange failed");
+  if (!res.ok)
+    throw await buildTokenError(res, "Discord token exchange failed");
 
   const data = await res.json();
   return { accessToken: data.access_token, refreshToken: data.refresh_token };
@@ -78,7 +79,7 @@ export const refreshDiscordToken = async (
     body: params.toString(),
   });
 
-  if (!res.ok) await throwTokenError(res, "Discord token refresh failed");
+  if (!res.ok) throw await buildTokenError(res, "Discord token refresh failed");
 
   const data = await res.json();
   return { accessToken: data.access_token, refreshToken: data.refresh_token };
