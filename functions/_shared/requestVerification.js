@@ -14,7 +14,7 @@ export const verifyRequestToken = async ({
   ip,
   action,
   fields,
-  turnstileMaxAgeMs,
+  turnstileMaxAgeMs = undefined,
 }) => {
   if (typeof body?.integrityToken === "string") {
     if (!isPlayIntegrityConfigured(env)) return "misconfigured";

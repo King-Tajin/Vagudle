@@ -181,7 +181,9 @@
         <p class="dim">$ get <span id="path">/daily/nope</span></p>
         <p class="hit">404 no such page</p>
         <p class="dim gap">try one of these:</p>
+        <!-- noinspection HtmlUnknownTarget -->
         <p>&gt; <a href="/">play vagudle</a></p>
+        <!-- noinspection HtmlUnknownTarget -->
         <p>&gt; <a href="/daily">play the daily puzzle</a></p>
         <p>
           &gt; <a href="https://store.king-tajin.dev/">visit the merch store</a>
@@ -293,17 +295,18 @@
           requestAnimationFrame(render);
         }
 
-        function say(text, cls) {
+        function say(text, cls, isError) {
           const el = document.createElement("p");
           el.className = cls || "dim";
           el.textContent = text;
+          if (isError) el.dataset.err = "true";
           log.appendChild(el);
           el.scrollIntoView({ block: "nearest" });
           return el;
         }
 
         function sayError(text) {
-          say(text).dataset.err = "true";
+          say(text, undefined, true);
           promptRow.scrollIntoView({ block: "nearest" });
         }
 
